@@ -1,5 +1,5 @@
-import {Pressable} from 'react-native';
 import Box from '../box/box';
+import PressableGrey from '../pressableGrey/pressableGrey';
 import Text from '../text/text';
 
 interface ActionSheetOptionProps {
@@ -12,10 +12,10 @@ export default function ActionSheetOption({
   onPress,
 }: ActionSheetOptionProps) {
   return (
-    <Pressable onPress={onPress}>
-      <Box ph="S16" pv="S8">
+    <PressableGrey onPress={onPress} hasTVPreferredFocus>
+      <Box>
         <Text>{name}</Text>
       </Box>
-    </Pressable>
+    </PressableGrey>
   );
 }

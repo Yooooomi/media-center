@@ -1,8 +1,7 @@
 import { Constructor } from "../../types/utils";
-import { Command } from "../command";
-import { CommandBus } from "./commandBus";
-import { CommandHandler } from "../commandHandler";
 import { InfrastructureError } from "../error";
+import { InternalCommand, InternalCommandHandler, Command } from "../command";
+import { CommandBus } from "./commandBus";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -11,9 +10,16 @@ class NoHandlerFound extends InfrastructureError {
 }
 
 export class InMemoryCommandBus extends CommandBus {
-  private readonly registry: Record<string, CommandHandler<Command>> = {};
+  private readonly registry: Record<
+    string,
+    InternalCommandHandler<InternalCommand<any, any, any>>
+  > = {};
+  private readonly ctorRegistry: Record<
+    string,
+    Constructor<InternalCommand<any, any, any>>
+  > = {};
 
-  execute(command: Command<any>) {
+  async execute(command: InternalCommand<any, any, any>) {
     const handler = this.registry[command.constructor.name];
     if (!handler) {
       throw new NoHandlerFound(command.constructor.name);
@@ -21,10 +27,19 @@ export class InMemoryCommandBus extends CommandBus {
     return handler.execute(command);
   }
 
-  register<C extends Command<any>>(
+  getCommand(commandName: string) {
+    const ctor = this.ctorRegistry[commandName];
+    if (!ctor) {
+      throw new NoHandlerFound(commandName);
+    }
+    return ctor;
+  }
+
+  register<C extends InternalCommand<any, any, any>>(
     command: Constructor<C>,
-    commandHandler: CommandHandler<C>
+    commandHandler: InternalCommandHandler<C>
   ) {
+    this.ctorRegistry[command.name] = command;
     this.registry[command.name] = commandHandler;
   }
 }

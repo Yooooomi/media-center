@@ -168,3 +168,64 @@ dependencies {
 }
 
 apply from: file("../../../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+// Dependency react-native-vector-icons
+project.ext.vectoricons = [
+    iconFontsDir: "../../../../node_modules/react-native-vector-icons/Fonts",
+    iconFontNames: [ 'MaterialCommunityIcons.ttf' ] // Name of the font files you want to copy
+]
+apply from: file("../../../../node_modules/react-native-vector-icons/fonts.gradle");
+
+// tasks.whenTaskAdded((tas -> {
+//     // when task is 'mergeLocalDebugNativeLibs' or 'mergeLocalReleaseNativeLibs'
+//     if (tas.name.contains("merge") && tas.name.contains("NativeLibs")) {
+//         logger.info('Task: {}', tas.name);
+//         tasks.named(tas.name) {it
+//             doFirst {
+//                 it.externalLibNativeLibs
+//                         .getFiles()
+//                         .stream()
+//                         .forEach(dir -> {
+//                             // if (file.toString().contains("libc++_shared.so")) {
+//                                 logger.info('Deleting file yoyo: {}', dir);
+//                                 // java.nio.file.Files.delete(file);
+//                             // }
+//                         })
+//                         // for React Native 0.71, the file value now contains "jetified-react-android" instead of "jetified-react-native"
+//                         // .filter(file -> file.toString().contains("jetified-react-android"))
+//                         // .findAny()
+//                         // .orElse(null)
+//                         // .toPath();
+//                 // logger.info('Not needed directory: {}', notNeededDirectory);
+//                 // java.nio.file.Files.walk(notNeededDirectory).forEach(file -> {
+//                 //     if (file.toString().contains("libc++_shared.so")) {
+//                 //         logger.info('Deleting file yoyo: {}', file);
+//                 //         // java.nio.file.Files.delete(file);
+//                 //     }
+//             }
+//         }
+//     }
+// }))
+
+// tasks.whenTaskAdded((tas -> {
+//     // when task is 'mergeLocalDebugNativeLibs' or 'mergeLocalReleaseNativeLibs'
+//     if (tas.name.contains("merge") && tas.name.contains("NativeLibs")) {
+//         tasks.named(tas.name) {it
+//             doFirst {
+//                 java.nio.file.Path notNeededDirectory = it.externalLibNativeLibs
+//                         .getFiles()
+//                         .stream()
+//                         // for React Native 0.71, the file value now contains "jetified-react-android" instead of "jetified-react-native"
+//                         .filter(file -> file.toString().contains("jetified-libvlc-all"))
+//                         .findAny()
+//                         .orElse(null)
+//                         .toPath();
+//                 java.nio.file.Files.walk(notNeededDirectory).forEach(file -> {
+//                     if (file.toString().contains("libc++_shared.so")) {
+//                         java.nio.file.Files.delete(file);
+//                     }
+//                 });
+//             }
+//         }
+//     }
+// }))

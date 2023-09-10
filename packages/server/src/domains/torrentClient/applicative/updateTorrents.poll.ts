@@ -19,10 +19,10 @@ export class UpdateTorrentsPoll extends Polling {
     await Promise.all(
       torrents.map((torrent) =>
         this.commandBus.execute(
-          new UpdateTorrentRequestCommand(
-            torrent.data.id,
-            torrent.data.downloaded
-          )
+          new UpdateTorrentRequestCommand({
+            torrentRequestId: torrent.id,
+            downloaded: torrent.downloaded,
+          })
         )
       )
     );

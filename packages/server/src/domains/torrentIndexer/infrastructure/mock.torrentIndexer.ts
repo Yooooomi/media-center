@@ -12,14 +12,14 @@ export class MockTorrentIndexer extends TorrentIndexer {
 
   async search(query: string) {
     return [
-      new TorrentIndexerResult(
-        new TorrentIndexerResultId("id"),
-        query,
-        12,
-        24,
-        1024 * 1024 * 24,
-        "https://google.com"
-      ),
+      new TorrentIndexerResult({
+        id: new TorrentIndexerResultId("id"),
+        name: query,
+        leechers: 12,
+        seeders: 24,
+        size: 1024 * 1024 * 24,
+        pageUrl: "https://google.com",
+      }),
     ];
   }
 

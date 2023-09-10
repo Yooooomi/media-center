@@ -1,18 +1,26 @@
+import { Optional, Shape } from "../../../framework/shape";
+import { extractYear } from "../infrastructure/tmdb.api.utils";
 import { TmdbId } from "./tmdbId";
 
-export class Show {
-  constructor(
-    public id: TmdbId,
-    public backdrop_path: string | null,
-    public original_language: string,
-    public original_title: string,
-    public overview: string,
-    public popularity: number,
-    public poster_path: string | null,
-    public first_air_date: string,
-    public title: string,
-    public vote_average: number,
-    public vote_count: number,
-    public season_count: number
-  ) {}
+export class Show extends Shape({
+  id: TmdbId,
+  backdrop_path: Optional(String),
+  original_language: String,
+  original_title: String,
+  overview: String,
+  popularity: Number,
+  poster_path: Optional(String),
+  first_air_date: String,
+  title: String,
+  vote_average: Number,
+  vote_count: Number,
+  season_count: Number,
+}) {
+  getYear() {
+    return extractYear(this.first_air_date);
+  }
+
+  getRoundedNote() {
+    return this.vote_average;
+  }
 }

@@ -3,23 +3,36 @@ import {useParams} from '../params';
 import LoggedImage from '../../components/loggedImage/loggedImage';
 import {useImageUri} from '../../services/tmdb';
 import Text from '../../components/text/text';
-import {spacing} from '../../services/constants';
 import Button from '../../components/button/button';
 import {useCallback, useEffect, useState} from 'react';
-import {api} from '../../services/api';
 import TorrentsActionSheet from '../../components/torrentsActionSheet/torrentsActionSheet';
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
 import {TorrentRequest} from '@media-center/server/src/domains/torrentRequest/domain/torrentRequest';
 import Section from '../../components/section/section';
-import {CatalogEntryFulfilled} from '@media-center/server/src/domains/catalog/applicative/getEntry.query';
+import {
+  CatalogEntryFulfilled,
+  GetEntryQuery,
+} from '@media-center/server/src/domains/catalog/applicative/getEntry.query';
+import Box from '../../components/box/box';
+import {useBooleanState} from '../../services/useBooleanState';
+import TorrentRequestLine from '../../components/torrentRequestLine/torrentRequestLine';
+import IconButton from '../../components/iconButton/iconButton';
+import HierarchyItemLine from '../../components/hierarchyItemLine/hierarchyItemLine';
+import {Beta} from '../../services/api';
+import {GetTorrentRequestsQuery} from '@media-center/server/src/domains/torrentRequest/applicative/getTorrentRequests.query';
+import {SearchTorrentsQuery} from '@media-center/server/src/domains/torrentIndexer/applicative/searchTorrents.query';
+import {AddTorrentRequestCommand} from '@media-center/server/src/domains/torrentRequest/applicative/addTorrentRequest.command';
 
 export default function Movie() {
   const {movie} = useParams<'Movie'>();
-  const imageUri = useImageUri(movie.backdrop_path);
+  const imageUri = useImageUri(movie.backdrop_path, true);
   const [loading, setLoading] = useState(false);
   const [torrents, setTorrents] = useState<TorrentIndexerResult[] | undefined>(
     undefined,
   );
+  const [actionSheetOpen, openActionSheet, closeActionSheet] =
+    useBooleanState();
+  const [fetching, setFetching, setFetched] = useBooleanState();
 
   const [existingEntry, setExistingEntry] = useState<
     CatalogEntryFulfilled | undefined
@@ -28,73 +41,129 @@ export default function Movie() {
     [],
   );
 
-  useEffect(() => {
-    async function get() {
-      const r = await api.getTorrentRequests({tmdbId: movie.id.toString()});
-      const entry = await api.getEntry({tmdbId: movie.id.toString()});
+  const fetch = useCallback(async () => {
+    setFetching();
+    try {
+      const r = await Beta.query(
+        new GetTorrentRequestsQuery({tmdbId: movie.id}),
+      );
+      const entry = await Beta.query(new GetEntryQuery({tmdbId: movie.id}));
       setExistingTorrents(r);
       setExistingEntry(entry);
+    } catch (e) {
+      console.error(e);
     }
-    get().catch(console.error);
-  }, [movie.id]);
+    setFetched();
+  }, [movie.id, setFetched, setFetching]);
+
+  useEffect(() => {
+    fetch().catch(console.error);
+  }, [fetch]);
 
   const queryTorrents = useCallback(async () => {
     setLoading(true);
     try {
-      const d = await api.searchTorrentsForTmdb({tmdbId: movie.id.toString()});
+      const d = await Beta.query(new SearchTorrentsQuery({tmdbId: movie.id}));
       setTorrents(d);
+      openActionSheet();
     } catch (e) {}
     setLoading(false);
-  }, [movie.id]);
+  }, [movie.id, openActionSheet]);
 
   const downloadTorrent = useCallback(
     async (torrent: TorrentIndexerResult) => {
-      await api.addTorrentRequest({
-        torrentId: torrent.id.toString(),
-        tmdbId: movie.id.toString(),
-        name: torrent.name,
-      });
+      closeActionSheet();
+      await Beta.command(
+        new AddTorrentRequestCommand({
+          torrentId: torrent.id,
+          tmdbId: movie.id,
+        }),
+      );
+      await fetch();
     },
-    [movie.id],
+    [closeActionSheet, fetch, movie.id],
   );
+
+  const hasDownloaded = existingEntry && existingEntry.items.length > 0;
+  const hasDownloading = existingTorrents.length > 0;
 
   return (
     <>
-      <View style={styles.header}>
-        <LoggedImage style={styles.headerBackground} uri={imageUri} />
-        <View style={styles.title}>
-          <Text bold color="white" size="big">
-            {movie.title}
+      <View style={styles.background}>
+        <LoggedImage
+          blurRadius={200}
+          style={StyleSheet.absoluteFill}
+          uri={imageUri}
+        />
+      </View>
+      <Box p="S32" row content="space-between" items="flex-end">
+        <Box width="70%">
+          <Box mb="S16">
+            <Text color="white" size="big">
+              {movie.title}
+            </Text>
+          </Box>
+          <Text color="greyed" size="default">
+            {movie.overview}
           </Text>
+          <Box row mv="S16" gap="S8">
+            <Text color="greyed">{movie.getYear().toString()}</Text>
+            <Text color="greyed">{movie.getRoundedNote()}</Text>
+          </Box>
+        </Box>
+        <Box row gap="S8">
+          <IconButton
+            type="primary"
+            icon="refresh"
+            loading={fetching}
+            onPress={fetch}
+          />
           <Button
-            type="secondary"
+            type="primary"
             text="Télécharger"
             onPress={queryTorrents}
             loading={loading}
           />
-        </View>
-      </View>
+        </Box>
+      </Box>
       <ScrollView style={styles.scrollview}>
-        <Section title="Téléchargements en cours" ph="S16" mt="S16">
-          {existingTorrents.map(torrent => (
-            <View key={torrent.data.id.toString()}>
-              <Text>{torrent.data.name}</Text>
-            </View>
-          ))}
-        </Section>
-        <Section title="Téléchargés" ph="S16" mt="S16">
-          <>
-            {existingEntry?.data.items.map(item => (
-              <View key={item.data.id.toString()}>
-                <Text>{item.data.file.getFilename()}</Text>
-              </View>
+        <Box ph="S32" mt="S16">
+          <Section
+            title="Téléchargés"
+            mb="S32"
+            textProps={{color: 'white', bold: false}}>
+            <>
+              {!hasDownloaded && (
+                <Text color="grey">Aucun fichier téléchargé</Text>
+              )}
+              {existingEntry?.items.map(item => (
+                <HierarchyItemLine
+                  key={item.item.id.toString()}
+                  item={item.item}
+                />
+              ))}
+            </>
+          </Section>
+          <Section
+            title="Téléchargements en cours"
+            mb="S32"
+            textProps={{color: 'white', bold: false}}>
+            {!hasDownloading && (
+              <Text color="grey">Aucun fichier en téléchargement</Text>
+            )}
+            {existingTorrents.map(torrent => (
+              <TorrentRequestLine
+                key={torrent.id.toString()}
+                torrentRequest={torrent}
+              />
             ))}
-          </>
-        </Section>
+          </Section>
+        </Box>
       </ScrollView>
       <SafeAreaView />
       <TorrentsActionSheet
-        open={Boolean(torrents)}
+        onClose={closeActionSheet}
+        open={actionSheetOpen}
         torrents={torrents ?? []}
         onTorrentPress={downloadTorrent}
       />
@@ -103,19 +172,8 @@ export default function Movie() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    height: 400,
-    width: '100%',
-  },
-  headerBackground: {
+  background: {
     ...StyleSheet.absoluteFillObject,
-  },
-  title: {
-    marginTop: 'auto',
-    marginBottom: spacing.S16,
-    marginHorizontal: spacing.S16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   scrollview: {
     flexGrow: 1,

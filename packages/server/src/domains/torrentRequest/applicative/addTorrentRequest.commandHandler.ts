@@ -1,4 +1,4 @@
-import { CommandHandler } from "../../../framework/commandHandler";
+import { CommandHandler } from "../../../framework/command";
 import { TorrentService } from "../../../tools/torrentService";
 import { TorrentClient } from "../../torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "../../torrentIndexer/applicative/torrentIndexer";
@@ -7,7 +7,9 @@ import { TorrentRequestId } from "../domain/torrentRequestId";
 import { AddTorrentRequestCommand } from "./addTorrentRequest.command";
 import { TorrentRequestStore } from "./torrentRequest.store";
 
-export class AddTorrentRequestCommandHandler extends CommandHandler<AddTorrentRequestCommand> {
+export class AddTorrentRequestCommandHandler extends CommandHandler(
+  AddTorrentRequestCommand
+) {
   constructor(
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly torrentClient: TorrentClient,
@@ -18,11 +20,13 @@ export class AddTorrentRequestCommandHandler extends CommandHandler<AddTorrentRe
 
   async execute(command: AddTorrentRequestCommand) {
     await this.torrentIndexer.ensureAccessToDownload();
-    const torrentBuffer = await this.torrentIndexer.download(command.torrentId);
+    const torrentBuffer = await this.torrentIndexer.download(
+      command.data.torrentId
+    );
     const infos = TorrentService.getTorrentInfosFromBuffer(torrentBuffer);
     const request = new TorrentRequest({
       id: new TorrentRequestId(infos.hash),
-      tmdbId: command.tmdbId,
+      tmdbId: command.data.tmdbId,
       name: infos.name,
       size: infos.size,
       downloaded: 0,

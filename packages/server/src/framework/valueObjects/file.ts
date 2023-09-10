@@ -10,12 +10,10 @@ export class File extends Shape({
   path: String,
 }) {
   equals(other: unknown) {
-    return other instanceof File && this.data.path === other.data.path;
+    return other instanceof File && this.path === other.path;
   }
 
   getFilename() {
-    return customBasename(this.data.path);
+    return customBasename(this.path);
   }
 }
-
-File.register();

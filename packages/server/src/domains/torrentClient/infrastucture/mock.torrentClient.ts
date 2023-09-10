@@ -23,7 +23,6 @@ export class MockTorrentClient extends TorrentClient {
 
   private checkDownloaded() {
     const log = useLog(MockTorrentClient.name);
-    log.debug(this.store);
     const dir = this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
     for (const value of this.store.values()) {
       if (value.progress < 1 || value.createdFile) {

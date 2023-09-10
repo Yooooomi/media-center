@@ -9,6 +9,6 @@ export class InMemoryHierarchyStore
   implements HierarchyStore
 {
   constructor() {
-    super(new ShapeSerializer());
+    super(new ShapeSerializer(HierarchyItem));
   }
 }

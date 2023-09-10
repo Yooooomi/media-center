@@ -1,181 +1,208 @@
-import { Constructor, Instance } from "../types/utils";
-import { InfrastructureError } from "./error";
+import { Constructor } from "../types/utils";
 import { Id } from "./id";
 import { Serializer } from "./serializer";
 
-type LiteralInstance<T extends Constructor<any>> = T extends Constructor<Number>
-  ? number
-  : T extends Constructor<String>
+class Parent {
+  private __unique__!: string;
+}
+
+export abstract class AutoSerialize<Expected> {
+  private readonly markUsed!: Expected;
+  static isShape = true;
+
+  static serialize(..._args: any[]) {}
+  static deserialize(_value: any) {
+    throw new Error("Not implemented");
+  }
+
+  serialize(this: any) {
+    return this.constructor.serialize(this);
+  }
+}
+
+export type AutoSerializeConstructor<E> = Constructor<AutoSerialize<E>> & {
+  serialize(...args: any[]): E;
+  deserialize(...args: any[]): E;
+};
+
+const implemented = [
+  String.prototype,
+  Boolean.prototype,
+  Number.prototype,
+  AutoSerialize.prototype,
+] as const;
+type Implemented = (typeof implemented)[number];
+
+type Instance<T> = T extends Constructor<infer K> ? K : never;
+export type LiteralInstance<T> = T extends Constructor<String>
   ? string
+  : T extends Constructor<Number>
+  ? number
   : T extends Constructor<Boolean>
   ? boolean
   : Instance<T>;
-type Instances<R extends Record<any, Constructor<any> | [Constructor<any>]>> = {
-  [k in keyof R]: R[k] extends Constructor<any>
-    ? LiteralInstance<R[k]>
-    : R[k] extends [Constructor<any>]
-    ? LiteralInstance<R[k]["0"]>[]
-    : never;
-};
 
-class CannotSerialize extends InfrastructureError {
-  constructor(ctor: Constructor<any>, propertyName: string) {
-    super(`Property "${propertyName}" of "${ctor.name}" cannot be serialized`);
-  }
-}
-
-class CannotDeserialize extends InfrastructureError {
-  constructor(name: string, data: any) {
-    super(
-      `Cannot deserialize "${name}" (data: ${JSON.stringify(
-        data
-      )}), you maybe forget to Shape.Register() your shape`
-    );
-  }
-}
-
-type IShapeConstrcutor = Constructor<IShape<any>> & {
-  hash: string;
-  manifest: Record<string, Constructor<any> | [Constructor<any>]>;
-};
-
-export class IShape<
-  R extends Record<string, Constructor<any> | [Constructor<any>]>
-> {
-  static isShape = true;
-  static manifest: Record<string, Constructor<any> | [Constructor<any>]>;
-
-  static computeHash(
-    ctor: IShapeConstrcutor,
-    manifest: Record<string, Constructor<any> | [Constructor<any>]>
-  ) {
-    const manifestHash = Object.entries(manifest)
-      .map(([key, ctor]) => {
-        const unwrapped = Array.isArray(ctor) ? ctor[0] : ctor;
-        return `${key}:${unwrapped.name}`;
-      })
-      .join(",");
-    return `${ctor.name}=${manifestHash}`;
-  }
-
-  constructor(public data: Instances<R>) {}
-
-  serialize<T extends IShape<any>>(this: T) {
-    const serialized = Object.entries(
-      (this.constructor as IShapeConstrcutor).manifest
-    ).reduce<Record<string, any>>((acc, [key, ctor]) => {
-      function getValue(v: any) {
-        if (v instanceof IShape) {
-          return v.serialize();
-        } else if (
-          typeof v === "string" ||
-          typeof v === "number" ||
-          typeof v === "boolean" ||
-          typeof v === "undefined" ||
-          v === null
-        ) {
-          return v;
-        } else if (v instanceof Id) {
-          return v.toString();
-        } else {
-          throw new CannotSerialize(v.constructor, key);
-        }
-      }
-
-      const value = this.data[key];
-      if (Array.isArray(value)) {
-        acc[key] = value.map(getValue);
-      } else {
-        acc[key] = getValue(value);
-      }
-
-      return acc;
-    }, {});
-
-    return {
-      ...serialized,
-      hash: (this.constructor as IShapeConstrcutor).hash,
-    };
-  }
-
-  private static registry = new Map<
-    string,
-    { ctor: Constructor<IShape<any>>; manifest: any }
-  >();
-
-  static register<T extends IShapeConstrcutor>(this: T) {
-    this.hash = IShape.computeHash(this, this.manifest);
-    IShape.registry.set(this.hash, {
-      ctor: this,
-      manifest: this.manifest,
-    });
-  }
-
-  static deserialize<T extends IShapeConstrcutor | Constructor<IShape<any>>>(
-    this: T,
-    name: string,
-    data: any
-  ) {
-    const entry = IShape.registry.get(name);
-    if (!entry) {
-      throw new CannotDeserialize(name, data);
+export type ManifestToRecord<T> = T extends Record<infer K extends string, any>
+  ? {
+      [k in K]: T[k] extends Constructor<AutoSerialize<infer E>>
+        ? E extends Parent
+          ? Instance<T[k]>
+          : E
+        : LiteralInstance<T[k]>;
     }
-    return new entry.ctor(
-      Object.entries(entry.manifest).reduce<any>((acc, [key, ctor]) => {
-        const value = data[key];
-        const unwrapped = Array.isArray(ctor) ? ctor[0] : ctor;
+  : never;
 
-        function getValue(value: any) {
-          if (
-            unwrapped === String ||
-            unwrapped === Number ||
-            unwrapped === Boolean
-          ) {
-            return value;
-          } else if (unwrapped.isShape) {
-            return IShape.deserialize(unwrapped.hash, value);
-          } else {
-            return new unwrapped(value);
-          }
-        }
-
-        if (Array.isArray(value)) {
-          acc[key] = value.map(getValue);
-        } else {
-          acc[key] = getValue(value);
-        }
-
-        return acc;
-      }, {})
-    ) as Instance<T>;
+function serialize(ctor: Constructor<any>, value: any) {
+  if (ctor === String || ctor === Number || ctor === Boolean) {
+    return value;
+  }
+  if ((ctor as any).isShape === true) {
+    return (ctor as any).serialize(value);
   }
 }
 
-export function Shape<
-  R extends Record<string, Constructor<any> | [Constructor<any>]>
->(manifest: R) {
-  const clss = class extends IShape<R> {
-    static hash = "";
-    static manifest = manifest;
-  };
-  return clss;
+function deserialize(ctor: Constructor<any>, value: any) {
+  if (ctor === String || ctor === Number || ctor === Boolean) {
+    return value;
+  }
+  if ((ctor as any).isShape === true) {
+    return (ctor as any).deserialize(value);
+  }
 }
 
-export class ShapeSerializer<
-  I extends Id,
-  T extends IShape<{ id: Constructor<I> }>
-> extends Serializer<T, I> {
-  public version = 0;
+export function Shape<M extends Record<string, any>>(manifest: M) {
+  class A extends AutoSerialize<Parent> {
+    manifest!: M;
 
-  public getIdFromModel(model: T): I {
-    return model.data.id as I;
+    constructor(data: ManifestToRecord<M>) {
+      super();
+      Object.assign(this, data);
+    }
+
+    static serialize(value: A) {
+      return Object.entries(manifest).reduce<Record<string, any>>(
+        (acc, [key, auto]) => {
+          acc[key] = serialize(auto, (value as any)[key]);
+          return acc;
+        },
+        {}
+      );
+    }
+
+    static deserialize<T extends Constructor<A>>(this: T, value: any): any {
+      return new this(
+        Object.entries(manifest).reduce<Record<string, any>>(
+          (acc, [key, auto]) => {
+            acc[key] = deserialize(auto, value[key]);
+            return acc;
+          },
+          {}
+        )
+      );
+    }
   }
 
-  protected async serialize(model: T) {
+  return A as any as new (data: ManifestToRecord<M>) => A & ManifestToRecord<M>;
+}
+
+export function Multiple<T extends Constructor<Implemented>[]>(...ctors: T) {
+  class A extends AutoSerialize<Instance<T[number]>[]> {
+    static serialize(value: Instance<T[number]>[]) {
+      return value.map((v) => {
+        const autoIndex = ctors.findIndex((c) => c === v.constructor);
+        const auto = ctors[autoIndex];
+
+        if (autoIndex < 0 || !auto) {
+          throw new Error("Using not referenced constructor");
+        }
+
+        return [autoIndex, serialize(auto, v)];
+      });
+    }
+
+    static deserialize(value: any) {
+      return (value as [number, any][]).map(([ctorIndex, value]) => {
+        const auto = ctors[ctorIndex];
+
+        if (!auto) {
+          throw new Error("Serialized but cannot find used constructor");
+        }
+
+        return deserialize(auto, value);
+      });
+    }
+  }
+  return A;
+}
+
+export function Enum<T extends readonly string[]>(values: T) {
+  class A extends AutoSerialize<T[number]> {
+    static serialize(value: T[number]) {
+      return value;
+    }
+
+    static deserialize<T extends Constructor<any>>(this: T, value: any) {
+      return value;
+    }
+  }
+
+  return A;
+}
+
+export function Optional<T extends Implemented>(ctor: Constructor<T>) {
+  class A extends AutoSerialize<LiteralInstance<Constructor<T>> | undefined> {
+    static serialize(value: Instance<T> | undefined) {
+      if (!value) {
+        return undefined;
+      }
+      return serialize(ctor, value);
+    }
+
+    static deserialize(value: any): void {
+      if (!value) {
+        return undefined;
+      }
+      return deserialize(ctor, value);
+    }
+  }
+  return A;
+}
+
+export function Literal<T extends any>(ctor: Constructor<T>) {
+  class A extends AutoSerialize<Parent> {
+    constructor(public readonly value: LiteralInstance<Constructor<T>>) {
+      super();
+    }
+
+    static serialize(value: A) {
+      return value.value;
+    }
+
+    static deserialize<C extends Constructor<any>>(this: C, value: T) {
+      return new this(value);
+    }
+  }
+  return A;
+}
+
+export class ShapeSerializer<T> extends Serializer<Instance<T>, any> {
+  constructor(private readonly ctor: T) {
+    super();
+  }
+
+  public get version() {
+    return 1;
+  }
+
+  public getIdFromModel(model: any) {
+    return model.id;
+  }
+
+  protected async serialize(model: any) {
     return model.serialize();
   }
 
   protected async deserialize(serialized: any) {
-    return IShape.deserialize(serialized.hash, serialized) as T;
+    return (this.ctor as any).deserialize(serialized);
   }
 }

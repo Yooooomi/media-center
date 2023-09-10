@@ -1,61 +1,65 @@
-import * as endpoints from '@media-center/server/src/endpoints/v1';
-import {
-  Query,
-  ReturnTypeOfQuery,
-} from '@media-center/server/src/framework/query';
-import {ApiSerializer} from '@media-center/server/src/endpoints/apiSerializer/apiSerializer';
 import Axios from 'axios';
-import {
-  Command,
-  ReturnTypeOfCommand,
-} from '@media-center/server/src/framework/command';
 import {Platform} from 'react-native';
+import {HierarchyItemId} from '@media-center/server/src/domains/fileWatcher/domain/hierarchyItemId';
+import {
+  InternalQuery,
+  QueryReturnType,
+} from '@media-center/server/src/framework/query';
+import {
+  CommandReturnType,
+  InternalCommand,
+} from '@media-center/server/src/framework/command';
 
-type ReturnTypeOfQueryOrCommand<C> = C extends Query<any>
-  ? ReturnTypeOfQuery<C>
-  : C extends Command<any>
-  ? ReturnTypeOfCommand<C>
-  : never;
-
-type AllEndpoints = {
-  [k in keyof typeof endpoints]: (
-    ...args: Parameters<(typeof endpoints)[k]['handler']>
-  ) => Promise<
-    ReturnTypeOfQueryOrCommand<ReturnType<(typeof endpoints)[k]['handler']>>
-  >;
-};
-
+const BASE_URL = Platform.select({
+  ios: 'http://localhost:8080',
+  android: 'http://10.0.2.2:8080',
+});
 const axios = Axios.create({
-  baseURL: Platform.select({
-    ios: 'http://localhost:8080',
-    android: 'http://10.0.2.2:8080',
-  }),
+  baseURL: BASE_URL,
 });
 
-const bridgeSerializer = new ApiSerializer();
-
-export const api = Object.entries(endpoints).reduce<Record<string, any>>(
-  (acc, [name, value]) => {
-    if (value.method === 'get') {
-      acc[name] = async (args: any[]) => {
-        const {data, status} = await axios.get(`/${name}`, {
-          params: args,
-        });
-        if (status === 204) {
-          return undefined;
-        }
-        return bridgeSerializer.deserialize(data);
-      };
-    } else if (value.method === 'post') {
-      acc[name] = async (args: any[]) => {
-        const {data, status} = await axios.post(`/${name}`, args);
-        if (status === 204) {
-          return undefined;
-        }
-        return bridgeSerializer.deserialize(data);
-      };
+export class Beta {
+  static async query<Q extends InternalQuery<any, any, any>>(
+    query: Q,
+  ): Promise<QueryReturnType<Q>> {
+    console.log('Serializing');
+    const serialized = (query.needing as any)?.serialize(query.data);
+    console.log('Serialized');
+    const {data} = await axios.post(`/query/${query.constructor.name}`, {
+      needing: serialized,
+    });
+    console.log('Received', JSON.stringify(data, null, ' '));
+    if (query.returningMaybeOne) {
+      console.log('Should return one');
+      return data ? query.returningMaybeOne?.deserialize(data) : undefined;
+    } else if (query.returningMany) {
+      console.log('Should return many');
+      return data.map((d: any) => query.returningMany?.deserialize(d));
     }
-    return acc;
-  },
-  {},
-) as AllEndpoints;
+    throw new Error('Query did not return anything');
+  }
+
+  static async command<Q extends InternalCommand<any, any, any>>(
+    command: Q,
+  ): Promise<CommandReturnType<Q>> {
+    console.log('Serializing');
+    const serialized = (command.needing as any).serialize(command.data);
+    console.log('Serialized');
+    const {data} = await axios.post(`/command/${command.constructor.name}`, {
+      needing: serialized,
+    });
+    console.log('Received', JSON.stringify(data, null, ' '));
+    if (command.returningMaybeOne) {
+      console.log('Should return one');
+      return data ? command.returningMaybeOne?.deserialize(data) : undefined;
+    } else if (command.returningMany) {
+      console.log('Should return many');
+      return data.map((d: any) => command.returningMany?.deserialize(d));
+    }
+    return undefined as any;
+  }
+}
+
+export function useVideoUri(hierarchyItemId: HierarchyItemId) {
+  return `${BASE_URL}/video/${hierarchyItemId.toString()}`;
+}

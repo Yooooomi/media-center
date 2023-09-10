@@ -1,11 +1,14 @@
-import { Query } from "../../../framework/query";
-import { QueryHandler } from "../../../framework/queryHandler";
+import { Query, QueryHandler } from "../../../framework/query";
 import { Movie } from "../domain/movie";
 import { TmdbAPI } from "./tmdb.api";
 
-export class DiscoverMovieQuery extends Query<Movie[]> {}
+export class DiscoverMovieQuery extends Query({
+  returningMany: Movie,
+}) {}
 
-export class DiscoverMovieQueryHandler extends QueryHandler<DiscoverMovieQuery> {
+export class DiscoverMovieQueryHandler extends QueryHandler(
+  DiscoverMovieQuery
+) {
   constructor(private readonly tmdbApi: TmdbAPI) {
     super();
   }

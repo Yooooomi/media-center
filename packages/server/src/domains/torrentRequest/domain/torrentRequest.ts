@@ -10,8 +10,10 @@ export class TorrentRequest extends Shape({
   downloaded: Number,
 }) {
   public setDownloaded(downloaded: number) {
-    this.data.downloaded = downloaded;
+    this.downloaded = downloaded;
+  }
+
+  public getClampedDownloaded() {
+    return this.downloaded > 1 ? 1 : this.downloaded;
   }
 }
-
-TorrentRequest.register();

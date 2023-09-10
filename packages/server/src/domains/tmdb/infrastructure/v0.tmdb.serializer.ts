@@ -59,36 +59,36 @@ export class V0TmdbSerializer extends Serializer<AnyTmdb, TmdbId> {
     serialized: S<Awaited<ReturnType<this["serialize"]>>>
   ): Promise<AnyTmdb> {
     if (serialized.type === "movie") {
-      return new Movie(
-        new TmdbId(serialized.id),
-        serialized.adult,
-        serialized.backdrop_path,
-        serialized.original_language,
-        serialized.original_title,
-        serialized.overview,
-        serialized.popularity,
-        serialized.poster_path,
-        serialized.release_date,
-        serialized.title,
-        serialized.video,
-        serialized.vote_average,
-        serialized.vote_count
-      );
+      return new Movie({
+        id: new TmdbId(serialized.id),
+        adult: serialized.adult,
+        backdrop_path: serialized.backdrop_path,
+        original_language: serialized.original_language,
+        original_title: serialized.original_title,
+        overview: serialized.overview,
+        popularity: serialized.popularity,
+        poster_path: serialized.poster_path,
+        release_date: serialized.release_date,
+        title: serialized.title,
+        video: serialized.video,
+        vote_average: serialized.vote_average,
+        vote_count: serialized.vote_count,
+      });
     } else if (serialized.type === "show") {
-      return new Show(
-        new TmdbId(serialized.id),
-        serialized.backdrop_path,
-        serialized.original_language,
-        serialized.original_title,
-        serialized.overview,
-        serialized.popularity,
-        serialized.poster_path,
-        serialized.first_air_date,
-        serialized.title,
-        serialized.vote_average,
-        serialized.vote_count,
-        0
-      );
+      return new Show({
+        id: new TmdbId(serialized.id),
+        backdrop_path: serialized.backdrop_path,
+        original_language: serialized.original_language,
+        original_title: serialized.original_title,
+        overview: serialized.overview,
+        popularity: serialized.popularity,
+        poster_path: serialized.poster_path,
+        first_air_date: serialized.first_air_date,
+        title: serialized.title,
+        vote_average: serialized.vote_average,
+        vote_count: serialized.vote_count,
+        season_count: 0,
+      });
     }
     throw new UnknownSerialized((serialized as any).type);
   }

@@ -47,11 +47,13 @@ export async function globalBoot() {
     torrentIndexer,
     torrentRequestStore
   );
-  bootApi(queryBus, commandBus);
-  const { hierarchyStore } = await bootFileWatcher(eventBus, environmentHelper);
+  const { hierarchyStore } = await bootFileWatcher(
+    commandBus,
+    eventBus,
+    environmentHelper
+  );
+  bootApi(queryBus, commandBus, hierarchyStore);
   bootCatalog(queryBus, eventBus, tmdbApi, hierarchyStore);
 
-  return () => {
-    unsubscribeUpdateTorrentPoll();
-  };
+  return { commandBus, eventBus, unsubscribeUpdateTorrentPoll };
 }

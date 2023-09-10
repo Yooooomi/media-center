@@ -10,10 +10,10 @@ export class InMemoryTorrentRequestStore
   implements TorrentRequestStore
 {
   constructor() {
-    super(new ShapeSerializer());
+    super(new ShapeSerializer(TorrentRequest));
   }
 
   async loadByTmdbId(tmdbId: TmdbId): Promise<TorrentRequest[]> {
-    return this.filter((t) => t.data.tmdbId.equals(tmdbId));
+    return this.filter((t) => t.tmdbId.equals(tmdbId));
   }
 }

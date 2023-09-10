@@ -1,7 +1,6 @@
 import { Constructor } from "../../types/utils";
 import { InfrastructureError } from "../error";
-import { Query } from "../query";
-import { QueryHandler } from "../queryHandler";
+import { InternalQuery, InternalQueryHandler, Query } from "../query";
 import { QueryBus } from "./queryBus";
 
 class NoHandlerFound extends InfrastructureError {
@@ -11,9 +10,16 @@ class NoHandlerFound extends InfrastructureError {
 }
 
 export class InMemoryQueryBus extends QueryBus {
-  private readonly registry: Record<string, QueryHandler<Query<any>>> = {};
+  private readonly registry: Record<
+    string,
+    InternalQueryHandler<InternalQuery<any, any, any>>
+  > = {};
+  private readonly ctorRegistry: Record<
+    string,
+    Constructor<InternalQuery<any, any, any>>
+  > = {};
 
-  async execute(query: Query<any>) {
+  async execute(query: InternalQuery<any, any, any>) {
     const handler = this.registry[query.constructor.name];
     if (!handler) {
       throw new NoHandlerFound(query.constructor.name);
@@ -21,10 +27,19 @@ export class InMemoryQueryBus extends QueryBus {
     return handler.execute(query);
   }
 
-  register<C extends Query<any>>(
+  getQuery(queryName: string) {
+    const ctor = this.ctorRegistry[queryName];
+    if (!ctor) {
+      throw new NoHandlerFound(queryName);
+    }
+    return ctor;
+  }
+
+  register<C extends InternalQuery<any, any, any>>(
     command: Constructor<C>,
-    commandHandler: QueryHandler<C>
+    commandHandler: InternalQueryHandler<C>
   ) {
+    this.ctorRegistry[command.name] = command;
     this.registry[command.name] = commandHandler;
   }
 }

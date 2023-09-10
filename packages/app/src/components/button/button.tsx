@@ -1,12 +1,19 @@
 import {
-  TouchableOpacity,
   StyleSheet,
   TouchableOpacityProps,
   ActivityIndicator,
+  Pressable as RNPressable,
 } from 'react-native';
-import {color, radius, spacing} from '../../services/constants';
-import {useMemo} from 'react';
-import Text from '../text/text';
+import {color, durations, radius, spacing} from '../../services/constants';
+import {useEffect, useState} from 'react';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+
+const Pressable = Animated.createAnimatedComponent(RNPressable);
 
 type ButtonType = 'primary' | 'secondary';
 
@@ -23,35 +30,72 @@ export default function Button({
   disabled,
   ...other
 }: ButtonProps) {
-  const style = useMemo(() => [styles.base, styles[type]], [type]);
+  const [focused, setFocused] = useState(false);
+  const value = useSharedValue(0);
+
+  useEffect(() => {
+    value.value = withTiming(focused ? 1 : 0, {
+      duration: durations.default,
+    });
+  }, [focused, value]);
+
+  const style = useAnimatedStyle(() => ({
+    ...styles.base,
+    backgroundColor: interpolateColor(
+      value.value,
+      [0, 1],
+      [backgroundColor[type], backgroundColor[`${type}Focused`]],
+    ),
+  }));
+
+  const textStyle = useAnimatedStyle(() => ({
+    fontWeight: 'bold',
+    color: interpolateColor(
+      value.value,
+      [0, 1],
+      [textColor[type], textColor[`${type}Focused`]],
+    ),
+  }));
 
   return (
-    <TouchableOpacity
+    <Pressable
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       activeOpacity={0.7}
       disabled={disabled || loading}
       style={style}
       {...other}>
       {loading && <ActivityIndicator style={styles.loading} />}
-      <Text bold>{text}</Text>
-    </TouchableOpacity>
+      <Animated.Text style={textStyle}>{text}</Animated.Text>
+    </Pressable>
   );
 }
 
+const b = `${color.black}30`;
+
+const backgroundColor: Record<ButtonType | `${ButtonType}Focused`, string> = {
+  primary: b,
+  primaryFocused: color.white,
+  secondary: color.greyed,
+  secondaryFocused: b,
+};
+
+const textColor: Record<ButtonType | `${ButtonType}Focused`, string> = {
+  primary: color.greyed,
+  primaryFocused: color.black,
+  secondary: color.white,
+  secondaryFocused: color.greyed,
+};
+
 const styles = StyleSheet.create({
   base: {
-    padding: spacing.S8,
+    height: 36,
+    paddingHorizontal: spacing.S16,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.small,
     flexDirection: 'row',
-  },
-  primary: {
-    backgroundColor: color.black,
-    color: color.white,
-  },
-  secondary: {
-    backgroundColor: color.white,
-    color: color.black,
+    flexShrink: 0,
   },
   loading: {
     marginRight: spacing.S4,

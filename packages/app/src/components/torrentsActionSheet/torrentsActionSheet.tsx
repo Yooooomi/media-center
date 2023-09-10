@@ -1,49 +1,54 @@
-import {TorrentResult} from '@media-center/server/src/domains/torrent/domain/torrentResult';
 import ActionSheet from '../actionSheet/actionSheet';
 import Box from '../box/box';
 import Text from '../text/text';
-import {Pressable, StyleSheet} from 'react-native';
-import {Fragment} from 'react';
-import Divider from '../divider/divider';
+import {FlatList, StyleSheet} from 'react-native';
+import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
+import PressableGrey from '../pressableGrey/pressableGrey';
 
 interface TorrentsActionSheetProps {
-  torrents: TorrentResult[];
-  onTorrentPress: (torrent: TorrentResult) => void;
+  torrents: TorrentIndexerResult[];
+  onTorrentPress: (torrent: TorrentIndexerResult) => void;
   open: boolean;
+  onClose: () => void;
 }
 
 export default function TorrentsActionSheet({
   open,
   torrents,
   onTorrentPress,
+  onClose,
 }: TorrentsActionSheetProps) {
   return (
-    <ActionSheet open={open} title="Choisir un fichier à télécharger">
-      {torrents.map((torrent, index) => (
-        <Fragment key={torrent.id.toString()}>
-          <Pressable onPress={() => onTorrentPress(torrent)}>
-            <Box ph="S16">
-              <Text>{torrent.name}</Text>
-              <Box mt="S8" row content="space-between">
-                <Text bold style={styles.left}>
-                  {torrent.toDisplaySize()}
+    <ActionSheet
+      onClose={onClose}
+      open={open}
+      title="Choisir un fichier à télécharger">
+      <FlatList
+        style={styles.flatlist}
+        data={torrents}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({item, index}) => (
+          <PressableGrey
+            hasTVPreferredFocus={index === 0}
+            key={item.id.toString()}
+            onPress={() => onTorrentPress(item)}>
+            <Box p="S8">
+              <Text color="black">{item.name}</Text>
+              <Box row content="space-between">
+                <Text color="darkgrey" style={styles.left}>
+                  {item.toDisplaySize()}
                 </Text>
-                <Text bold color="green" style={styles.mid}>
-                  {torrent.seeders.toString()}
+                <Text color="green" style={styles.mid}>
+                  {item.seeders.toString()}
                 </Text>
-                <Text bold color="red" style={styles.right}>
-                  {torrent.leechers.toString()}
+                <Text color="red" style={styles.right}>
+                  {item.leechers.toString()}
                 </Text>
               </Box>
             </Box>
-          </Pressable>
-          {index !== torrents.length - 1 && (
-            <Box mh="S16" mv="S12">
-              <Divider width="100%" />
-            </Box>
-          )}
-        </Fragment>
-      ))}
+          </PressableGrey>
+        )}
+      />
     </ActionSheet>
   );
 }
@@ -59,5 +64,8 @@ const styles = StyleSheet.create({
   right: {
     flex: 1,
     textAlign: 'right',
+  },
+  flatlist: {
+    flexGrow: 1,
   },
 });

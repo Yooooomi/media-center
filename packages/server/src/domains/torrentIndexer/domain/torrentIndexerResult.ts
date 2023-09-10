@@ -1,15 +1,14 @@
+import { Shape } from "../../../framework/shape";
 import { TorrentIndexerResultId } from "./torrentIndexerResultId";
 
-export class TorrentIndexerResult {
-  constructor(
-    public readonly id: TorrentIndexerResultId,
-    public readonly name: string,
-    public readonly leechers: number,
-    public readonly seeders: number,
-    public readonly size: number,
-    public readonly pageUrl: string
-  ) {}
-
+export class TorrentIndexerResult extends Shape({
+  id: TorrentIndexerResultId,
+  name: String,
+  leechers: Number,
+  seeders: Number,
+  size: Number,
+  pageUrl: String,
+}) {
   public toDisplaySize() {
     let size = 1024;
     if (this.size < size) {

@@ -7,11 +7,13 @@ import {
 import {color, fontSize} from '../../services/constants';
 import {useMemo} from 'react';
 
-interface TextProps extends RNTextProps {
+type Accepted = string | number;
+
+export interface TextProps extends RNTextProps {
   size?: keyof typeof fontSize;
   bold?: boolean;
   color?: keyof typeof color;
-  children: string | string[];
+  children: Accepted | Accepted[];
 }
 
 export default function Text({
@@ -27,7 +29,7 @@ export default function Text({
       {
         fontSize: fontSize[size],
         fontWeight: bold ? 'bold' : undefined,
-        color: pcolor && color[pcolor],
+        color: pcolor ? color[pcolor] : color.white,
       },
       style,
     ],

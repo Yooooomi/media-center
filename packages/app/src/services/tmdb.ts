@@ -1,3 +1,3 @@
-export function useImageUri(path: string | null) {
-  return `https://image.tmdb.org/t/p/w500${path}`;
+export function useImageUri(path: string | undefined, large?: boolean) {
+  return `https://image.tmdb.org/t/p/${large ? 'original' : 'w500'}${path}`;
 }

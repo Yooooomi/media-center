@@ -97,14 +97,14 @@ export class YggTorrentIndexer extends TorrentIndexer {
 
     for (let i = 0; i < gets.age.length; i += 1) {
       results.push(
-        new TorrentIndexerResult(
-          new TorrentIndexerResultId(gets.id[i]!),
-          gets.name[i]!,
-          gets.leech[i]!,
-          gets.seed[i]!,
-          YggTorrentIndexer.sizeToBytes(gets.size[i]!),
-          gets.url[i]!
-        )
+        new TorrentIndexerResult({
+          id: new TorrentIndexerResultId(gets.id[i]!),
+          name: gets.name[i]!,
+          leechers: gets.leech[i]!,
+          seeders: gets.seed[i]!,
+          size: YggTorrentIndexer.sizeToBytes(gets.size[i]!),
+          pageUrl: gets.url[i]!,
+        })
       );
     }
 

@@ -1,11 +1,15 @@
 import { Constructor } from "../../types/utils";
-import { Query } from "../query";
-import { QueryHandler } from "../queryHandler";
+import {
+  InternalQuery,
+  InternalQueryConstructor,
+  InternalQueryHandler,
+} from "../query";
 
 export abstract class QueryBus {
-  abstract register<C extends Query<any>>(
-    command: Constructor<C>,
-    commandHandler: QueryHandler<C>
+  abstract register<C extends InternalQuery<any, any, any>>(
+    query: Constructor<C>,
+    queryHandler: InternalQueryHandler<C>
   ): void;
-  abstract execute(command: Query<any>): Promise<any>;
+  abstract execute(query: InternalQuery<any, any, any>): Promise<any>;
+  abstract getQuery(queryName: string): InternalQueryConstructor<any, any, any>;
 }

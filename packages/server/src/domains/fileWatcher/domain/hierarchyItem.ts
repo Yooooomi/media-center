@@ -9,10 +9,8 @@ export class HierarchyItem extends Shape({
   equals(other: unknown) {
     return (
       other instanceof HierarchyItem &&
-      this.data.id.equals(other.data.id) &&
-      this.data.file.equals(other.data.file)
+      this.id.equals(other.id) &&
+      this.file.equals(other.file)
     );
   }
 }
-
-HierarchyItem.register();

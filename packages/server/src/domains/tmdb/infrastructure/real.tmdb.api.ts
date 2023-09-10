@@ -13,6 +13,7 @@ import {
   extractYear,
 } from "./tmdb.api.utils";
 import { compact } from "../../../tools/algorithm";
+import { PromiseQueue } from "../../../tools/queue";
 
 const axios = Axios.create({
   baseURL: "https://api.themoviedb.org/3",
@@ -23,6 +24,8 @@ const axios = Axios.create({
   },
 });
 
+const globalQueue = new PromiseQueue(150);
+
 export class RealTmdbAPI extends TmdbAPI {
   async search(
     query: string,
@@ -31,21 +34,14 @@ export class RealTmdbAPI extends TmdbAPI {
       year?: number;
     }
   ) {
-    const { data } = await axios.get<SearchMulti>(
-      `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-US&page=1`
+    const { data } = await globalQueue.queue(() =>
+      axios.get<SearchMulti>(
+        `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=fr-FR&page=1`
+      )
     );
 
     return compact(
       data.results
-        .map((e) => {
-          console.log(
-            "OPTIONS",
-            options?.year,
-            e.media_type === "movie" && extractYear(e.release_date),
-            e.media_type === "tv" && extractYear(e.first_air_date)
-          );
-          return e;
-        })
         .filter(
           (e) =>
             ((options?.media && e.media_type === options.media) ||
@@ -59,36 +55,36 @@ export class RealTmdbAPI extends TmdbAPI {
         )
         .map((e) => {
           if (e.media_type === "tv") {
-            return new Show(
-              TmdbId.fromIdAndType(e.id.toString(), "show"),
-              e.backdrop_path,
-              e.original_language,
-              e.original_name,
-              e.overview,
-              e.popularity,
-              e.poster_path,
-              e.first_air_date,
-              e.name,
-              e.vote_average,
-              e.vote_count,
-              1
-            );
+            return new Show({
+              id: TmdbId.fromIdAndType(e.id.toString(), "show"),
+              backdrop_path: e.backdrop_path,
+              original_language: e.original_language,
+              original_title: e.original_name,
+              overview: e.overview,
+              popularity: e.popularity,
+              poster_path: e.poster_path,
+              first_air_date: e.first_air_date,
+              title: e.name,
+              vote_average: e.vote_average,
+              vote_count: e.vote_count,
+              season_count: 0,
+            });
           } else if (e.media_type === "movie") {
-            return new Movie(
-              TmdbId.fromIdAndType(e.id.toString(), "movie"),
-              e.adult,
-              e.backdrop_path,
-              e.original_language,
-              e.original_title,
-              e.overview,
-              e.popularity,
-              e.poster_path,
-              e.release_date,
-              e.title,
-              e.video,
-              e.vote_average,
-              e.vote_count
-            );
+            return new Movie({
+              id: TmdbId.fromIdAndType(e.id.toString(), "movie"),
+              adult: e.adult,
+              backdrop_path: e.backdrop_path,
+              original_language: e.original_language,
+              original_title: e.original_title,
+              overview: e.overview,
+              popularity: e.popularity,
+              poster_path: e.poster_path,
+              release_date: e.release_date,
+              title: e.title,
+              video: e.video,
+              vote_average: e.vote_average,
+              vote_count: e.vote_count,
+            });
           }
         })
     );
@@ -96,89 +92,97 @@ export class RealTmdbAPI extends TmdbAPI {
 
   async get(tmdbId: TmdbId): Promise<AnyTmdb | undefined> {
     if (tmdbId.getType() === "movie") {
-      const { data } = await axios.get<GetMovie>(
-        `https://api.themoviedb.org/3/movie/${tmdbId.toRealId()}?language=en-US`
+      const { data } = await globalQueue.queue(() =>
+        axios.get<GetMovie>(
+          `https://api.themoviedb.org/3/movie/${tmdbId.toRealId()}?language=en-US`
+        )
       );
-      return new Movie(
-        TmdbId.fromIdAndType(data.id.toString(), "movie"),
-        data.adult,
-        data.backdrop_path,
-        data.original_language,
-        data.original_title,
-        data.overview,
-        data.popularity,
-        data.poster_path,
-        data.release_date,
-        data.title,
-        data.video,
-        data.vote_average,
-        data.vote_count
-      );
+      return new Movie({
+        id: TmdbId.fromIdAndType(data.id.toString(), "movie"),
+        adult: data.adult,
+        backdrop_path: data.backdrop_path,
+        original_language: data.original_language,
+        original_title: data.original_title,
+        overview: data.overview,
+        popularity: data.popularity,
+        poster_path: data.poster_path,
+        release_date: data.release_date,
+        title: data.title,
+        video: data.video,
+        vote_average: data.vote_average,
+        vote_count: data.vote_count,
+      });
     } else {
-      const { data } = await axios.get<GetShow>(
-        `https://api.themoviedb.org/3/tv/${tmdbId.toRealId()}?language=en-US`
+      const { data } = await globalQueue.queue(() =>
+        axios.get<GetShow>(
+          `https://api.themoviedb.org/3/tv/${tmdbId.toRealId()}?language=en-US`
+        )
       );
-      return new Show(
-        TmdbId.fromIdAndType(data.id.toString(), "show"),
-        data.backdrop_path,
-        data.original_language,
-        data.original_name,
-        data.overview,
-        data.popularity,
-        data.poster_path,
-        data.first_air_date,
-        data.name,
-        data.vote_average,
-        data.vote_count,
-        1
-      );
+      return new Show({
+        id: TmdbId.fromIdAndType(data.id.toString(), "show"),
+        backdrop_path: data.backdrop_path,
+        original_language: data.original_language,
+        original_title: data.original_name,
+        overview: data.overview,
+        popularity: data.popularity,
+        poster_path: data.poster_path,
+        first_air_date: data.first_air_date,
+        title: data.name,
+        vote_average: data.vote_average,
+        vote_count: data.vote_count,
+        season_count: 0,
+      });
     }
   }
 
   async discoverShow(): Promise<Show[]> {
-    const { data } = await axios.get<DiscoverShow>(
-      "/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+    const { data } = await globalQueue.queue(() =>
+      axios.get<DiscoverShow>(
+        "/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+      )
     );
     return data.results.map(
       (d) =>
-        new Show(
-          TmdbId.fromIdAndType(d.id.toString(), "show"),
-          d.backdrop_path ?? null,
-          d.original_language,
-          d.original_name,
-          d.overview,
-          d.popularity,
-          d.poster_path ?? null,
-          d.first_air_date,
-          d.name,
-          d.vote_average,
-          d.vote_count,
-          1
-        )
+        new Show({
+          id: TmdbId.fromIdAndType(d.id.toString(), "show"),
+          backdrop_path: d.backdrop_path,
+          original_language: d.original_language,
+          original_title: d.original_name,
+          overview: d.overview,
+          popularity: d.popularity,
+          poster_path: d.poster_path,
+          first_air_date: d.first_air_date,
+          title: d.name,
+          vote_average: d.vote_average,
+          vote_count: d.vote_count,
+          season_count: 0,
+        })
     );
   }
 
   async discoverMovie() {
-    const { data } = await axios.get<DiscoverMovie>(
-      "/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+    const { data } = await globalQueue.queue(() =>
+      axios.get<DiscoverMovie>(
+        "/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+      )
     );
     return data.results.map(
       (d) =>
-        new Movie(
-          TmdbId.fromIdAndType(d.id.toString(), "movie"),
-          d.adult,
-          d.backdrop_path,
-          d.original_language,
-          d.original_title,
-          d.overview,
-          d.popularity,
-          d.poster_path,
-          d.release_date,
-          d.title,
-          d.video,
-          d.vote_average,
-          d.vote_count
-        )
+        new Movie({
+          id: TmdbId.fromIdAndType(d.id.toString(), "movie"),
+          adult: d.adult,
+          backdrop_path: d.backdrop_path,
+          original_language: d.original_language,
+          original_title: d.original_title,
+          overview: d.overview,
+          popularity: d.popularity,
+          poster_path: d.poster_path,
+          release_date: d.release_date,
+          title: d.title,
+          video: d.video,
+          vote_average: d.vote_average,
+          vote_count: d.vote_count,
+        })
     );
   }
 }

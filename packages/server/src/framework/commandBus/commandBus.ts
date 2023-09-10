@@ -1,11 +1,17 @@
 import { Constructor } from "../../types/utils";
-import { Command } from "../command";
-import { CommandHandler } from "../commandHandler";
+import {
+  InternalCommand,
+  InternalCommandHandler,
+  InternalCommandConstructor,
+} from "../command";
 
 export abstract class CommandBus {
-  abstract register<C extends Command>(
+  abstract register<C extends InternalCommand<any, any, any>>(
     command: Constructor<C>,
-    commandHandler: CommandHandler<C>
+    commandHandler: InternalCommandHandler<C>
   ): void;
-  abstract execute(command: Command): void;
+  abstract execute(command: InternalCommand<any, any, any>): Promise<any>;
+  abstract getCommand(
+    commandName: string
+  ): InternalCommandConstructor<any, any, any>;
 }

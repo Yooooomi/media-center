@@ -1,6 +1,7 @@
-import { Constructor } from "../types/utils";
+import { Constructor, Instance } from "../types/utils";
 import { v4 } from "uuid";
 import { DomainError } from "./error";
+import { Literal, Shape } from "./shape";
 
 class IncompatibleId extends DomainError {
   constructor(provided: any) {
@@ -8,11 +9,9 @@ class IncompatibleId extends DomainError {
   }
 }
 
-export class Id {
-  constructor(protected readonly value: string) {}
-
-  static generate<T extends Constructor<Id>>(this: T) {
-    return new this(v4());
+export class Id extends Literal(String) {
+  static generate<T extends Constructor<Id>>(this: T): Instance<T> {
+    return new this(v4()) as Instance<T>;
   }
 
   static from<T extends Id>(this: Constructor<T>, data: unknown) {

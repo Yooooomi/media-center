@@ -4,6 +4,7 @@ export const spacing = {
   S12: 12,
   S16: 16,
   S24: 24,
+  S32: 32,
 } as const;
 
 export const radius = {
@@ -24,6 +25,10 @@ export const color = {
   green: '#00FF00',
   red: '#FF0000',
   grey: '#d6d6d6',
+  darkgrey: '#868686',
+  greyed: '#e6e6e6',
+  transparent: '#00000000',
+  t_greyed: '#e6e6e669',
 };
 
 export const debugBorder = (c = 'red') => ({

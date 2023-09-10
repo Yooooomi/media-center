@@ -22,7 +22,7 @@ export class DiskFilesystem extends Filesystem {
   }
 
   async delete(file: File) {
-    fs.unlinkSync(file.data.path);
+    fs.unlinkSync(file.path);
   }
 
   async pipe(filename: string) {

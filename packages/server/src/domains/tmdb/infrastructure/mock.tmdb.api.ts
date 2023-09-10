@@ -7,46 +7,64 @@ import { TmdbId } from "../domain/tmdbId";
 export class MockTmdbAPI extends TmdbAPI {
   async search(query: string): Promise<AnyTmdb[]> {
     return [
-      new Movie(
-        TmdbId.fromIdAndType("976573", "movie"),
-        false,
-        "/jZIYaISP3GBSrVOPfrp98AMa8Ng.jpg",
-        "en",
-        "Elemental",
-        "In a city where fire, water, land and air residents live together, a fiery young woman and a go-with-the-flow guy will discover something elemental: how much they have in common.",
-        4696.546,
-        "/6oH378KUfCEitzJkm07r97L0RsZ.jpg",
-        "2023-06-14",
-        "Elemental",
-        false,
-        7.8,
-        1050
-      ),
+      new Movie({
+        id: TmdbId.fromIdAndType("976573", "movie"),
+        adult: false,
+        backdrop_path: "/jZIYaISP3GBSrVOPfrp98AMa8Ng.jpg",
+        original_language: "en",
+        original_title: "Elemental",
+        overview:
+          "In a city where fire, water, land and air residents live together, a fiery young woman and a go-with-the-flow guy will discover something elemental: how much they have in common.",
+        popularity: 4696.546,
+        poster_path: "/6oH378KUfCEitzJkm07r97L0RsZ.jpg",
+        release_date: "2023-06-14",
+        title: "Elemental",
+        video: false,
+        vote_average: 7.8,
+        vote_count: 1050,
+      }),
     ];
   }
 
   async get(tmdbId: TmdbId) {
-    return new Movie(
-      tmdbId,
-      false,
-      "/jZIYaISP3GBSrVOPfrp98AMa8Ng.jpg",
-      "en",
-      "Elemental",
-      "In a city where fire, water, land and air residents live together, a fiery young woman and a go-with-the-flow guy will discover something elemental: how much they have in common.",
-      4696.546,
-      "/6oH378KUfCEitzJkm07r97L0RsZ.jpg",
-      "2023-06-14",
-      "Elemental",
-      false,
-      7.8,
-      1050
-    );
+    return new Movie({
+      id: tmdbId,
+      adult: false,
+      backdrop_path: "/jZIYaISP3GBSrVOPfrp98AMa8Ng.jpg",
+      original_language: "en",
+      original_title: "Elemental",
+      overview:
+        "In a city where fire, water, land and air residents live together, a fiery young woman and a go-with-the-flow guy will discover something elemental: how much they have in common.",
+      popularity: 4696.546,
+      poster_path: "/6oH378KUfCEitzJkm07r97L0RsZ.jpg",
+      release_date: "2023-06-14",
+      title: "Elemental",
+      video: false,
+      vote_average: 7.8,
+      vote_count: 1050,
+    });
   }
 
   async discoverShow(): Promise<Show[]> {
     const mock = {
       page: 1,
       results: [
+        {
+          backdrop_path: "/n5FPNMJ0eRoiQrKGfUQQRAZeaxg.jpg",
+          first_air_date: "2023-05-04",
+          genre_ids: [80, 18],
+          id: 125988,
+          name: "Silo",
+          origin_country: ["US"],
+          original_language: "en",
+          original_name: "Silo",
+          overview:
+            "In a ruined and toxic future, a community exists in a giant underground silo that plunges hundreds of stories deep. There, men and women live in a society full of regulations they believe are meant to protect them.",
+          popularity: 4495.043,
+          poster_path: "/zBx1X06G1OlndbXTCZI13FECNz2.jpg",
+          vote_average: 7.6,
+          vote_count: 435,
+        },
         {
           backdrop_path: "/oOce9hLMVFubjAJliau4kiSNPnW.jpg",
           first_air_date: "1990-09-13",
@@ -372,20 +390,20 @@ export class MockTmdbAPI extends TmdbAPI {
 
     return mock.results.map(
       (d) =>
-        new Show(
-          TmdbId.fromIdAndType(d.id.toString(), "show"),
-          d.backdrop_path,
-          d.original_language,
-          d.original_name,
-          d.overview,
-          d.popularity,
-          d.poster_path,
-          d.first_air_date,
-          d.name,
-          d.vote_average,
-          d.vote_count,
-          0
-        )
+        new Show({
+          id: TmdbId.fromIdAndType(d.id.toString(), "show"),
+          backdrop_path: d.backdrop_path ?? undefined,
+          original_language: d.original_language,
+          original_title: d.original_name,
+          overview: d.overview,
+          popularity: d.popularity,
+          poster_path: d.poster_path ?? undefined,
+          first_air_date: d.first_air_date,
+          title: d.name,
+          vote_average: d.vote_average,
+          vote_count: d.vote_count,
+          season_count: 0,
+        })
     );
   }
 
@@ -740,21 +758,21 @@ export class MockTmdbAPI extends TmdbAPI {
 
     return mock.results.map(
       (d) =>
-        new Movie(
-          TmdbId.fromIdAndType(d.id.toString(), "movie"),
-          d.adult,
-          d.backdrop_path,
-          d.original_language,
-          d.original_title,
-          d.overview,
-          d.popularity,
-          d.poster_path,
-          d.release_date,
-          d.title,
-          d.video,
-          d.vote_average,
-          d.vote_count
-        )
+        new Movie({
+          id: TmdbId.fromIdAndType(d.id.toString(), "movie"),
+          adult: d.adult,
+          backdrop_path: d.backdrop_path,
+          original_language: d.original_language,
+          original_title: d.original_title,
+          overview: d.overview,
+          popularity: d.popularity,
+          poster_path: d.poster_path,
+          release_date: d.release_date,
+          title: d.title,
+          video: d.video,
+          vote_average: d.vote_average,
+          vote_count: d.vote_count,
+        })
     );
   }
 }

@@ -1,5 +1,5 @@
 import {ReactNode, useMemo} from 'react';
-import {spacing} from '../../services/constants';
+import {color, spacing} from '../../services/constants';
 import {View, ViewStyle} from 'react-native';
 
 export interface BoxProps {
@@ -18,10 +18,15 @@ export interface BoxProps {
   pl?: keyof typeof spacing;
   pr?: keyof typeof spacing;
   gap?: keyof typeof spacing;
+  shrink?: boolean;
+  grow?: boolean;
+  width?: ViewStyle['width'];
   items?: ViewStyle['alignItems'];
   content?: ViewStyle['justifyContent'];
+  bg?: keyof typeof color;
   row?: boolean;
   children: ReactNode;
+  style?: ViewStyle;
 }
 
 export default function Box({
@@ -44,6 +49,11 @@ export default function Box({
   items,
   content,
   children,
+  shrink,
+  grow,
+  width,
+  bg,
+  style,
 }: BoxProps) {
   const styles = useMemo<ViewStyle>(
     () => ({
@@ -65,10 +75,17 @@ export default function Box({
       gap: gap && spacing[gap],
       alignItems: items,
       justifyContent: content,
+      flexShrink: shrink === undefined ? undefined : shrink ? 1 : 0,
+      flexGrow: grow === undefined ? undefined : grow ? 1 : 0,
+      width,
+      backgroundColor: bg && color[bg],
+      ...style,
     }),
     [
+      bg,
       content,
       gap,
+      grow,
       items,
       m,
       mb,
@@ -85,6 +102,9 @@ export default function Box({
       pt,
       pv,
       row,
+      shrink,
+      style,
+      width,
     ],
   );
 

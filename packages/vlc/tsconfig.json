@@ -1,0 +1,15 @@
+{
+  "extends": "@media-center/dev/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "react-native-vlc": ["./src/index"]
+    },
+    "outDir": "./lib",
+    "jsx": "react",
+    "lib": ["esnext"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+  }
+}

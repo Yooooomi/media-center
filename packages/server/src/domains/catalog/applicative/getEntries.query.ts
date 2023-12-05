@@ -1,33 +1,16 @@
 import { ApplicativeError } from "../../../framework/error";
 import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple, Optional, Shape } from "../../../framework/shape";
+import { Either, Multiple } from "../../../framework/shape";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
-import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
-import { TmdbId } from "../../tmdb/domain/tmdbId";
-import {
-  CatalogEntryMovieSpecification,
-  CatalogEntryShowSpecification,
-} from "../domain/catalogEntry";
+import { MovieCatalogEntry, ShowCatalogEntry } from "../domain/catalogEntry";
 import { CatalogEntryStore } from "./catalogEntry.store";
-
-class CatalogEntryMovieSpecificationFulFilled extends Shape({
-  item: HierarchyItem,
-}) {}
-
-class CatalogEntryShowSpecificationFulFilled extends Shape({
-  item: HierarchyItem,
-  season: Number,
-  episode: Number,
-}) {}
-
-export class CatalogEntryFulfilled extends Shape({
-  id: TmdbId,
-  items: Multiple(
-    CatalogEntryMovieSpecificationFulFilled,
-    CatalogEntryShowSpecificationFulFilled
-  ),
-}) {}
+import {
+  CatalogEntryMovieSpecificationFulFilled,
+  CatalogEntryShowSpecificationFulFilled,
+  MovieCatalogEntryFulfilled,
+  ShowCatalogEntryFulfilled,
+} from "./catalogEntryFulfilled.front";
 
 class UnknownEntry extends ApplicativeError {
   constructor(name: string) {
@@ -35,8 +18,16 @@ class UnknownEntry extends ApplicativeError {
   }
 }
 
+class NotMatchingHierarchyItem extends ApplicativeError {
+  constructor(id: HierarchyItemId) {
+    super(`Did not find matching hierary item ${id}`);
+  }
+}
+
 export class GetEntriesQuery extends Query({
-  returningMany: CatalogEntryFulfilled,
+  returning: Multiple(
+    Either(ShowCatalogEntryFulfilled, MovieCatalogEntryFulfilled)
+  ),
 }) {}
 
 export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
@@ -47,35 +38,48 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
     super();
   }
 
-  async execute(query: GetEntriesQuery) {
+  async execute() {
     const entries = await this.catalogEntryStore.loadAll();
 
     const ids = new Set<string>();
     entries.forEach((entry) => {
-      ids.add(entry.id.toString());
+      entry.items.flatMap((i) => i.id).forEach((i) => ids.add(i.toString()));
     });
     const items = await this.hierarchyItemStore.loadMany(
       [...ids.values()].map((i) => new HierarchyItemId(i))
     );
 
     return entries.map((entry) => {
-      return new CatalogEntryFulfilled({
-        id: entry.id,
-        items: entry.items.map((e, i) => {
-          if (e instanceof CatalogEntryMovieSpecification) {
-            return new CatalogEntryMovieSpecificationFulFilled({
-              item: items[i]!,
-            });
-          } else if (e instanceof CatalogEntryShowSpecification) {
+      if (entry instanceof ShowCatalogEntry) {
+        return new ShowCatalogEntryFulfilled({
+          id: entry.id,
+          items: entry.items.map((e) => {
+            const item = items.find((i) => i.id.equals(e.id));
+            if (!item) {
+              throw new NotMatchingHierarchyItem(e.id);
+            }
             return new CatalogEntryShowSpecificationFulFilled({
-              item: items[i]!,
+              item,
               season: e.season,
               episode: e.episode,
             });
-          }
-          throw new UnknownEntry((e as any).constructor.name);
-        }),
-      });
+          }),
+        });
+      } else if (entry instanceof MovieCatalogEntry) {
+        return new MovieCatalogEntryFulfilled({
+          id: entry.id,
+          items: entry.items.map((e) => {
+            const item = items.find((i) => i.id.equals(e.id));
+            if (!item) {
+              throw new NotMatchingHierarchyItem(e.id);
+            }
+            return new CatalogEntryMovieSpecificationFulFilled({
+              item,
+            });
+          }),
+        });
+      }
+      throw new UnknownEntry((entry as any).constructor.name);
     });
   }
 }

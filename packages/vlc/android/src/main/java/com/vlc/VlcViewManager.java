@@ -4,9 +4,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class VlcViewManager extends SimpleViewManager<VlcView> {
   public static final String REACT_CLASS = "VlcView";
@@ -30,6 +34,15 @@ public class VlcViewManager extends SimpleViewManager<VlcView> {
   public void onDropViewInstance(@NonNull VlcView view) {
     super.onDropViewInstance(view);
     view.clear();
+  }
+
+  @ReactProp(name = "arguments")
+  public void setArguments(final VlcView view, final ReadableArray arguments) {
+    ArrayList<String> strArguments = new ArrayList<>();
+    for (int i = 0; i < arguments.size(); i++) {
+      strArguments.add(arguments.getString(i));
+    }
+    view.setArguments(strArguments);
   }
 
   @ReactProp(name = "autoplay", defaultBoolean = true)
@@ -65,5 +78,15 @@ public class VlcViewManager extends SimpleViewManager<VlcView> {
   @ReactProp(name = "textTrack")
   public void setTextTrack(final VlcView view, final int textTrackId) {
     view.setTextTrack(textTrackId);
+  }
+
+  @ReactProp(name = "hwDecode")
+  public void setDecode(final VlcView view, final boolean decode) {
+    view.setHwDecode(decode);
+  }
+
+  @ReactProp(name = "forceHwDecode")
+  public void setForceHwDecode(final VlcView view, final boolean decode) {
+    view.setForceHwDecode(decode);
   }
 }

@@ -42,10 +42,10 @@ target 'VlcExample' do
     # you should disable the next line.
     :flipper_configuration => flipper_config,
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Pod::Config.instance.installation_root}/../.."
   )
 
-  target 'VlcExampleTests' do
+  target 'VlcExample-tvOS' do
     inherit! :complete
     # Pods for testing
   end

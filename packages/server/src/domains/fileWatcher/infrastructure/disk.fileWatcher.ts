@@ -2,7 +2,6 @@ import { File } from "../../../framework/valueObjects/file";
 import { FileWatcher } from "../applicative/fileWatcher";
 import * as fs from "fs";
 import { join } from "path";
-import { HierarchyItemId } from "../domain/hierarchyItemId";
 import { EventBus } from "../../../framework/event/eventBus";
 import { HierarchyStore } from "../applicative/hierarchy.store";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
@@ -98,7 +97,7 @@ export class DiskFileWatcher extends FileWatcher {
         return this.scanMovie(path);
       }
       if (stat.isFile()) {
-        this.triggerAdded(new File({ path: path }), "movie");
+        this.triggerAdded(new File({ path }), "movie");
       }
     }
   }
@@ -113,7 +112,7 @@ export class DiskFileWatcher extends FileWatcher {
         return this.scanShow(path);
       }
       if (stat.isFile()) {
-        this.triggerAdded(new File({ path: path }), "show");
+        this.triggerAdded(new File({ path }), "show");
       }
     }
   }
@@ -122,7 +121,7 @@ export class DiskFileWatcher extends FileWatcher {
     await Promise.all([this.scanMovie(), this.scanShow()]);
   }
 
-  protected async checkExistence(file: HierarchyItemId) {
-    return fs.existsSync(file.toString());
+  protected async checkExistence(file: File) {
+    return fs.existsSync(file.path);
   }
 }

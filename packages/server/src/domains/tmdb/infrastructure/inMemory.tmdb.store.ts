@@ -1,16 +1,19 @@
+import { Either, ShapeSerializer } from "../../../framework/shape";
 import { InMemoryStore } from "../../../framework/store";
+import { compact } from "@media-center/algorithm";
 import { TmdbAPI } from "../applicative/tmdb.api";
 import { TmdbStore } from "../applicative/tmdb.store";
 import { AnyTmdb } from "../domain/anyTmdb";
+import { Movie } from "../domain/movie";
+import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
-import { V0TmdbSerializer } from "./v0.tmdb.serializer";
 
 export class InMemoryTmdbStore
   extends InMemoryStore<AnyTmdb, TmdbId>
   implements TmdbStore
 {
   constructor(private readonly tmdbAPI: TmdbAPI) {
-    super(new V0TmdbSerializer());
+    super(new ShapeSerializer(Either(Movie, Show)));
   }
 
   async load(id: TmdbId) {
@@ -26,7 +29,20 @@ export class InMemoryTmdbStore
     return existing;
   }
 
-  async loadAll(): Promise<AnyTmdb[]> {
-    throw new Error("Not implemented");
+  async loadMany(ids: TmdbId[]) {
+    let existing = await super.loadMany(ids);
+
+    const notExisting = ids.filter(
+      (i) => !existing.some((e) => e.id.equals(i))
+    );
+
+    let loaded: AnyTmdb[] = [];
+    if (notExisting.length > 0) {
+      loaded = compact(
+        await Promise.all(notExisting.map((ne) => this.tmdbAPI.get(ne)))
+      );
+    }
+
+    return [...existing, ...loaded];
   }
 }

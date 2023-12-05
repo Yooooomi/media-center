@@ -1,13 +1,8 @@
 import { Constructor } from "../types/utils";
-import { Id } from "./id";
 import { Serializer } from "./serializer";
+import { useLog } from "./useLog";
 
-class Parent {
-  private __unique__!: string;
-}
-
-export abstract class AutoSerialize<Expected> {
-  private readonly markUsed!: Expected;
+export abstract class AutoSerialize<M> {
   static isShape = true;
 
   static serialize(..._args: any[]) {}
@@ -18,20 +13,17 @@ export abstract class AutoSerialize<Expected> {
   serialize(this: any) {
     return this.constructor.serialize(this);
   }
+
+  constructor(public readonly manifest: M) {}
 }
 
-export type AutoSerializeConstructor<E> = Constructor<AutoSerialize<E>> & {
-  serialize(...args: any[]): E;
-  deserialize(...args: any[]): E;
-};
-
-const implemented = [
-  String.prototype,
-  Boolean.prototype,
-  Number.prototype,
-  AutoSerialize.prototype,
-] as const;
-type Implemented = (typeof implemented)[number];
+export type ShapeParameter =
+  | Constructor<String>
+  | Constructor<Number>
+  | Constructor<Boolean>
+  | Constructor<Date>
+  | Constructor<AutoSerialize<any>>
+  | ShapeDetails<any, any>;
 
 type Instance<T> = T extends Constructor<infer K> ? K : never;
 export type LiteralInstance<T> = T extends Constructor<String>
@@ -40,50 +32,81 @@ export type LiteralInstance<T> = T extends Constructor<String>
   ? number
   : T extends Constructor<Boolean>
   ? boolean
-  : Instance<T>;
+  : T extends Constructor<Date>
+  ? Date
+  : T extends Constructor<infer K>
+  ? K
+  : T extends ShapeDetails<infer L, any>
+  ? L
+  : never;
 
-export type ManifestToRecord<T> = T extends Record<infer K extends string, any>
+export type ManifestToInput<T> = T extends Record<infer K extends string, any>
   ? {
-      [k in K]: T[k] extends Constructor<AutoSerialize<infer E>>
-        ? E extends Parent
-          ? Instance<T[k]>
-          : E
+      [k in K]: T[k] extends AutoSerialize<infer M>
+        ? ManifestToInput<M>
+        : T[k] extends ShapeDetails<infer I, any>
+        ? I
         : LiteralInstance<T[k]>;
     }
   : never;
 
-function serialize(ctor: Constructor<any>, value: any) {
+export type DetailsInput<T> = T extends Constructor<AutoSerialize<infer M>>
+  ? ManifestToInput<M>
+  : T extends ShapeDetails<infer I, any>
+  ? LiteralInstance<T>
+  : void;
+
+function serialize(ctor: ShapeParameter, value: any) {
   if (ctor === String || ctor === Number || ctor === Boolean) {
     return value;
+  }
+  if (ctor === Date) {
+    return (value as Date).toISOString();
+  }
+  if ((ctor as any).isDetail === true) {
+    return (ctor as any).serialize(value);
   }
   if ((ctor as any).isShape === true) {
     return (ctor as any).serialize(value);
   }
 }
 
-function deserialize(ctor: Constructor<any>, value: any) {
+function deserialize(ctor: ShapeParameter, value: any) {
   if (ctor === String || ctor === Number || ctor === Boolean) {
     return value;
+  }
+  if (ctor === Date) {
+    return new Date(value);
+  }
+  if ((ctor as any).isDetail === true) {
+    return (ctor as any).deserialize(value);
   }
   if ((ctor as any).isShape === true) {
     return (ctor as any).deserialize(value);
   }
 }
 
-export function Shape<M extends Record<string, any>>(manifest: M) {
-  class A extends AutoSerialize<Parent> {
-    manifest!: M;
+const logger = useLog(Shape.constructor.name);
 
-    constructor(data: ManifestToRecord<M>) {
-      super();
+export function Shape<M extends Record<string, any>>(manifest: M) {
+  class A extends AutoSerialize<M> {
+    constructor(data: ManifestToInput<M>) {
+      super(manifest);
       Object.assign(this, data);
     }
 
-    static serialize(value: A) {
+    static serialize<T extends Constructor<any>>(this: T, value: A) {
       return Object.entries(manifest).reduce<Record<string, any>>(
         (acc, [key, auto]) => {
-          acc[key] = serialize(auto, (value as any)[key]);
-          return acc;
+          try {
+            acc[key] = serialize(auto, (value as any)[key]);
+            return acc;
+          } catch (e) {
+            logger.warn(
+              `Error while serializing ${this.name} key ${key} of ${value}, expected constructor ${auto}`
+            );
+            throw e;
+          }
         },
         {}
       );
@@ -102,76 +125,13 @@ export function Shape<M extends Record<string, any>>(manifest: M) {
     }
   }
 
-  return A as any as new (data: ManifestToRecord<M>) => A & ManifestToRecord<M>;
-}
-
-export function Multiple<T extends Constructor<Implemented>[]>(...ctors: T) {
-  class A extends AutoSerialize<Instance<T[number]>[]> {
-    static serialize(value: Instance<T[number]>[]) {
-      return value.map((v) => {
-        const autoIndex = ctors.findIndex((c) => c === v.constructor);
-        const auto = ctors[autoIndex];
-
-        if (autoIndex < 0 || !auto) {
-          throw new Error("Using not referenced constructor");
-        }
-
-        return [autoIndex, serialize(auto, v)];
-      });
-    }
-
-    static deserialize(value: any) {
-      return (value as [number, any][]).map(([ctorIndex, value]) => {
-        const auto = ctors[ctorIndex];
-
-        if (!auto) {
-          throw new Error("Serialized but cannot find used constructor");
-        }
-
-        return deserialize(auto, value);
-      });
-    }
-  }
-  return A;
-}
-
-export function Enum<T extends readonly string[]>(values: T) {
-  class A extends AutoSerialize<T[number]> {
-    static serialize(value: T[number]) {
-      return value;
-    }
-
-    static deserialize<T extends Constructor<any>>(this: T, value: any) {
-      return value;
-    }
-  }
-
-  return A;
-}
-
-export function Optional<T extends Implemented>(ctor: Constructor<T>) {
-  class A extends AutoSerialize<LiteralInstance<Constructor<T>> | undefined> {
-    static serialize(value: Instance<T> | undefined) {
-      if (!value) {
-        return undefined;
-      }
-      return serialize(ctor, value);
-    }
-
-    static deserialize(value: any): void {
-      if (!value) {
-        return undefined;
-      }
-      return deserialize(ctor, value);
-    }
-  }
-  return A;
+  return A as any as new (data: ManifestToInput<M>) => A & ManifestToInput<M>;
 }
 
 export function Literal<T extends any>(ctor: Constructor<T>) {
-  class A extends AutoSerialize<Parent> {
+  class A extends AutoSerialize<any> {
     constructor(public readonly value: LiteralInstance<Constructor<T>>) {
-      super();
+      super(null);
     }
 
     static serialize(value: A) {
@@ -185,7 +145,78 @@ export function Literal<T extends any>(ctor: Constructor<T>) {
   return A;
 }
 
-export class ShapeSerializer<T> extends Serializer<Instance<T>, any> {
+export type ShapeDetails<I, O> = {
+  isDetail: true;
+  serialize: (input: I) => O;
+  deserialize: (serialized: O) => I;
+};
+
+export function Multiple<T extends ShapeParameter>(
+  ctor: T
+): ShapeDetails<LiteralInstance<T>[], any[]> {
+  return {
+    isDetail: true,
+    serialize: (input) => input.map((i) => serialize(ctor, i)),
+    deserialize: (serialized) => serialized.map((s) => deserialize(ctor, s)),
+  };
+}
+
+export function Either<T extends ShapeParameter[]>(
+  ...ctors: T
+): ShapeDetails<LiteralInstance<T[number]>, [number, any]> {
+  return {
+    isDetail: true,
+    serialize: (input) => {
+      const ctorIndex = ctors.findIndex((c) => input.constructor === c);
+      const ctor = ctors[ctorIndex];
+      if (ctorIndex < 0 || !ctor) {
+        throw new Error("Cannot serialize either");
+      }
+      return [ctorIndex, serialize(ctor, input)];
+    },
+    deserialize: (serialized) => {
+      const [ctorIndex, serializedValue] = serialized;
+      const ctor = ctors[ctorIndex];
+      if (!ctor) {
+        throw new Error("Cannot deserialize either");
+      }
+      return deserialize(ctor, serializedValue);
+    },
+  };
+}
+
+export function Optional<T extends ShapeParameter>(
+  ctor: T
+): ShapeDetails<LiteralInstance<T> | undefined, any> {
+  return {
+    isDetail: true,
+    serialize: (input) => {
+      if (input) {
+        return serialize(ctor, input);
+      }
+      return undefined;
+    },
+    deserialize: (serialized) => {
+      if (serialized) {
+        return deserialize(ctor, serialized);
+      }
+      return undefined;
+    },
+  };
+}
+
+export function Enum<T extends string>(values: T[]): ShapeDetails<T, string> {
+  return {
+    isDetail: true,
+    serialize: (input) => input,
+    deserialize: (serialized) => serialized as T,
+  };
+}
+
+export class ShapeSerializer<T extends ShapeParameter> extends Serializer<
+  Instance<T>,
+  any
+> {
   constructor(private readonly ctor: T) {
     super();
   }
@@ -199,10 +230,10 @@ export class ShapeSerializer<T> extends Serializer<Instance<T>, any> {
   }
 
   protected async serialize(model: any) {
-    return model.serialize();
+    return { data: serialize(this.ctor, model) };
   }
 
   protected async deserialize(serialized: any) {
-    return (this.ctor as any).deserialize(serialized);
+    return deserialize(this.ctor, serialized.data);
   }
 }

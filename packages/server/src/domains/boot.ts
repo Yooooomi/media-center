@@ -12,8 +12,8 @@ import { bootTorrentClient } from "./torrentClient/boot";
 import { bootTorrentIndexer } from "./torrentIndexer/boot";
 import { bootTorrentRequest } from "./torrentRequest/boot";
 import { InMemoryTorrentRequestStore } from "./torrentRequest/infrastructure/inMemory.torrentRequest.store";
-import { bootUser } from "./user/boot";
 import { bootCatalog } from "./catalog/boot";
+import { FilesystemTorrentRequestStore } from "./torrentRequest/infrastructure/filesystem.torrentRequest.store";
 
 export async function globalBoot() {
   configureDotenv();
@@ -25,9 +25,11 @@ export async function globalBoot() {
   const safeRequest = new SolverSafeRequest(filesystem);
   const environmentHelper = new ProcessEnvironmentHelper();
   // TODO FIX THIS
-  const torrentRequestStore = new InMemoryTorrentRequestStore();
+  const torrentRequestStore = environmentHelper.match("DI_DATABASE", {
+    memory: () => new InMemoryTorrentRequestStore(),
+    filesystem: () => new FilesystemTorrentRequestStore(),
+  });
 
-  bootUser(commandBus);
   const { tmdbStore, tmdbApi } = bootTmdb(queryBus, environmentHelper);
   const { torrentIndexer } = bootTorrentIndexer(
     queryBus,
@@ -53,7 +55,7 @@ export async function globalBoot() {
     environmentHelper
   );
   bootApi(queryBus, commandBus, hierarchyStore);
-  bootCatalog(queryBus, eventBus, tmdbApi, hierarchyStore);
+  bootCatalog(queryBus, eventBus, environmentHelper, tmdbApi, hierarchyStore);
 
   return { commandBus, eventBus, unsubscribeUpdateTorrentPoll };
 }

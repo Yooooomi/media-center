@@ -1,6 +1,7 @@
 import { CommandBus } from "../../../framework/commandBus/commandBus";
 import { Polling } from "../../../framework/poll/poll";
 import { UpdateTorrentRequestCommand } from "../../torrentRequest/applicative/updateTorrentRequest.command";
+import { TorrentRequestId } from "../../torrentRequest/domain/torrentRequestId";
 import { TorrentClient } from "./torrentClient";
 
 export class UpdateTorrentsPoll extends Polling {
@@ -20,7 +21,7 @@ export class UpdateTorrentsPoll extends Polling {
       torrents.map((torrent) =>
         this.commandBus.execute(
           new UpdateTorrentRequestCommand({
-            torrentRequestId: torrent.id,
+            torrentRequestId: new TorrentRequestId(torrent.hash),
             downloaded: torrent.downloaded,
           })
         )

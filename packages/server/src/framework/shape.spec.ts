@@ -1,4 +1,12 @@
-import { AutoSerialize, Shape, Multiple, Enum, Optional, Literal } from "./shape";
+import {
+  AutoSerialize,
+  Shape,
+  Multiple,
+  Enum,
+  Optional,
+  Literal,
+  Either,
+} from "./shape";
 
 describe("New shape", () => {
   function check(a: AutoSerialize<any>, log?: boolean) {
@@ -54,18 +62,6 @@ describe("New shape", () => {
 
     const a = new A({
       a: [1, 2],
-    });
-
-    check(a);
-  });
-
-  it("mixed array shape", () => {
-    class A extends Shape({
-      a: Multiple(Number, String),
-    }) {}
-
-    const a = new A({
-      a: [1, "two", 3, "four"],
     });
 
     check(a);
@@ -152,6 +148,44 @@ describe("New shape", () => {
     a.a.keepThis();
   });
 
+  it("either shape", () => {
+    class A extends Shape({
+      a: Number,
+    }) {}
+
+    class B extends Shape({
+      b: String,
+    }) {}
+
+    class C extends Shape({
+      ab: Either(A, B),
+    }) {}
+
+    const a = new C({
+      ab: new B({ b: "yaya" }),
+    });
+    check(a);
+  });
+
+  it("array of either", () => {
+    class A extends Shape({
+      a: Number,
+    }) {}
+
+    class B extends Shape({
+      b: String,
+    }) {}
+
+    class C extends Shape({
+      ab: Multiple(Either(A, B)),
+    }) {}
+
+    const a = new C({
+      ab: [new B({ b: "yaya" })],
+    });
+    check(a);
+  });
+
   it("allows less verbose access", () => {
     class SomeId extends Literal(Number) {
       someIdMethod() {
@@ -178,14 +212,14 @@ describe("New shape", () => {
       b: "",
       c: false,
       d: new B({
-        e: "hey",
+        e: "a",
         f: new SomeId(123),
         g: undefined,
         h: undefined,
       }),
     });
 
-    a.b;
+    a.d.e;
     expect(a.d.f.someIdMethod()).toEqual(123);
     check(a);
   });

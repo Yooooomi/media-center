@@ -1,21 +1,37 @@
-import { ShapeSerializer } from "../../../framework/shape";
+import { Either, ShapeSerializer } from "../../../framework/shape";
 import { InMemoryStore } from "../../../framework/store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { CatalogEntryStore } from "../applicative/catalogEntry.store";
-import { CatalogEntry } from "../domain/catalogEntry";
+import {
+  AnyCatalogEntry,
+  MovieCatalogEntry,
+  ShowCatalogEntry,
+} from "../domain/catalogEntry";
 
 export class InMemoryCatalogEntryStore
-  extends InMemoryStore<CatalogEntry, TmdbId>
+  extends InMemoryStore<AnyCatalogEntry, TmdbId>
   implements CatalogEntryStore
 {
   constructor() {
-    super(new ShapeSerializer(CatalogEntry));
+    super(new ShapeSerializer(Either(MovieCatalogEntry, ShowCatalogEntry)));
   }
 
-  async loadByHierarchyItemId(hierarchyItemId: HierarchyItemId) {
+  loadByHierarchyItemId(hierarchyItemId: HierarchyItemId) {
     return this.filter((f) =>
       f.items.some((f) => f.id.equals(hierarchyItemId))
     );
+  }
+
+  loadMovies() {
+    return this.filter((f) => f instanceof MovieCatalogEntry) as Promise<
+      MovieCatalogEntry[]
+    >;
+  }
+
+  loadShows() {
+    return this.filter((f) => f instanceof ShowCatalogEntry) as Promise<
+      ShowCatalogEntry[]
+    >;
   }
 }

@@ -1,9 +1,10 @@
 import { Query, QueryHandler } from "../../../framework/query";
+import { Multiple } from "../../../framework/shape";
 import { Show } from "../domain/show";
 import { TmdbAPI } from "./tmdb.api";
 
 export class DiscoverShowQuery extends Query({
-  returningMany: Show,
+  returning: Multiple(Show),
 }) {}
 
 export class DiscoverShowQueryHandler extends QueryHandler(DiscoverShowQuery) {

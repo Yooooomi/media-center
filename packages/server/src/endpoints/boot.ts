@@ -1,4 +1,5 @@
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
+import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
 import { CommandBus } from "../framework/commandBus/commandBus";
 import { QueryBus } from "../framework/queryBus/queryBus";
 import { useLog } from "../framework/useLog";
@@ -17,23 +18,29 @@ export function bootApi(
   app.use(json());
 
   app.get("/video/:hierarchyItemId", async (req, res) => {
-    logger.info("Trying to get video");
     // const hierarchyItemId = req.params.hierarchyItemId;
+    // logger.info("Trying to get video", hierarchyItemId);
     // const item = await hierarchyItemStore.load(
     //   HierarchyItemId.from(hierarchyItemId)
     // );
     // if (!item) {
+    //   console.log("Didnt find item", hierarchyItemId);
     //   return res.status(404).end();
     // }
     const { range } = req.headers;
 
     if (!range) {
+      console.log("Didnt find range");
       return res.status(400).end();
     }
 
-    const path = "/Users/timothee/perso/media-center/aaa/films/sample.mkv";
+    const path =
+      "/Users/timothee/perso/media-center/aaa/films/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv";
+    // const path = "/Users/timothee/perso/media-center/aaa/films/sample.mkv";
+    // const path = item.file.path;
     const total = fs.statSync(path).size;
 
+    console.log("RANGE", range);
     const [startString, endString] = range.replace(/bytes=/, "").split("-");
 
     if (!startString) {
@@ -44,6 +51,7 @@ export function bootApi(
     // if last byte position is not present then it is the last byte of the video file.
     const end = endString ? parseInt(endString, 10) : total - 1;
     const chunksize = end - start + 1;
+    console.log("Sending chunk size", start, end, chunksize);
 
     res.writeHead(206, {
       "Content-Range": "bytes " + start + "-" + end + "/" + total,
@@ -68,11 +76,7 @@ export function bootApi(
     const deserialized = ctor.needing?.deserialize(needing);
     const query = new ctor(deserialized);
     const result = await queryBus.execute(query);
-    if (query.returningMaybeOne) {
-      res.status(200).send(result ? result.serialize() : undefined);
-    } else if (query.returningMany) {
-      res.status(200).send(result.map((r: any) => r.serialize()));
-    }
+    res.status(200).send(ctor.returning?.serialize(result));
     logger.info(`> ${req.path}`);
   });
 
@@ -86,11 +90,7 @@ export function bootApi(
     const deserialized = ctor.needing?.deserialize(needing);
     const command = new ctor(deserialized);
     const result = await commandBus.execute(command);
-    if (command.returningMaybeOne) {
-      res.status(200).send(result ? result.serialize() : undefined);
-    } else if (command.returningMany) {
-      res.status(200).send(result.map((r: any) => r.serialize()));
-    }
+    res.status(200).send(ctor.returning?.serialize(result));
     logger.info(`> ${req.path}`);
   });
 

@@ -17,6 +17,10 @@ import androidx.annotation.NonNull;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class VlcView extends TextureView implements TextureView.SurfaceTextureListener, View.OnLayoutChangeListener, IVLCVout.OnNewVideoLayoutListener, IVLCVout.Callback, AudioManager.OnAudioFocusChangeListener {
   private static String TAG = "VlcView";
   private SurfaceTexture currentSurface;
@@ -29,6 +33,9 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
   private String uri;
   private VlcEventEmitter emitter;
   private boolean autoplay = true;
+  private ArrayList<String> arguments = new ArrayList<>();
+  private boolean hwDecode = false;
+  private boolean forceHwDecode = false;
 
   public VlcView(@NonNull ThemedReactContext context) {
     super(context);
@@ -48,6 +55,10 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
     if (this.uri != null && this.mediaPlayer != null) {
       this.mediaPlayer.play();
     }
+  }
+
+  public void setArguments(ArrayList<String> arguments) {
+    this.arguments = arguments;
   }
 
   public void setPlay(boolean playing) {
@@ -89,6 +100,14 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
     this.mediaPlayer.setSpuTrack(index);
   }
 
+  public void setHwDecode(final boolean decode) {
+    this.hwDecode = decode;
+  }
+
+  public void setForceHwDecode(final boolean decode) {
+    this.forceHwDecode = decode;
+  }
+
   private void setWindowSize() {
     IVLCVout vout = this.mediaPlayer.getVLCVout();
     vout.setWindowSize(this.getWidth(), this.getHeight());
@@ -98,14 +117,18 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
     if (this.vlc != null || this.currentSurface == null) {
       return;
     }
-    this.vlc = new LibVLC(context);
+    ArrayList options = new ArrayList();
+    for (String a : this.arguments) {
+      options.add(a);
+    }
+    this.vlc = new LibVLC(context, options);
     this.mediaPlayer = new MediaPlayer(this.vlc);
 
     this.lifecycleListener.setMediaPlayer(this.mediaPlayer);
 
     this.mediaPlayer.setScale(0);
-    this.mediaPlayer.setAspectRatio(this.getWidth() + ":" + this.getHeight());
-    this.mediaPlayer.setVolume(200);
+    //this.mediaPlayer.setAspectRatio(this.getWidth() + ":" + this.getHeight());
+    this.mediaPlayer.setVolume(100);
     VlcEventEmitter emitter = new VlcEventEmitter(context, this.mediaPlayer);
     emitter.setId(this.id);
     this.mediaPlayer.setEventListener(new MediaPlayerEventListener(emitter));
@@ -129,6 +152,7 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
       return;
     }
     Media media = new Media(this.vlc, Uri.parse(this.uri));
+    media.setHWDecoderEnabled(this.hwDecode, this.forceHwDecode);
 
     this.mediaPlayer.setMedia(media);
   }

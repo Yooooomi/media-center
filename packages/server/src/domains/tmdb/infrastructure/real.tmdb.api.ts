@@ -1,5 +1,5 @@
 import { TmdbAPI } from "../applicative/tmdb.api";
-import Axios from "axios";
+import Axios, { AxiosInstance } from "axios";
 import { TmdbId, TmdbIdType } from "../domain/tmdbId";
 import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
@@ -7,26 +7,83 @@ import { Show } from "../domain/show";
 import {
   DiscoverMovie,
   DiscoverShow,
+  Episode,
   GetMovie,
   GetShow,
+  MovieDetailsQuery,
   SearchMulti,
+  Season,
   extractYear,
 } from "./tmdb.api.utils";
-import { compact } from "../../../tools/algorithm";
+import { compact } from "@media-center/algorithm";
 import { PromiseQueue } from "../../../tools/queue";
-
-const axios = Axios.create({
-  baseURL: "https://api.themoviedb.org/3",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0YTZiMDIxZTE5Y2YxOTljMTM1NGFhMGRiMDZiOTkzMiIsInN1YiI6IjY0ODYzYWRmMDI4ZjE0MDExZTU1MDkwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.yyMkZlhGOGBHtw1yvpBVUUHhu7IKVYho49MvNNKt_wY",
-  },
-});
+import { ShowSeason } from "../domain/showSeason";
+import { ShowEpisode } from "../domain/showEpisode";
+import { MovieDetails } from "../domain/movieDetails";
+import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 
 const globalQueue = new PromiseQueue(150);
 
 export class RealTmdbAPI extends TmdbAPI {
+  axios: AxiosInstance;
+
+  constructor(environmentHelper: EnvironmentHelper) {
+    super();
+    this.axios = Axios.create({
+      baseURL: "https://api.themoviedb.org/3",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${environmentHelper.get("TMDB_API_KEY")}`,
+      },
+    });
+  }
+
+  async getEpisodes(
+    tmdbId: TmdbId,
+    seasonNumber: number
+  ): Promise<ShowEpisode[]> {
+    const { data } = await globalQueue.queue(() =>
+      this.axios.get<{ episodes: Episode[] }>(
+        `/tv/${tmdbId.toRealId()}/season/${seasonNumber}`
+      )
+    );
+    return data.episodes.map(
+      (e) =>
+        new ShowEpisode({
+          show_id: TmdbId.fromIdAndType(e.show_id.toString(), "show"),
+          air_date: e.air_date,
+          episode_number: e.episode_number,
+          episode_type: e.episode_type,
+          name: e.name,
+          overview: e.overview,
+          production_code: e.production_code,
+          runtime: e.runtime,
+          season_number: e.season_number,
+          still_path: e.still_path,
+          vote_average: e.vote_average,
+          vote_count: e.vote_count,
+        })
+    );
+  }
+
+  async getSeasons(tmdbId: TmdbId): Promise<ShowSeason[]> {
+    const { data } = await globalQueue.queue(() =>
+      this.axios.get<{ seasons: Season[] }>(`/tv/${tmdbId.toRealId()}`)
+    );
+    return data.seasons.map(
+      (s) =>
+        new ShowSeason({
+          air_date: s.air_date,
+          episode_count: s.episode_count,
+          name: s.name,
+          overview: s.overview,
+          poster_path: s.poster_path,
+          season_number: s.season_number,
+          vote_average: s.vote_average,
+        })
+    );
+  }
+
   async search(
     query: string,
     options?: {
@@ -35,8 +92,8 @@ export class RealTmdbAPI extends TmdbAPI {
     }
   ) {
     const { data } = await globalQueue.queue(() =>
-      axios.get<SearchMulti>(
-        `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=fr-FR&page=1`
+      this.axios.get<SearchMulti>(
+        `/search/multi?query=${query}&include_adult=false&language=fr-FR&page=1`
       )
     );
 
@@ -93,9 +150,7 @@ export class RealTmdbAPI extends TmdbAPI {
   async get(tmdbId: TmdbId): Promise<AnyTmdb | undefined> {
     if (tmdbId.getType() === "movie") {
       const { data } = await globalQueue.queue(() =>
-        axios.get<GetMovie>(
-          `https://api.themoviedb.org/3/movie/${tmdbId.toRealId()}?language=en-US`
-        )
+        this.axios.get<GetMovie>(`/movie/${tmdbId.toRealId()}?language=fr-FR`)
       );
       return new Movie({
         id: TmdbId.fromIdAndType(data.id.toString(), "movie"),
@@ -114,9 +169,7 @@ export class RealTmdbAPI extends TmdbAPI {
       });
     } else {
       const { data } = await globalQueue.queue(() =>
-        axios.get<GetShow>(
-          `https://api.themoviedb.org/3/tv/${tmdbId.toRealId()}?language=en-US`
-        )
+        this.axios.get<GetShow>(`/tv/${tmdbId.toRealId()}?language=fr-FR`)
       );
       return new Show({
         id: TmdbId.fromIdAndType(data.id.toString(), "show"),
@@ -130,15 +183,15 @@ export class RealTmdbAPI extends TmdbAPI {
         title: data.name,
         vote_average: data.vote_average,
         vote_count: data.vote_count,
-        season_count: 0,
+        season_count: data.number_of_seasons,
       });
     }
   }
 
   async discoverShow(): Promise<Show[]> {
     const { data } = await globalQueue.queue(() =>
-      axios.get<DiscoverShow>(
-        "/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+      this.axios.get<DiscoverShow>(
+        "/discover/tv?include_adult=false&include_video=false&language=fr-FR&page=1&sort_by=popularity.desc&with_release_type=4|5|6"
       )
     );
     return data.results.map(
@@ -162,8 +215,8 @@ export class RealTmdbAPI extends TmdbAPI {
 
   async discoverMovie() {
     const { data } = await globalQueue.queue(() =>
-      axios.get<DiscoverMovie>(
-        "/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+      this.axios.get<DiscoverMovie>(
+        "/discover/movie?include_adult=false&include_video=false&language=fr-FR&page=1&sort_by=popularity.desc&with_release_type=4|5|6"
       )
     );
     return data.results.map(
@@ -184,5 +237,23 @@ export class RealTmdbAPI extends TmdbAPI {
           vote_count: d.vote_count,
         })
     );
+  }
+
+  async getMovieDetails(tmdbId: TmdbId) {
+    try {
+      const { data } = await globalQueue.queue(() =>
+        this.axios.get<MovieDetailsQuery>(
+          `/movie/${tmdbId.toRealId()}?language=fr-FR`
+        )
+      );
+      return new MovieDetails({
+        id: tmdbId,
+        budget: data.budget,
+        genres: data.genres.map((g) => g.name),
+        runtime: data.runtime,
+      });
+    } catch (e) {
+      return undefined;
+    }
   }
 }

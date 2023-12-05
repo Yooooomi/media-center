@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "11.0" }
+  s.platforms    = { :ios => "11.0", :tvos => "12.4" }
   s.source       = { :git => "https://github.com/Yooooomi/react-native-vlc.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
@@ -38,5 +38,8 @@ Pod::Spec.new do |s|
     s.dependency "RCTTypeSafety"
     s.dependency "ReactCommon/turbomodule/core"
    end
-  end    
+  end
+  
+  s.ios.dependency 'MobileVLCKit', '3.5.1'
+  s.tvos.dependency 'TVVLCKit', '3.5.1'
 end

@@ -6,14 +6,18 @@ import {
   ScanExistingCommandHandler,
 } from "./applicative/scanExisting.command";
 import { DiskFileWatcher } from "./infrastructure/disk.fileWatcher";
-import { InMemoryHierarchyStore } from "./infrastructure/inMemory.hierarchyStore";
+import { FilesystemHierarchyStore } from "./infrastructure/filesystem.hierarchy.store";
+import { InMemoryHierarchyStore } from "./infrastructure/inMemory.hierarchy.store";
 
 export async function bootFileWatcher(
   commandBus: CommandBus,
   eventBus: EventBus,
   environmentHelper: EnvironmentHelper
 ) {
-  const hierarchyStore = new InMemoryHierarchyStore();
+  const hierarchyStore = environmentHelper.match("DI_DATABASE", {
+    memory: () => new InMemoryHierarchyStore(),
+    filesystem: () => new FilesystemHierarchyStore(),
+  });
   const watcher = new DiskFileWatcher(
     eventBus,
     hierarchyStore,

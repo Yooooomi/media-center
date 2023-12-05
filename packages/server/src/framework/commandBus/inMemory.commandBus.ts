@@ -12,14 +12,14 @@ class NoHandlerFound extends InfrastructureError {
 export class InMemoryCommandBus extends CommandBus {
   private readonly registry: Record<
     string,
-    InternalCommandHandler<InternalCommand<any, any, any>>
+    InternalCommandHandler<InternalCommand<any, any>>
   > = {};
   private readonly ctorRegistry: Record<
     string,
-    Constructor<InternalCommand<any, any, any>>
+    Constructor<InternalCommand<any, any>>
   > = {};
 
-  async execute(command: InternalCommand<any, any, any>) {
+  async execute(command: InternalCommand<any, any>) {
     const handler = this.registry[command.constructor.name];
     if (!handler) {
       throw new NoHandlerFound(command.constructor.name);
@@ -35,7 +35,7 @@ export class InMemoryCommandBus extends CommandBus {
     return ctor;
   }
 
-  register<C extends InternalCommand<any, any, any>>(
+  register<C extends InternalCommand<any, any>>(
     command: Constructor<C>,
     commandHandler: InternalCommandHandler<C>
   ) {

@@ -2,6 +2,8 @@
   "name": "@media-center/vlc",
   "version": "0.1.0",
   "description": "React native implementation of libvlc",
+  "author": "Timothee Boussus",
+  "homepage": "https://github.com/yooooomi/media-center",
   "scripts": {
     "test": "jest",
     "typecheck": "tsc --noEmit",

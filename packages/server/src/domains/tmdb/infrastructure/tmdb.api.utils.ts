@@ -197,6 +197,91 @@ export interface DiscoverShow {
   total_results: number;
 }
 
+export interface Season {
+  air_date: string;
+  episode_count: number;
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string;
+  season_number: number;
+  vote_average: number;
+}
+
+export interface Episode {
+  air_date: string;
+  episode_number: number;
+  episode_type: string;
+  id: number;
+  name: string;
+  overview: string;
+  production_code: string;
+  runtime: number;
+  season_number: number;
+  show_id: number;
+  still_path: string;
+  vote_average: number;
+  vote_count: number;
+  crew: Crew[];
+  guest_stars: GuestStar[];
+}
+
+export interface Crew {
+  job: string;
+  department: string;
+  credit_id: string;
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path?: string;
+}
+
+export interface GuestStar {
+  character: string;
+  credit_id: string;
+  order: number;
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
+
+export interface MovieDetailsQuery {
+  adult: boolean;
+  backdrop_path: any;
+  belongs_to_collection: any;
+  budget: number;
+  genres: { id: string; name: string }[];
+  homepage: string;
+  id: number;
+  imdb_id: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  production_companies: any[];
+  production_countries: any[];
+  release_date: string;
+  revenue: number;
+  runtime: number;
+  spoken_languages: any[];
+  status: string;
+  tagline: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
+
 export function extractYear(input: string) {
   return +input.split("-")[0]!;
 }

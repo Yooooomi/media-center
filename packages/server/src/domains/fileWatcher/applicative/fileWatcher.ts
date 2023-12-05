@@ -16,14 +16,14 @@ export abstract class FileWatcher {
   ) {}
 
   protected abstract initialize(): Promise<void>;
-  protected abstract checkExistence(file: HierarchyItemId): Promise<boolean>;
+  protected abstract checkExistence(file: File): Promise<boolean>;
 
   public abstract scan(): Promise<void>;
 
   public async setup() {
     const hierarchy = await this.hierarchyStore.loadAll();
     for (const hierarchyItem of hierarchy) {
-      const stillExists = await this.checkExistence(hierarchyItem.id);
+      const stillExists = await this.checkExistence(hierarchyItem.file);
       if (!stillExists) {
         await this.hierarchyStore.delete(hierarchyItem.id);
       }
@@ -32,8 +32,13 @@ export abstract class FileWatcher {
   }
 
   protected async triggerAdded(file: File, type: FileType) {
+    const alreadyExisting = await this.hierarchyStore.loadByPath(file.path);
+    if (alreadyExisting.length > 0) {
+      return;
+    }
     const newItem = new HierarchyItem({
-      id: new HierarchyItemId(file.path),
+      id: HierarchyItemId.generate(),
+      addedAt: new Date(),
       file,
     });
     await this.hierarchyStore.save(newItem);
@@ -41,12 +46,10 @@ export abstract class FileWatcher {
   }
 
   protected async triggerDeleted(file: File, type: FileType) {
-    const existing = await this.hierarchyStore.load(
-      new HierarchyItemId(file.path)
+    const existing = await this.hierarchyStore.loadByPath(file.path);
+    await Promise.all(existing.map((e) => this.hierarchyStore.delete(e.id)));
+    existing.forEach((e) =>
+      this.eventBus.publish(new HierarchyItemDeleted({ type, item: e }))
     );
-    if (existing) {
-      this.eventBus.publish(new HierarchyItemDeleted({ type, item: existing }));
-      await this.hierarchyStore.delete(existing.id);
-    }
   }
 }

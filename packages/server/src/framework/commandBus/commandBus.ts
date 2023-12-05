@@ -6,12 +6,12 @@ import {
 } from "../command";
 
 export abstract class CommandBus {
-  abstract register<C extends InternalCommand<any, any, any>>(
+  abstract register<C extends InternalCommand<any, any>>(
     command: Constructor<C>,
     commandHandler: InternalCommandHandler<C>
   ): void;
-  abstract execute(command: InternalCommand<any, any, any>): Promise<any>;
+  abstract execute(command: InternalCommand<any, any>): Promise<any>;
   abstract getCommand(
     commandName: string
-  ): InternalCommandConstructor<any, any, any>;
+  ): InternalCommandConstructor<any, any>;
 }

@@ -1,9 +1,10 @@
 import { Query, QueryHandler } from "../../../framework/query";
+import { Multiple } from "../../../framework/shape";
 import { Movie } from "../domain/movie";
 import { TmdbAPI } from "./tmdb.api";
 
 export class DiscoverMovieQuery extends Query({
-  returningMany: Movie,
+  returning: Multiple(Movie),
 }) {}
 
 export class DiscoverMovieQueryHandler extends QueryHandler(

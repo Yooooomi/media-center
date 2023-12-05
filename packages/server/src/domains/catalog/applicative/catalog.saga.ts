@@ -5,13 +5,12 @@ import {
   HierarchyItemAdded,
   HierarchyItemDeleted,
 } from "../../fileWatcher/applicative/fileWatcher.events";
-import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbAPI } from "../../tmdb/applicative/tmdb.api";
 import {
-  AnyCatalogEntrySpecification,
-  CatalogEntry,
   CatalogEntryMovieSpecification,
   CatalogEntryShowSpecification,
+  MovieCatalogEntry,
+  ShowCatalogEntry,
 } from "../domain/catalogEntry";
 import { CatalogEntryStore } from "./catalogEntry.store";
 
@@ -57,8 +56,12 @@ export class CatalogSaga extends Saga {
         tmdbEntry.title
       } (id: ${tmdbEntry.id.toRealId()}, isShow: ${isShow})`
     );
-    let specification: AnyCatalogEntrySpecification;
-    if (event.data.type === "show") {
+    const alreadyExisting =
+      (await this.catalogEntryStore.load(tmdbEntry.id)) ??
+      (isShow
+        ? new ShowCatalogEntry({ id: tmdbEntry.id, items: [] })
+        : new MovieCatalogEntry({ id: tmdbEntry.id, items: [] }));
+    if (alreadyExisting instanceof ShowCatalogEntry) {
       if (!("isTv" in infosFromFilename)) {
         console.warn("File added in show but not analyzed as show");
         return;
@@ -72,20 +75,18 @@ export class CatalogSaga extends Saga {
         );
         return;
       }
-      specification = new CatalogEntryShowSpecification({
+      const specification = new CatalogEntryShowSpecification({
         id: event.data.item.id,
         season,
         episode,
       });
-    } else {
-      specification = new CatalogEntryMovieSpecification({
+      alreadyExisting.addSpecification(specification);
+    } else if (alreadyExisting instanceof MovieCatalogEntry) {
+      const specification = new CatalogEntryMovieSpecification({
         id: event.data.item.id,
       });
+      alreadyExisting.addSpecification(specification);
     }
-    const alreadyExisting =
-      (await this.catalogEntryStore.load(tmdbEntry.id)) ??
-      new CatalogEntry({ id: tmdbEntry.id, items: [] });
-    alreadyExisting.addSpecification(specification);
     await this.catalogEntryStore.save(alreadyExisting);
   }
 

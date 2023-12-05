@@ -16,8 +16,8 @@ export function bootTorrentClient(
   torrentRequestStore: TorrentRequestStore
 ) {
   const torrentClient = environmentHelper.match("DI_TORRENT_CLIENT", {
-    mock: () => new MockTorrentClient(torrentRequestStore, environmentHelper),
-    deluge: () => new DelugeTorrentClient(),
+    mock: () => new MockTorrentClient(environmentHelper),
+    deluge: () => new DelugeTorrentClient(environmentHelper),
   });
 
   const unsubscribeUpdateTorrentPoll = new InMemoryPoll(

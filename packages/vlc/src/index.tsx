@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, type RefObject } from 'react';
+import React, { useRef, type RefObject, useEffect } from 'react';
 import {
   requireNativeComponent,
   UIManager,
   Platform,
-  DeviceEventEmitter,
+  NativeEventEmitter,
+  NativeModules,
   type ViewStyle,
 } from 'react-native';
 
@@ -21,8 +22,6 @@ export interface VLCTrack {
 export interface VLCBaseEvent {
   progress: number;
   duration: number;
-  audioTrack: number;
-  textTrack: number;
 }
 
 export interface VLCTrackInfoEvent extends VLCBaseEvent {
@@ -38,9 +37,16 @@ type VlcProps = {
   play?: boolean;
   seek?: number;
   autoplay?: boolean;
+  volume: number;
 
   audioTrack?: number;
   textTrack?: number;
+
+  // Arguments passed to the creation of the libvlc instance
+  arguments?: string[];
+
+  hwDecode?: boolean;
+  forceHwDecode?: boolean;
 
   onProgress?: (event: VLCBaseEvent) => void;
   onVideoInfos?: (event: VLCTrackInfoEvent) => void;
@@ -56,22 +62,57 @@ const VlcView =
     : () => {
         throw new Error(LINKING_ERROR);
       };
+const VlcEventEmitter = new NativeEventEmitter(NativeModules.VlcEventEmitter);
+
+function createListener<T>(path: string) {
+  const listeners: Record<string, ((args: T) => void)[]> = {};
+
+  VlcEventEmitter.addListener(path, (a) => {
+    listeners[a.id]?.forEach((fn) => fn(a));
+  });
+
+  function register(id: number, cb: (args: T) => void) {
+    const listener = listeners[id] ?? [];
+    listener.push(cb);
+    listeners[id] = listener;
+
+    return () => {
+      const index = listener.findIndex(cb as any);
+      if (index < 0) {
+        return;
+      }
+      listener.splice(index, 1);
+    };
+  }
+
+  return { register };
+}
+
+const videoInfoListener = createListener<VLCTrackInfoEvent>('onVideoInfos');
+const onProgressListener = createListener<VLCBaseEvent>('onProgress');
 
 export function Vlc(props: VlcProps) {
   const ref = useRef<{ _nativeTag: number }>(null);
 
   useEffect(() => {
-    DeviceEventEmitter.addListener('onProgress', (event) => {
-      if (event.id === ref.current?._nativeTag) {
-        props.onProgress?.(event);
-      }
-    });
-    DeviceEventEmitter.addListener('onVideoInfos', (event) => {
-      if (event.id === ref.current?._nativeTag) {
-        props.onVideoInfos?.(event);
-      }
-    });
-  }, [props]);
+    if (!ref.current || !props.onVideoInfos) {
+      return;
+    }
+    return videoInfoListener.register(
+      ref.current._nativeTag,
+      props.onVideoInfos
+    );
+  }, [props.onVideoInfos]);
+
+  useEffect(() => {
+    if (!ref.current || !props.onProgress) {
+      return;
+    }
+    return onProgressListener.register(
+      ref.current._nativeTag,
+      props.onProgress
+    );
+  }, [props.onProgress]);
 
   return <VlcView ref={ref} {...props} />;
 }

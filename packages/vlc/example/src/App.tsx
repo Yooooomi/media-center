@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Button, StyleSheet, View } from 'react-native';
-import { Vlc } from 'react-native-vlc';
+import { Vlc } from '@media-center/vlc';
 
 export default function App() {
   const [show, setShow] = React.useState(false);
@@ -11,10 +11,21 @@ export default function App() {
       {show && (
         <>
           <Vlc
-            onProgress={console.log}
-            onVideoInfos={console.log}
+            volume={100}
+            onProgress={(event) => {
+              console.log('JS onProgress', event);
+            }}
+            onVideoInfos={(event) => {
+              console.log('JS onVideoInfos', event);
+            }}
             style={styles.box}
-            uri="http://10.0.2.2:8080/video/1.mkv"
+            uri="http://192.168.1.153:8080/video/1.mkv"
+            arguments={[
+              '--sout-mux-caching=200',
+              '--file-caching=200',
+              '--cdda-caching=200',
+              '--http-caching=200',
+            ]}
           />
         </>
       )}

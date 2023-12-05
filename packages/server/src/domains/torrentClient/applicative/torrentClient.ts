@@ -1,6 +1,6 @@
-import { TorrentRequest } from "../../torrentRequest/domain/torrentRequest";
+import { TorrentClientEntry } from "../domain/torrentClientEntry";
 
 export abstract class TorrentClient {
-  abstract download(buffer: Buffer): Promise<void>;
-  abstract getState(): Promise<TorrentRequest[]>;
+  abstract download(buffer: Buffer, isShow: boolean): Promise<void>;
+  abstract getState(): Promise<TorrentClientEntry[]>;
 }

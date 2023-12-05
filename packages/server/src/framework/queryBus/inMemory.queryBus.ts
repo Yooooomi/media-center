@@ -12,14 +12,14 @@ class NoHandlerFound extends InfrastructureError {
 export class InMemoryQueryBus extends QueryBus {
   private readonly registry: Record<
     string,
-    InternalQueryHandler<InternalQuery<any, any, any>>
+    InternalQueryHandler<InternalQuery<any, any>>
   > = {};
   private readonly ctorRegistry: Record<
     string,
-    Constructor<InternalQuery<any, any, any>>
+    Constructor<InternalQuery<any, any>>
   > = {};
 
-  async execute(query: InternalQuery<any, any, any>) {
+  async execute(query: InternalQuery<any, any>) {
     const handler = this.registry[query.constructor.name];
     if (!handler) {
       throw new NoHandlerFound(query.constructor.name);
@@ -35,7 +35,7 @@ export class InMemoryQueryBus extends QueryBus {
     return ctor;
   }
 
-  register<C extends InternalQuery<any, any, any>>(
+  register<C extends InternalQuery<any, any>>(
     command: Constructor<C>,
     commandHandler: InternalQueryHandler<C>
   ) {

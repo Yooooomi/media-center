@@ -32,6 +32,9 @@ export class AddTorrentRequestCommandHandler extends CommandHandler(
       downloaded: 0,
     });
     await this.torrentRequestStore.save(request);
-    await this.torrentClient.download(torrentBuffer);
+    await this.torrentClient.download(
+      torrentBuffer,
+      command.data.tmdbId.getType() === "show"
+    );
   }
 }

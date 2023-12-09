@@ -1,11 +1,6 @@
-import {useMemo, useRef, useState} from 'react';
-import SiderButton from './siderButton';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
-import {color, durations, shadows, spacing} from '../../services/constants';
+import {useCallback, useMemo, useState} from 'react';
+import {SiderButton} from './siderButton';
+import {color, shadows, spacing} from '../../services/constants';
 import {StyleSheet, View} from 'react-native';
 import {useNavigate} from '../../screens/params';
 import {IconName} from '../icon/icon';
@@ -14,18 +9,8 @@ import Box from '../box/box';
 import Text from '../text/text';
 import {StatusContext} from '../../contexts/statusContext';
 
-function ensureInArray(index: number, arrayLength: number) {
-  if (index < 0) {
-    return arrayLength - 1;
-  }
-  return index % arrayLength;
-}
-
 export default function Sider() {
   const navigate = useNavigate();
-  const [focused, setFocused] = useState(0);
-  const [animState, setAnimState] = useState(false);
-  const directions = useRef<(number | null)[]>([]);
 
   const buttons = useMemo<{title: string; do: () => void; icon: IconName}[]>(
     () => [
@@ -63,58 +48,54 @@ export default function Sider() {
     [navigate],
   );
 
-  const onFocus = () => setFocused(old => old + 1);
-  const onBlur = () => setTimeout(() => setFocused(old => old - 1), 0);
+  const getUpNameFromIndex = useCallback(
+    (index: number) => {
+      index = (index - 1 + buttons.length) % buttons.length;
+      return buttons[index]!.title;
+    },
+    [buttons],
+  );
+
+  const getDownNameFromIndex = useCallback(
+    (index: number) => {
+      index = (index + 1) % buttons.length;
+      return buttons[index]!.title;
+    },
+    [buttons],
+  );
+
+  const [focused, setFocused] = useState(0);
 
   const closedWidth = 24 + 2 * spacing.S16;
   const openWidth = 250;
-  const widthStyle = useAnimatedStyle(() => {
-    runOnJS(setAnimState)(true);
-    return {
-      width: withTiming(
-        focused <= 0 ? closedWidth : openWidth,
-        {
-          duration: durations.default,
-        },
-        finished => {
-          if (!finished) {
-            return;
-          }
-          runOnJS(setAnimState)(focused > 0);
-        },
-      ),
-    };
-  });
+  const isOpen = focused > 0;
+  const width = isOpen ? openWidth : closedWidth;
+
+  const onFocus = () => setFocused(o => o + 1);
+  const onBlur = () => setTimeout(() => setFocused(o => o - 1), 0);
 
   return (
-    <View style={[styles.root, animState ? styles.above : undefined]}>
-      <Animated.View style={[styles.container, widthStyle, shadows.default]}>
+    <View style={[styles.root, focused ? styles.over : undefined]}>
+      <View style={[styles.container, shadows.default, {width}]}>
         {buttons.map((button, index) => (
           <SiderButton
             key={button.title}
-            getKey={k => (directions.current[index] = k)}
             icon={button.icon}
             text={button.title}
-            onBlur={onBlur}
-            onFocus={onFocus}
             onPress={button.do}
-            nextFocusDown={
-              directions.current[ensureInArray(index + 1, buttons.length)] ??
-              null
-            }
-            nextFocusUp={
-              directions.current[ensureInArray(index - 1, buttons.length)] ??
-              null
-            }
+            onFocus={onFocus}
+            onBlur={onBlur}
+            upName={getUpNameFromIndex(index)}
+            downName={getDownNameFromIndex(index)}
           />
         ))}
         <View style={styles.status}>
           <Box row ml="S16" mb="S16" gap="S8" items="center">
             <Dot color={StatusContext.server.value ? 'statusOK' : 'statusKO'} />
-            {animState && <Text size="small">Serveur</Text>}
+            {isOpen && <Text size="small">Serveur</Text>}
           </Box>
         </View>
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -131,11 +112,12 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     flexDirection: 'column',
-    gap: spacing.S8,
+    gap: spacing.S4,
     paddingLeft: spacing.S8,
     paddingTop: spacing.S16,
     paddingRight: spacing.S8,
     backgroundColor: color.background,
+    overflow: 'hidden',
   },
   above: {
     zIndex: 2,
@@ -144,5 +126,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'flex-end',
     overflow: 'visible',
+  },
+  over: {
+    zIndex: 1000,
   },
 });

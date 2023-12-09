@@ -8,9 +8,9 @@ import {useBooleanState} from '../../services/useBooleanState';
 import {SearchTorrentsQuery} from '@media-center/server/src/domains/torrentIndexer/applicative/searchTorrents.query';
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
 import TorrentIndexerResultLine from '../../components/torrentIndexerResultLine/torrentIndexerResultLine';
-import IconButton from '../../components/iconButton';
 import {AddRawTorrentRequestCommand} from '@media-center/server/src/domains/torrentRequest/applicative/addRawTorrentRequest.command';
 import {useAlert} from '../../components/alert/alertProvider';
+import {IconButton} from '../../components/ui/pressable/iconButton';
 
 export default function SearchTorrent() {
   const [isFocused, focus, blur] = useBooleanState();
@@ -71,7 +71,6 @@ export default function SearchTorrent() {
           />
           <IconButton
             icon="magnify"
-            type="primary"
             loading={loading}
             onPress={updateSearch}
             hasTVPreferredFocus={!isFocused}
@@ -81,7 +80,7 @@ export default function SearchTorrent() {
           {results.map((r, index) => (
             <Box mb="S8" key={r.id.toString()}>
               <TorrentIndexerResultLine
-                hasTVPreferredFocus={!isFocused && index === 0}
+                focusOnMount={!isFocused && index === 0}
                 torrentIndexerResult={r}
                 onPress={() => askDownload(r)}
               />

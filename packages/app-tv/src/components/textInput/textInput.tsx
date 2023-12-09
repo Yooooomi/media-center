@@ -45,14 +45,14 @@ const TextInput = React.forwardRef<TextInputHandle, TextInputProps>(
     useImperativeHandle(iref, () => handle);
 
     const [setBackgroundFocused, animatedStyle] = useFocusable(
-      color.buttonDarkBackground,
-      color.buttonLightBackground,
+      color.buttonBackground,
+      color.buttonBackgroundFocused,
       'backgroundColor',
     );
 
     const [setTextFocused, animatedTextStyle] = useFocusable(
-      color.buttonDarkText,
-      color.buttonLightText,
+      color.buttonText,
+      color.buttonTextFocused,
       'color',
     );
 

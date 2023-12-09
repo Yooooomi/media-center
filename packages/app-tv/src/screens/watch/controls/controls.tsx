@@ -1,5 +1,4 @@
 import {StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
-import IconButton from '../../../components/iconButton/iconButton';
 import {color, fontSize, spacing} from '../../../services/constants';
 import {useRemote} from '../../../services/useRemote';
 import {useBooleanState} from '../../../services/useBooleanState';
@@ -18,6 +17,7 @@ import {VLCTrackInfoEvent} from '@media-center/vlc';
 import {formatVideoDuration} from '../../../services/string';
 import RealtimeText from '../../../components/realtimeText/realtimeText';
 import ProgressBar from '../../../components/progressBar/progressBar';
+import {IconButton} from '../../../components/ui/pressable/iconButton';
 
 interface ControlsProps {
   progress: SharedValue<number>;
@@ -32,9 +32,9 @@ interface ControlsProps {
   style?: ViewStyle;
 }
 
-const SHOW_DURATION = 3000;
-const REWIND_SECONDS = 10000;
-const FORWARD_SECONDS = 30000;
+const SHOW_DURATION_MS = 3000;
+const REWIND_MS = 10000;
+const FORWARD_MS = 30000;
 
 const Controls = ({
   isPlaying,
@@ -58,17 +58,12 @@ const Controls = ({
     add,
     value: seekValue,
     active: seekActive,
-  } = useAdditiveThrottle(0 as number, 1000, seek);
-
-  const setCurrentFocus = useCallback(
-    (fn: () => void) => (currentCallback.current = fn),
-    [],
-  );
+  } = useAdditiveThrottle<number>(0, 1000, seek);
 
   const resetShow = useCallback(() => {
     clearTimeout(showTimeout.current);
     show();
-    showTimeout.current = setTimeout(hide, SHOW_DURATION);
+    showTimeout.current = setTimeout(hide, SHOW_DURATION_MS);
   }, [hide, show]);
 
   useEffect(() => {
@@ -76,11 +71,11 @@ const Controls = ({
   }, [resetShow]);
 
   const rewind = () => {
-    add(old => old - REWIND_SECONDS);
+    add(old => Math.min(old - REWIND_MS, 0));
     resetShow();
   };
   const fastForward = () => {
-    add(old => old + FORWARD_SECONDS);
+    add(old => Math.min(old + FORWARD_MS, videoInfo.duration));
     resetShow();
   };
 
@@ -141,51 +136,25 @@ const Controls = ({
             <Box row gap="S16">
               <IconButton
                 disabled={videoInfo.availableTextTracks.length === 0}
-                type="primary"
                 onPress={() => {}}
-                onFocus={() => setCurrentFocus(() => setActionSheet('text'))}
                 icon="subtitles"
               />
               <IconButton
                 disabled={videoInfo.availableAudioTracks.length === 0}
-                type="primary"
                 onPress={() => {}}
-                onFocus={() => setCurrentFocus(() => setActionSheet('audio'))}
                 icon="cast-audio"
               />
             </Box>
             <Box row gap="S16">
+              <IconButton onPress={onBack} icon="skip-backward" />
+              <IconButton onPress={rewind} icon="rewind" />
               <IconButton
-                type="primary"
-                onPress={() => {}}
-                onFocus={() => setCurrentFocus(onBack)}
-                icon="skip-backward"
-              />
-              <IconButton
-                type="primary"
-                onPress={() => {}}
-                onFocus={() => setCurrentFocus(rewind)}
-                icon="rewind"
-              />
-              <IconButton
-                type="primary"
-                hasTVPreferredFocus
-                onPress={() => {}}
-                onFocus={() => setCurrentFocus(rollPlay)}
+                focusOnMount
+                onPress={rollPlay}
                 icon={isPlaying ? 'pause' : 'play'}
               />
-              <IconButton
-                type="primary"
-                onPress={() => {}}
-                onFocus={() => setCurrentFocus(fastForward)}
-                icon="fast-forward"
-              />
-              <IconButton
-                type="primary"
-                onPress={() => {}}
-                onFocus={() => setCurrentFocus(onNext)}
-                icon="skip-forward"
-              />
+              <IconButton onPress={fastForward} icon="fast-forward" />
+              <IconButton onPress={onNext} icon="skip-forward" />
             </Box>
             <Box>
               <View />

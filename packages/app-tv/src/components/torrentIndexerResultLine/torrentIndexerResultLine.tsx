@@ -1,35 +1,43 @@
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
 import Box from '../box';
-import PressableGrey from '../pressableGrey';
-import {PressableGreyProps} from '../pressableGrey/pressableGrey';
 import Text from '../text/text';
 import {StyleSheet} from 'react-native';
+import {Pressable} from '../ui/pressable/pressable';
 
-interface TorrentIndexerResultLineProps extends PressableGreyProps {
+interface TorrentIndexerResultLineProps {
   torrentIndexerResult: TorrentIndexerResult;
+  onPress: () => void;
+  focusOnMount?: boolean;
 }
 
 export default function TorrentIndexerResultLine({
   torrentIndexerResult,
-  ...other
+  onPress,
+  focusOnMount,
 }: TorrentIndexerResultLineProps) {
   return (
-    <PressableGrey {...other}>
-      <Box p="S8">
-        <Text color="black">{torrentIndexerResult.name}</Text>
-        <Box row content="space-between">
-          <Text color="darkgrey" style={styles.left}>
-            {torrentIndexerResult.toDisplaySize()}
+    <Pressable onPress={onPress} focusOnMount={focusOnMount}>
+      {({focused}) => (
+        <Box p="S8">
+          <Text color={focused ? 'buttonTextFocused' : 'buttonText'}>
+            {torrentIndexerResult.name}
           </Text>
-          <Text color="green" style={styles.mid}>
-            {torrentIndexerResult.seeders.toString()}
-          </Text>
-          <Text color="red" style={styles.right}>
-            {torrentIndexerResult.leechers.toString()}
-          </Text>
+          <Box row content="space-between">
+            <Text
+              color={focused ? 'buttonTextFocused' : 'buttonText'}
+              style={styles.left}>
+              {torrentIndexerResult.toDisplaySize()}
+            </Text>
+            <Text color={'ctaGreen'} style={styles.mid}>
+              {torrentIndexerResult.seeders.toString()}
+            </Text>
+            <Text color={'ctaGreen'} style={styles.right}>
+              {torrentIndexerResult.leechers.toString()}
+            </Text>
+          </Box>
         </Box>
-      </Box>
-    </PressableGrey>
+      )}
+    </Pressable>
   );
 }
 

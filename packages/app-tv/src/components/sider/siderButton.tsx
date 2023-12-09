@@ -1,81 +1,62 @@
-import Animated from 'react-native-reanimated';
-import {color, radius, spacing} from '../../services/constants';
-import {AnimatedIcon, IconName} from '../icon/icon';
-import {useFocusable} from '../ui/animated/useFocusable';
-import {
-  Pressable as RNPressable,
-  StyleSheet,
-  findNodeHandle,
-} from 'react-native';
+import {radius, spacing} from '../../services/constants';
+import {IconName} from '../icon/icon';
+import {StyleSheet, View} from 'react-native';
+import {Pressable} from '../ui/pressable/pressable';
+import Icon from '../icon';
+import Text from '../text/text';
+import Box from '../box';
 
 interface SiderButtonProps {
   text: string;
   icon: IconName;
+  onPress: () => void;
   onFocus: () => void;
   onBlur: () => void;
-  onPress: () => void;
-  getKey: (key: number | null) => void;
-  nextFocusUp: number | null;
-  nextFocusDown: number | null;
+  upName: string;
+  downName: string;
 }
 
-const b = `${color.buttonDarkBackground}30`;
-
-const Pressable = Animated.createAnimatedComponent(RNPressable);
-
-export default function SiderButton({
+export function SiderButton({
   text,
   icon,
+  onPress,
   onBlur,
   onFocus,
-  onPress,
-  getKey,
-  nextFocusDown,
-  nextFocusUp,
+  upName,
+  downName,
 }: SiderButtonProps) {
-  const [bgSetFocused, backgroundStyle] = useFocusable(
-    b,
-    color.buttonLightBackground,
-    'backgroundColor',
-  );
-  const [textSetFocused, textStyle] = useFocusable(
-    color.buttonDarkText,
-    color.buttonLightText,
-    'color',
-  );
-
-  const setFocused = (value: boolean) => {
-    bgSetFocused(value);
-    textSetFocused(value);
-  };
-
   return (
-    <Animated.View style={[styles.root, backgroundStyle]}>
+    <View style={styles.root}>
       <Pressable
-        ref={r => {
-          if (!r) {
-            return;
-          }
-          getKey(findNodeHandle(r));
-        }}
-        onFocus={() => {
-          setFocused(true);
-          onFocus();
-        }}
-        onBlur={() => {
-          setFocused(false);
-          onBlur();
-        }}
         onPress={onPress}
-        style={styles.pressable}
-        nextFocusDown={nextFocusDown ?? undefined}
-        nextFocusUp={nextFocusUp ?? undefined}
-      />
-      <AnimatedIcon size={24} style={textStyle} name={icon} />
-      <Animated.Text style={[textStyle, styles.text]} numberOfLines={1}>
-        {text}
-      </Animated.Text>
-    </Animated.View>
+        onFocus={onFocus}
+        onBlur={onBlur}
+        name={text}
+        up={() => upName}
+        down={() => downName}
+        style={styles.pressable}>
+        {({focused}) => (
+          <Box
+            row
+            p="S4"
+            gap="S24"
+            r="default"
+            bg={focused ? 'buttonBackgroundFocused' : 'buttonBackground'}
+            items="center">
+            <Icon
+              color={focused ? 'buttonTextFocused' : 'buttonText'}
+              size={24}
+              name={icon}
+            />
+            <Text
+              color={focused ? 'buttonTextFocused' : 'buttonText'}
+              numberOfLines={1}>
+              {text}
+            </Text>
+          </Box>
+        )}
+      </Pressable>
+    </View>
   );
 }
 
@@ -89,13 +70,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   pressable: {
-    position: 'absolute',
-    height: 30,
-    width: 30,
-    top: 0,
-    left: -500,
-  },
-  text: {
-    fontFamily: 'Rubik',
+    flexGrow: 1,
+    marginLeft: -6,
   },
 });

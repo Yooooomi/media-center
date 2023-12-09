@@ -23,6 +23,7 @@ export class UpdateTorrentsPoll extends Polling {
           new UpdateTorrentRequestCommand({
             torrentRequestId: new TorrentRequestId(torrent.hash),
             downloaded: torrent.downloaded,
+            speed: torrent.speed,
           })
         )
       )

@@ -1,5 +1,5 @@
 import {StyleSheet, View} from 'react-native';
-import {useNavigate, useParams} from '../params';
+import {useParams} from '../params';
 import {useImageUri} from '../../services/tmdb';
 import Text from '../../components/text/text';
 import {GetEntryQuery} from '@media-center/server/src/domains/catalog/applicative/getEntry.query';
@@ -11,11 +11,11 @@ import {PageBackground} from '../../components/pageBackground/pageBackground';
 import {useQueryTorrents} from '../../services/useQueryTorrents';
 import {BigInfo} from '../../components/bigInfo';
 import {BigPressable} from '../../components/bigPressable/bigPressable';
-import {ReactNode} from 'react';
 import {spacing} from '../../services/constants';
+import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
+import {TorrentRequests} from '../../components/torrentRequests';
 
-export default function Movie() {
-  const navigate = useNavigate();
+export function Movie() {
   const {movie} = useParams<'Movie'>();
   const imageUri = useImageUri(movie.backdrop_path, true);
 
@@ -34,18 +34,7 @@ export default function Movie() {
       tmdbId: movie.id,
     });
 
-  const firstRequest = existingTorrents?.[0];
-  const latestItem = existingEntry?.getLatestItem();
   const loadingItems = loadingExistingTorrents || loadingExistingEntry;
-
-  const watch = () => {
-    if (!latestItem) {
-      return;
-    }
-    navigate('Watch', {
-      hierarchyItem: latestItem.item,
-    });
-  };
 
   const reload = () => {
     reloadExistingEntry();
@@ -62,16 +51,14 @@ export default function Movie() {
     onDownloaded: reload,
   });
 
-  let children: ReactNode | undefined;
-  if (!latestItem && firstRequest) {
-    children = <Text size="big">{firstRequest.getPercentage()}%</Text>;
-  }
-
   return (
     <>
       <View style={styles.grow}>
         <PageBackground imageUri={imageUri} />
-        <Box p="S32" style={{marginTop: 100}}>
+        <View style={styles.topRight}>
+          <TorrentRequests requests={existingTorrents} />
+        </View>
+        <Box p="S32" style={styles.box}>
           <Box row gap="S8" style={{marginBottom: -spacing.S4}}>
             {details?.genres.map(genre => (
               <Text key={genre} size="smaller">
@@ -83,26 +70,22 @@ export default function Movie() {
             {movie.title.toUpperCase()}
           </Text>
           <Box row gap="S8">
+            {existingEntry && (
+              <WatchCatalogEntry
+                entry={existingEntry}
+                requests={existingTorrents ?? []}
+              />
+            )}
             <BigPressable
-              hasTVPreferredFocus
-              bg="ctaGreen"
-              icon="play"
-              onPress={watch}>
-              {children}
-            </BigPressable>
-            <BigPressable
-              bg={['buttonLightBackground', 0.4]}
               icon="download"
               onPress={queryTorrents}
               loading={queryTorrentsLoading}
             />
             <BigPressable
-              bg={['buttonLightBackground', 0.4]}
               icon="refresh"
               onPress={reload}
               loading={loadingItems}
             />
-
             <BigInfo info={details?.getStringRuntime()} />
             <BigInfo info={movie.getYear()} />
           </Box>
@@ -126,7 +109,15 @@ export default function Movie() {
 }
 
 const styles = StyleSheet.create({
+  box: {
+    marginTop: 100,
+  },
   grow: {
     flexGrow: 1,
+  },
+  topRight: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
 });

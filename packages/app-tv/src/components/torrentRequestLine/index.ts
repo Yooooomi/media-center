@@ -1,1 +1,1 @@
-export {default} from './torrentRequestLine';
+export * from './torrentRequestLine';

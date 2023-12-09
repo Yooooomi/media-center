@@ -1,19 +1,18 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {cardShadow, hcard, radius} from '../../services/constants';
-import {combineStyles} from '../../services/utils';
 import Box from '../box';
 import LoggedImage from '../loggedImage';
 import Pill from '../pill';
-import Pressable, {PressableProps} from '../pressable/pressable';
 import Text from '../text/text';
+import {ScaleButton} from '../ui/pressable/scaleButton';
 
-export type ExtraInfoCardProps = Omit<PressableProps, 'children'>;
-
-export interface InfoCardProps extends ExtraInfoCardProps {
+export interface InfoCardProps {
   imageUri: string | undefined;
   pillText: string;
   title: string;
   subtitle: string;
+  onPress: () => void;
+  focusOnMount?: boolean;
 }
 
 export const InfoCardSize = {
@@ -26,14 +25,16 @@ export default function InfoCard({
   pillText,
   title,
   subtitle,
-  style,
-  ...other
+  onPress,
+  focusOnMount,
 }: InfoCardProps) {
   return (
     <Box>
-      <Pressable style={combineStyles(styles.root, style)} {...other}>
-        <LoggedImage uri={imageUri} style={styles.image} resizeMode="cover" />
-      </Pressable>
+      <ScaleButton onPress={onPress} focusOnMount={focusOnMount} border>
+        <View style={styles.root}>
+          <LoggedImage uri={imageUri} style={styles.image} resizeMode="cover" />
+        </View>
+      </ScaleButton>
       <Box
         row
         gap="S8"

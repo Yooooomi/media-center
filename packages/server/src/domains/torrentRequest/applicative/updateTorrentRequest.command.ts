@@ -7,6 +7,7 @@ export class UpdateTorrentRequestCommand extends Command({
   needing: Shape({
     torrentRequestId: TorrentRequestId,
     downloaded: Number,
+    speed: Number,
   }),
 }) {}
 
@@ -32,6 +33,7 @@ export class UpdateTorrentRequestCommandHandler extends CommandHandler(
     }
 
     existing.setDownloaded(command.data.downloaded);
+    existing.setSpeed(command.data.speed);
     await this.torrentRequestStore.save(existing);
   }
 }

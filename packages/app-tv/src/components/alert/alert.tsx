@@ -1,7 +1,7 @@
 import Text from '../text/text';
-import Button from '../button/button';
 import Modal from '../modal/modal';
 import Box from '../box/box';
+import {TextButton} from '../ui/pressable/textButton';
 
 interface AlertProps<T extends string> {
   title: string;
@@ -21,11 +21,7 @@ export default function Alert<T extends string>({
       <Text color="text">{text}</Text>
       <Box mt="S8" row gap="S8" content="flex-end">
         {buttons.map(button => (
-          <Button
-            text={button}
-            type="primary"
-            onPress={() => onPress(button)}
-          />
+          <TextButton text={button} onPress={() => onPress(button)} />
         ))}
       </Box>
     </Modal>

@@ -55,11 +55,14 @@ export class YggTorrentIndexer extends TorrentIndexer {
     super();
   }
 
+  private static EXTENSION = "qa";
+  private static URL = `https://www3.yggtorrent.${YggTorrentIndexer.EXTENSION}`;
+
   private logged = false;
 
   public async ensureAccessToDownload() {
     if (!this.logged) {
-      await this.safeRequest.post("https://www3.yggtorrent.wtf/user/login", {
+      await this.safeRequest.post(`${YggTorrentIndexer.URL}/user/login`, {
         id: "",
         pass: "",
         ci_csrf_token: "",
@@ -83,7 +86,7 @@ export class YggTorrentIndexer extends TorrentIndexer {
 
   async search(query: string) {
     const result = await this.safeRequest.get(
-      `https://www3.yggtorrent.wtf/engine/search?name=${query
+      `${YggTorrentIndexer.URL}/engine/search?name=${query
         .split(" ")
         .join("+")}&do=search&order=desc&sort=seed`
     );
@@ -112,7 +115,9 @@ export class YggTorrentIndexer extends TorrentIndexer {
   }
 
   async download(torrentId: TorrentIndexerResultId) {
-    const downloadUrl = `https://www3.yggtorrent.wtf/engine/download_torrent?id=${torrentId.toString()}`;
+    const downloadUrl = `${
+      YggTorrentIndexer.URL
+    }/engine/download_torrent?id=${torrentId.toString()}`;
     return this.safeRequest.download(downloadUrl);
   }
 }

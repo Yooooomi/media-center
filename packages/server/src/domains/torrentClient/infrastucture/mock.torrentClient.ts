@@ -55,6 +55,7 @@ export class MockTorrentClient extends TorrentClient {
           return new TorrentClientEntry({
             hash: infos.hash,
             downloaded: v.progress,
+            speed: 10298,
           });
         })
       )

@@ -1,21 +1,20 @@
 import {Fragment, useCallback, useMemo, useState} from 'react';
 import Box from '../../components/box/box';
-import TextInput, {TextInputHandle} from '../../components/textInput/textInput';
+import TextInput from '../../components/textInput/textInput';
 import {useAdditiveThrottle} from '../../services/useAdditiveThrottle';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {SearchQuery} from '@media-center/server/src/domains/tmdb/applicative/search.query';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {Beta} from '../../services/api';
 import {ScrollView, View} from 'react-native';
-import MovieCard from '../../components/movieCard/movieCard';
-import ShowCard from '../../components/showCard/showCard';
+import {MovieCard} from '../../components/implementedUi/cards/movieCard/movieCard';
+import {ShowCard} from '../../components/implementedUi/cards/showCard/showCard';
 import {chunk} from '@media-center/algorithm';
 import Section from '../../components/section/section';
 import {useBooleanState} from '../../services/useBooleanState';
 
 export default function Search() {
   const [isFocused, focus, blur] = useBooleanState();
-  const [textInput, setTextInput] = useState<TextInputHandle | null>();
   const [results, setResults] = useState<(Movie | Show)[]>([]);
 
   const updateSearch = useCallback(async (text: string) => {
@@ -33,25 +32,9 @@ export default function Search() {
   const getItem = (item: Movie | Show, lineIndex: number, index: number) => {
     const isFirst = lineIndex === 0 && index === 0;
     if (item instanceof Movie) {
-      return (
-        <MovieCard
-          hasTVPreferredFocus={!isFocused && isFirst}
-          movie={item}
-          nextFocusUp={
-            lineIndex === 0 ? textInput?.nodeHandle() ?? undefined : undefined
-          }
-        />
-      );
+      return <MovieCard focusOnMount={!isFocused && isFirst} movie={item} />;
     } else if (item instanceof Show) {
-      return (
-        <ShowCard
-          hasTVPreferredFocus={!isFocused && isFirst}
-          show={item}
-          nextFocusUp={
-            lineIndex === 0 ? textInput?.nodeHandle() ?? undefined : undefined
-          }
-        />
-      );
+      return <ShowCard focusOnMount={!isFocused && isFirst} show={item} />;
     }
     return null;
   };
@@ -61,7 +44,6 @@ export default function Search() {
       <Box mt="S8" ml="S8">
         <TextInput
           autoFocus
-          ref={setTextInput}
           onFocus={focus}
           onBlur={blur}
           numberOfLines={1}

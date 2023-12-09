@@ -1,13 +1,13 @@
 import {NativeRouter, Route, Routes} from 'react-router-native';
 import Discover from './discover';
-import MovieScreen from './movie/movie';
+import {Movie} from './movie/movie';
 import {PortalProvider} from '@gorhom/portal';
 import {DEFAULT_HOSTNAME} from '../components/portal/portal';
 import {PortalHost} from '../components/portal';
 import {StyleSheet, View} from 'react-native';
 import BackHandler from './backHandler';
 import Watch from './watch/watch';
-import ShowScreen from './show/show';
+import {Show} from './show/show';
 import AddedRecently from './addedRecently/addedRecently';
 import {paths} from './params';
 import ShowSeason from './showSeason/showSeason';
@@ -32,8 +32,8 @@ export default function Navigation() {
                 Component={withSider(AddedRecently)}
               />
               <Route path={paths.Discover} Component={withSider(Discover)} />
-              <Route path={paths.Movie} Component={withSider(MovieScreen)} />
-              <Route path={paths.Show} Component={withSider(ShowScreen)} />
+              <Route path={paths.Movie} Component={withSider(Movie)} />
+              <Route path={paths.Show} Component={withSider(Show)} />
               <Route path={paths.Watch} Component={Watch} />
               <Route
                 path={paths.ShowSeason}

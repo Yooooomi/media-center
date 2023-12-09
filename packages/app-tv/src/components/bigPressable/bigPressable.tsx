@@ -1,50 +1,50 @@
-import {ActivityIndicator, StyleSheet} from 'react-native';
-import {radius} from '../../services/constants';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import Box from '../box';
-import Pressable from '../pressable/pressable';
 import Icon, {IconName} from '../icon/icon';
 import {BoxProps} from '../box/box';
 import {ReactNode} from 'react';
 import {BlurView} from '@react-native-community/blur';
+import {noop} from '@media-center/algorithm';
+import {ScaleButton} from '../ui/pressable/scaleButton';
+import {radius} from '../../services/constants';
 
 interface BigPressableProps {
   disabled?: boolean;
   onPress: () => void;
   icon: IconName;
   loading?: boolean;
-  bg: BoxProps['bg'];
+  bg?: BoxProps['bg'];
   children?: ReactNode;
-  hasTVPreferredFocus?: boolean;
+  focusOnMount?: boolean;
 }
 
 export function BigPressable({
   disabled,
   onPress,
-  bg,
+  bg = 'buttonBackground',
   loading,
   icon,
   children,
-  hasTVPreferredFocus,
+  focusOnMount,
 }: BigPressableProps) {
   return (
-    <Pressable
-      hasTVPreferredFocus={hasTVPreferredFocus}
-      onPress={disabled ? undefined : onPress}
-      radius={radius.big}>
-      <Box r="big" overflow="hidden" style={styles.bigInfo}>
-        <BlurView overlayColor="transparent" style={styles.grow}>
-          <Box grow bg={bg} items="center" content="center">
-            {children ? (
-              children
-            ) : !loading ? (
-              <Icon name={icon} size={48} />
-            ) : (
-              <ActivityIndicator size={48} />
-            )}
-          </Box>
-        </BlurView>
+    <ScaleButton
+      border="big"
+      focusOnMount={focusOnMount}
+      onPress={disabled ? noop : onPress}>
+      <Box style={styles.container} bg={bg}>
+        <BlurView overlayColor="transparent" style={styles.blur} />
+        <View style={styles.icon}>
+          {children ? (
+            children
+          ) : !loading ? (
+            <Icon name={icon} size={48} />
+          ) : (
+            <ActivityIndicator size={48} />
+          )}
+        </View>
       </Box>
-    </Pressable>
+    </ScaleButton>
   );
 }
 
@@ -54,12 +54,20 @@ const BUTTON_SIZE = {
 };
 
 const styles = StyleSheet.create({
-  bigInfo: {
+  container: {
+    borderRadius: radius.big,
+    overflow: 'hidden',
+    zIndex: 1,
     ...BUTTON_SIZE,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
-  grow: {
-    flexGrow: 1,
+  blur: {
+    ...BUTTON_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    top: BUTTON_SIZE.height / 2 - 48 / 2,
+    left: BUTTON_SIZE.width / 2 - 48 / 2,
   },
 });

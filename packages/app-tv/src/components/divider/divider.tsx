@@ -12,6 +12,6 @@ export default function Divider({width}: DividerProps) {
 const styles = StyleSheet.create({
   root: {
     height: 1,
-    backgroundColor: color.grey,
+    backgroundColor: color.divider,
   },
 });

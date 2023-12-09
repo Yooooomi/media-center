@@ -206,8 +206,14 @@ export class DelugeTorrentClient extends TorrentClient {
 
   async getState() {
     const torrents = await this.getTorrentRecord();
-    // return Object.values(torrents.torrents).map(t => new TorrentClientEntry({}))
-    return [];
+    return Object.entries(torrents.torrents).map(
+      ([id, torrent]) =>
+        new TorrentClientEntry({
+          hash: id,
+          downloaded: torrent.progress,
+          speed: torrent.download_payload_rate,
+        })
+    );
   }
 
   async download(buffer: Buffer, isShow: boolean) {

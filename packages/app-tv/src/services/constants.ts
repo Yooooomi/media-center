@@ -53,13 +53,16 @@ export const color = {
   text: rawColor.grey,
   whiteText: rawColor.white,
   darkText: rawColor.black,
-  buttonLightBackground: rawColor.white,
-  buttonLightText: rawColor.darkgrey,
-  buttonDarkBackground: rawColor.black,
-  buttonDarkText: rawColor.lightgrey,
+  buttonText: rawColor.white,
+  buttonTextFocused: rawColor.black,
+  buttonTextDisabled: rawColor.grey,
+  buttonBackground: rawColor.transparent,
+  buttonBackgroundFocused: rawColor.white,
+  buttonBackgroundDisabled: rawColor.transparent,
   ctaGreen: rawColor.green,
   statusOK: rawColor.green,
   statusKO: rawColor.red,
+  divider: rawColor.lightgrey,
 };
 
 export function opacify(c: keyof typeof color, t: number) {

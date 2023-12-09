@@ -7,6 +7,7 @@ export class TorrentRequest extends Shape({
   tmdbId: TmdbId,
   name: String,
   size: Number,
+  speed: Number,
   downloaded: Number,
 }) {
   public get ended() {
@@ -15,6 +16,10 @@ export class TorrentRequest extends Shape({
 
   public setDownloaded(downloaded: number) {
     this.downloaded = downloaded;
+  }
+
+  public setSpeed(speed: number) {
+    this.speed = speed;
   }
 
   public getClampedDownloaded() {
@@ -32,13 +37,17 @@ export class TorrentRequest extends Shape({
     const gb = mb * kb;
 
     if (size > gb) {
-      return `${Math.floor((size / gb) * 100) / 100} Go`;
+      return `${Math.floor((size / gb) * 100) / 100}Go`;
     } else if (size > mb) {
-      return `${Math.floor((size / mb) * 100) / 100} Mo`;
+      return `${Math.floor((size / mb) * 100) / 100}Mo`;
     } else if (size > kb) {
-      return `${Math.floor((size / kb) * 100) / 100} Ko`;
+      return `${Math.floor((size / kb) * 100) / 100}Ko`;
     }
-    return `${Math.floor(size * 100) / 100} o`;
+    return `${Math.floor(size * 100) / 100}o`;
+  }
+
+  public getSpeed() {
+    return `${this.getDisplaySize(this.speed)}/s`;
   }
 
   public getSizeProgress() {

@@ -1,7 +1,7 @@
 import {FC, ReactNode} from 'react';
 import Box from '../components/box/box';
 import Sider from '../components/sider/sider';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TVFocusGuideView} from 'react-native';
 
 export function withSider<C extends (args: any) => ReactNode>(
   Component: C,
@@ -11,9 +11,13 @@ export function withSider<C extends (args: any) => ReactNode>(
       <Box h="100%">
         <Sider />
       </Box>
-      <View style={styles.content}>
+      <TVFocusGuideView
+        style={styles.content}
+        trapFocusDown
+        trapFocusUp
+        autoFocus>
         <Component {...a} />
-      </View>
+      </TVFocusGuideView>
     </Box>
   );
 }

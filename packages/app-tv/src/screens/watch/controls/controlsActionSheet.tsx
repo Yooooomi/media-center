@@ -1,9 +1,9 @@
 import {FlatList} from 'react-native';
-import PressableGrey from '../../../components/pressableGrey';
 import Text from '../../../components/text/text';
 import Box from '../../../components/box/box';
 import {VLCTrack} from '@media-center/vlc';
 import Modal from '../../../components/modal/modal';
+import {Pressable} from '../../../components/ui/pressable/pressable';
 
 interface ControlsActionSheetProps {
   open: 'text' | 'audio' | undefined;
@@ -32,9 +32,7 @@ export default function ControlsActionSheet({
           keyExtractor={item => item.id.toString()}
           data={textTracks}
           renderItem={({item}) => (
-            <PressableGrey
-              focusedBackground="buttonLightBackground"
-              notFocusedBackground="background"
+            <Pressable
               onPress={() => {
                 onTextTrack(item.id);
                 onClose();
@@ -42,7 +40,7 @@ export default function ControlsActionSheet({
               <Box p="S8">
                 <Text color="darkText">{item.name}</Text>
               </Box>
-            </PressableGrey>
+            </Pressable>
           )}
         />
       </Modal>
@@ -54,7 +52,7 @@ export default function ControlsActionSheet({
           keyExtractor={item => item.id.toString()}
           data={audioTracks}
           renderItem={({item}) => (
-            <PressableGrey
+            <Pressable
               onPress={() => {
                 onAudioTrack(item.id);
                 onClose();
@@ -62,7 +60,7 @@ export default function ControlsActionSheet({
               <Box p="S8">
                 <Text color="darkText">{item.name}</Text>
               </Box>
-            </PressableGrey>
+            </Pressable>
           )}
         />
       </Modal>

@@ -3,13 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --no-packager",
     "android:clean": "cd android && ./gradlew clean ; cd -",
-    "ios": "react-native start",
+    "android:release": "react-native run-android --variant Release --no-packager",
+    "ios": "react-native run-ios --no-packager",
     "tvos": "expo run:ios --scheme mediacenterapptv-tvOS --device \"Apple TV\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "expo:publish": "expo publish"
   },
   "dependencies": {
     "@gorhom/portal": "^1.0.14",
@@ -20,6 +22,8 @@
     "@react-native-community/blur": "^4.3.2",
     "@react-native-masked-view/masked-view": "^0.2.9",
     "axios": "^1.5.0",
+    "expo": "^49.0.21",
+    "expo-updates": "~0.18.17",
     "pretty-format": "^26.5.2",
     "react": "18.2.0",
     "react-native": "npm:react-native-tvos@0.72.6-1",

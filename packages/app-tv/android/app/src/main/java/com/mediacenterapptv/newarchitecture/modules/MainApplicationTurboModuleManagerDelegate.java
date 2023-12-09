@@ -1,4 +1,4 @@
-package com.mediacenterapptv.newarchitecture.modules;
+package com.yooooomi.timotextv.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

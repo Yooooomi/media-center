@@ -1,0 +1,18 @@
+{
+  "name": "timotex-tv",
+  "displayName": "Timotex TV",
+  "expo": {
+    "name": "timotex-tv",
+    "slug": "timotex-tv",
+    "ios": {
+      "bundleIdentifier": "com.yooooomi.timotextv"
+    },
+    "android": {
+      "package": "com.yooooomi.timotextv"
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "http://localhost:3000/api/manifest"
+    }
+  }
+}

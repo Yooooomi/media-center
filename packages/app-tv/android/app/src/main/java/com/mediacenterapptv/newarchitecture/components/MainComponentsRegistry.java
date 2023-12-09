@@ -1,4 +1,4 @@
-package com.mediacenterapptv.newarchitecture.components;
+package com.yooooomi.timotextv.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

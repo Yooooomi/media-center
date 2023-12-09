@@ -22,6 +22,10 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
   return fonts[next] ?? next;
 });
 
+import {checkForUpdateAsync} from 'expo-updates';
+
+checkForUpdateAsync().then(console.log).catch(console.log);
+
 export default function App() {
   return <Navigation />;
 }

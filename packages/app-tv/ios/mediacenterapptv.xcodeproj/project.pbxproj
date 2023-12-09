@@ -92,6 +92,8 @@
 		3B0A2D062B1FBCF1001B13BD /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CBC2B1FBCF1001B13BD /* MaterialIcons.ttf */; };
 		3B0A2D072B1FBCF1001B13BD /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CBC2B1FBCF1001B13BD /* MaterialIcons.ttf */; };
 		3B0A2D082B1FBCF1001B13BD /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CBC2B1FBCF1001B13BD /* MaterialIcons.ttf */; };
+		3B4758312B24BD17003FB2DD /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B4758302B24BD17003FB2DD /* Expo.plist */; };
+		3B4758322B24BD17003FB2DD /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B4758302B24BD17003FB2DD /* Expo.plist */; };
 		41BF5F3596F87FEE707DDD11 /* libPods-mediacenterapptv-mediacenterapptvTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F21F13455730034D850CD1C /* libPods-mediacenterapptv-mediacenterapptvTests.a */; };
 		47EB63F3390701B2260096C6 /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0216F1136BF7C90703C880F /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -152,6 +154,7 @@
 		3B0A2CBA2B1FBCF1001B13BD /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		3B0A2CBB2B1FBCF1001B13BD /* FontAwesome6_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Brands.ttf; sourceTree = "<group>"; };
 		3B0A2CBC2B1FBCF1001B13BD /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		3B4758302B24BD17003FB2DD /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		3BDF8C4CCF278F944E8C6CBF /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		4F21F13455730034D850CD1C /* libPods-mediacenterapptv-mediacenterapptvTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mediacenterapptv-mediacenterapptvTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = mediacenterapptv/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -220,6 +223,7 @@
 		13B07FAE1A68108700A75B9A /* mediacenterapptv */ = {
 			isa = PBXGroup;
 			children = (
+				3B47582F2B24BD17003FB2DD /* Supporting */,
 				3B0A2CA92B1FBCF1001B13BD /* Fonts */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -270,6 +274,15 @@
 			);
 			name = Fonts;
 			path = "../../../node_modules/react-native-vector-icons/Fonts";
+			sourceTree = "<group>";
+		};
+		3B47582F2B24BD17003FB2DD /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				3B4758302B24BD17003FB2DD /* Expo.plist */,
+			);
+			name = Supporting;
+			path = mediacenterapptv/Supporting;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -487,6 +500,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B4758312B24BD17003FB2DD /* Expo.plist in Resources */,
 				3B0A2CE92B1FBCF1001B13BD /* FontAwesome5_Regular.ttf in Resources */,
 				3B0A2CBD2B1FBCF1001B13BD /* Fontisto.ttf in Resources */,
 				3B0A2CD12B1FBCF1001B13BD /* FontAwesome5_Brands.ttf in Resources */,
@@ -527,6 +541,7 @@
 				3B0A2CCB2B1FBCF1001B13BD /* FontAwesome6_Regular.ttf in Resources */,
 				3B0A2CF32B1FBCF1001B13BD /* Zocial.ttf in Resources */,
 				3B0A2CFB2B1FBCF1001B13BD /* FontAwesome6_Solid.ttf in Resources */,
+				3B4758322B24BD17003FB2DD /* Expo.plist in Resources */,
 				3B0A2D072B1FBCF1001B13BD /* MaterialIcons.ttf in Resources */,
 				3B0A2CC32B1FBCF1001B13BD /* Octicons.ttf in Resources */,
 				3B0A2CC72B1FBCF1001B13BD /* Feather.ttf in Resources */,
@@ -933,7 +948,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv.app/mediacenterapptv";
 			};
@@ -957,7 +972,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv.app/mediacenterapptv";
 			};
@@ -987,7 +1002,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = mediacenterapptv;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1014,7 +1029,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = mediacenterapptv;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1117,7 +1132,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.mediacenterapptv-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv-tvOS.app/mediacenterapptv-tvOS";
@@ -1148,7 +1163,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.mediacenterapptv-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv-tvOS.app/mediacenterapptv-tvOS";

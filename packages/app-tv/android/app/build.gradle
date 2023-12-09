@@ -10,7 +10,7 @@ react {
     //   The root of your project, i.e. where "package.json" lives. Default is '..'
     // root = file("../")
     //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
-    // reactNativeDir = file("../node_modules/react-native")
+    reactNativeDir = file("../../../../node_modules/react-native")
     //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
     // codegenDir = file("../node_modules/@react-native/codegen")
     //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
@@ -125,9 +125,33 @@ dependencies {
     }
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file("../../../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 project.ext.vectoricons = [
+    iconFontsDir: "../../../../node_modules/react-native-vector-icons/Fonts",
     iconFontNames: ["MaterialCommunityIcons.ttf"]
 ]
 
 apply from: file("../../../../node_modules/react-native-vector-icons/fonts.gradle")
+
+tasks.whenTaskAdded((tas -> {
+    // when task is 'mergeLocalDebugNativeLibs' or 'mergeLocalReleaseNativeLibs'
+    if (tas.name.contains("merge") && tas.name.contains("NativeLibs")) {
+        tasks.named(tas.name) {it
+            doFirst {
+                java.nio.file.Path notNeededDirectory = it.externalLibNativeLibs
+                        .getFiles()
+                        .stream()
+                        // for React Native 0.71, the file value now contains "jetified-react-android" instead of "jetified-react-native"
+                        .filter(file -> file.toString().contains("jetified-libvlc-all"))
+                        .findAny()
+                        .orElse(null)
+                        .toPath();
+                java.nio.file.Files.walk(notNeededDirectory).forEach(file -> {
+                    if (file.toString().contains("libc++_shared.so")) {
+                        java.nio.file.Files.delete(file);
+                    }
+                });
+            }
+        }
+    }
+}))

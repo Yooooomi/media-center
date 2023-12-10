@@ -1,5 +1,6 @@
 import {Platform, StyleSheet} from 'react-native';
 import Navigation from './src/screens';
+import {listenToUpdate} from './src/services/listenToUpdate';
 
 const fonts = Platform.select<Record<string, string>>({
   default: {
@@ -22,9 +23,7 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
   return fonts[next] ?? next;
 });
 
-import {checkForUpdateAsync} from 'expo-updates';
-
-checkForUpdateAsync().then(console.log).catch(console.log);
+listenToUpdate();
 
 export default function App() {
   return <Navigation />;

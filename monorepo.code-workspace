@@ -1,0 +1,36 @@
+{
+  "folders": [
+    {
+      "name": "Server",
+      "path": "packages/server"
+    },
+    {
+      "name": "TV App",
+      "path": "packages/app-tv"
+    },
+    {
+      "name": "VLC",
+      "path": "packages/vlc"
+    },
+    {
+      "name": "Algorithm",
+      "path": "packages/algorithm"
+    },
+    {
+      "name": "Dev",
+      "path": "packages/dev"
+    },
+    {
+      "name": "External",
+      "path": "packages/external"
+    },
+    {
+      "name": "Database",
+      "path": "aaa"
+    },
+    {
+      "name": "root",
+      "path": ".",
+    },
+  ]
+}

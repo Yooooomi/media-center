@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d"
+      }
+    },
+    "owner": "yooooomi",
+    "slug": "timotex-tv",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d",
+      "requestHeaders": {
+        "expo-runtime-version": "1.0.0",
+        "expo-channel-name": "master"
+      }
+    },
+    "android": {},
+    "ios": {}
+  }
+}

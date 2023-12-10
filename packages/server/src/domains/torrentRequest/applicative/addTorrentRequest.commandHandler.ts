@@ -29,6 +29,7 @@ export class AddTorrentRequestCommandHandler extends CommandHandler(
       tmdbId: command.data.tmdbId,
       name: infos.name,
       size: infos.size,
+      speed: 0,
       downloaded: 0,
     });
     await this.torrentRequestStore.save(request);

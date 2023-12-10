@@ -11,7 +11,7 @@ import {Show} from './show/show';
 import AddedRecently from './addedRecently/addedRecently';
 import {paths} from './params';
 import ShowSeason from './showSeason/showSeason';
-import Search from './search/search';
+import {Search} from './search/search';
 import SearchTorrent from './searchTorrent/searchTorrent';
 import AlertProvider from '../components/alert/alertProvider';
 import {color} from '../services/constants';

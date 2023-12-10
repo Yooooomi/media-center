@@ -1,5 +1,5 @@
 import {
-  AutoSerialize,
+  ShapeClass,
   Shape,
   Multiple,
   Enum,
@@ -9,7 +9,7 @@ import {
 } from "./shape";
 
 describe("New shape", () => {
-  function check(a: AutoSerialize<any>, log?: boolean) {
+  function check(a: ShapeClass<any>, log?: boolean) {
     const serialized = a.serialize();
     const deserialized = (a.constructor as any).deserialize(serialized);
 

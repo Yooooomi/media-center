@@ -1,6 +1,5 @@
 import {Fragment, useCallback, useMemo, useState} from 'react';
 import Box from '../../components/box/box';
-import TextInput from '../../components/textInput/textInput';
 import {useAdditiveThrottle} from '../../services/useAdditiveThrottle';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {SearchQuery} from '@media-center/server/src/domains/tmdb/applicative/search.query';
@@ -12,8 +11,9 @@ import {ShowCard} from '../../components/implementedUi/cards/showCard/showCard';
 import {chunk} from '@media-center/algorithm';
 import Section from '../../components/section/section';
 import {useBooleanState} from '../../services/useBooleanState';
+import {TextInput} from 'react-native';
 
-export default function Search() {
+export function Search() {
   const [isFocused, focus, blur] = useBooleanState();
   const [results, setResults] = useState<(Movie | Show)[]>([]);
 
@@ -32,6 +32,7 @@ export default function Search() {
   const getItem = (item: Movie | Show, lineIndex: number, index: number) => {
     const isFirst = lineIndex === 0 && index === 0;
     if (item instanceof Movie) {
+      console.log('MOVIE', item);
       return <MovieCard focusOnMount={!isFocused && isFirst} movie={item} />;
     } else if (item instanceof Show) {
       return <ShowCard focusOnMount={!isFocused && isFirst} show={item} />;

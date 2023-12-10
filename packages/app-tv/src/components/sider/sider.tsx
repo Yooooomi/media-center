@@ -8,6 +8,8 @@ import {Dot} from '../dot';
 import Box from '../box/box';
 import Text from '../text/text';
 import {StatusContext} from '../../contexts/statusContext';
+import {useAnimatedValue} from '../../services/useAnimatedValue';
+import Animated from 'react-native-reanimated';
 
 export default function Sider() {
   const navigate = useNavigate();
@@ -69,14 +71,15 @@ export default function Sider() {
   const closedWidth = 24 + 2 * spacing.S16;
   const openWidth = 250;
   const isOpen = focused > 0;
-  const width = isOpen ? openWidth : closedWidth;
+
+  const widthStyle = useAnimatedValue(isOpen ? openWidth : closedWidth);
 
   const onFocus = () => setFocused(o => o + 1);
   const onBlur = () => setTimeout(() => setFocused(o => o - 1), 0);
 
   return (
     <View style={[styles.root, focused ? styles.over : undefined]}>
-      <View style={[styles.container, shadows.default, {width}]}>
+      <Animated.View style={[styles.container, shadows.default, widthStyle]}>
         {buttons.map((button, index) => (
           <SiderButton
             key={button.title}
@@ -95,7 +98,7 @@ export default function Sider() {
             {isOpen && <Text size="small">Serveur</Text>}
           </Box>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 }

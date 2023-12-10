@@ -1,6 +1,6 @@
 import { Constructor } from "../types/utils";
 import {
-  AutoSerialize,
+  ShapeClass,
   DetailsInput,
   LiteralInstance,
   ManifestToInput,

@@ -2,7 +2,7 @@ import { Constructor } from "../types/utils";
 import { Serializer } from "./serializer";
 import { useLog } from "./useLog";
 
-export abstract class AutoSerialize<M> {
+export abstract class ShapeClass<M> {
   static isShape = true;
 
   static serialize(..._args: any[]) {}
@@ -10,7 +10,7 @@ export abstract class AutoSerialize<M> {
     throw new Error("Not implemented");
   }
 
-  serialize(this: any) {
+  serialize(this: any): ManifestToInput<M> {
     return this.constructor.serialize(this);
   }
 
@@ -22,7 +22,7 @@ export type ShapeParameter =
   | Constructor<Number>
   | Constructor<Boolean>
   | Constructor<Date>
-  | Constructor<AutoSerialize<any>>
+  | Constructor<ShapeClass<any>>
   | ShapeDetails<any, any>;
 
 type Instance<T> = T extends Constructor<infer K> ? K : never;
@@ -42,7 +42,7 @@ export type LiteralInstance<T> = T extends Constructor<String>
 
 export type ManifestToInput<T> = T extends Record<infer K extends string, any>
   ? {
-      [k in K]: T[k] extends AutoSerialize<infer M>
+      [k in K]: T[k] extends ShapeClass<infer M>
         ? ManifestToInput<M>
         : T[k] extends ShapeDetails<infer I, any>
         ? I
@@ -50,13 +50,13 @@ export type ManifestToInput<T> = T extends Record<infer K extends string, any>
     }
   : never;
 
-export type DetailsInput<T> = T extends Constructor<AutoSerialize<infer M>>
+export type DetailsInput<T> = T extends Constructor<ShapeClass<infer M>>
   ? ManifestToInput<M>
   : T extends ShapeDetails<infer I, any>
   ? LiteralInstance<T>
   : void;
 
-function serialize(ctor: ShapeParameter, value: any) {
+export function serializeShape(ctor: ShapeParameter, value: any) {
   if (ctor === String || ctor === Number || ctor === Boolean) {
     return value;
   }
@@ -71,7 +71,7 @@ function serialize(ctor: ShapeParameter, value: any) {
   }
 }
 
-function deserialize(ctor: ShapeParameter, value: any) {
+export function deserializeShape(ctor: ShapeParameter, value: any) {
   if (ctor === String || ctor === Number || ctor === Boolean) {
     return value;
   }
@@ -89,17 +89,19 @@ function deserialize(ctor: ShapeParameter, value: any) {
 const logger = useLog(Shape.constructor.name);
 
 export function Shape<M extends Record<string, any>>(manifest: M) {
-  class A extends AutoSerialize<M> {
+  class A extends ShapeClass<M> {
     constructor(data: ManifestToInput<M>) {
       super(manifest);
       Object.assign(this, data);
     }
 
+    static manifest = manifest;
+
     static serialize<T extends Constructor<any>>(this: T, value: A) {
       return Object.entries(manifest).reduce<Record<string, any>>(
         (acc, [key, auto]) => {
           try {
-            acc[key] = serialize(auto, (value as any)[key]);
+            acc[key] = serializeShape(auto, (value as any)[key]);
             return acc;
           } catch (e) {
             logger.warn(
@@ -116,7 +118,7 @@ export function Shape<M extends Record<string, any>>(manifest: M) {
       return new this(
         Object.entries(manifest).reduce<Record<string, any>>(
           (acc, [key, auto]) => {
-            acc[key] = deserialize(auto, value[key]);
+            acc[key] = deserializeShape(auto, value[key]);
             return acc;
           },
           {}
@@ -125,11 +127,12 @@ export function Shape<M extends Record<string, any>>(manifest: M) {
     }
   }
 
-  return A as any as new (data: ManifestToInput<M>) => A & ManifestToInput<M>;
+  return A as any as (new (data: ManifestToInput<M>) => A &
+    ManifestToInput<M>) & { manifest: M };
 }
 
 export function Literal<T extends any>(ctor: Constructor<T>) {
-  class A extends AutoSerialize<any> {
+  class A extends ShapeClass<any> {
     constructor(public readonly value: LiteralInstance<Constructor<T>>) {
       super(null);
     }
@@ -156,8 +159,9 @@ export function Multiple<T extends ShapeParameter>(
 ): ShapeDetails<LiteralInstance<T>[], any[]> {
   return {
     isDetail: true,
-    serialize: (input) => input.map((i) => serialize(ctor, i)),
-    deserialize: (serialized) => serialized.map((s) => deserialize(ctor, s)),
+    serialize: (input) => input.map((i) => serializeShape(ctor, i)),
+    deserialize: (serialized) =>
+      serialized.map((s) => deserializeShape(ctor, s)),
   };
 }
 
@@ -172,7 +176,7 @@ export function Either<T extends ShapeParameter[]>(
       if (ctorIndex < 0 || !ctor) {
         throw new Error("Cannot serialize either");
       }
-      return [ctorIndex, serialize(ctor, input)];
+      return [ctorIndex, serializeShape(ctor, input)];
     },
     deserialize: (serialized) => {
       const [ctorIndex, serializedValue] = serialized;
@@ -180,7 +184,7 @@ export function Either<T extends ShapeParameter[]>(
       if (!ctor) {
         throw new Error("Cannot deserialize either");
       }
-      return deserialize(ctor, serializedValue);
+      return deserializeShape(ctor, serializedValue);
     },
   };
 }
@@ -192,13 +196,13 @@ export function Optional<T extends ShapeParameter>(
     isDetail: true,
     serialize: (input) => {
       if (input) {
-        return serialize(ctor, input);
+        return serializeShape(ctor, input);
       }
       return undefined;
     },
     deserialize: (serialized) => {
       if (serialized) {
-        return deserialize(ctor, serialized);
+        return deserializeShape(ctor, serialized);
       }
       return undefined;
     },
@@ -230,10 +234,10 @@ export class ShapeSerializer<T extends ShapeParameter> extends Serializer<
   }
 
   protected async serialize(model: any) {
-    return { data: serialize(this.ctor, model) };
+    return { data: serializeShape(this.ctor, model) };
   }
 
   protected async deserialize(serialized: any) {
-    return deserialize(this.ctor, serialized.data);
+    return deserializeShape(this.ctor, serialized.data);
   }
 }

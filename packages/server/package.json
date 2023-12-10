@@ -11,13 +11,14 @@
   },
   "dependencies": {
     "@ctrl/video-filename-parser": "^4.14.0",
+    "@media-center/algorithm": "*",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsdom": "^22.1.0",
     "parse-torrent": "~9",
-    "uuid": "^9.0.0",
-    "@media-center/algorithm": "*"
+    "ts-morph": "^21.0.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@media-center/dev": "*",

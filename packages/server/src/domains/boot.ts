@@ -1,8 +1,5 @@
 import { config as configureDotenv } from "dotenv";
 import { bootApi } from "../endpoints/boot";
-import { InMemoryCommandBus } from "../framework/commandBus/inMemory.commandBus";
-import { InMemoryEventBus } from "../framework/event/inMemory.eventBus";
-import { InMemoryQueryBus } from "../framework/queryBus/inMemory.queryBus";
 import { SolverSafeRequest } from "../framework/safeRequest/solver.safeRequest";
 import { DiskFilesystem } from "../framework/valueObjects/fileSystem";
 import { ProcessEnvironmentHelper } from "./environment/infrastructure/process.environmentHelper";
@@ -14,6 +11,11 @@ import { bootTorrentRequest } from "./torrentRequest/boot";
 import { InMemoryTorrentRequestStore } from "./torrentRequest/infrastructure/inMemory.torrentRequest.store";
 import { bootCatalog } from "./catalog/boot";
 import { FilesystemTorrentRequestStore } from "./torrentRequest/infrastructure/filesystem.torrentRequest.store";
+import {
+  InMemoryCommandBus,
+  InMemoryEventBus,
+  InMemoryQueryBus,
+} from "@media-center/domain-driven";
 
 export async function globalBoot() {
   configureDotenv();

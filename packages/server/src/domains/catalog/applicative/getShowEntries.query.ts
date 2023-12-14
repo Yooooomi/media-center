@@ -1,6 +1,9 @@
-import { ApplicativeError } from "../../../framework/error";
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple } from "../../../framework/shape";
+import {
+  ApplicativeError,
+  Query,
+  Multiple,
+  QueryHandler,
+} from "@media-center/domain-driven";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "./catalogEntry.store";

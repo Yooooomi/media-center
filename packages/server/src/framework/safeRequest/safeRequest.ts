@@ -1,5 +1,3 @@
-import { File } from "../valueObjects/file";
-
 export abstract class SafeRequest {
   abstract get(
     url: string

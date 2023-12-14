@@ -1,4 +1,4 @@
-import { CommandHandler } from "../../../framework/command";
+import { CommandHandler } from "@media-center/domain-driven";
 import { TorrentService } from "../../../tools/torrentService";
 import { TorrentClient } from "../../torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "../../torrentIndexer/applicative/torrentIndexer";

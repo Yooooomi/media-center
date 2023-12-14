@@ -1,4 +1,4 @@
-import { Shape, Multiple } from "../../../framework/shape";
+import { Shape, Multiple } from "@media-center/domain-driven";
 import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 

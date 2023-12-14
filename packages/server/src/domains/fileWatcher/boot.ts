@@ -1,5 +1,4 @@
-import { CommandBus } from "../../framework/commandBus/commandBus";
-import { EventBus } from "../../framework/event/eventBus";
+import { CommandBus, EventBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import {
   ScanExisting,

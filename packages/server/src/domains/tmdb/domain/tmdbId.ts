@@ -1,5 +1,4 @@
-import { DomainError } from "../../../framework/error";
-import { Id } from "../../../framework/id";
+import { DomainError, Id } from "@media-center/domain-driven";
 
 export type TmdbIdType = "show" | "movie";
 

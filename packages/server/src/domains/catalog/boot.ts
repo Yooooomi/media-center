@@ -1,5 +1,4 @@
-import { EventBus } from "../../framework/event/eventBus";
-import { QueryBus } from "../../framework/queryBus/queryBus";
+import { QueryBus, EventBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { HierarchyStore } from "../fileWatcher/applicative/hierarchy.store";
 import { TmdbAPI } from "../tmdb/applicative/tmdb.api";

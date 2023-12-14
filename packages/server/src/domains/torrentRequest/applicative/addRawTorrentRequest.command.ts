@@ -1,5 +1,4 @@
-import { Command } from "../../../framework/command";
-import { Shape } from "../../../framework/shape";
+import { Command, Shape } from "@media-center/domain-driven";
 import { TorrentIndexerResultId } from "../../torrentIndexer/domain/torrentIndexerResultId";
 
 export class AddRawTorrentRequestCommand extends Command({

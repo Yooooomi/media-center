@@ -1,4 +1,4 @@
-import { Shape } from "../../../framework/shape";
+import { Shape } from "@media-center/domain-driven";
 import { File } from "../../../framework/valueObjects/file";
 import { HierarchyItemId } from "./hierarchyItemId";
 

@@ -2,11 +2,13 @@ import { File } from "../../../framework/valueObjects/file";
 import { FileWatcher } from "../applicative/fileWatcher";
 import * as fs from "fs";
 import { join } from "path";
-import { EventBus } from "../../../framework/event/eventBus";
 import { HierarchyStore } from "../applicative/hierarchy.store";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
-import { useLog } from "../../../framework/useLog";
-import { InfrastructureError } from "../../../framework/error";
+import {
+  InfrastructureError,
+  EventBus,
+  useLog,
+} from "@media-center/domain-driven";
 
 class CannotWatchSameDirectory extends InfrastructureError {
   constructor(dirname: string) {

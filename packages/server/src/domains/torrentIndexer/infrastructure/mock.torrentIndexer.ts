@@ -1,9 +1,8 @@
 import { TorrentIndexer } from "../applicative/torrentIndexer";
 import * as fs from "fs";
-import * as path from "path";
 import { TorrentIndexerResultId } from "../domain/torrentIndexerResultId";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
-import { Dirname, GetAsset } from "../../../tools/meta";
+import { GetAsset } from "../../../tools/meta";
 
 export class MockTorrentIndexer extends TorrentIndexer {
   constructor() {

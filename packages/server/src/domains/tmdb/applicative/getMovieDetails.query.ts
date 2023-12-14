@@ -1,12 +1,15 @@
-import { ApplicativeError } from "../../../framework/error";
-import { Query, QueryHandler } from "../../../framework/query";
-import { Shape } from "../../../framework/shape";
+import {
+  Query,
+  ApplicativeError,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
 import { MovieDetails } from "../domain/movieDetails";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbAPI } from "./tmdb.api";
 
 export class GetMovieDetailsQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     tmdbId: TmdbId,
   }),
   returning: MovieDetails,

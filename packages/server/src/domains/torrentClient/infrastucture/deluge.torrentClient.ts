@@ -91,7 +91,7 @@ export class DelugeTorrentClient extends TorrentClient {
         headers,
       }
     );
-    return { data: data, headers: receivedHeaders };
+    return { data: data, headers: receivedHeaders as Record<string, string> };
   }
 
   async auth() {

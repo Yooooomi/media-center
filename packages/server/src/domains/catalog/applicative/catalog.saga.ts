@@ -1,5 +1,4 @@
-import { Saga } from "../../../framework/saga";
-import { useLog } from "../../../framework/useLog";
+import { Saga, useLog } from "@media-center/domain-driven";
 import { FilenameParse } from "../../../tools/filename";
 import {
   HierarchyItemAdded,
@@ -37,7 +36,7 @@ export class CatalogSaga extends Saga {
     }
 
     const isShow = event.data.type === "show";
-    const infosFromFilename = FilenameParse(
+    const infosFromFilename = await FilenameParse(
       event.data.item.file.getFilename(),
       isShow
     );

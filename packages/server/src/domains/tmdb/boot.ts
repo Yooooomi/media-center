@@ -1,4 +1,4 @@
-import { QueryBus } from "../../framework/queryBus/queryBus";
+import { QueryBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import {
   DiscoverMovieQuery,

@@ -21,6 +21,10 @@
       "path": "packages/dev"
     },
     {
+      "name": "Domain driven",
+      "path": "packages/domain-driven"
+    },
+    {
       "name": "External",
       "path": "packages/external"
     },

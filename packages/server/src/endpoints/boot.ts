@@ -1,8 +1,5 @@
+import { QueryBus, CommandBus, useLog } from "@media-center/domain-driven";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
-import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
-import { CommandBus } from "../framework/commandBus/commandBus";
-import { QueryBus } from "../framework/queryBus/queryBus";
-import { useLog } from "../framework/useLog";
 import Express, { urlencoded, json } from "express";
 import * as fs from "fs";
 
@@ -60,10 +57,12 @@ export function bootApi(
       "Content-Type": "video/x-matroska",
     });
 
-    fs.createReadStream(path, {
-      start,
-      end,
-    }).pipe(res);
+    return fs
+      .createReadStream(path, {
+        start,
+        end,
+      })
+      .pipe(res);
   });
 
   app.post("/query/:name", async (req, res) => {

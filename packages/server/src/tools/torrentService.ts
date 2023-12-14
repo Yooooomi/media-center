@@ -1,5 +1,5 @@
+import { ApplicativeError } from "@media-center/domain-driven";
 import ParseTorrent, { Instance } from "parse-torrent";
-import { ApplicativeError } from "../framework/error";
 
 class InvalidTorrent extends ApplicativeError {
   constructor() {

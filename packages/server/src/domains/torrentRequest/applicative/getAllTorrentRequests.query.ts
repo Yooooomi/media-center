@@ -1,5 +1,4 @@
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple } from "../../../framework/shape";
+import { Query, Multiple, QueryHandler } from "@media-center/domain-driven";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestStore } from "./torrentRequest.store";
 

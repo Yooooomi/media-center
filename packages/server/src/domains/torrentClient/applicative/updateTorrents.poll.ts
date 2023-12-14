@@ -1,5 +1,4 @@
-import { CommandBus } from "../../../framework/commandBus/commandBus";
-import { Polling } from "../../../framework/poll/poll";
+import { Polling, CommandBus } from "@media-center/domain-driven";
 import { UpdateTorrentRequestCommand } from "../../torrentRequest/applicative/updateTorrentRequest.command";
 import { TorrentRequestId } from "../../torrentRequest/domain/torrentRequestId";
 import { TorrentClient } from "./torrentClient";

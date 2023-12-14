@@ -1,4 +1,4 @@
-import { DomainError } from "../error";
+import { DomainError } from "@media-center/domain-driven";
 import { Primitive } from "./primitive";
 
 class MalformedEmail extends DomainError {

@@ -1,4 +1,4 @@
-import { Either, ShapeSerializer } from "../../../framework/shape";
+import { ShapeSerializer, Either } from "@media-center/domain-driven";
 import { FilesystemStore } from "../../../framework/store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";

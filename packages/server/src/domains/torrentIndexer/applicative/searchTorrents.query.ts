@@ -1,13 +1,17 @@
-import { ApplicativeError } from "../../../framework/error";
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple, Shape } from "../../../framework/shape";
+import {
+  Query,
+  Multiple,
+  ApplicativeError,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
 import { TmdbStore } from "../../tmdb/applicative/tmdb.store";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
 import { TorrentIndexer } from "./torrentIndexer";
 
 export class SearchTorrentsQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     query: String,
   }),
   returning: Multiple(TorrentIndexerResult),

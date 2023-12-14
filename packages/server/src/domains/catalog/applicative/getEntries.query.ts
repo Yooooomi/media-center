@@ -1,6 +1,10 @@
-import { ApplicativeError } from "../../../framework/error";
-import { Query, QueryHandler } from "../../../framework/query";
-import { Either, Multiple } from "../../../framework/shape";
+import {
+  ApplicativeError,
+  Query,
+  Multiple,
+  Either,
+  QueryHandler,
+} from "@media-center/domain-driven";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { MovieCatalogEntry, ShowCatalogEntry } from "../domain/catalogEntry";

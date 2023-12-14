@@ -1,11 +1,15 @@
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple, Shape } from "../../../framework/shape";
+import {
+  Query,
+  Multiple,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestStore } from "./torrentRequest.store";
 
 export class GetTorrentRequestsQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     tmdbId: TmdbId,
   }),
   returning: Multiple(TorrentRequest),

@@ -1,4 +1,4 @@
-import { ShapeSerializer } from "../../../framework/shape";
+import { ShapeSerializer } from "@media-center/domain-driven";
 import { FilesystemStore } from "../../../framework/store";
 import { HierarchyStore } from "../applicative/hierarchy.store";
 import { HierarchyItem } from "../domain/hierarchyItem";

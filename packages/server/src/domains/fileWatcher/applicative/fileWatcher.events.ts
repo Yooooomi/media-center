@@ -1,4 +1,4 @@
-import { Event } from "../../../framework/event/event";
+import { Event } from "@media-center/domain-driven";
 import { HierarchyItem } from "../domain/hierarchyItem";
 
 export type FileType = "movie" | "show";

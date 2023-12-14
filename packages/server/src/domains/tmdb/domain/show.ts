@@ -1,4 +1,4 @@
-import { Optional, Shape } from "../../../framework/shape";
+import { Shape, Optional } from "@media-center/domain-driven";
 import { extractYear } from "../infrastructure/tmdb.api.utils";
 import { TmdbId } from "./tmdbId";
 

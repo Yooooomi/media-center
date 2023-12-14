@@ -1,5 +1,4 @@
-import { ShapeSerializer } from "../../../framework/shape";
-import { InMemoryStore } from "../../../framework/store";
+import { InMemoryStore, ShapeSerializer } from "@media-center/domain-driven";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequestStore } from "../applicative/torrentRequest.store";
 import { TorrentRequest } from "../domain/torrentRequest";

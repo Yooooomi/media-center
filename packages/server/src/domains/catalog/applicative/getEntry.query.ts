@@ -1,15 +1,14 @@
-import { ApplicativeError } from "../../../framework/error";
-import { Query, QueryHandler } from "../../../framework/query";
-import { Either, Multiple, Optional, Shape } from "../../../framework/shape";
-import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
-import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
-import { TmdbId } from "../../tmdb/domain/tmdbId";
 import {
-  CatalogEntryMovieSpecification,
-  CatalogEntryShowSpecification,
-  MovieCatalogEntry,
-  ShowCatalogEntry,
-} from "../domain/catalogEntry";
+  ApplicativeError,
+  Query,
+  Optional,
+  Either,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
+import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
+import { TmdbId } from "../../tmdb/domain/tmdbId";
+import { MovieCatalogEntry, ShowCatalogEntry } from "../domain/catalogEntry";
 import { CatalogEntryStore } from "./catalogEntry.store";
 import {
   CatalogEntryMovieSpecificationFulFilled,
@@ -25,7 +24,7 @@ class UnknownEntry extends ApplicativeError {
 }
 
 export class GetEntryQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     tmdbId: TmdbId,
   }),
   returning: Optional(

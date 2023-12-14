@@ -1,5 +1,4 @@
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple } from "../../../framework/shape";
+import { Query, Multiple, QueryHandler } from "@media-center/domain-driven";
 import { Show } from "../domain/show";
 import { TmdbAPI } from "./tmdb.api";
 

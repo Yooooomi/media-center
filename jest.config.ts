@@ -18,5 +18,19 @@ export default {
         ],
       },
     },
+    {
+      displayName: "server",
+      roots: ["packages/domain-driven/src"],
+      testEnvironment: "node",
+      transform: {
+        "^.+\\.ts?$": [
+          "ts-jest",
+          {
+            isolatedModules: true,
+            tsconfig: "packages/server/tsconfig.json",
+          },
+        ],
+      },
+    },
   ],
 } satisfies Config;

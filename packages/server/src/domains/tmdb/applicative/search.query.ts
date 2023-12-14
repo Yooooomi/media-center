@@ -1,11 +1,16 @@
-import { Query, QueryHandler } from "../../../framework/query";
-import { Either, Multiple, Shape } from "../../../framework/shape";
+import {
+  Query,
+  Multiple,
+  Either,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbAPI } from "./tmdb.api";
 
 export class SearchQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     search: String,
   }),
   returning: Multiple(Either(Show, Movie)),

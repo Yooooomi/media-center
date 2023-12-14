@@ -1,5 +1,4 @@
-import { CommandBus } from "../../framework/commandBus/commandBus";
-import { InMemoryPoll } from "../../framework/poll/inMemory.poll";
+import { CommandBus, InMemoryPoll } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { TorrentRequestStore } from "../torrentRequest/applicative/torrentRequest.store";
 import {

@@ -1,5 +1,3 @@
-import { Either, ShapeSerializer } from "../../../framework/shape";
-import { InMemoryStore } from "../../../framework/store";
 import { compact } from "@media-center/algorithm";
 import { TmdbAPI } from "../applicative/tmdb.api";
 import { TmdbStore } from "../applicative/tmdb.store";
@@ -7,6 +5,11 @@ import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
+import {
+  Either,
+  InMemoryStore,
+  ShapeSerializer,
+} from "@media-center/domain-driven";
 
 export class InMemoryTmdbStore
   extends InMemoryStore<AnyTmdb, TmdbId>

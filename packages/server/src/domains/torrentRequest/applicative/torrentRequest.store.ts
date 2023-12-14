@@ -1,4 +1,4 @@
-import { Store } from "../../../framework/store";
+import { Store } from "@media-center/domain-driven";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestId } from "../domain/torrentRequestId";

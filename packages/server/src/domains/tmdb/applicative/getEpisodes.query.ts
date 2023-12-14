@@ -1,11 +1,15 @@
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple, Shape } from "../../../framework/shape";
+import {
+  Query,
+  Multiple,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
 import { ShowEpisode } from "../domain/showEpisode";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbAPI } from "./tmdb.api";
 
 export class GetEpisodesQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     tmdbId: TmdbId,
     seasonNumber: Number,
   }),

@@ -1,4 +1,4 @@
-import { ApplicativeError } from "../../../framework/error";
+import { ApplicativeError } from "@media-center/domain-driven";
 
 class ValueNotFound extends ApplicativeError {
   constructor(variableName: string) {

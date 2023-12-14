@@ -1,4 +1,4 @@
-import { Store } from "../../../framework/store";
+import { Store } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import {

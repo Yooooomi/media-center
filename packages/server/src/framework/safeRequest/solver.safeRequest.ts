@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { SafeRequest } from "./safeRequest";
-import { Filesystem, RStream } from "../valueObjects/fileSystem";
+import { Filesystem } from "../valueObjects/fileSystem";
 
 export interface FlareSolverResponse {
   status: string;

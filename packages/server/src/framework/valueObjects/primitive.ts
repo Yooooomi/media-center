@@ -1,4 +1,4 @@
-import { Constructor } from "../../types/utils";
+import { Constructor } from "@media-center/domain-driven/src/types/utils";
 
 type Stringifiable = { toString(): string };
 

@@ -1,4 +1,4 @@
-import { Shape } from "../../../framework/shape";
+import { Shape } from "@media-center/domain-driven";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequestId } from "./torrentRequestId";
 

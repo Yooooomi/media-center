@@ -1,5 +1,3 @@
-import { CommandBus } from "../../framework/commandBus/commandBus";
-import { QueryBus } from "../../framework/queryBus/queryBus";
 import { TorrentClient } from "../torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "../torrentIndexer/applicative/torrentIndexer";
 import { AddRawTorrentRequestCommandHandler } from "./applicative/addRawTorrentRequest.commandHandler";
@@ -15,6 +13,7 @@ import {
   GetAllTorrentRequestsQuery,
   GetAllTorrentRequestsQueryHandler,
 } from "./applicative/getAllTorrentRequests.query";
+import { CommandBus, QueryBus } from "@media-center/domain-driven";
 
 export function bootTorrentRequest(
   commandBus: CommandBus,

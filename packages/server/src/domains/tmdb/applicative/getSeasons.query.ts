@@ -1,11 +1,15 @@
-import { Query, QueryHandler } from "../../../framework/query";
-import { Multiple, Shape } from "../../../framework/shape";
+import {
+  Query,
+  Multiple,
+  QueryHandler,
+  Dict,
+} from "@media-center/domain-driven";
 import { ShowSeason } from "../domain/showSeason";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbAPI } from "./tmdb.api";
 
 export class GetSeasonsQuery extends Query({
-  needing: Shape({
+  needing: Dict({
     tmdbId: TmdbId,
   }),
   returning: Multiple(ShowSeason),

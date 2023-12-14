@@ -1,4 +1,4 @@
-import { Multiple, Shape } from "../../../framework/shape";
+import { Shape, Multiple } from "@media-center/domain-driven";
 import { TmdbId } from "./tmdbId";
 
 export class MovieDetails extends Shape({

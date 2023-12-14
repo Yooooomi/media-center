@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "main": "./lib/index",
   "license": "MIT",
-  "type": "module",
   "types": "./src/index",
   "files": [
     "./src/"
   ],
   "scripts": {
     "build:watch": "yarn build --watch --preserveWatchOutput",
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "yarn build"
   },
   "devDependencies": {
     "@media-center/dev": "*"

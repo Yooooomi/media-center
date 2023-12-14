@@ -1,14 +1,13 @@
-import { Command, CommandHandler } from "../../../framework/command";
-import { Shape } from "../../../framework/shape";
+import { Command, CommandHandler } from "@media-center/domain-driven";
 import { TorrentRequestId } from "../domain/torrentRequestId";
 import { TorrentRequestStore } from "./torrentRequest.store";
 
 export class UpdateTorrentRequestCommand extends Command({
-  needing: Shape({
+  needing: {
     torrentRequestId: TorrentRequestId,
     downloaded: Number,
     speed: Number,
-  }),
+  },
 }) {}
 
 export class UpdateTorrentRequestCommandHandler extends CommandHandler(

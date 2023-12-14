@@ -1,4 +1,4 @@
-import { EventBus } from "../../../framework/event/eventBus";
+import { EventBus } from "@media-center/domain-driven";
 import { File } from "../../../framework/valueObjects/file";
 import { HierarchyItem } from "../domain/hierarchyItem";
 import { HierarchyItemId } from "../domain/hierarchyItemId";

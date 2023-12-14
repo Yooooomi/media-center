@@ -1,6 +1,5 @@
-import { filenameParse } from "@ctrl/video-filename-parser";
-
-export function FilenameParse(input: string, isTv: boolean) {
+export async function FilenameParse(input: string, isTv: boolean) {
+  const { filenameParse } = await import("@ctrl/video-filename-parser");
   input = input.replace(/\[.*?\]/g, "");
   return filenameParse(input, isTv);
 }

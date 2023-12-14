@@ -143,6 +143,7 @@ export class RealTmdbAPI extends TmdbAPI {
               vote_count: e.vote_count,
             });
           }
+          throw new Error("Unknown media type");
         })
     );
   }

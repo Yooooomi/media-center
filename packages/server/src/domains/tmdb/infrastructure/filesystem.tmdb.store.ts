@@ -1,4 +1,3 @@
-import { Either, ShapeSerializer } from "../../../framework/shape";
 import { FilesystemStore } from "../../../framework/store";
 import { compact } from "@media-center/algorithm";
 import { TmdbAPI } from "../applicative/tmdb.api";
@@ -7,6 +6,7 @@ import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
+import { ShapeSerializer, Either } from "@media-center/domain-driven";
 
 export class FilesystemTmdbStore
   extends FilesystemStore<AnyTmdb, TmdbId>

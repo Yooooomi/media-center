@@ -1,13 +1,9 @@
-import { useLog } from "../../../framework/useLog";
 import { compact } from "@media-center/algorithm";
 import { TorrentService } from "../../../tools/torrentService";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
-import { TorrentRequestStore } from "../../torrentRequest/applicative/torrentRequest.store";
-import { TorrentRequestId } from "../../torrentRequest/domain/torrentRequestId";
 import { TorrentClient } from "../applicative/torrentClient";
 import * as fs from "fs";
 import * as path from "path";
-import { TorrentRequest } from "../../torrentRequest/domain/torrentRequest";
 import { TorrentClientEntry } from "../domain/torrentClientEntry";
 
 export class MockTorrentClient extends TorrentClient {

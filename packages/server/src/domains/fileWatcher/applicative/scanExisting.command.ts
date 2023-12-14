@@ -1,4 +1,4 @@
-import { Command, CommandHandler } from "../../../framework/command";
+import { Command, CommandHandler } from "@media-center/domain-driven";
 import { FileWatcher } from "./fileWatcher";
 
 export class ScanExisting extends Command({}) {}

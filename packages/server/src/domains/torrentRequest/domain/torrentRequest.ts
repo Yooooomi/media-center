@@ -1,7 +1,8 @@
-import { Shape } from "@media-center/domain-driven";
+import { Freeze, Shape } from "@media-center/domain-driven";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequestId } from "./torrentRequestId";
 
+@Freeze()
 export class TorrentRequest extends Shape({
   id: TorrentRequestId,
   tmdbId: TmdbId,

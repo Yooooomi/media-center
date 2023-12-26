@@ -8,7 +8,6 @@ import {
   Decorator,
   TypeAliasDeclaration,
   IndentationText,
-  Type,
   ts,
 } from "ts-morph";
 
@@ -69,12 +68,15 @@ class ClassFreezer {
   private readonly serializedType =
     this.getDetailsFromReference().serializedType;
   private readonly sourceFilename = path.basename(
-    this.classReferencing.getSourceFile().getFilePath()
+    (this as any).classReferencing.getSourceFile().getFilePath()
   );
   private readonly sourceDir = path.dirname(
-    this.classReferencing.getSourceFile().getFilePath()
+    (this as any).classReferencing.getSourceFile().getFilePath()
   );
-  private readonly destinationDir = path.join(this.sourceDir, this.relativeDir);
+  private readonly destinationDir = path.join(
+    this.sourceDir,
+    (this as any).relativeDir
+  );
   private readonly pathBackToSourceFile = path.relative(
     this.destinationDir,
     this.sourceDir
@@ -438,7 +440,10 @@ class ClassFreezer {
       className: className,
       serializedType: serializeSignature
         .getReturnType()
-        .getText(undefined, ts.TypeFormatFlags.InTypeAlias),
+        .getText(
+          undefined,
+          ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias
+        ),
     };
   }
 

@@ -7,7 +7,7 @@ import {
   ShowCatalogEntry,
 } from "../domain/catalogEntry";
 
-export abstract class CatalogEntryStore extends Store<AnyCatalogEntry, TmdbId> {
+export abstract class CatalogEntryStore extends Store<AnyCatalogEntry> {
   abstract loadByHierarchyItemId(
     hierarchyItemId: HierarchyItemId
   ): Promise<AnyCatalogEntry[]>;

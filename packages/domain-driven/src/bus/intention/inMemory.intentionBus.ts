@@ -1,7 +1,13 @@
+import {
+  BaseIntention,
+  BaseIntentionHandler,
+  Constructor,
+  Definition,
+  DictShorthand,
+  IntentionConstructor,
+} from "../..";
 import { InfrastructureError } from "../../error";
-import { Constructor } from "../../types";
-import { InternalCommand, InternalCommandHandler, Command } from "./command";
-import { CommandBus } from "./commandBus";
+import { IntentionBus } from "./intentionBus";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -9,17 +15,17 @@ class NoHandlerFound extends InfrastructureError {
   }
 }
 
-export class InMemoryCommandBus extends CommandBus {
+export class InMemoryIntentionBus extends IntentionBus {
   private readonly registry: Record<
     string,
-    InternalCommandHandler<InternalCommand<any, any>>
+    BaseIntentionHandler<BaseIntention<Definition, Definition>>
   > = {};
   private readonly ctorRegistry: Record<
     string,
-    Constructor<InternalCommand<any, any>>
+    IntentionConstructor<DictShorthand, DictShorthand>
   > = {};
 
-  async execute(command: InternalCommand<any, any>) {
+  async execute(command: BaseIntention<Definition, Definition>) {
     const handler = this.registry[command.constructor.name];
     if (!handler) {
       throw new NoHandlerFound(command.constructor.name);
@@ -27,7 +33,7 @@ export class InMemoryCommandBus extends CommandBus {
     return handler.execute(command);
   }
 
-  getCommand(commandName: string) {
+  get(commandName: string) {
     const ctor = this.ctorRegistry[commandName];
     if (!ctor) {
       throw new NoHandlerFound(commandName);
@@ -35,11 +41,11 @@ export class InMemoryCommandBus extends CommandBus {
     return ctor;
   }
 
-  register<C extends InternalCommand<any, any>>(
+  register<C extends BaseIntention<Definition, Definition>>(
     command: Constructor<C>,
-    commandHandler: InternalCommandHandler<C>
+    commandHandler: BaseIntentionHandler<C>
   ) {
-    this.ctorRegistry[command.name] = command;
-    this.registry[command.name] = commandHandler;
+    this.ctorRegistry[command.name] = command as any;
+    this.registry[command.name] = commandHandler as any;
   }
 }

@@ -10,7 +10,7 @@
     "freeze": "yarn domain-driven freeze --relative ../infrastructure"
   },
   "dependencies": {
-    "@ctrl/video-filename-parser": "^4.14.0",
+    "@ctrl/video-filename-parser": "Yooooomi/video-filename-parser",
     "@media-center/algorithm": "*",
     "@media-center/domain-driven": "*",
     "axios": "^1.6.2",

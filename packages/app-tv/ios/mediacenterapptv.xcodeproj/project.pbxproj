@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* mediacenterapptvTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* mediacenterapptvTests.m */; };
+		00E356F31AD99517003FC87E /* timotexTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* timotexTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		269984920579226908D49904 /* libPods-mediacenterapptv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2855AB2CCC04BED0978AE /* libPods-mediacenterapptv.a */; };
+		269984920579226908D49904 /* libPods-timotex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2855AB2CCC04BED0978AE /* libPods-timotex.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* mediacenterapptvTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* mediacenterapptvTests.m */; };
+		2DCD954D1E0B4F2C00145EB5 /* timotexTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* timotexTests.m */; };
 		3B0A2CBD2B1FBCF1001B13BD /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CAA2B1FBCF1001B13BD /* Fontisto.ttf */; };
 		3B0A2CBE2B1FBCF1001B13BD /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CAA2B1FBCF1001B13BD /* Fontisto.ttf */; };
 		3B0A2CBF2B1FBCF1001B13BD /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CAA2B1FBCF1001B13BD /* Fontisto.ttf */; };
@@ -94,10 +94,10 @@
 		3B0A2D082B1FBCF1001B13BD /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A2CBC2B1FBCF1001B13BD /* MaterialIcons.ttf */; };
 		3B4758312B24BD17003FB2DD /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B4758302B24BD17003FB2DD /* Expo.plist */; };
 		3B4758322B24BD17003FB2DD /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B4758302B24BD17003FB2DD /* Expo.plist */; };
-		41BF5F3596F87FEE707DDD11 /* libPods-mediacenterapptv-mediacenterapptvTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F21F13455730034D850CD1C /* libPods-mediacenterapptv-mediacenterapptvTests.a */; };
-		47EB63F3390701B2260096C6 /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0216F1136BF7C90703C880F /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a */; };
+		41BF5F3596F87FEE707DDD11 /* libPods-timotex-timotexTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F21F13455730034D850CD1C /* libPods-timotex-timotexTests.a */; };
+		47EB63F3390701B2260096C6 /* libPods-timotex-tvOS-timotex-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0216F1136BF7C90703C880F /* libPods-timotex-tvOS-timotex-tvOSTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		EE57DEA5314790D63C074D03 /* libPods-mediacenterapptv-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA54FCF2086BA3B4678F8237 /* libPods-mediacenterapptv-tvOS.a */; };
+		EE57DEA5314790D63C074D03 /* libPods-timotex-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA54FCF2086BA3B4678F8237 /* libPods-timotex-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,35 +106,35 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = mediacenterapptv;
+			remoteInfo = timotex;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "mediacenterapptv-tvOS";
+			remoteInfo = "timotex-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* mediacenterapptvTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mediacenterapptvTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* timotexTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = timotexTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* mediacenterapptvTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mediacenterapptvTests.m; sourceTree = "<group>"; };
-		015BA46D04C1496C29E63456 /* Pods-mediacenterapptv.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv.debug.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv.debug.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* mediacenterapptv.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mediacenterapptv.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = mediacenterapptv/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = mediacenterapptv/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = mediacenterapptv/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = mediacenterapptv/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = mediacenterapptv/main.m; sourceTree = "<group>"; };
-		224D5D4AEB9A0A36B75746AA /* Pods-mediacenterapptv.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv.release.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv.release.xcconfig"; sourceTree = "<group>"; };
-		2C329346E04FD437DBF160C6 /* Pods-mediacenterapptv-mediacenterapptvTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-mediacenterapptvTests.release.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests.release.xcconfig"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* mediacenterapptv-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mediacenterapptv-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* mediacenterapptv-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mediacenterapptv-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		36771B2C8C43AC6099096637 /* Pods-mediacenterapptv-mediacenterapptvTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-mediacenterapptvTests.debug.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests.debug.xcconfig"; sourceTree = "<group>"; };
-		388308430DF4BE056B0CEF13 /* Pods-mediacenterapptv-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-tvOS.release.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* timotexTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = timotexTests.m; sourceTree = "<group>"; };
+		015BA46D04C1496C29E63456 /* Pods-timotex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex.debug.xcconfig"; path = "Target Support Files/Pods-timotex/Pods-timotex.debug.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* timotex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timotex.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = timotex/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = timotex/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = timotex/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = timotex/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = timotex/main.m; sourceTree = "<group>"; };
+		224D5D4AEB9A0A36B75746AA /* Pods-timotex.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex.release.xcconfig"; path = "Target Support Files/Pods-timotex/Pods-timotex.release.xcconfig"; sourceTree = "<group>"; };
+		2C329346E04FD437DBF160C6 /* Pods-timotex-timotexTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex-timotexTests.release.xcconfig"; path = "Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests.release.xcconfig"; sourceTree = "<group>"; };
+		2D02E47B1E0B4A5D006451C7 /* timotex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "timotex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* timotex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "timotex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36771B2C8C43AC6099096637 /* Pods-timotex-timotexTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex-timotexTests.debug.xcconfig"; path = "Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests.debug.xcconfig"; sourceTree = "<group>"; };
+		388308430DF4BE056B0CEF13 /* Pods-timotex-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex-tvOS.release.xcconfig"; path = "Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		3B0A2CAA2B1FBCF1001B13BD /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		3B0A2CAB2B1FBCF1001B13BD /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		3B0A2CAC2B1FBCF1001B13BD /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -155,14 +155,14 @@
 		3B0A2CBB2B1FBCF1001B13BD /* FontAwesome6_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Brands.ttf; sourceTree = "<group>"; };
 		3B0A2CBC2B1FBCF1001B13BD /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		3B4758302B24BD17003FB2DD /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		3BDF8C4CCF278F944E8C6CBF /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		4F21F13455730034D850CD1C /* libPods-mediacenterapptv-mediacenterapptvTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mediacenterapptv-mediacenterapptvTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = mediacenterapptv/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8DC2855AB2CCC04BED0978AE /* libPods-mediacenterapptv.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mediacenterapptv.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A0216F1136BF7C90703C880F /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CCE9A90FED9D09047497AB6D /* Pods-mediacenterapptv-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		E8891750AE2DFBD87A5BDB74 /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		EA54FCF2086BA3B4678F8237 /* libPods-mediacenterapptv-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mediacenterapptv-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BDF8C4CCF278F944E8C6CBF /* Pods-timotex-tvOS-timotex-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex-tvOS-timotex-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		4F21F13455730034D850CD1C /* libPods-timotex-timotexTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-timotex-timotexTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = timotex/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8DC2855AB2CCC04BED0978AE /* libPods-timotex.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-timotex.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0216F1136BF7C90703C880F /* libPods-timotex-tvOS-timotex-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-timotex-tvOS-timotex-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCE9A90FED9D09047497AB6D /* Pods-timotex-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		E8891750AE2DFBD87A5BDB74 /* Pods-timotex-tvOS-timotex-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timotex-tvOS-timotex-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		EA54FCF2086BA3B4678F8237 /* libPods-timotex-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-timotex-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -172,7 +172,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41BF5F3596F87FEE707DDD11 /* libPods-mediacenterapptv-mediacenterapptvTests.a in Frameworks */,
+				41BF5F3596F87FEE707DDD11 /* libPods-timotex-timotexTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,7 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				269984920579226908D49904 /* libPods-mediacenterapptv.a in Frameworks */,
+				269984920579226908D49904 /* libPods-timotex.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,7 +188,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE57DEA5314790D63C074D03 /* libPods-mediacenterapptv-tvOS.a in Frameworks */,
+				EE57DEA5314790D63C074D03 /* libPods-timotex-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,20 +196,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47EB63F3390701B2260096C6 /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a in Frameworks */,
+				47EB63F3390701B2260096C6 /* libPods-timotex-tvOS-timotex-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* mediacenterapptvTests */ = {
+		00E356EF1AD99517003FC87E /* timotexTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* mediacenterapptvTests.m */,
+				00E356F21AD99517003FC87E /* timotexTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = mediacenterapptvTests;
+			path = timotexTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -220,7 +220,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* mediacenterapptv */ = {
+		13B07FAE1A68108700A75B9A /* timotex */ = {
 			isa = PBXGroup;
 			children = (
 				3B47582F2B24BD17003FB2DD /* Supporting */,
@@ -233,7 +233,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = mediacenterapptv;
+			name = timotex;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -241,10 +241,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				8DC2855AB2CCC04BED0978AE /* libPods-mediacenterapptv.a */,
-				4F21F13455730034D850CD1C /* libPods-mediacenterapptv-mediacenterapptvTests.a */,
-				EA54FCF2086BA3B4678F8237 /* libPods-mediacenterapptv-tvOS.a */,
-				A0216F1136BF7C90703C880F /* libPods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.a */,
+				8DC2855AB2CCC04BED0978AE /* libPods-timotex.a */,
+				4F21F13455730034D850CD1C /* libPods-timotex-timotexTests.a */,
+				EA54FCF2086BA3B4678F8237 /* libPods-timotex-tvOS.a */,
+				A0216F1136BF7C90703C880F /* libPods-timotex-tvOS-timotex-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -282,7 +282,7 @@
 				3B4758302B24BD17003FB2DD /* Expo.plist */,
 			);
 			name = Supporting;
-			path = mediacenterapptv/Supporting;
+			path = timotex/Supporting;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -295,9 +295,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* mediacenterapptv */,
+				13B07FAE1A68108700A75B9A /* timotex */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* mediacenterapptvTests */,
+				00E356EF1AD99517003FC87E /* timotexTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				9B1644CBAE2FABCCC6E29A69 /* Pods */,
@@ -310,10 +310,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* mediacenterapptv.app */,
-				00E356EE1AD99517003FC87E /* mediacenterapptvTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* mediacenterapptv-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* mediacenterapptv-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* timotex.app */,
+				00E356EE1AD99517003FC87E /* timotexTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* timotex-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* timotex-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -321,14 +321,14 @@
 		9B1644CBAE2FABCCC6E29A69 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				015BA46D04C1496C29E63456 /* Pods-mediacenterapptv.debug.xcconfig */,
-				224D5D4AEB9A0A36B75746AA /* Pods-mediacenterapptv.release.xcconfig */,
-				36771B2C8C43AC6099096637 /* Pods-mediacenterapptv-mediacenterapptvTests.debug.xcconfig */,
-				2C329346E04FD437DBF160C6 /* Pods-mediacenterapptv-mediacenterapptvTests.release.xcconfig */,
-				CCE9A90FED9D09047497AB6D /* Pods-mediacenterapptv-tvOS.debug.xcconfig */,
-				388308430DF4BE056B0CEF13 /* Pods-mediacenterapptv-tvOS.release.xcconfig */,
-				E8891750AE2DFBD87A5BDB74 /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.debug.xcconfig */,
-				3BDF8C4CCF278F944E8C6CBF /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig */,
+				015BA46D04C1496C29E63456 /* Pods-timotex.debug.xcconfig */,
+				224D5D4AEB9A0A36B75746AA /* Pods-timotex.release.xcconfig */,
+				36771B2C8C43AC6099096637 /* Pods-timotex-timotexTests.debug.xcconfig */,
+				2C329346E04FD437DBF160C6 /* Pods-timotex-timotexTests.release.xcconfig */,
+				CCE9A90FED9D09047497AB6D /* Pods-timotex-tvOS.debug.xcconfig */,
+				388308430DF4BE056B0CEF13 /* Pods-timotex-tvOS.release.xcconfig */,
+				E8891750AE2DFBD87A5BDB74 /* Pods-timotex-tvOS-timotex-tvOSTests.debug.xcconfig */,
+				3BDF8C4CCF278F944E8C6CBF /* Pods-timotex-tvOS-timotex-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -336,9 +336,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* mediacenterapptvTests */ = {
+		00E356ED1AD99517003FC87E /* timotexTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "mediacenterapptvTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "timotexTests" */;
 			buildPhases = (
 				BC8CB606DF6125BE2BCE6F48 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -352,14 +352,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = mediacenterapptvTests;
-			productName = mediacenterapptvTests;
-			productReference = 00E356EE1AD99517003FC87E /* mediacenterapptvTests.xctest */;
+			name = timotexTests;
+			productName = timotexTests;
+			productReference = 00E356EE1AD99517003FC87E /* timotexTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* mediacenterapptv */ = {
+		13B07F861A680F5B00A75B9A /* timotex */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "mediacenterapptv" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "timotex" */;
 			buildPhases = (
 				5227897DA0E4608219DEAFFA /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -374,14 +374,14 @@
 			);
 			dependencies = (
 			);
-			name = mediacenterapptv;
-			productName = mediacenterapptv;
-			productReference = 13B07F961A680F5B00A75B9A /* mediacenterapptv.app */;
+			name = timotex;
+			productName = timotex;
+			productReference = 13B07F961A680F5B00A75B9A /* timotex.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* mediacenterapptv-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* timotex-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "mediacenterapptv-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "timotex-tvOS" */;
 			buildPhases = (
 				966D472419EA4A89F6874B5E /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -396,14 +396,14 @@
 			);
 			dependencies = (
 			);
-			name = "mediacenterapptv-tvOS";
-			productName = "mediacenterapptv-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* mediacenterapptv-tvOS.app */;
+			name = "timotex-tvOS";
+			productName = "timotex-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* timotex-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* mediacenterapptv-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* timotex-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "mediacenterapptv-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "timotex-tvOSTests" */;
 			buildPhases = (
 				C021C441AB5F12C78313DC25 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -417,9 +417,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "mediacenterapptv-tvOSTests";
-			productName = "mediacenterapptv-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* mediacenterapptv-tvOSTests.xctest */;
+			name = "timotex-tvOSTests";
+			productName = "timotex-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* timotex-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -448,7 +448,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "mediacenterapptv" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "timotex" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -461,10 +461,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* mediacenterapptv */,
-				00E356ED1AD99517003FC87E /* mediacenterapptvTests */,
-				2D02E47A1E0B4A5D006451C7 /* mediacenterapptv-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* mediacenterapptv-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* timotex */,
+				00E356ED1AD99517003FC87E /* timotexTests */,
+				2D02E47A1E0B4A5D006451C7 /* timotex-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* timotex-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -604,15 +604,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex/Pods-timotex-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex/Pods-timotex-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex/Pods-timotex-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1B09D78B63D400B062C57686 /* [CP] Embed Pods Frameworks */ = {
@@ -621,15 +621,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1D628A144AB903441126BE7D /* [CP] Embed Pods Frameworks */ = {
@@ -638,15 +638,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
@@ -669,15 +669,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex/Pods-timotex-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex/Pods-timotex-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv/Pods-mediacenterapptv-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex/Pods-timotex-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		42686649B799B0EA1ADB4648 /* [CP] Copy Pods Resources */ = {
@@ -686,15 +686,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS/Pods-mediacenterapptv-tvOS-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS/Pods-timotex-tvOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5227897DA0E4608219DEAFFA /* [CP] Check Pods Manifest.lock */ = {
@@ -712,7 +712,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-mediacenterapptv-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-timotex-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -725,15 +725,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex-tvOS-timotex-tvOSTests/Pods-timotex-tvOS-timotex-tvOSTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		966D472419EA4A89F6874B5E /* [CP] Check Pods Manifest.lock */ = {
@@ -751,7 +751,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-mediacenterapptv-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-timotex-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -764,15 +764,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BC8CB606DF6125BE2BCE6F48 /* [CP] Check Pods Manifest.lock */ = {
@@ -790,7 +790,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-mediacenterapptv-mediacenterapptvTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-timotex-timotexTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -812,7 +812,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-timotex-tvOS-timotex-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -825,15 +825,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mediacenterapptv-mediacenterapptvTests/Pods-mediacenterapptv-mediacenterapptvTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timotex-timotexTests/Pods-timotex-timotexTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -881,7 +881,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* mediacenterapptvTests.m in Sources */,
+				00E356F31AD99517003FC87E /* timotexTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,7 +907,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* mediacenterapptvTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* timotexTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,12 +916,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* mediacenterapptv */;
+			target = 13B07F861A680F5B00A75B9A /* timotex */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* mediacenterapptv-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* timotex-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -929,14 +929,14 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 36771B2C8C43AC6099096637 /* Pods-mediacenterapptv-mediacenterapptvTests.debug.xcconfig */;
+			baseConfigurationReference = 36771B2C8C43AC6099096637 /* Pods-timotex-timotexTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = mediacenterapptvTests/Info.plist;
+				INFOPLIST_FILE = timotexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -950,17 +950,17 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv.app/mediacenterapptv";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/timotex.app/timotex";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2C329346E04FD437DBF160C6 /* Pods-mediacenterapptv-mediacenterapptvTests.release.xcconfig */;
+			baseConfigurationReference = 2C329346E04FD437DBF160C6 /* Pods-timotex-timotexTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = mediacenterapptvTests/Info.plist;
+				INFOPLIST_FILE = timotexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -974,13 +974,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv.app/mediacenterapptv";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/timotex.app/timotex";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 015BA46D04C1496C29E63456 /* Pods-mediacenterapptv.debug.xcconfig */;
+			baseConfigurationReference = 015BA46D04C1496C29E63456 /* Pods-timotex.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -990,7 +990,7 @@
 					"$(inherited)",
 					"COCOAPODS=1",
 				);
-				INFOPLIST_FILE = mediacenterapptv/Info.plist;
+				INFOPLIST_FILE = timotex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1003,7 +1003,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
-				PRODUCT_NAME = mediacenterapptv;
+				PRODUCT_NAME = timotex;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1012,12 +1012,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 224D5D4AEB9A0A36B75746AA /* Pods-mediacenterapptv.release.xcconfig */;
+			baseConfigurationReference = 224D5D4AEB9A0A36B75746AA /* Pods-timotex.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = mediacenterapptv/Info.plist;
+				INFOPLIST_FILE = timotex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1030,7 +1030,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
-				PRODUCT_NAME = mediacenterapptv;
+				PRODUCT_NAME = timotex;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1038,7 +1038,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCE9A90FED9D09047497AB6D /* Pods-mediacenterapptv-tvOS.debug.xcconfig */;
+			baseConfigurationReference = CCE9A90FED9D09047497AB6D /* Pods-timotex-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1051,7 +1051,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "mediacenterapptv-tvOS/Info.plist";
+				INFOPLIST_FILE = "timotex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1063,7 +1063,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.mediacenterapptv-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.timotex-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1075,7 +1075,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 388308430DF4BE056B0CEF13 /* Pods-mediacenterapptv-tvOS.release.xcconfig */;
+			baseConfigurationReference = 388308430DF4BE056B0CEF13 /* Pods-timotex-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1088,7 +1088,7 @@
 				DEVELOPMENT_TEAM = HG7KX6C836;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "mediacenterapptv-tvOS/Info.plist";
+				INFOPLIST_FILE = "timotex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1100,7 +1100,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.mediacenterapptv-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.timotex-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_VERSION = 5.0;
@@ -1111,7 +1111,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8891750AE2DFBD87A5BDB74 /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = E8891750AE2DFBD87A5BDB74 /* Pods-timotex-tvOS-timotex-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1121,7 +1121,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "mediacenterapptv-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "timotex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1135,14 +1135,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv-tvOS.app/mediacenterapptv-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/timotex-tvOS.app/timotex-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Debug;
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3BDF8C4CCF278F944E8C6CBF /* Pods-mediacenterapptv-tvOS-mediacenterapptv-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 3BDF8C4CCF278F944E8C6CBF /* Pods-timotex-tvOS-timotex-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1152,7 +1152,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "mediacenterapptv-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "timotex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1166,7 +1166,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yooooomi.timotextv;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mediacenterapptv-tvOS.app/mediacenterapptv-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/timotex-tvOS.app/timotex-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Release;
@@ -1318,7 +1318,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "mediacenterapptvTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "timotexTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -1327,7 +1327,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "mediacenterapptv" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "timotex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -1336,7 +1336,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "mediacenterapptv-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "timotex-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -1345,7 +1345,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "mediacenterapptv-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "timotex-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -1354,7 +1354,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "mediacenterapptv" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "timotex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

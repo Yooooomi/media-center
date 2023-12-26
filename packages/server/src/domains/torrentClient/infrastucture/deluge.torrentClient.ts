@@ -57,7 +57,7 @@ export class DelugeTorrentClient extends TorrentClient {
   private readonly password: string;
   private readonly movieLocation: string;
   private readonly showLocation: string;
-  private readonly axios: Axios;
+  private readonly axios: InstanceType<typeof Axios>;
 
   constructor(environmentHelper: EnvironmentHelper) {
     super();

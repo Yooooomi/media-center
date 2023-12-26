@@ -1,25 +1,10 @@
-import { Constructor } from "../../types";
-import { ShapeDetails } from "./shapeDetails";
-import { ShapeParameter } from "./shapeParameter";
+export type AbstractConstructor<T> = abstract new (...args: any[]) => T;
+export type Constructor<T> = new (...args: any[]) => T;
 
-export type LiteralInstanceOrVoid<T extends ShapeParameter | undefined> =
-  T extends undefined ? void : LiteralInstance<NonNullable<T>>;
+type DontExpand = Date | { serialize: (...args: any[]) => any };
 
-function a(params: LiteralInstanceOrVoid<undefined>) {}
-
-a();
-
-export type LiteralInstance<T extends ShapeParameter> =
-  T extends Constructor<String>
-    ? string
-    : T extends Constructor<Number>
-    ? number
-    : T extends Constructor<Boolean>
-    ? boolean
-    : T extends Constructor<Date>
-    ? Date
-    : T extends Constructor<infer K>
-    ? K
-    : T extends ShapeDetails<infer L, any>
-    ? L
-    : T;
+export type Expand<T> = T extends DontExpand
+  ? T
+  : T extends Record<string, any>
+  ? { [key in keyof T]: Expand<T[key]> }
+  : T;

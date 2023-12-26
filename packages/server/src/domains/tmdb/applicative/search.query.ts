@@ -9,12 +9,12 @@ import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbAPI } from "./tmdb.api";
 
-export class SearchQuery extends Query({
-  needing: Dict({
+export class SearchQuery extends Query(
+  {
     search: String,
-  }),
-  returning: Multiple(Either(Show, Movie)),
-}) {}
+  },
+  [Either(Show, Movie)]
+) {}
 
 export class SearchQueryHandler extends QueryHandler(SearchQuery) {
   constructor(private readonly tmdbApi: TmdbAPI) {

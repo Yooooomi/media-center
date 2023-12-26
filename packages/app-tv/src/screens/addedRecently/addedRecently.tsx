@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {GetEntriesQuery} from '@media-center/server/src/domains/catalog/applicative/getEntries.query';
 import {
   MovieCatalogEntryFulfilled,
@@ -74,9 +74,11 @@ export default function AddedRecently() {
     [movieEntries, showEntries, tmdbs],
   );
 
-  if (error) {
-    StatusContext.server.value = false;
-  }
+  useEffect(() => {
+    if (error) {
+      StatusContext.server.value = false;
+    }
+  }, [error]);
 
   if (!entries || !tmdbs) {
     return <FullScreenLoading />;

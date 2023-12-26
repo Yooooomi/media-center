@@ -18,9 +18,9 @@ class NotMatchingHierarchyItem extends ApplicativeError {
   }
 }
 
-export class GetShowEntriesQuery extends Query({
-  returning: Multiple(ShowCatalogEntryFulfilled),
-}) {}
+export class GetShowEntriesQuery extends Query(undefined, [
+  ShowCatalogEntryFulfilled,
+]) {}
 
 export class GetShowEntriesQueryHandler extends QueryHandler(
   GetShowEntriesQuery

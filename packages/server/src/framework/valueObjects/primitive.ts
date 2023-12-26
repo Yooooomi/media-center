@@ -1,4 +1,4 @@
-import { Constructor } from "@media-center/domain-driven/src/types/utils";
+import { Constructor } from "ts-morph";
 
 type Stringifiable = { toString(): string };
 
@@ -16,7 +16,9 @@ export class Primitive<V extends Stringifiable> {
     this: T,
     value: V
   ) {
-    return new this(value);
+    const built = new this(value);
+    built.validate();
+    return built;
   }
 
   toString() {

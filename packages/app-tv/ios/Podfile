@@ -24,7 +24,7 @@ end
 
 min_ios_version_supported = "13.0"
 
-target 'mediacenterapptv' do
+target 'timotex' do
   config = use_native_modules!
   platform :ios, min_ios_version_supported
 
@@ -41,14 +41,14 @@ target 'mediacenterapptv' do
     :app_path => "#{Pod::Config.instance.installation_root}/../../.."
   )
 
-  target 'mediacenterapptvTests' do
+  target 'timotexTests' do
     inherit! :complete
     # Pods for testing
   end
 
 end
 
-target 'mediacenterapptv-tvOS' do
+target 'timotex-tvOS' do
   use_expo_modules!
   post_integrate do |installer|
     begin
@@ -73,7 +73,7 @@ target 'mediacenterapptv-tvOS' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'mediacenterapptv-tvOSTests' do
+  target 'timotex-tvOSTests' do
     inherit! :complete
     # Pods for testing
   end

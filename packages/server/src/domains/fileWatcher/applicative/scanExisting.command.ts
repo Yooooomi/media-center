@@ -1,14 +1,16 @@
 import { Command, CommandHandler } from "@media-center/domain-driven";
 import { FileWatcher } from "./fileWatcher";
 
-export class ScanExisting extends Command({}) {}
+export class ScanExistingCommand extends Command() {}
 
-export class ScanExistingCommandHandler extends CommandHandler(ScanExisting) {
+export class ScanExistingCommandHandler extends CommandHandler(
+  ScanExistingCommand
+) {
   constructor(private readonly fileWatcher: FileWatcher) {
     super();
   }
 
-  async execute(command: ScanExisting) {
+  async execute() {
     await this.fileWatcher.scan();
   }
 }

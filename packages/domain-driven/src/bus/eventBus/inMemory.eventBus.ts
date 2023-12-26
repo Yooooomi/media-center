@@ -1,4 +1,4 @@
-import { Constructor } from "../../types";
+import { Constructor } from "../../serialization";
 import { useLog } from "../../useLog";
 import { Event } from "./event";
 import { EventBus } from "./eventBus";

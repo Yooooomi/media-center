@@ -6,17 +6,17 @@ import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
 import {
+  DefinitionSerializer,
   Either,
   InMemoryStore,
-  ShapeSerializer,
 } from "@media-center/domain-driven";
 
 export class InMemoryTmdbStore
-  extends InMemoryStore<AnyTmdb, TmdbId>
+  extends InMemoryStore<AnyTmdb>
   implements TmdbStore
 {
   constructor(private readonly tmdbAPI: TmdbAPI) {
-    super(new ShapeSerializer(Either(Movie, Show)));
+    super(new DefinitionSerializer(Either(Movie, Show)));
   }
 
   async load(id: TmdbId) {

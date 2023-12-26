@@ -9,5 +9,8 @@
   ],
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "resolutions": {
+    "pretty-format": "26.5.2"
   }
 }

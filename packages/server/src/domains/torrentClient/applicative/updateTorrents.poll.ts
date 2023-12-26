@@ -17,15 +17,14 @@ export class UpdateTorrentsPoll extends Polling {
     const torrents = await this.torrentClient.getState();
 
     await Promise.all(
-      torrents.map((torrent) =>
-        this.commandBus.execute(
-          new UpdateTorrentRequestCommand({
-            torrentRequestId: new TorrentRequestId(torrent.hash),
-            downloaded: torrent.downloaded,
-            speed: torrent.speed,
-          })
-        )
-      )
+      torrents.map((torrent) => {
+        const a = new UpdateTorrentRequestCommand({
+          torrentRequestId: new TorrentRequestId(torrent.hash),
+          downloaded: torrent.downloaded,
+          speed: torrent.speed,
+        });
+        this.commandBus.execute(a);
+      })
     );
   }
 }

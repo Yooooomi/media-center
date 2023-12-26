@@ -8,7 +8,7 @@ import ShowCardsLine from '../../components/showCardsLine/showCardsLine';
 import {maxCardsPerLine} from '../../services/constants';
 
 export default function Shows() {
-  const [{result: showEntries}] = useQuery(GetShowEntriesQuery);
+  const [{result: showEntries}] = useQuery(GetShowEntriesQuery, undefined);
   const [{result: tmdbs}] = useQuery(
     GetTmdbsQuery,
     showEntries?.map(e => e.id) ?? [],

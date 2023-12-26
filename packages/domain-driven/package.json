@@ -7,7 +7,6 @@
     "domain-driven": "lib/cli.js"
   },
   "scripts": {
-    "postinstall": "yarn build",
     "build": "tsc",
     "build:watch": "tsc --watch"
   },

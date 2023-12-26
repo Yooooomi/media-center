@@ -8,12 +8,12 @@ import { ShowSeason } from "../domain/showSeason";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbAPI } from "./tmdb.api";
 
-export class GetSeasonsQuery extends Query({
-  needing: Dict({
+export class GetSeasonsQuery extends Query(
+  {
     tmdbId: TmdbId,
-  }),
-  returning: Multiple(ShowSeason),
-}) {}
+  },
+  [ShowSeason]
+) {}
 
 export class GetSeasonsQueryHandler extends QueryHandler(GetSeasonsQuery) {
   constructor(private readonly tmdbApi: TmdbAPI) {

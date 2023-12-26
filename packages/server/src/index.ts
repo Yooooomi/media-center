@@ -1,9 +1,9 @@
 import { globalBoot } from "./domains/boot";
-import { ScanExisting } from "./domains/fileWatcher/applicative/scanExisting.command";
+import { ScanExistingCommand } from "./domains/fileWatcher/applicative/scanExisting.command";
 
 async function main() {
   const { commandBus } = await globalBoot();
-  commandBus.execute(new ScanExisting());
+  commandBus.execute(new ScanExistingCommand());
 }
 
 main();

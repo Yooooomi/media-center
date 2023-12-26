@@ -32,7 +32,6 @@ export function Search() {
   const getItem = (item: Movie | Show, lineIndex: number, index: number) => {
     const isFirst = lineIndex === 0 && index === 0;
     if (item instanceof Movie) {
-      console.log('MOVIE', item);
       return <MovieCard focusOnMount={!isFocused && isFirst} movie={item} />;
     } else if (item instanceof Show) {
       return <ShowCard focusOnMount={!isFocused && isFirst} show={item} />;

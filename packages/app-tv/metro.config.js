@@ -7,6 +7,7 @@ const projectRoot = __dirname;
 // This can be replaced with `find-yarn-workspace-root`
 const workspaceRoot = path.resolve(projectRoot, '../..');
 
+/** @type {import('expo/metro-config').MetroConfig} */
 const config = {
   // 1. Watch all files within the monorepo
   watchFolders: [workspaceRoot],
@@ -18,13 +19,19 @@ const config = {
       path.resolve(workspaceRoot, 'node_modules'),
     ],
     disableHierarchicalLookup: true,
+    resolveRequest: (context, moduleName, platform) => {
+      if (moduleName === 'path' || moduleName === 'fs') {
+        return {type: 'empty'};
+      }
+      return context.resolveRequest(context, moduleName, platform);
+    },
   },
 
   // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
   transformer: {
-    getTransformOptions: () => ({
+    getTransformOptions: async () => ({
       transform: {
-        experimentalImportSupport: false,
+        experimentalImportSupport: true,
         inlineRequires: true,
       },
     }),

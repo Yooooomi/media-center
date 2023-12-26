@@ -1,4 +1,4 @@
-import { QueryBus, CommandBus, useLog } from "@media-center/domain-driven";
+import { useLog, QueryBus, CommandBus } from "@media-center/domain-driven";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import Express, { urlencoded, json } from "express";
 import * as fs from "fs";
@@ -71,11 +71,14 @@ export function bootApi(
 
     logger.info(`< ${req.path}`);
 
-    const ctor = queryBus.getQuery(name);
-    const deserialized = ctor.needing?.deserialize(needing);
-    const query = new ctor(deserialized);
-    const result = await queryBus.execute(query);
-    res.status(200).send(ctor.returning?.serialize(result));
+    const ctor = queryBus.get(name);
+    const deserialized = ctor.needing.deserialize(needing);
+    const instance = new ctor(deserialized);
+    const result = await queryBus.execute(instance);
+
+    const runtime = ctor.returning.paramToRuntime(result);
+    const serialized = ctor.returning?.serialize(runtime);
+    res.status(200).send(serialized);
     logger.info(`> ${req.path}`);
   });
 
@@ -85,11 +88,14 @@ export function bootApi(
 
     logger.info(`< ${req.path}`);
 
-    const ctor = commandBus.getCommand(name);
-    const deserialized = ctor.needing?.deserialize(needing);
-    const command = new ctor(deserialized);
-    const result = await commandBus.execute(command);
-    res.status(200).send(ctor.returning?.serialize(result));
+    const ctor = commandBus.get(name);
+    const deserialized = ctor.needing.deserialize(needing);
+    const instance = new ctor(deserialized);
+    const result = await commandBus.execute(instance);
+
+    const runtime = ctor.returning.paramToRuntime(result);
+    const serialized = ctor.returning?.serialize(runtime);
+    res.status(200).send(serialized);
     logger.info(`> ${req.path}`);
   });
 

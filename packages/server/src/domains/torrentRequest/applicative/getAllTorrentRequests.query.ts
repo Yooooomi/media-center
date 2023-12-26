@@ -1,10 +1,10 @@
-import { Query, Multiple, QueryHandler } from "@media-center/domain-driven";
+import { Query, QueryHandler } from "@media-center/domain-driven";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestStore } from "./torrentRequest.store";
 
-export class GetAllTorrentRequestsQuery extends Query({
-  returning: Multiple(TorrentRequest),
-}) {}
+export class GetAllTorrentRequestsQuery extends Query(undefined, [
+  TorrentRequest,
+]) {}
 
 export class GetAllTorrentRequestsQueryHandler extends QueryHandler(
   GetAllTorrentRequestsQuery

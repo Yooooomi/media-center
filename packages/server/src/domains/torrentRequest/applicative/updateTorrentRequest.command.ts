@@ -3,11 +3,9 @@ import { TorrentRequestId } from "../domain/torrentRequestId";
 import { TorrentRequestStore } from "./torrentRequest.store";
 
 export class UpdateTorrentRequestCommand extends Command({
-  needing: {
-    torrentRequestId: TorrentRequestId,
-    downloaded: Number,
-    speed: Number,
-  },
+  torrentRequestId: TorrentRequestId,
+  downloaded: Number,
+  speed: Number,
 }) {}
 
 export class UpdateTorrentRequestCommandHandler extends CommandHandler(

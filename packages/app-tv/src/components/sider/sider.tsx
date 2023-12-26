@@ -10,6 +10,8 @@ import Text from '../text/text';
 import {StatusContext} from '../../contexts/statusContext';
 import {useAnimatedValue} from '../../services/useAnimatedValue';
 import Animated from 'react-native-reanimated';
+import {} from '@preact/signals-core';
+import {useSignal} from '../../contexts/useSignal';
 
 export default function Sider() {
   const navigate = useNavigate();
@@ -77,6 +79,8 @@ export default function Sider() {
   const onFocus = () => setFocused(o => o + 1);
   const onBlur = () => setTimeout(() => setFocused(o => o - 1), 0);
 
+  const serverStatus = useSignal(StatusContext.server);
+
   return (
     <View style={[styles.root, focused ? styles.over : undefined]}>
       <Animated.View style={[styles.container, shadows.default, widthStyle]}>
@@ -94,7 +98,7 @@ export default function Sider() {
         ))}
         <View style={styles.status}>
           <Box row ml="S16" mb="S16" gap="S8" items="center">
-            <Dot color={StatusContext.server.value ? 'statusOK' : 'statusKO'} />
+            <Dot color={serverStatus ? 'statusOK' : 'statusKO'} />
             {isOpen && <Text size="small">Serveur</Text>}
           </Box>
         </View>

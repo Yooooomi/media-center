@@ -1,44 +1,20 @@
-import {
-  InternalQuery,
-  QueryReturnType,
-} from '@media-center/server/src/framework/query';
-import {Constructor} from '@media-center/server/src/types/utils';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {Beta} from './api';
+import {
+  BaseIntention,
+  Constructor,
+  IntentionNeed,
+  IntentionReturn,
+} from '@media-center/domain-driven';
 
-type OneParameter<T> = T extends [infer First, ...any] ? First : void;
-type ResultAndError<R> = {result: R | undefined; error: any | undefined};
-
 export function useQuery<
-  T extends Constructor<InternalQuery<void, any>>,
-  R = QueryReturnType<InstanceType<T>>,
+  T extends BaseIntention<any, any>,
+  R = IntentionReturn<T>,
 >(
-  queryConstructor: T,
-  parameters?: void,
+  queryConstructor: Constructor<T>,
+  parameters: IntentionNeed<T>,
   options?: {
-    alterResult?: (result: QueryReturnType<InstanceType<T>>) => R;
-    dependsOn?: any | undefined;
-  },
-): [ResultAndError<R>, boolean, () => Promise<void>];
-export function useQuery<
-  T extends Constructor<InternalQuery<any, any>>,
-  R = QueryReturnType<InstanceType<T>>,
->(
-  queryConstructor: T,
-  parameters: OneParameter<ConstructorParameters<T>>,
-  options?: {
-    alterResult?: (result: QueryReturnType<InstanceType<T>>) => R;
-    dependsOn?: any | undefined;
-  },
-): [ResultAndError<R>, boolean, () => Promise<void>];
-export function useQuery<
-  T extends Constructor<InternalQuery<any, any>>,
-  R = QueryReturnType<InstanceType<T>>,
->(
-  queryConstructor: T,
-  parameters?: OneParameter<ConstructorParameters<T>>,
-  options?: {
-    alterResult?: (result: QueryReturnType<InstanceType<T>>) => R;
+    alterResult?: (result: IntentionReturn<T>) => R;
     dependsOn?: any | undefined;
   },
 ) {
@@ -71,7 +47,7 @@ export function useQuery<
         error: undefined,
       });
     } catch (e) {
-      console.log('Failed to fetch');
+      console.log('Failed to fetch', e);
       setResult({result: undefined, error: e});
     }
     setFetching(false);

@@ -9,6 +9,7 @@ async function onFetchUpdateAsync() {
 
     const update = await Updates.checkForUpdateAsync();
 
+    console.log('update available', update.isAvailable);
     if (update.isAvailable) {
       await Updates.fetchUpdateAsync();
       await Updates.reloadAsync();

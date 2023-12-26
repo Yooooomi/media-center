@@ -1,7 +1,7 @@
 import { CommandBus, EventBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import {
-  ScanExisting,
+  ScanExistingCommand,
   ScanExistingCommandHandler,
 } from "./applicative/scanExisting.command";
 import { DiskFileWatcher } from "./infrastructure/disk.fileWatcher";
@@ -23,7 +23,7 @@ export async function bootFileWatcher(
     environmentHelper
   );
 
-  commandBus.register(ScanExisting, new ScanExistingCommandHandler(watcher));
+  commandBus.register(ScanExistingCommand, new ScanExistingCommandHandler(watcher));
 
   await watcher.setup();
 

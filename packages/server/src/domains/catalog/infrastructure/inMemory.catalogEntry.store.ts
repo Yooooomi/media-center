@@ -1,10 +1,9 @@
 import {
   InMemoryStore,
-  ShapeSerializer,
   Either,
+  DefinitionSerializer,
 } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
-import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { CatalogEntryStore } from "../applicative/catalogEntry.store";
 import {
   AnyCatalogEntry,
@@ -13,11 +12,13 @@ import {
 } from "../domain/catalogEntry";
 
 export class InMemoryCatalogEntryStore
-  extends InMemoryStore<AnyCatalogEntry, TmdbId>
+  extends InMemoryStore<AnyCatalogEntry>
   implements CatalogEntryStore
 {
   constructor() {
-    super(new ShapeSerializer(Either(MovieCatalogEntry, ShowCatalogEntry)));
+    super(
+      new DefinitionSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
+    );
   }
 
   loadByHierarchyItemId(hierarchyItemId: HierarchyItemId) {

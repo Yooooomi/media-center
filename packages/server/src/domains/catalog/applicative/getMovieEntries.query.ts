@@ -18,9 +18,9 @@ class NotMatchingHierarchyItem extends ApplicativeError {
   }
 }
 
-export class GetMovieEntriesQuery extends Query({
-  returning: Multiple(MovieCatalogEntryFulfilled),
-}) {}
+export class GetMovieEntriesQuery extends Query(undefined, [
+  MovieCatalogEntryFulfilled,
+]) {}
 
 export class GetMovieEntriesQueryHandler extends QueryHandler(
   GetMovieEntriesQuery

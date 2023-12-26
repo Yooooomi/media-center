@@ -28,11 +28,9 @@ class NotMatchingHierarchyItem extends ApplicativeError {
   }
 }
 
-export class GetEntriesQuery extends Query({
-  returning: Multiple(
-    Either(ShowCatalogEntryFulfilled, MovieCatalogEntryFulfilled)
-  ),
-}) {}
+export class GetEntriesQuery extends Query(undefined, [
+  Either(ShowCatalogEntryFulfilled, MovieCatalogEntryFulfilled),
+]) {}
 
 export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
   constructor(
@@ -49,6 +47,7 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
     entries.forEach((entry) => {
       entry.items.flatMap((i) => i.id).forEach((i) => ids.add(i.toString()));
     });
+    console.log("Loading", [...ids.values()]);
     const items = await this.hierarchyItemStore.loadMany(
       [...ids.values()].map((i) => new HierarchyItemId(i))
     );
@@ -58,7 +57,10 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
         return new ShowCatalogEntryFulfilled({
           id: entry.id,
           items: entry.items.map((e) => {
-            const item = items.find((i) => i.id.equals(e.id));
+            console.log("Type", e.id, items);
+            const item = items.find((i) => {
+              return i.id.equals(e.id);
+            });
             if (!item) {
               throw new NotMatchingHierarchyItem(e.id);
             }
@@ -73,7 +75,10 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
         return new MovieCatalogEntryFulfilled({
           id: entry.id,
           items: entry.items.map((e) => {
-            const item = items.find((i) => i.id.equals(e.id));
+            console.log("Type", e.id, items);
+            const item = items.find((i) => {
+              return i.id.equals(e.id);
+            });
             if (!item) {
               throw new NotMatchingHierarchyItem(e.id);
             }

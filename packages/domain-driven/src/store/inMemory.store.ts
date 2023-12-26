@@ -1,13 +1,13 @@
 import { Id } from "../id";
-import { Serializer, Serialized } from "../serialization";
+import { Serializer, Serialized, AtLeastId } from "../serialization";
 import { Store } from "./store";
 
-export class InMemoryStore<M, I extends Id> implements Store<M, I> {
-  constructor(public readonly serializer: Serializer<M, I>) {}
+export class InMemoryStore<M extends AtLeastId> implements Store<M> {
+  constructor(public readonly serializer: Serializer<M>) {}
 
-  store: Record<string, Serialized<M, I>> = {};
+  store: Record<string, Serialized<M>> = {};
 
-  async load(id: I) {
+  async load(id: M["id"]) {
     const value = this.store[id.toString()];
     if (!value) {
       return undefined;
@@ -15,10 +15,8 @@ export class InMemoryStore<M, I extends Id> implements Store<M, I> {
     return this.serializer.deserializeModel(value);
   }
 
-  async loadMany(ids: I[]) {
-    return this.filter((f) =>
-      ids.some((i) => i.equals(this.serializer.getIdFromModel(f)))
-    );
+  async loadMany(ids: M["id"][]) {
+    return this.filter((f) => ids.some((i) => i.equals(f.id)));
   }
 
   async loadAll() {
@@ -30,8 +28,9 @@ export class InMemoryStore<M, I extends Id> implements Store<M, I> {
   }
 
   async save(model: M) {
-    this.store[this.serializer.getIdFromModel(model).toString()] =
-      await this.serializer.serializeModel(model);
+    this.store[model.id.toString()] = await this.serializer.serializeModel(
+      model
+    );
   }
 
   async delete(id: Id) {

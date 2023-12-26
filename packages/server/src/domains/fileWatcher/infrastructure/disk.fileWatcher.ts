@@ -18,6 +18,12 @@ class CannotWatchSameDirectory extends InfrastructureError {
   }
 }
 
+class CannotWatchNonExistingDirectory extends InfrastructureError {
+  constructor(path: string) {
+    super(`Cannot watch directory ${path} as it does not exist`);
+  }
+}
+
 export class DiskFileWatcher extends FileWatcher {
   constructor(
     eventBus: EventBus,
@@ -27,9 +33,17 @@ export class DiskFileWatcher extends FileWatcher {
     super(eventBus, hierarchyStore);
   }
 
+  static ensureExists(path: string) {
+    if (!fs.existsSync(path)) {
+      throw new CannotWatchNonExistingDirectory(path);
+    }
+  }
+
   protected async initializeMovie() {
     const logger = useLog(DiskFileWatcher.name);
     const movieDir = this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
+
+    DiskFileWatcher.ensureExists(movieDir);
 
     const movieWatcher = fs.watch(movieDir, {
       recursive: true,
@@ -54,6 +68,8 @@ export class DiskFileWatcher extends FileWatcher {
   protected async initializeShow() {
     const logger = useLog(DiskFileWatcher.name);
     const showDir = this.environmentHelper.get("FILE_WATCHER_SHOW_DIR");
+
+    DiskFileWatcher.ensureExists(showDir);
 
     const showWatcher = fs.watch(showDir, {
       recursive: true,

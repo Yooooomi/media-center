@@ -8,7 +8,7 @@ import Box from '../../components/box/box';
 import {maxCardsPerLine} from '../../services/constants';
 
 export default function Movies() {
-  const [{result: movieEntries}] = useQuery(GetMovieEntriesQuery);
+  const [{result: movieEntries}] = useQuery(GetMovieEntriesQuery, undefined);
   const [{result: tmdbs}] = useQuery(
     GetTmdbsQuery,
     movieEntries?.map(e => e.id) ?? [],

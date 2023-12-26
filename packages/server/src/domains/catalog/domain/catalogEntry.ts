@@ -1,4 +1,4 @@
-import { Shape, Multiple } from "@media-center/domain-driven";
+import { Shape, Multiple, Freeze } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 
@@ -6,6 +6,7 @@ export class CatalogEntryMovieSpecification extends Shape({
   id: HierarchyItemId,
 }) {}
 
+@Freeze()
 export class MovieCatalogEntry extends Shape({
   id: TmdbId,
   items: Multiple(CatalogEntryMovieSpecification),
@@ -32,6 +33,7 @@ export class CatalogEntryShowSpecification extends Shape({
   episode: Number,
 }) {}
 
+@Freeze()
 export class ShowCatalogEntry extends Shape({
   id: TmdbId,
   items: Multiple(CatalogEntryShowSpecification),

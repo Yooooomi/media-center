@@ -1,4 +1,4 @@
-import {Constructor} from '@media-center/server/src/types/utils';
+import {Constructor} from '@media-center/domain-driven';
 import {Dispatch, SetStateAction, useState as rUseState} from 'react';
 
 type useState<S> = (

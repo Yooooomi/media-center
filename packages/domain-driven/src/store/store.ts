@@ -1,9 +1,9 @@
-import { Id } from "../id";
+import { AtLeastId } from "../serialization";
 
-export abstract class Store<M, I extends Id> {
-  abstract load(id: I): Promise<M | undefined>;
-  abstract loadMany(ids: I[]): Promise<M[]>;
+export abstract class Store<M extends AtLeastId> {
+  abstract load(id: M["id"]): Promise<M | undefined>;
+  abstract loadMany(ids: M["id"][]): Promise<M[]>;
   abstract loadAll(): Promise<M[]>;
   abstract save(model: M): Promise<void>;
-  abstract delete(id: I): Promise<void>;
+  abstract delete(id: M["id"]): Promise<void>;
 }

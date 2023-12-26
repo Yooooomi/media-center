@@ -8,12 +8,12 @@ import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestStore } from "./torrentRequest.store";
 
-export class GetTorrentRequestsQuery extends Query({
-  needing: Dict({
+export class GetTorrentRequestsQuery extends Query(
+  {
     tmdbId: TmdbId,
-  }),
-  returning: Multiple(TorrentRequest),
-}) {}
+  },
+  [TorrentRequest]
+) {}
 
 export class GetTorrentRequestsQueryHandler extends QueryHandler(
   GetTorrentRequestsQuery

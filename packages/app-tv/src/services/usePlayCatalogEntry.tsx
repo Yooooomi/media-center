@@ -17,9 +17,9 @@ export function usePlayCatalogEntry<
 >(
   entry: T,
   filter?: (
-    item: T extends MovieCatalogEntryFulfilled
-      ? CatalogEntryMovieSpecificationFulFilled
-      : CatalogEntryShowSpecificationFulFilled,
+    item: T extends ShowCatalogEntryFulfilled
+      ? CatalogEntryShowSpecificationFulFilled
+      : CatalogEntryMovieSpecificationFulFilled,
   ) => boolean,
 ) {
   const [actionSheetOpen, setActionSheetOpen] = useState(false);

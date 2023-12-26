@@ -7,8 +7,8 @@ import {DiscoverShowQuery} from '@media-center/server/src/domains/tmdb/applicati
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
 
 export default function Home() {
-  const [{result: movies}] = useQuery(DiscoverMovieQuery);
-  const [{result: shows}] = useQuery(DiscoverShowQuery);
+  const [{result: movies}] = useQuery(DiscoverMovieQuery, undefined);
+  const [{result: shows}] = useQuery(DiscoverShowQuery, undefined);
 
   if (!movies || !shows) {
     return <FullScreenLoading />;

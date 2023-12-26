@@ -23,14 +23,12 @@ class UnknownEntry extends ApplicativeError {
   }
 }
 
-export class GetEntryQuery extends Query({
-  needing: Dict({
+export class GetEntryQuery extends Query(
+  {
     tmdbId: TmdbId,
-  }),
-  returning: Optional(
-    Either(ShowCatalogEntryFulfilled, MovieCatalogEntryFulfilled)
-  ),
-}) {}
+  },
+  Optional(Either(ShowCatalogEntryFulfilled, MovieCatalogEntryFulfilled))
+) {}
 
 export class GetEntryQueryHandler extends QueryHandler(GetEntryQuery) {
   constructor(

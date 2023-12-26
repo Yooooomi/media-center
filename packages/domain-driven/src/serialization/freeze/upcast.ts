@@ -1,5 +1,5 @@
-import { Constructor } from "../../types";
-import { ShapeClass, deserializeShape, serializeShape } from "../shape";
+import { AtLeastId, Serializer } from "../serializer";
+import { Serializable, SerializableConstructor } from "../types";
 
 class CannotUpcastError extends Error {
   constructor(version: number) {
@@ -7,30 +7,26 @@ class CannotUpcastError extends Error {
   }
 }
 
-type StoredUpcastSerialized = {
-  data: any;
-  version: number | undefined;
-};
-
-export class UpcastSerializer<T extends ShapeClass<any>> {
+export class UpcastSerializer<
+  T extends Serializable & AtLeastId
+> extends Serializer<T> {
   constructor(
-    private readonly ctor: Constructor<T>,
+    private readonly ctor: SerializableConstructor<T>,
     private readonly upcastManifest: UpcastManifest<any>
-  ) {}
+  ) {
+    super();
+  }
 
-  private get latestVersion() {
+  public get version() {
     return Object.keys(this.upcastManifest).length;
   }
 
-  serialize(shape: ShapeClass<any>) {
-    return {
-      version: this.latestVersion,
-      data: serializeShape(this.ctor, shape),
-    };
+  async serialize(shape: T) {
+    return shape.serialize();
   }
 
   private async upcast(data: any, fromVersion: number): Promise<any> {
-    if (fromVersion === this.latestVersion) {
+    if (fromVersion === this.version) {
       return data;
     }
     const upcaster = this.upcastManifest.manifest[fromVersion];
@@ -40,15 +36,11 @@ export class UpcastSerializer<T extends ShapeClass<any>> {
     return this.upcast(await upcaster.upcast(data), fromVersion + 1);
   }
 
-  async deserialize(data: StoredUpcastSerialized) {
-    const { version } = data;
-    if (version === this.latestVersion) {
-      return data.data;
+  async deserialize(data: any, version: number) {
+    if (version === this.version) {
+      return this.ctor.deserialize(data);
     }
-    return deserializeShape(
-      this.ctor,
-      await this.upcast(data.data, version ?? 0)
-    );
+    return this.ctor.deserialize(await this.upcast(data.data, version ?? 0));
   }
 }
 
@@ -67,7 +59,7 @@ type LastFromArray<T extends any[]> = T extends [...any[], infer Last]
   : never;
 
 export type EnsureFrozen<
-  A extends ShapeClass<any>,
+  A extends Serializable,
   Versions extends any[]
 > = Equals<A, LastFromArray<Versions>>;
 

@@ -1,7 +1,8 @@
-import { Shape } from "@media-center/domain-driven";
+import { Freeze, Shape } from "@media-center/domain-driven";
 import { File } from "../../../framework/valueObjects/file";
 import { HierarchyItemId } from "./hierarchyItemId";
 
+@Freeze()
 export class HierarchyItem extends Shape({
   id: HierarchyItemId,
   addedAt: Date,

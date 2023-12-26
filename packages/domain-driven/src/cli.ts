@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import yargs from "yargs";
-import { Freezer } from "./serialization";
+import { Freezer } from "./serialization/freeze/morph";
 
 yargs
   .command(
@@ -26,6 +26,12 @@ yargs
             "Relative path from the frozen class to create serializers",
           default: ".",
         }),
-    ({ erase, only, relative }) => new Freezer(relative, erase, only).freeze()
+    ({ erase, only, relative }) => {
+      try {
+        new Freezer(relative, erase, only).freeze();
+      } catch (e) {
+        console.log("Error", e);
+      }
+    }
   )
   .parseSync();

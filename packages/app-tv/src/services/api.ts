@@ -1,37 +1,45 @@
 import Axios from 'axios';
 import {HierarchyItemId} from '@media-center/server/src/domains/fileWatcher/domain/hierarchyItemId';
-import {
-  InternalQuery,
-  QueryReturnType,
-} from '@media-center/server/src/framework/query';
-import {
-  CommandReturnType,
-  InternalCommand,
-} from '@media-center/server/src/framework/command';
 import {SERVER_ENDPOINT} from './constants';
+import {
+  BaseIntention,
+  IntentionConstructor,
+  IntentionReturn,
+} from '@media-center/domain-driven';
 
 const axios = Axios.create({
   baseURL: SERVER_ENDPOINT,
 });
 export class Beta {
-  static async query<Q extends InternalQuery<any, any>>(
+  private static async makeCall<Q extends BaseIntention<any, any>>(
+    path: string,
     query: Q,
-  ): Promise<QueryReturnType<Q>> {
-    const serialized = (query.needing as any)?.serialize(query.data);
-    const {data} = await axios.post(`/query/${query.constructor.name}`, {
-      needing: serialized,
-    });
-    return query.returning?.deserialize(data);
+  ): Promise<IntentionReturn<Q>> {
+    const serialized = query.serialize();
+    try {
+      const {data} = await axios.post(path, {
+        needing: serialized,
+      });
+      const deserialized = (
+        query.constructor as IntentionConstructor<any, any>
+      ).returning?.deserialize(data);
+      return deserialized;
+    } catch (e) {
+      console.error('API error', e);
+      throw e;
+    }
   }
 
-  static async command<Q extends InternalCommand<any, any>>(
+  static async query<Q extends BaseIntention<any, any>>(
+    query: Q,
+  ): Promise<IntentionReturn<Q>> {
+    return Beta.makeCall(`/query/${query.constructor.name}`, query);
+  }
+
+  static async command<Q extends BaseIntention<any, any>>(
     command: Q,
-  ): Promise<CommandReturnType<Q>> {
-    const serialized = (command.needing as any).serialize(command.data);
-    const {data} = await axios.post(`/command/${command.constructor.name}`, {
-      needing: serialized,
-    });
-    return command.returning?.deserialize(data);
+  ): Promise<IntentionReturn<Q>> {
+    return Beta.makeCall(`/command/${command.constructor.name}`, command);
   }
 }
 

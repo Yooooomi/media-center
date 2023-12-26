@@ -1,1 +1,1 @@
-export {default} from './show';
+export * from './show';

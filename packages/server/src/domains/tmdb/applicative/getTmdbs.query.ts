@@ -9,10 +9,7 @@ import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbStore } from "./tmdb.store";
 
-export class GetTmdbsQuery extends Query({
-  needing: Multiple(TmdbId),
-  returning: Multiple(Either(Movie, Show)),
-}) {}
+export class GetTmdbsQuery extends Query([TmdbId], [Either(Movie, Show)]) {}
 
 export class GetTmdbsQueryHandler extends QueryHandler(GetTmdbsQuery) {
   constructor(private readonly tmdbStore: TmdbStore) {

@@ -6,12 +6,14 @@
     "android": "react-native run-android --no-packager",
     "android:clean": "cd android && ./gradlew clean ; cd -",
     "android:release": "react-native run-android --variant Release --no-packager",
+    "android:bundle": "react-native bundle --platform android --dev true --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug ; cd -",
     "ios": "react-native run-ios --no-packager",
-    "tvos": "expo run:ios --scheme mediacenterapptv-tvOS --device \"Apple TV\"",
+    "tvos": "expo run:ios --scheme timotex-tvOS --device \"Apple TV\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "start": "react-native start",
     "test": "jest",
-    "update": "eas update"
+    "update": "eas update",
+    "typecheck": "tsc --build"
   },
   "dependencies": {
     "@gorhom/portal": "^1.0.14",
@@ -36,18 +38,19 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-proposal-decorators": "^7.23.6",
+    "@babel/plugin-transform-flow-strip-types": "^7.23.3",
+    "@babel/plugin-transform-private-methods": "^7.23.3",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@media-center/dev": "*",
     "@react-native/eslint-config": "^0.72.2",
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
     "@types/react": "^18.0.24",
     "@types/react-native-vector-icons": "^6.4.14",
     "babel-jest": "^29.2.1",
-    "eslint": "^8.19.0",
-    "metro-react-native-babel-preset": "0.76.8",
-    "prettier": "^2.4.1",
-    "typescript": "4.8.4"
+    "metro-react-native-babel-preset": "0.76.8"
   },
   "engines": {
     "node": ">=18"

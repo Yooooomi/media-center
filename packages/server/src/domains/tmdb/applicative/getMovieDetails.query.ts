@@ -8,12 +8,12 @@ import { MovieDetails } from "../domain/movieDetails";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbAPI } from "./tmdb.api";
 
-export class GetMovieDetailsQuery extends Query({
-  needing: Dict({
+export class GetMovieDetailsQuery extends Query(
+  {
     tmdbId: TmdbId,
-  }),
-  returning: MovieDetails,
-}) {}
+  },
+  MovieDetails
+) {}
 
 class DetailsNotFound extends ApplicativeError {
   constructor(tmdbId: TmdbId) {

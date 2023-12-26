@@ -6,14 +6,14 @@ import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
-import { ShapeSerializer, Either } from "@media-center/domain-driven";
+import { DefinitionSerializer, Either } from "@media-center/domain-driven";
 
 export class FilesystemTmdbStore
-  extends FilesystemStore<AnyTmdb, TmdbId>
+  extends FilesystemStore<AnyTmdb>
   implements TmdbStore
 {
   constructor(private readonly tmdbAPI: TmdbAPI) {
-    super(new ShapeSerializer(Either(Movie, Show)));
+    super(new DefinitionSerializer(Either(Movie, Show)));
   }
 
   async load(id: TmdbId) {

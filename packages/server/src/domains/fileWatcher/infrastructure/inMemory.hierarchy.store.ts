@@ -1,14 +1,14 @@
-import { InMemoryStore, ShapeSerializer } from "@media-center/domain-driven";
+import { InMemoryStore } from "@media-center/domain-driven";
 import { HierarchyStore } from "../applicative/hierarchy.store";
 import { HierarchyItem } from "../domain/hierarchyItem";
-import { HierarchyItemId } from "../domain/hierarchyItemId";
+import { HierarchyItemUpcastSerializer } from "./hierarchyItem.upcast";
 
 export class InMemoryHierarchyStore
-  extends InMemoryStore<HierarchyItem, HierarchyItemId>
+  extends InMemoryStore<HierarchyItem>
   implements HierarchyStore
 {
   constructor() {
-    super(new ShapeSerializer(HierarchyItem));
+    super(new HierarchyItemUpcastSerializer());
   }
 
   loadByPath(path: string) {

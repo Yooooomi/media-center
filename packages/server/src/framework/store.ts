@@ -2,16 +2,17 @@ import { ProcessEnvironmentHelper } from "../domains/environment/infrastructure/
 import * as fs from "fs";
 import * as path from "path";
 import {
+  AtLeastId,
   Id,
   InMemoryStore,
   Serializer,
   useLog,
 } from "@media-center/domain-driven";
 
-export class FilesystemStore<M, I extends Id> extends InMemoryStore<M, I> {
+export class FilesystemStore<M extends AtLeastId> extends InMemoryStore<M> {
   private readonly location: string;
 
-  constructor(serializer: Serializer<M, I>) {
+  constructor(serializer: Serializer<M>) {
     super(serializer);
     const env = new ProcessEnvironmentHelper();
     this.location = env.get("FILESYSTEM_STORE_DIR");
@@ -26,7 +27,7 @@ export class FilesystemStore<M, I extends Id> extends InMemoryStore<M, I> {
     }
   }
 
-  commit<T extends FilesystemStore<any, any>>(this: T) {
+  commit<T extends FilesystemStore<any>>(this: T) {
     const filename = path.join(this.location, this.constructor.name);
     fs.writeFileSync(filename, JSON.stringify(this.store));
   }

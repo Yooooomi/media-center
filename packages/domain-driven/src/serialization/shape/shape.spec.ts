@@ -1,237 +1,117 @@
-import { Literal } from "./literal";
-import { ShapeClass, Shape } from "./shape";
-import { Multiple, Enum, Optional, Dict, Either } from "./shapeDetails";
+import { Shape } from "./shape";
+import { Optional } from "./definitions/optional";
+import { check } from "./testUtils";
+import { DictDefinition, DictShorthand } from "./definitions/dict";
+import { DefinitionParameter } from "./definitions/definition";
+import { Constructor } from "./types";
+import { ShorthandToLonghand } from "./definitions/shorthands";
 
-describe("New shape", () => {
-  function check(a: ShapeClass<any>, log?: boolean) {
-    const serialized = a.serialize();
-    const deserialized = (a.constructor as any).deserialize(serialized);
+describe("Shape", () => {
+  it("uses keyword-less notation", () => {
+    class ShapeChild extends Shape({
+      value: Number,
+    }) { }
 
-    if (log) {
-      console.log(a);
-      console.log(deserialized);
-    }
+    class SerializableChild {
+      constructor(public readonly value: number) { }
 
-    expect(deserialized).toEqual(a);
-  }
+      serialize() {
+        return { value: this.value };
+      }
 
-  it("basic shape", () => {
-    class A extends Shape({
-      a: Number,
-    }) {}
-
-    const a = new A({
-      a: 1,
-    });
-    check(a);
-  });
-
-  it("nested shape", () => {
-    class C extends Shape({
-      d: Number,
-    }) {
-      keepThis() {}
-    }
-
-    class B extends Shape({
-      c: C,
-    }) {}
-
-    class A extends Shape({
-      b: B,
-    }) {}
-
-    const a = new A({
-      b: new B({ c: new C({ d: 1 }) }),
-    });
-
-    check(a);
-    a.b.c.keepThis();
-  });
-
-  it("array shape", () => {
-    class A extends Shape({
-      a: Multiple(Number),
-    }) {}
-
-    const a = new A({
-      a: [1, 2],
-    });
-
-    check(a);
-  });
-
-  it("shape array shape", () => {
-    class B extends Shape({
-      a: Number,
-    }) {}
-
-    class A extends Shape({
-      a: Multiple(B),
-    }) {}
-
-    const a = new A({
-      a: [new B({ a: 1 })],
-    });
-
-    check(a);
-  });
-
-  it("enum shape", () => {
-    class A extends Shape({
-      a: Enum(["a", "b"]),
-    }) {}
-
-    const a = new A({
-      a: "a",
-    });
-
-    check(a);
-  });
-
-  it("optional shape", () => {
-    class A extends Shape({
-      a: Optional(String),
-    }) {}
-
-    const a = new A({
-      a: "hey",
-    });
-    const b = new A({
-      a: undefined,
-    });
-    check(a);
-    check(b);
-  });
-
-  it("optional shape shape", () => {
-    class A extends Shape({
-      a: String,
-    }) {}
-
-    class B extends Shape({
-      a: Optional(A),
-    }) {}
-
-    const a = new B({
-      a: new A({
-        a: "hey",
-      }),
-    });
-    const b = new B({
-      a: undefined,
-    });
-    check(a);
-    check(b);
-  });
-
-  it("literal shape", () => {
-    class Id extends Literal(String) {
-      keepThis() {}
-    }
-
-    class A extends Shape({
-      a: Id,
-    }) {}
-
-    const a = new A({
-      a: new Id("hey"),
-    });
-
-    check(a);
-    a.a.keepThis();
-  });
-
-  it("dict shape", () => {
-    class A extends Shape({
-      a: Number,
-      b: Dict({ nested: Number }),
-    }) {}
-
-    const a = new A({
-      a: 1,
-      b: {
-        nested: 2,
-      },
-    });
-
-    check(a);
-    expect(a.b.nested).toEqual(2);
-  });
-
-  it("either shape", () => {
-    class A extends Shape({
-      a: Number,
-    }) {}
-
-    class B extends Shape({
-      b: String,
-    }) {}
-
-    class C extends Shape({
-      ab: Either(A, B),
-    }) {}
-
-    const a = new C({
-      ab: new B({ b: "yaya" }),
-    });
-    check(a);
-  });
-
-  it("array of either", () => {
-    class A extends Shape({
-      a: Number,
-    }) {}
-
-    class B extends Shape({
-      b: String,
-    }) {}
-
-    class C extends Shape({
-      ab: Multiple(Either(A, B)),
-    }) {}
-
-    const a = new C({
-      ab: [new B({ b: "yaya" })],
-    });
-    check(a);
-  });
-
-  it("allows less verbose access", () => {
-    class SomeId extends Literal(Number) {
-      someIdMethod() {
-        return this.value;
+      static deserialize(serialized: { value: number }) {
+        return new SerializableChild(serialized.value);
       }
     }
 
-    class B extends Shape({
-      e: Enum(["a", "b"]),
-      f: SomeId,
-      g: Optional(String),
-      h: Optional(Number),
-    }) {}
+    class Test extends Shape({
+      string: String,
+      number: Number,
+      boolean: Boolean,
+      date: Date,
+      optional: Optional(Number),
+      multiple: [Number],
+      stringEnum: ["a", "b", "c"],
+      child: ShapeChild,
+      serializableClass: SerializableChild,
+    }) { }
 
-    class A extends Shape({
-      a: Number,
-      b: String,
-      c: Boolean,
-      d: B,
-    }) {}
-
-    const a = new A({
-      a: 1,
-      b: "",
-      c: false,
-      d: new B({
-        e: "a",
-        f: new SomeId(123),
-        g: undefined,
-        h: undefined,
-      }),
+    const a = new Test({
+      string: "my string",
+      number: 2,
+      boolean: true,
+      date: new Date("1998-10-28T00:00:00.000Z"),
+      optional: undefined,
+      multiple: [1, 2, 3, 4, 5],
+      stringEnum: "b",
+      child: new ShapeChild({ value: 4 }),
+      serializableClass: new SerializableChild(5),
     });
 
-    a.d.e;
-    expect(a.d.f.someIdMethod()).toEqual(123);
-    check(a);
+    expect(a.string).toEqual("my string");
+    expect(a.number).toEqual(2);
+    expect(a.boolean).toEqual(true);
+    expect(a.date).toEqual(new Date("1998-10-28T00:00:00.000Z"));
+    expect(a.optional).toEqual(undefined);
+    expect(a.multiple).toEqual([1, 2, 3, 4, 5]);
+    expect(a.stringEnum.value).toEqual("b");
+    expect(a.child).toEqual(new ShapeChild({ value: 4 }));
+    expect(a.serializableClass).toEqual(new SerializableChild(5));
+
+    check(Test, a);
   });
+
+  it('allows base class extension', () => {
+    class Parent {
+      count = 0;
+      increment() {
+        this.count++;
+      }
+
+      isParent = true;
+      static isParent = true;
+    }
+
+    class Child extends Shape({ value: Number, count: Number }, Parent) {
+      isChild = true;
+
+      dothing() {
+        this.isParent;
+        // @ts-expect-error
+        this.notExisting;
+
+        this.increment()
+        return this.count;
+      }
+    }
+
+    const child = new Child({ value: 5, count: 0 });
+    expect(child.value).toBe(5);
+    expect(child.isChild).toBe(true);
+    expect(child.isParent).toBe(true);
+    expect(child.count).toBe(0);
+    child.increment();
+    expect(child.count).toBe(1);
+    check(Child, child)
+  })
+
+
+  it('allow custom base class', () => {
+
+
+    const Event = <const D extends DictShorthand | DictDefinition<any>>(payloadDefinition: D) => {
+      // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+      return Shape({ id: String, payload: payloadDefinition }, class I {
+        static new<T extends Constructor<any>>(this: T, payload: DefinitionParameter<ShorthandToLonghand<D>>) {
+          return new this({ id: "123", payload }) as InstanceType<T>
+        }
+
+      })
+    }
+
+    class Deposited extends Event({ accountId: String, amount: Number }) { }
+
+    Deposited.new({ accountId: '', amount: 4 }).serialize()
+
+  })
 });

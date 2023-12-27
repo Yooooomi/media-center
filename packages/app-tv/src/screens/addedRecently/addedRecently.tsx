@@ -1,78 +1,27 @@
-import {useEffect, useMemo} from 'react';
-import {GetEntriesQuery} from '@media-center/server/src/domains/catalog/applicative/getEntries.query';
-import {
-  MovieCatalogEntryFulfilled,
-  ShowCatalogEntryFulfilled,
-} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
-import {GetTmdbsQuery} from '@media-center/server/src/domains/tmdb/applicative/getTmdbs.query';
-import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
-import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
+import {useEffect} from 'react';
 import ShowCardsLine from '../../components/showCardsLine/showCardsLine';
 import MovieCardsLine from '../../components/movieCardsLine/movieCardsLine';
-import {compact, keyBy} from '@media-center/algorithm';
 import {useQuery} from '../../services/useQuery';
 import Box from '../../components/box/box';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
 import {StatusContext} from '../../contexts/statusContext';
+import {HomepageQuery} from '@media-center/server/src/queries/homepage.query';
+import DownloadingCardLine from '../../components/downloadingCardLine';
+import {ScrollView} from 'react-native';
+import {useEvent} from '../../services/useEvent';
+import {
+  CatalogEntryAdded,
+  CatalogEntryDeleted,
+} from '@media-center/server/src/domains/catalog/applicative/catalog.events';
 
 export default function AddedRecently() {
-  const [{result: entries, error}] = useQuery(GetEntriesQuery, undefined, {
-    alterResult: result =>
-      result.sort(
-        (a, b) =>
-          (b.getLatestItem()?.item.addedAt.getTime() ?? 0) -
-          (a.getLatestItem()?.item.addedAt.getTime() ?? 0),
-      ),
-  });
-  const [{result: tmdbs}] = useQuery(
-    GetTmdbsQuery,
-    entries?.map(e => e.id) ?? [],
-    {
-      dependsOn: entries,
-      alterResult: r => keyBy(r, tmdb => tmdb.id.toString()),
-    },
+  const [{result: homepage, error}, _, reload] = useQuery(
+    HomepageQuery,
+    undefined,
   );
 
-  const [movieEntries, showEntries] = useMemo<
-    [MovieCatalogEntryFulfilled[], ShowCatalogEntryFulfilled[]]
-  >(
-    () =>
-      entries
-        ? [
-            entries.filter(
-              e => e instanceof MovieCatalogEntryFulfilled,
-            ) as MovieCatalogEntryFulfilled[],
-            entries.filter(
-              e => e instanceof ShowCatalogEntryFulfilled,
-            ) as ShowCatalogEntryFulfilled[],
-          ]
-        : [[], []],
-    [entries],
-  );
-
-  const [movies, shows] = useMemo(
-    () => [
-      compact(
-        movieEntries.map(m => {
-          const movie = tmdbs?.[m.id.toString()];
-          if (!movie || !(movie instanceof Movie)) {
-            return undefined;
-          }
-          return movie;
-        }),
-      ),
-      compact(
-        showEntries.map(s => {
-          const show = tmdbs?.[s.id.toString()];
-          if (!show || !(show instanceof Show)) {
-            return undefined;
-          }
-          return show;
-        }),
-      ),
-    ],
-    [movieEntries, showEntries, tmdbs],
-  );
+  useEvent(CatalogEntryAdded, reload);
+  useEvent(CatalogEntryDeleted, reload);
 
   useEffect(() => {
     if (error) {
@@ -80,20 +29,34 @@ export default function AddedRecently() {
     }
   }, [error]);
 
-  if (!entries || !tmdbs) {
+  if (!homepage) {
     return <FullScreenLoading />;
   }
 
   return (
-    <Box row grow>
-      <Box gap="S16" ml="S16" mt="S16">
-        <ShowCardsLine
-          autoFocusFirst
-          title="Séries récement ajoutées"
-          shows={shows}
-        />
-        <MovieCardsLine title="Films récement ajoutés" movies={movies} />
+    <ScrollView>
+      <Box row grow>
+        <Box gap="S16" ml="S16" mt="S16">
+          <ShowCardsLine
+            autoFocusFirst
+            title="Séries récement ajoutées"
+            shows={homepage.catalog.shows.map(e => e.tmdb)}
+          />
+          <MovieCardsLine
+            title="Films récement ajoutés"
+            movies={homepage.catalog.movies.map(e => e.tmdb)}
+          />
+          <DownloadingCardLine
+            title="En téléchargement"
+            entries={homepage.downloading
+              .filter(e => e.torrent.getClampedDownloaded() !== 1)
+              .map(e => ({
+                request: e.torrent,
+                tmdb: e.tmdb,
+              }))}
+          />
+        </Box>
       </Box>
-    </Box>
+    </ScrollView>
   );
 }

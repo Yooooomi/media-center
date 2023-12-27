@@ -19,7 +19,7 @@ export default function ShowSeasonCard({
   focusOnMount,
 }: SeasonCardProps) {
   const imageUri = useImageUri(season.poster_path);
-  const navigate = useNavigate();
+  const {navigate} = useNavigate();
 
   return (
     <InfoCard

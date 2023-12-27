@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "build:watch": "yarn build --watch --preserveWatchOutput",
-    "build": "tsc",
-    "postinstall": "yarn build"
+    "build": "tsc"
   },
   "devDependencies": {
     "@media-center/dev": "*"

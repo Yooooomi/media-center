@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      AVAILABLE_USERS: "User1,User2"
+      API_KEY: "somerandompassword"
+
+      DI_DATABASE: filesystem
+      DI_TORRENT_INDEXER: yggTorrent
+      DI_TORRENT_CLIENT: mock
+      DI_TMDB_API: real
+      TMDB_API_KEY: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0YTZiMDIxZTE5Y2YxOTljMTM1NGFhMGRiMDZiOTkzMiIsInN1YiI6IjY0ODYzYWRmMDI4ZjE0MDExZTU1MDkwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.yyMkZlhGOGBHtw1yvpBVUUHhu7IKVYho49MvNNKt_wY
+
+      FILESYSTEM_STORE_DIR: /data/database
+      FILE_WATCHER_MOVIE_DIR: /data/movie
+      FILE_WATCHER_SHOW_DIR: /data/show
+
+      DELUGE_ENDPOINT: https://deluge.yooooomi.com
+      DELUGE_PASSWORD: deluge
+      DELUGE_MOVIE_LOCATION: /media/disk/videos/films
+      DELUGE_SHOW_LOCATION: /media/disk/videos/series

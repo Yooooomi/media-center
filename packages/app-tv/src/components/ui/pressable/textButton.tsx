@@ -11,8 +11,13 @@ export function TextButton({text, onPress}: TextButtonProps) {
   return (
     <Pressable onPress={onPress}>
       {({focused}) => (
-        <Box bg={focused ? 'buttonBackgroundFocused' : 'buttonBackground'}>
-          <Text>{text}</Text>
+        <Box
+          bg={focused ? 'buttonBackgroundFocused' : 'buttonBackground'}
+          p="S8"
+          r="default">
+          <Text color={focused ? 'buttonTextFocused' : 'buttonText'}>
+            {text}
+          </Text>
         </Box>
       )}
     </Pressable>

@@ -79,7 +79,11 @@ const Controls = ({
     resetShow();
   };
 
-  const shouldShow = !isPlaying || isShowing;
+  const shouldShow = !isPlaying || isShowing || actionSheet !== undefined;
+
+  useEffect(() => {
+    resetShow();
+  }, [actionSheet, resetShow]);
 
   useRemote({
     pan: () => console.log('PAN!'),
@@ -133,30 +137,33 @@ const Controls = ({
             <Text>{formatVideoDuration(videoInfo.duration)}</Text>
           </Box>
           <Box w="100%" row content="space-between" items="center" ph="S32">
-            <Box row gap="S16">
+            <Box row gap="S16" flex={1}>
               <IconButton
+                size={24}
                 disabled={videoInfo.availableTextTracks.length === 0}
-                onPress={() => {}}
-                icon="subtitles"
+                onPress={() => setActionSheet('text')}
+                icon="subtitles-outline"
               />
               <IconButton
+                size={24}
                 disabled={videoInfo.availableAudioTracks.length === 0}
-                onPress={() => {}}
-                icon="cast-audio"
+                onPress={() => setActionSheet('audio')}
+                icon="music"
               />
             </Box>
-            <Box row gap="S16">
-              <IconButton onPress={onBack} icon="skip-backward" />
-              <IconButton onPress={rewind} icon="rewind" />
+            <Box flex={3} row grow items="center" content="center" gap="S16">
+              <IconButton size={24} onPress={onBack} icon="skip-backward" />
+              <IconButton size={24} onPress={rewind} icon="rewind" />
               <IconButton
+                size={24}
                 focusOnMount
                 onPress={rollPlay}
                 icon={isPlaying ? 'pause' : 'play'}
               />
-              <IconButton onPress={fastForward} icon="fast-forward" />
-              <IconButton onPress={onNext} icon="skip-forward" />
+              <IconButton size={24} onPress={fastForward} icon="fast-forward" />
+              <IconButton size={24} onPress={onNext} icon="skip-forward" />
             </Box>
-            <Box>
+            <Box flex={1}>
               <View />
             </Box>
           </Box>

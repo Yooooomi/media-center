@@ -9,7 +9,8 @@ interface IconButtonProps {
   onPress: () => void;
   focusOnMount?: boolean;
   disabled?: boolean;
-  loading: boolean;
+  loading?: boolean;
+  size?: number;
 }
 
 export function IconButton({
@@ -18,11 +19,14 @@ export function IconButton({
   focusOnMount,
   disabled,
   loading,
+  size,
 }: IconButtonProps) {
   return (
     <Pressable onPress={onPress} focusOnMount={focusOnMount}>
       {({focused}) => (
         <Box
+          r="default"
+          p="S4"
           bg={
             disabled
               ? 'buttonBackgroundDisabled'
@@ -35,6 +39,7 @@ export function IconButton({
           ) : (
             <Icon
               name={icon}
+              size={size}
               color={
                 disabled
                   ? 'buttonTextDisabled'

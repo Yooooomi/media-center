@@ -1,23 +1,50 @@
-import Axios from 'axios';
+import StaticAxios, {Axios} from 'axios';
 import {HierarchyItemId} from '@media-center/server/src/domains/fileWatcher/domain/hierarchyItemId';
-import {SERVER_ENDPOINT} from './constants';
 import {
+  BaseEvent,
   BaseIntention,
   IntentionConstructor,
   IntentionReturn,
 } from '@media-center/domain-driven';
+import {Buffer} from 'buffer';
+import EventSource from 'react-native-sse';
+import {SerializableConstructor} from '@media-center/domain-driven/lib/serialization/types';
 
-const axios = Axios.create({
-  baseURL: SERVER_ENDPOINT,
-});
-export class Beta {
-  private static async makeCall<Q extends BaseIntention<any, any>>(
+export class Bridge {
+  private address: string | undefined;
+  private password: string | undefined;
+  private axios: Axios | undefined;
+
+  public setServer(address: string, password: string) {
+    const newPassword = Buffer.from(password).toString('base64');
+    this.axios = StaticAxios.create({
+      baseURL: address,
+      headers: {
+        Authorization: `Bearer ${newPassword}`,
+      },
+    });
+    this.address = address;
+    this.password = newPassword;
+  }
+
+  public getUrl(path: string) {
+    return `${this.address}${path}`;
+  }
+
+  public getPassword() {
+    return this.password;
+  }
+
+  private async makeCall<Q extends BaseIntention<any, any>>(
     path: string,
     query: Q,
   ): Promise<IntentionReturn<Q>> {
+    if (!this.axios) {
+      throw new Error('Cannot make call, server not configured');
+    }
     const serialized = query.serialize();
     try {
-      const {data} = await axios.post(path, {
+      const {data} = await this.axios.post(path, {
         needing: serialized,
       });
       const deserialized = (
@@ -30,19 +57,59 @@ export class Beta {
     }
   }
 
-  static async query<Q extends BaseIntention<any, any>>(
+  async query<Q extends BaseIntention<any, any>>(
     query: Q,
   ): Promise<IntentionReturn<Q>> {
-    return Beta.makeCall(`/query/${query.constructor.name}`, query);
+    return this.makeCall(`/query/${query.constructor.name}`, query);
   }
 
-  static async command<Q extends BaseIntention<any, any>>(
+  async command<Q extends BaseIntention<any, any>>(
     command: Q,
   ): Promise<IntentionReturn<Q>> {
-    return Beta.makeCall(`/command/${command.constructor.name}`, command);
+    return this.makeCall(`/command/${command.constructor.name}`, command);
+  }
+
+  onEvent<T extends BaseEvent<any>>(
+    event: SerializableConstructor<T>,
+    handler: (event: T) => void,
+  ) {
+    console.log('onEvent', event.name);
+    const es = new EventSource(this.getUrl(`/event/${event.name}`), {
+      debug: true,
+      method: 'GET',
+    });
+
+    es.addEventListener('open', () => {
+      console.log('Opened');
+    });
+
+    es.addEventListener('close', () => {
+      console.log('Closed');
+    });
+
+    es.addEventListener('error', error => {
+      console.log('error', error);
+    });
+
+    es.addEventListener('message', message => {
+      console.log('New message', message);
+      if (!message.data) {
+        return;
+      }
+      handler(event.deserialize(JSON.parse(message.data)));
+    });
+
+    es.open();
+
+    return () => {
+      es.removeAllEventListeners();
+      es.close();
+    };
   }
 }
 
+export const Beta = new Bridge();
+
 export function useVideoUri(hierarchyItemId: HierarchyItemId) {
-  return `${SERVER_ENDPOINT}/video/${hierarchyItemId.toString()}`;
+  return Beta.getUrl(`/video/${hierarchyItemId.toString()}`);
 }

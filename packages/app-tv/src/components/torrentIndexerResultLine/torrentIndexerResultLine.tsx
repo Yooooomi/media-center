@@ -18,7 +18,10 @@ export default function TorrentIndexerResultLine({
   return (
     <Pressable onPress={onPress} focusOnMount={focusOnMount}>
       {({focused}) => (
-        <Box p="S8">
+        <Box
+          p="S8"
+          r="default"
+          bg={focused ? 'buttonBackgroundFocused' : 'buttonBackground'}>
           <Text color={focused ? 'buttonTextFocused' : 'buttonText'}>
             {torrentIndexerResult.name}
           </Text>
@@ -28,10 +31,10 @@ export default function TorrentIndexerResultLine({
               style={styles.left}>
               {torrentIndexerResult.toDisplaySize()}
             </Text>
-            <Text color={'ctaGreen'} style={styles.mid}>
+            <Text color="ctaGreen" style={styles.mid}>
               {torrentIndexerResult.seeders.toString()}
             </Text>
-            <Text color={'ctaGreen'} style={styles.right}>
+            <Text color="error" style={styles.right}>
               {torrentIndexerResult.leechers.toString()}
             </Text>
           </Box>

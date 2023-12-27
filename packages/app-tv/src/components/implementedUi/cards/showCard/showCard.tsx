@@ -11,6 +11,8 @@ import {VerticalCard} from '../../../ui/cards/verticalCard';
 interface ShowCardProps {
   show: Show;
   focusOnMount?: boolean;
+  disabled?: boolean;
+  progress?: number;
 }
 
 export const ShowCardSize = {
@@ -18,9 +20,14 @@ export const ShowCardSize = {
   height: card.height + 24,
 };
 
-export function ShowCard({show, focusOnMount}: ShowCardProps) {
+export function ShowCard({
+  show,
+  focusOnMount,
+  disabled,
+  progress,
+}: ShowCardProps) {
   const imageUri = useImageUri(show.poster_path ?? show.backdrop_path);
-  const navigate = useNavigate();
+  const {navigate} = useNavigate();
 
   return (
     <Box>
@@ -28,6 +35,8 @@ export function ShowCard({show, focusOnMount}: ShowCardProps) {
         focusOnMount={focusOnMount}
         uri={imageUri}
         onPress={() => navigate('Show', {show})}
+        disabled={disabled}
+        progress={progress}
       />
       <Box items="flex-start" style={styles.title} bg="background">
         <Text size="small" align="left" numberOfLines={1} style={styles.text}>

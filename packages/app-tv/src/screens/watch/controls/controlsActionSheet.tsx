@@ -1,9 +1,7 @@
 import {FlatList} from 'react-native';
-import Text from '../../../components/text/text';
-import Box from '../../../components/box/box';
 import {VLCTrack} from '@media-center/vlc';
 import Modal from '../../../components/modal/modal';
-import {Pressable} from '../../../components/ui/pressable/pressable';
+import {LineButton} from '../../../components/ui/pressable/lineButton';
 
 interface ControlsActionSheetProps {
   open: 'text' | 'audio' | undefined;
@@ -32,15 +30,13 @@ export default function ControlsActionSheet({
           keyExtractor={item => item.id.toString()}
           data={textTracks}
           renderItem={({item}) => (
-            <Pressable
+            <LineButton
               onPress={() => {
                 onTextTrack(item.id);
                 onClose();
-              }}>
-              <Box p="S8">
-                <Text color="darkText">{item.name}</Text>
-              </Box>
-            </Pressable>
+              }}
+              text={item.name}
+            />
           )}
         />
       </Modal>
@@ -52,15 +48,13 @@ export default function ControlsActionSheet({
           keyExtractor={item => item.id.toString()}
           data={audioTracks}
           renderItem={({item}) => (
-            <Pressable
+            <LineButton
               onPress={() => {
                 onAudioTrack(item.id);
                 onClose();
-              }}>
-              <Box p="S8">
-                <Text color="darkText">{item.name}</Text>
-              </Box>
-            </Pressable>
+              }}
+              text={item.name}
+            />
           )}
         />
       </Modal>

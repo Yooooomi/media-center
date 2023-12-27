@@ -23,8 +23,6 @@ export class MockTorrentClient extends TorrentClient {
       if (value.progress < 1 || value.createdFile) {
         continue;
       }
-      value.progress = 0.9;
-      return;
       const infos = TorrentService.getTorrentInfosFromBuffer(value.buffer);
       for (const file of infos.files) {
         const filename = path.join(
@@ -39,7 +37,7 @@ export class MockTorrentClient extends TorrentClient {
 
   async getState() {
     for (const value of this.store.values()) {
-      value.progress += 0.5;
+      value.progress += 0.05;
     }
 
     this.checkDownloaded();
@@ -51,7 +49,8 @@ export class MockTorrentClient extends TorrentClient {
           return new TorrentClientEntry({
             hash: infos.hash,
             downloaded: v.progress,
-            speed: 10298,
+            // Random between 0o/s and 30mo/s
+            speed: Math.floor(Math.random() * 1024 * 1024 * 30),
           });
         })
       )

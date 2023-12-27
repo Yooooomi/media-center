@@ -10,11 +10,10 @@ import Text from '../text/text';
 import {StatusContext} from '../../contexts/statusContext';
 import {useAnimatedValue} from '../../services/useAnimatedValue';
 import Animated from 'react-native-reanimated';
-import {} from '@preact/signals-core';
 import {useSignal} from '../../contexts/useSignal';
 
-export default function Sider() {
-  const navigate = useNavigate();
+export function Sider() {
+  const {navigate} = useNavigate();
 
   const buttons = useMemo<{title: string; do: () => void; icon: IconName}[]>(
     () => [
@@ -27,11 +26,6 @@ export default function Sider() {
         icon: 'magnify',
         title: 'Rechercher',
         do: () => navigate('Search', undefined),
-      },
-      {
-        icon: 'magnify-scan',
-        title: 'Rechercher manuellement',
-        do: () => navigate('SearchTorrent', undefined),
       },
       {
         icon: 'eye',

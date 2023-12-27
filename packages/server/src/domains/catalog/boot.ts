@@ -34,7 +34,7 @@ export function bootCatalog(
     filesystem: () => new FilesystemCatalogEntryStore(),
   });
 
-  new CatalogSaga(tmdbApi, catalogEntryStore).listen(eventBus);
+  new CatalogSaga(tmdbApi, catalogEntryStore, eventBus).listen(eventBus);
 
   queryBus.register(
     GetEntryQuery,

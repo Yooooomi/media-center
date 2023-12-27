@@ -1,9 +1,4 @@
-import {
-  Query,
-  Multiple,
-  QueryHandler,
-  Dict,
-} from "@media-center/domain-driven";
+import { Query, QueryHandler } from "@media-center/domain-driven";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestStore } from "./torrentRequest.store";

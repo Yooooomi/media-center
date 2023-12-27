@@ -16,13 +16,18 @@ export class FilesystemStore<M extends AtLeastId> extends InMemoryStore<M> {
     super(serializer);
     const env = new ProcessEnvironmentHelper();
     this.location = env.get("FILESYSTEM_STORE_DIR");
+
+    if (!fs.existsSync(this.location)) {
+      fs.mkdirSync(this.location);
+    }
+
     const logger = useLog(this.constructor.name);
     try {
       const filename = path.join(this.location, this.constructor.name);
       this.store = JSON.parse(fs.readFileSync(filename).toString());
       logger.info(`Initialized with ${Object.keys(this.store).length} entries`);
     } catch (e) {
-      logger.warn("Could not initialize database, using empty one");
+      logger.warn("Could find database, creating empty one");
       this.store = {};
     }
   }

@@ -16,6 +16,9 @@ import {
   InMemoryEventBus,
   InMemoryQueryBus,
 } from "@media-center/domain-driven";
+import { bootUser } from "./user/boot";
+import { bootUserTmdbInfo } from "./userTmdbInfo/boot";
+import { bootQueries } from "../queries/boot";
 
 export async function globalBoot() {
   configureDotenv();
@@ -56,8 +59,25 @@ export async function globalBoot() {
     eventBus,
     environmentHelper
   );
-  bootApi(queryBus, commandBus, hierarchyStore);
-  bootCatalog(queryBus, eventBus, environmentHelper, tmdbApi, hierarchyStore);
+  bootApi(queryBus, commandBus, hierarchyStore, environmentHelper, eventBus);
+  const { catalogEntryStore } = bootCatalog(
+    queryBus,
+    eventBus,
+    environmentHelper,
+    tmdbApi,
+    hierarchyStore
+  );
+  bootUser(queryBus, environmentHelper);
+  bootUserTmdbInfo(commandBus, environmentHelper);
+
+  bootQueries(
+    queryBus,
+    catalogEntryStore,
+    torrentRequestStore,
+    tmdbStore,
+    tmdbApi,
+    hierarchyStore
+  );
 
   return { commandBus, eventBus, unsubscribeUpdateTorrentPoll };
 }

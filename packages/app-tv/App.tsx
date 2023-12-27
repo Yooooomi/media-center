@@ -25,8 +25,6 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
 
 listenToUpdate();
 
-console.log('ici');
-
 export default function App() {
   return <Navigation />;
 }

@@ -1,9 +1,4 @@
-import {Dimensions, Platform} from 'react-native';
-
-export const SERVER_ENDPOINT = Platform.select({
-  ios: 'http://localhost:8080',
-  android: 'http://10.0.2.2:8080',
-});
+import {Dimensions} from 'react-native';
 
 export const spacing = {
   S0: 0,
@@ -53,16 +48,26 @@ export const color = {
   text: rawColor.grey,
   whiteText: rawColor.white,
   darkText: rawColor.black,
+
   buttonText: rawColor.white,
   buttonTextFocused: rawColor.black,
   buttonTextDisabled: rawColor.grey,
   buttonBackground: rawColor.transparent,
   buttonBackgroundFocused: rawColor.white,
   buttonBackgroundDisabled: rawColor.transparent,
+
+  textInputText: rawColor.black,
+  textInputTextFocused: rawColor.black,
+  textInputBackground: rawColor.lightgrey,
+  textInputBackgroundFocused: rawColor.white,
+
   ctaGreen: rawColor.green,
+  error: rawColor.red,
   statusOK: rawColor.green,
   statusKO: rawColor.red,
   divider: rawColor.lightgrey,
+
+  progress: rawColor.red,
 };
 
 export function opacify(c: keyof typeof color, t: number) {

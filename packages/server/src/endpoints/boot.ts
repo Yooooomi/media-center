@@ -1,12 +1,22 @@
-import { useLog, QueryBus, CommandBus } from "@media-center/domain-driven";
+import {
+  useLog,
+  QueryBus,
+  CommandBus,
+  EventBus,
+} from "@media-center/domain-driven";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import Express, { urlencoded, json } from "express";
 import * as fs from "fs";
+import { IntentionBus } from "@media-center/domain-driven/lib/bus/intention/intentionBus";
+import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
+import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
 
 export function bootApi(
   queryBus: QueryBus,
   commandBus: CommandBus,
-  hierarchyItemStore: HierarchyStore
+  hierarchyItemStore: HierarchyStore,
+  environmentHelper: EnvironmentHelper,
+  eventBus: EventBus
 ) {
   const logger = useLog("Express");
 
@@ -14,16 +24,34 @@ export function bootApi(
   app.use(urlencoded({ extended: false }));
   app.use(json());
 
+  const password = environmentHelper.get("API_KEY");
+  const base64Password = Buffer.from(password).toString("base64");
+
+  const logMiddleware = (
+    req: Express.Request,
+    res: Express.Response,
+    next: Express.NextFunction
+  ) => {
+    const authorization = req.get("Authorization");
+    if (!authorization) {
+      return res.status(403).end();
+    }
+    const password = authorization.split("Bearer ")[1];
+    if (password !== base64Password) {
+      return res.status(403).end();
+    }
+    return next();
+  };
+
   app.get("/video/:hierarchyItemId", async (req, res) => {
-    // const hierarchyItemId = req.params.hierarchyItemId;
-    // logger.info("Trying to get video", hierarchyItemId);
-    // const item = await hierarchyItemStore.load(
-    //   HierarchyItemId.from(hierarchyItemId)
-    // );
-    // if (!item) {
-    //   console.log("Didnt find item", hierarchyItemId);
-    //   return res.status(404).end();
-    // }
+    const hierarchyItemId = req.params.hierarchyItemId;
+    const item = await hierarchyItemStore.load(
+      HierarchyItemId.from(hierarchyItemId)
+    );
+    if (!item) {
+      console.log("Didnt find item", hierarchyItemId);
+      return res.status(404).end();
+    }
     const { range } = req.headers;
 
     if (!range) {
@@ -31,13 +59,12 @@ export function bootApi(
       return res.status(400).end();
     }
 
-    const path =
-      "/Users/timothee/perso/media-center/aaa/films/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv";
+    // const path =
+    //   "/data/movie/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv";
     // const path = "/Users/timothee/perso/media-center/aaa/films/sample.mkv";
-    // const path = item.file.path;
+    const path = item.file.path;
     const total = fs.statSync(path).size;
 
-    console.log("RANGE", range);
     const [startString, endString] = range.replace(/bytes=/, "").split("-");
 
     if (!startString) {
@@ -48,7 +75,6 @@ export function bootApi(
     // if last byte position is not present then it is the last byte of the video file.
     const end = endString ? parseInt(endString, 10) : total - 1;
     const chunksize = end - start + 1;
-    console.log("Sending chunk size", start, end, chunksize);
 
     res.writeHead(206, {
       "Content-Range": "bytes " + start + "-" + end + "/" + total,
@@ -65,38 +91,64 @@ export function bootApi(
       .pipe(res);
   });
 
-  app.post("/query/:name", async (req, res) => {
-    const { name } = req.params;
-    const { needing } = req.body;
-
-    logger.info(`< ${req.path}`);
-
-    const ctor = queryBus.get(name);
-    const deserialized = ctor.needing.deserialize(needing);
+  async function executeIntention(
+    bus: IntentionBus,
+    name: string,
+    params: Record<string, any>
+  ) {
+    const ctor = bus.get(name);
+    const deserialized = ctor.needing.deserialize(params);
     const instance = new ctor(deserialized);
-    const result = await queryBus.execute(instance);
+    const result = await bus.execute(instance);
 
     const runtime = ctor.returning.paramToRuntime(result);
     const serialized = ctor.returning?.serialize(runtime);
-    res.status(200).send(serialized);
+    return serialized;
+  }
+
+  app.post("/query/:name", logMiddleware, async (req, res) => {
+    const { name } = req.params;
+    const { needing } = req.body;
+    logger.info(`< ${req.path}`);
+    res.status(200).send(await executeIntention(queryBus, name!, needing));
     logger.info(`> ${req.path}`);
   });
 
-  app.post("/command/:name", async (req, res) => {
+  app.post("/command/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
     const { needing } = req.body;
-
     logger.info(`< ${req.path}`);
-
-    const ctor = commandBus.get(name);
-    const deserialized = ctor.needing.deserialize(needing);
-    const instance = new ctor(deserialized);
-    const result = await commandBus.execute(instance);
-
-    const runtime = ctor.returning.paramToRuntime(result);
-    const serialized = ctor.returning?.serialize(runtime);
-    res.status(200).send(serialized);
+    res.status(200).send(await executeIntention(commandBus, name!, needing));
     logger.info(`> ${req.path}`);
+  });
+
+  app.get("/event/:name", async (req, res) => {
+    const { name } = req.params;
+    console.log("A guy is listening for", name);
+
+    res.writeHead(200, {
+      Connection: "keep-alive",
+      "Cache-Control": "no-cache",
+      "Content-Type": "text/event-stream",
+    });
+
+    let counter = 0;
+    const interval = setInterval(() => {
+      const chunk = JSON.stringify({ chunk: counter++ });
+      res.write(`data: ${chunk}\n\n`);
+      console.log("sent");
+    }, 100);
+
+    const unsubscribe = eventBus.onName(name, (event) => {
+      console.log("I have an event", name, event);
+      res.write(JSON.stringify(event.serialize()));
+    });
+
+    res.on("close", () => {
+      clearInterval(interval);
+      unsubscribe();
+      res.end();
+    });
   });
 
   app.listen(8080, () => {

@@ -23,7 +23,7 @@ export function usePlayCatalogEntry<
   ) => boolean,
 ) {
   const [actionSheetOpen, setActionSheetOpen] = useState(false);
-  const navigate = useNavigate();
+  const {navigate} = useNavigate();
 
   const filteredItems = useMemo(
     () => (filter ? entry.items.filter(filter as any) : entry.items),

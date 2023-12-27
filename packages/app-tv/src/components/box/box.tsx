@@ -38,8 +38,10 @@ export interface BoxProps {
   bg?: keyof typeof color | [keyof typeof color, number];
   row?: boolean;
   debug?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
   style?: ViewStyle;
+  flex?: number;
+  opacity?: number;
 }
 
 function getComputedColor(
@@ -83,6 +85,8 @@ export default function Box({
   bg,
   style,
   debug,
+  flex,
+  opacity,
 }: BoxProps) {
   const styles = useMemo<ViewStyle>(
     () => ({
@@ -114,6 +118,8 @@ export default function Box({
       borderRadius: r && radius[r],
       overflow,
       basis,
+      flex: flex !== undefined ? flex : undefined,
+      opacity: opacity !== undefined ? opacity : undefined,
       ...(debug && debugBorder('red')),
       ...style,
     }),
@@ -146,6 +152,8 @@ export default function Box({
       r,
       overflow,
       basis,
+      flex,
+      opacity,
       debug,
       style,
     ],

@@ -11,6 +11,8 @@ import {VerticalCard} from '../../../ui/cards/verticalCard';
 interface MovieCardProps {
   movie: Movie;
   focusOnMount?: boolean;
+  disabled?: boolean;
+  progress?: number;
 }
 
 export const MovieCardSize = {
@@ -18,16 +20,23 @@ export const MovieCardSize = {
   height: card.height + 24,
 };
 
-export function MovieCard({movie, focusOnMount}: MovieCardProps) {
-  const navigate = useNavigate();
+export function MovieCard({
+  movie,
+  focusOnMount,
+  disabled,
+  progress,
+}: MovieCardProps) {
+  const {navigate} = useNavigate();
   const imageUri = useImageUri(movie.poster_path ?? movie.backdrop_path);
 
   return (
     <Box>
       <VerticalCard
+        disabled={disabled}
         focusOnMount={focusOnMount}
         uri={imageUri}
         onPress={() => navigate('Movie', {movie})}
+        progress={progress}
       />
       <Box items="flex-start" style={styles.title} bg="background">
         <Text size="small" align="left" numberOfLines={1} style={styles.text}>

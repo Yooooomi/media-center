@@ -20,11 +20,13 @@ class CannotWatchSameDirectory extends InfrastructureError {
 
 class CannotWatchNonExistingDirectory extends InfrastructureError {
   constructor(path: string) {
-    super(`Cannot watch directory ${path} as it does not exist`);
+    super(`Tried to create directory at ${path}, but parent does not exist`);
   }
 }
 
 export class DiskFileWatcher extends FileWatcher {
+  static logger = useLog(DiskFileWatcher.name);
+
   constructor(
     eventBus: EventBus,
     hierarchyStore: HierarchyStore,
@@ -34,13 +36,17 @@ export class DiskFileWatcher extends FileWatcher {
   }
 
   static ensureExists(path: string) {
-    if (!fs.existsSync(path)) {
+    try {
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+        DiskFileWatcher.logger.info(`Created ${path} as it did not exist`);
+      }
+    } catch (e) {
       throw new CannotWatchNonExistingDirectory(path);
     }
   }
 
   protected async initializeMovie() {
-    const logger = useLog(DiskFileWatcher.name);
     const movieDir = this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
 
     DiskFileWatcher.ensureExists(movieDir);
@@ -48,7 +54,7 @@ export class DiskFileWatcher extends FileWatcher {
     const movieWatcher = fs.watch(movieDir, {
       recursive: true,
     });
-    logger.info("Watching movie directory", movieDir);
+    DiskFileWatcher.logger.info("Watching movie directory", movieDir);
 
     movieWatcher.on("change", (event, filename) => {
       if (filename instanceof Buffer || event !== "rename") {

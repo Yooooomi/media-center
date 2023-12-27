@@ -1,7 +1,6 @@
 import {
   ApplicativeError,
   Query,
-  Multiple,
   Either,
   QueryHandler,
 } from "@media-center/domain-driven";
@@ -47,7 +46,6 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
     entries.forEach((entry) => {
       entry.items.flatMap((i) => i.id).forEach((i) => ids.add(i.toString()));
     });
-    console.log("Loading", [...ids.values()]);
     const items = await this.hierarchyItemStore.loadMany(
       [...ids.values()].map((i) => new HierarchyItemId(i))
     );
@@ -57,7 +55,6 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
         return new ShowCatalogEntryFulfilled({
           id: entry.id,
           items: entry.items.map((e) => {
-            console.log("Type", e.id, items);
             const item = items.find((i) => {
               return i.id.equals(e.id);
             });
@@ -75,7 +72,6 @@ export class GetEntriesQueryHandler extends QueryHandler(GetEntriesQuery) {
         return new MovieCatalogEntryFulfilled({
           id: entry.id,
           items: entry.items.map((e) => {
-            console.log("Type", e.id, items);
             const item = items.find((i) => {
               return i.id.equals(e.id);
             });

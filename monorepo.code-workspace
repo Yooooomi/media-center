@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "search.useParentIgnoreFiles": true,
+    "explorer.excludeGitIgnore": true,
+  },
   "folders": [
     {
       "name": "Server",

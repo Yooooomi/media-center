@@ -9,7 +9,7 @@ interface HierarchyItemLineProps {
 }
 
 export default function HierarchyItemLine({item}: HierarchyItemLineProps) {
-  const navigate = useNavigate();
+  const {navigate} = useNavigate();
 
   return (
     <Pressable onPress={() => navigate('Watch', {hierarchyItem: item})}>

@@ -1,28 +1,28 @@
 import {
-  TextInputProps as RNTextInputProps,
   TextInput as RNTextInput,
-  Pressable,
+  TextInputProps as Props,
   StyleSheet,
   View,
   findNodeHandle,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
 import React, {useImperativeHandle, useMemo, useRef} from 'react';
-import {color, radius} from '../../services/constants';
-import {useFocusable} from '../ui/animated/useFocusable';
-import {combineFunction} from '../../services/combineFunctions';
+import {Pressable} from '../ui/pressable/pressable';
+import {color, opacify, radius} from '../../services/constants';
 
-interface TextInputProps extends RNTextInputProps {}
+interface TextInputProps {
+  value: string;
+  onChangeText: (newText: string) => void;
+  placeholder?: string;
+  type?: Props['textContentType'];
+}
 export interface TextInputHandle {
   focus: () => void;
   blur: () => void;
   nodeHandle: () => number | null;
 }
 
-const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput);
-
 const TextInput = React.forwardRef<TextInputHandle, TextInputProps>(
-  ({...other}, iref) => {
+  ({onChangeText, value, placeholder, type}, iref) => {
     const ref = useRef<RNTextInput>(null);
     const pressableRef = useRef<View>(null);
 
@@ -44,41 +44,33 @@ const TextInput = React.forwardRef<TextInputHandle, TextInputProps>(
 
     useImperativeHandle(iref, () => handle);
 
-    const [setBackgroundFocused, animatedStyle] = useFocusable(
-      color.buttonBackground,
-      color.buttonBackgroundFocused,
-      'backgroundColor',
-    );
-
-    const [setTextFocused, animatedTextStyle] = useFocusable(
-      color.buttonText,
-      color.buttonTextFocused,
-      'color',
-    );
-
-    const setFocused = combineFunction(setBackgroundFocused, setTextFocused);
-
     return (
-      <>
-        <Pressable
-          ref={pressableRef}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onPress={() => ref.current?.focus()}>
-          <AnimatedTextInput
-            focusable={false}
-            autoComplete="off"
-            autoCapitalize="none"
-            autoCorrect={false}
-            ref={ref as any}
-            cursorColor={color.whiteText}
-            placeholderTextColor={color.whiteText}
-            blurOnSubmit
-            {...other}
-            style={[styles.input, animatedStyle, animatedTextStyle]}
+      <Pressable onPress={handle.focus}>
+        {({focused}) => (
+          <RNTextInput
+            ref={ref}
+            textContentType={type}
+            placeholder={placeholder}
+            placeholderTextColor={opacify(
+              focused ? 'textInputTextFocused' : 'textInputText',
+              0.5,
+            )}
+            value={value}
+            onChangeText={onChangeText}
+            style={[
+              styles.input,
+              {
+                backgroundColor: focused
+                  ? color.textInputBackgroundFocused
+                  : color.textInputBackground,
+                color: focused
+                  ? color.textInputTextFocused
+                  : color.textInputText,
+              },
+            ]}
           />
-        </Pressable>
-      </>
+        )}
+      </Pressable>
     );
   },
 );

@@ -5,8 +5,10 @@
   "license": "MIT",
   "scripts": {
     "build:watch": "yarn build --watch --preserveWatchOutput",
-    "start": "FORCE_COLOR=1 concurrently \"yarn build:watch\" \"NODE_OPTIONS=--es-module-specifier-resolution=node nodemon --delay 500ms\"",
+    "dev": "FORCE_COLOR=1 concurrently \"yarn build:watch\" \"NODE_OPTIONS=--es-module-specifier-resolution=node nodemon --delay 500ms\"",
+    "start": "node lib/index.js",
     "build": "tsc",
+    "build:production": "ncc build src/index.ts -o lib",
     "freeze": "yarn domain-driven freeze --relative ../infrastructure"
   },
   "dependencies": {

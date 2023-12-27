@@ -1,15 +1,15 @@
 import {useCallback} from 'react';
-import {useNavigate} from 'react-router-native';
 import {useBack} from '../services/useBack';
+import {useNavigate} from './params';
 
 export default function BackHandler() {
-  const navigate = useNavigate();
+  const {goBack} = useNavigate();
 
   useBack(
     useCallback(() => {
-      navigate(-1);
+      goBack();
       return true;
-    }, [navigate]),
+    }, [goBack]),
   );
 
   return null;

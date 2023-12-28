@@ -106,7 +106,7 @@ export function bootApi(
     return serialized;
   }
 
-  app.post("/query/:name", logMiddleware, async (req, res) => {
+  app.get("/query/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
     const { needing } = req.body;
     logger.info(`< ${req.path}`);
@@ -114,12 +114,45 @@ export function bootApi(
     logger.info(`> ${req.path}`);
   });
 
+  app.get("/reactive/query/:name", async (req, res) => {
+    const { name } = req.params;
+    const { needing } = req.query;
+
+    logger.info(`> reactive ${req.path}`);
+
+    res.writeHead(200, {
+      Connection: "keep-alive",
+      "Cache-Control": "no-cache",
+      "Content-Type": "text/event-stream",
+    });
+
+    const ctor = queryBus.get(name);
+    const deserialized = ctor.needing.deserialize(needing);
+    const instance = new ctor(deserialized);
+    const unsubscribe = await queryBus.executeAndReact(
+      eventBus,
+      instance,
+      (result) => {
+        const runtime = ctor.returning.paramToRuntime(result);
+        const serialized = ctor.returning?.serialize(runtime);
+        const data = JSON.stringify(serialized);
+        res.write(`data: ${data}\n\n`);
+      }
+    );
+
+    res.on("close", () => {
+      logger.info(`< reactive ${req.path}`);
+      unsubscribe();
+      res.end();
+    });
+  });
+
   app.post("/command/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
     const { needing } = req.body;
     logger.info(`< ${req.path}`);
     res.status(200).send(await executeIntention(commandBus, name!, needing));
-    logger.info(`> ${req.path}`);
+    logger.info(`> reactive ${req.path}`);
   });
 
   app.get("/event/:name", async (req, res) => {

@@ -8,20 +8,11 @@ import {StatusContext} from '../../contexts/statusContext';
 import {HomepageQuery} from '@media-center/server/src/queries/homepage.query';
 import DownloadingCardLine from '../../components/downloadingCardLine';
 import {ScrollView} from 'react-native';
-import {useEvent} from '../../services/useEvent';
-import {
-  CatalogEntryAdded,
-  CatalogEntryDeleted,
-} from '@media-center/server/src/domains/catalog/applicative/catalog.events';
 
 export default function AddedRecently() {
-  const [{result: homepage, error}, _, reload] = useQuery(
-    HomepageQuery,
-    undefined,
-  );
-
-  useEvent(CatalogEntryAdded, reload);
-  useEvent(CatalogEntryDeleted, reload);
+  const [{result: homepage, error}] = useQuery(HomepageQuery, undefined, {
+    reactive: true,
+  });
 
   useEffect(() => {
     if (error) {

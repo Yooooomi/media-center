@@ -14,6 +14,10 @@ import { ShowCatalogEntry } from "../domains/catalog/domain/catalogEntry";
 import { keyBy } from "@media-center/algorithm";
 import { ShowSeason } from "../domains/tmdb/domain/showSeason";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
+import {
+  CatalogEntryDeleted,
+  CatalogEntryUpdated,
+} from "../domains/catalog/applicative/catalog.events";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,
@@ -24,7 +28,10 @@ class ShowPageSummary extends Shape({
 
 export class GetShowPageQuery extends Query(TmdbId, ShowPageSummary) {}
 
-export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery) {
+export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
+  CatalogEntryUpdated,
+  CatalogEntryDeleted,
+]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
     private readonly tmdbApi: TmdbAPI,
@@ -33,6 +40,13 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery) {
     private readonly hierarchyStore: HierarchyStore
   ) {
     super();
+  }
+
+  shouldReact(
+    event: CatalogEntryUpdated | CatalogEntryDeleted,
+    intent: GetShowPageQuery
+  ) {
+    return event.catalogEntry.id.equals(intent.value);
   }
 
   async execute(intention: GetShowPageQuery): Promise<ShowPageSummary> {

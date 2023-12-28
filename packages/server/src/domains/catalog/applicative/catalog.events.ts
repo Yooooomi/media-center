@@ -1,7 +1,7 @@
 import { Either, Event } from "@media-center/domain-driven";
 import { MovieCatalogEntry, ShowCatalogEntry } from "../domain/catalogEntry";
 
-export class CatalogEntryAdded extends Event({
+export class CatalogEntryUpdated extends Event({
   catalogEntry: Either(ShowCatalogEntry, MovieCatalogEntry),
 }) {}
 

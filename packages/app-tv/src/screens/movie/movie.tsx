@@ -13,8 +13,6 @@ import {spacing} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {TorrentRequests} from '../../components/torrentRequests';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
-import {useEvent} from '../../services/useEvent';
-import {CatalogEntryAdded} from '@media-center/server/src/domains/catalog/applicative/catalog.events';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
@@ -23,9 +21,8 @@ export function Movie() {
   const [{result: moviePage}, fetching, reload] = useQuery(
     GetMoviePageQuery,
     movie.id,
+    {reactive: true},
   );
-
-  useEvent(CatalogEntryAdded, reload);
 
   const {
     element,
@@ -60,10 +57,12 @@ export function Movie() {
             {movie.title.toUpperCase()}
           </Text>
           <Box row gap="S8">
-            <WatchCatalogEntry
-              entry={moviePage.catalogEntry}
-              requests={moviePage.requests}
-            />
+            {moviePage.catalogEntry.items.length > 0 && (
+              <WatchCatalogEntry
+                entry={moviePage.catalogEntry}
+                requests={moviePage.requests}
+              />
+            )}
             <BigPressable
               icon="download"
               onPress={queryTorrents}

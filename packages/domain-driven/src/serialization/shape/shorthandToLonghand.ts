@@ -31,6 +31,7 @@ export function shorthandToLonghand<D extends AnyDefinition | AnyShorthand>(
     return Nothing();
   }
   if (
+    !("prototype" in definition) &&
     "serialize" in definition &&
     "deserialize" in definition &&
     typeof definition.serialize === "function" &&

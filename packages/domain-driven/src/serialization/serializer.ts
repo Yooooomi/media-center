@@ -1,6 +1,5 @@
-import { Definition, DefinitionRuntime } from ".";
 import { Id } from "../id";
-import { PromiseOr, Serializable, SerializableConstructor } from "./types";
+import { Serializable } from "./types";
 
 type AdditionalSerialized = { id: string; version: number };
 
@@ -41,7 +40,12 @@ export type Deserialized<S> = S extends Serializer<infer K> ? K : never;
 export class SerializableSerializer<
   M extends AtLeastId & Serializable
 > extends Serializer<M> {
-  constructor(private readonly ctor: { deserialize(serialized: any): M }) {
+  constructor(
+    private readonly ctor: {
+      deserialize(serialized: any): M;
+      serialize(runtime: M): any;
+    }
+  ) {
     super();
   }
 
@@ -50,7 +54,7 @@ export class SerializableSerializer<
   }
 
   protected async serialize(model: M) {
-    return await model.serialize();
+    return await this.ctor.serialize(model);
   }
 
   protected async deserialize(serialized: any, version: number) {

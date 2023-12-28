@@ -13,7 +13,7 @@ import {
   ShowCatalogEntry,
 } from "../domain/catalogEntry";
 import { CatalogEntryStore } from "./catalogEntry.store";
-import { CatalogEntryAdded, CatalogEntryDeleted } from "./catalog.events";
+import { CatalogEntryUpdated, CatalogEntryDeleted } from "./catalog.events";
 
 export class CatalogSaga extends Saga {
   constructor(
@@ -89,7 +89,7 @@ export class CatalogSaga extends Saga {
     }
     await this.catalogEntryStore.save(alreadyExisting);
     this.eventBus.publish(
-      new CatalogEntryAdded({
+      new CatalogEntryUpdated({
         catalogEntry: alreadyExisting,
       })
     );

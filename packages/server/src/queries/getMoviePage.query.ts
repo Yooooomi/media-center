@@ -13,6 +13,10 @@ import {
   CatalogEntryMovieSpecificationFulFilled,
   MovieCatalogEntryFulfilled,
 } from "../domains/catalog/applicative/catalogEntryFulfilled.front";
+import {
+  CatalogEntryDeleted,
+  CatalogEntryUpdated,
+} from "../domains/catalog/applicative/catalog.events";
 
 class MoviePageSummary extends Shape({
   tmdb: Movie,
@@ -23,7 +27,10 @@ class MoviePageSummary extends Shape({
 
 export class GetMoviePageQuery extends Query(TmdbId, MoviePageSummary) {}
 
-export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery) {
+export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
+  CatalogEntryUpdated,
+  CatalogEntryDeleted,
+]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
     private readonly tmdbApi: TmdbAPI,
@@ -32,6 +39,13 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery) {
     private readonly hierarchyStore: HierarchyStore
   ) {
     super();
+  }
+
+  shouldReact(
+    event: CatalogEntryUpdated | CatalogEntryDeleted,
+    intent: GetMoviePageQuery
+  ) {
+    return event.catalogEntry.id.equals(intent.value);
   }
 
   async execute(intent: GetMoviePageQuery) {

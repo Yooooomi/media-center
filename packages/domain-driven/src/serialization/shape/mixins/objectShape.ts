@@ -44,6 +44,13 @@ export const ObjectShape = <
       return new this(longhand.deserialize(serialized as any));
     }
 
+    static serialize<T extends IsShapeConstructor<D>>(
+      this: T,
+      runtime: InstanceType<T>
+    ) {
+      return runtime.serialize();
+    }
+
     serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>> {
       return longhand.serialize(this) as any;
     }
@@ -60,5 +67,9 @@ export const ObjectShape = <
       this: T,
       serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>
     ): InstanceType<T>;
+    serialize<T extends Constructor<any>>(
+      this: T,
+      runtime: InstanceType<T>
+    ): DefinitionSerialized<ShorthandToLonghand<D>>;
   } & Omit<B, "">;
 };

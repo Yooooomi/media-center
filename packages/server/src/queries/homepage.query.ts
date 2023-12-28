@@ -18,6 +18,10 @@ import {
   ShowCatalogEntry,
 } from "../domains/catalog/domain/catalogEntry";
 import { keyBy } from "@media-center/algorithm";
+import {
+  CatalogEntryUpdated,
+  CatalogEntryDeleted,
+} from "../domains/catalog/applicative/catalog.events";
 
 class TorrentRequestFulfilled extends Shape({
   torrent: TorrentRequest,
@@ -44,13 +48,20 @@ export class HomepageSummary extends Shape({
 
 export class HomepageQuery extends Query(undefined, HomepageSummary) {}
 
-export class HomepageQueryHandler extends QueryHandler(HomepageQuery) {
+export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
+  CatalogEntryUpdated,
+  CatalogEntryDeleted,
+]) {
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly tmdbStore: TmdbStore
   ) {
     super();
+  }
+
+  shouldReact(event: CatalogEntryUpdated | CatalogEntryDeleted) {
+    return true;
   }
 
   async execute(): Promise<HomepageSummary> {

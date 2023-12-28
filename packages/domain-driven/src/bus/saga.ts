@@ -1,14 +1,14 @@
 import { Constructor } from "../serialization";
-import { Event } from "./eventBus/event";
+import { BaseEvent } from "./eventBus/event";
 import { EventBus } from "./eventBus/eventBus";
 
 export class Saga {
   static registry = new Map<
-    Constructor<Event<any>>,
-    ((event: Event<any>) => void)[]
+    Constructor<BaseEvent<any>>,
+    ((event: BaseEvent<any>) => void)[]
   >();
 
-  static on<T extends Saga>(event: Constructor<Event<any>>) {
+  static on<T extends Saga>(event: Constructor<BaseEvent<any>>) {
     return (
       target: T,
       _propertyKey: string,

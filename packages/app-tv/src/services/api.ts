@@ -74,32 +74,17 @@ export class Bridge {
     handler: (event: T) => void,
   ) {
     console.log('onEvent', event.name);
+
     const es = new EventSource(this.getUrl(`/event/${event.name}`), {
-      debug: true,
       method: 'GET',
     });
 
-    es.addEventListener('open', () => {
-      console.log('Opened');
-    });
-
-    es.addEventListener('close', () => {
-      console.log('Closed');
-    });
-
-    es.addEventListener('error', error => {
-      console.log('error', error);
-    });
-
     es.addEventListener('message', message => {
-      console.log('New message', message);
       if (!message.data) {
         return;
       }
       handler(event.deserialize(JSON.parse(message.data)));
     });
-
-    es.open();
 
     return () => {
       es.removeAllEventListeners();

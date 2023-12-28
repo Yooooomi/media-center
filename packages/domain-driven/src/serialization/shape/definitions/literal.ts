@@ -21,10 +21,9 @@ export type LiteralSerialized<L extends LiteralInput> = Extract<
 
 export type LiteralShorthand = LiteralInput;
 export type LiteralConfiguration = LiteralInput | LiteralShorthand;
-export type LiteralDefinition<C extends LiteralConfiguration> = Definition<
-  LiteralRuntime<C>,
-  LiteralSerialized<C>
->;
+export type LiteralDefinition<
+  C extends LiteralConfiguration = LiteralConfiguration
+> = Definition<LiteralRuntime<C>, LiteralSerialized<C>>;
 export function Literal<C extends LiteralConfiguration>(
   configuration: C
 ): LiteralDefinition<C> {

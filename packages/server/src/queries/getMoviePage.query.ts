@@ -34,18 +34,16 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery) {
     super();
   }
 
-  async execute(intention: GetMoviePageQuery) {
-    const movie = await this.tmdbStore.load(intention.data);
-    const details = await this.tmdbApi.getMovieDetails(intention.data);
+  async execute(intent: GetMoviePageQuery) {
+    const movie = await this.tmdbStore.load(intent.value);
+    const details = await this.tmdbApi.getMovieDetails(intent.value);
 
     if (!details || !movie || !(movie instanceof Movie)) {
       throw new Error("Did not find TMDB movie");
     }
 
-    const requests = await this.torrentRequestStore.loadByTmdbId(
-      intention.data
-    );
-    const catalogEntry = await this.catalogEntryStore.load(intention.data);
+    const requests = await this.torrentRequestStore.loadByTmdbId(intent.value);
+    const catalogEntry = await this.catalogEntryStore.load(intent.value);
 
     if (catalogEntry && !(catalogEntry instanceof MovieCatalogEntry)) {
       throw new Error("Cannot load catalog entry of movie");
@@ -56,7 +54,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery) {
       : [];
 
     const catalogEntryFulfilled = new MovieCatalogEntryFulfilled({
-      id: intention.data,
+      id: intent.value,
       items: hierarchyItems.map(
         (e) => new CatalogEntryMovieSpecificationFulFilled({ item: e })
       ),

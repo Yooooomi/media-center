@@ -1,4 +1,4 @@
-import { DefinitionSerializer, Either } from "@media-center/domain-driven";
+import { Either, SerializableSerializer } from "@media-center/domain-driven";
 import { FilesystemStore } from "../../../framework/store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "../applicative/catalogEntry.store";
@@ -14,7 +14,7 @@ export class FilesystemCatalogEntryStore
 {
   constructor() {
     super(
-      new DefinitionSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
+      new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
     );
   }
 

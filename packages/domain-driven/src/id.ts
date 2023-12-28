@@ -1,7 +1,6 @@
 import { v4 } from "uuid";
 import { DomainError } from "./error";
-import { Constructor } from "./serialization/shape";
-import { Primitive } from "./serialization/shape/primitive";
+import { Constructor, Shape } from "./serialization";
 
 class IncompatibleId extends DomainError {
   constructor(provided: any) {
@@ -9,7 +8,7 @@ class IncompatibleId extends DomainError {
   }
 }
 
-export class Id extends Primitive(String) {
+export class Id extends Shape(String) {
   static generate<T extends Constructor<Id>>(this: T): InstanceType<T> {
     return new this(v4()) as InstanceType<T>;
   }

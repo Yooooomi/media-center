@@ -1,15 +1,12 @@
 import { QueryBus } from "@media-center/domain-driven";
-import { HomepageQuery, HomepageQueryHandler } from "./homepage.query";
+import { HomepageQueryHandler } from "./homepage.query";
 import { CatalogEntryStore } from "../domains/catalog/applicative/catalogEntry.store";
 import { TorrentRequestStore } from "../domains/torrentRequest/applicative/torrentRequest.store";
 import { TmdbStore } from "../domains/tmdb/applicative/tmdb.store";
-import {
-  GetMoviePageQuery,
-  GetMoviePageQueryHandler,
-} from "./getMoviePage.query";
+import { GetMoviePageQueryHandler } from "./getMoviePage.query";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
-import { GetShowPageQuery, GetShowPageQueryHandler } from "./getShowPage.query";
+import { GetShowPageQueryHandler } from "./getShowPage.query";
 
 export function bootQueries(
   queryBus: QueryBus,
@@ -20,12 +17,10 @@ export function bootQueries(
   hierarchyStore: HierarchyStore
 ) {
   queryBus.register(
-    HomepageQuery,
     new HomepageQueryHandler(catalogEntryStore, torrentRequestStore, tmdbStore)
   );
 
   queryBus.register(
-    GetMoviePageQuery,
     new GetMoviePageQueryHandler(
       tmdbStore,
       tmdbApi,
@@ -36,7 +31,6 @@ export function bootQueries(
   );
 
   queryBus.register(
-    GetShowPageQuery,
     new GetShowPageQueryHandler(
       tmdbStore,
       tmdbApi,

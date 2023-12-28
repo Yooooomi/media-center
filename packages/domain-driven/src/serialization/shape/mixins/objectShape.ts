@@ -2,11 +2,11 @@ import {
   DefinitionParameter,
   DefinitionRuntime,
   DefinitionSerialized,
-} from "./definitions/definition";
-import { DictDefinition, DictShorthand } from "./definitions/dict";
-import { ShorthandToLonghand } from "./definitions/shorthands";
-import { shorthandToLonghand } from "./shorthandToLonghand";
-import { AbstractConstructor, Constructor, Expand } from "./types";
+} from "../definitions/definition";
+import { DictDefinition, DictShorthand } from "../definitions/dict";
+import { ShorthandToLonghand } from "../definitions/shorthands";
+import { shorthandToLonghand } from "../shorthandToLonghand";
+import { Class, Constructor, Expand } from "../types";
 
 export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
   Constructor<{
@@ -16,15 +16,14 @@ export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
     isShape: true;
   };
 
-class DefaultShapeBaseClass {}
+class Base {}
 
-export const Shape = <
+export const ObjectShape = <
   const D extends DictShorthand | DictDefinition<any>,
-  // biome-ignore lint/complexity/noBannedTypes: <explanation>
-  const B extends Constructor<{}> | AbstractConstructor<{}>
+  const B extends Class<{}>
 >(
   definition: D,
-  base: B = DefaultShapeBaseClass as B
+  base: B = Base as B
 ) => {
   const longhand = shorthandToLonghand(definition);
 
@@ -57,7 +56,7 @@ export const Shape = <
     ): DefinitionRuntime<ShorthandToLonghand<D>> & {
       serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;
     } & InstanceType<B>;
-    deserialize<T extends IsShapeConstructor<D>>(
+    deserialize<T extends Constructor<any>>(
       this: T,
       serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>
     ): InstanceType<T>;

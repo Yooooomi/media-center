@@ -36,16 +36,16 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery) {
   }
 
   async execute(intention: GetShowPageQuery): Promise<ShowPageSummary> {
-    const tmdb = await this.tmdbStore.load(intention.data);
+    const tmdb = await this.tmdbStore.load(intention.value);
 
     if (!tmdb || !(tmdb instanceof Show)) {
       throw new Error("Cannot load Show TMDB");
     }
 
     const requests = await this.torrentRequestStore.loadByTmdbId(
-      intention.data
+      intention.value
     );
-    const catalogEntry = await this.catalogEntryStore.load(intention.data);
+    const catalogEntry = await this.catalogEntryStore.load(intention.value);
 
     if (catalogEntry && !(catalogEntry instanceof ShowCatalogEntry)) {
       throw new Error("Invalid CatalogShowEntry");
@@ -60,7 +60,7 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery) {
       (e) => e.id.toString()
     );
     const catalogEntryFulfilled = new ShowCatalogEntryFulfilled({
-      id: intention.data,
+      id: intention.value,
       items: showSpecifications.map((showSpecification) => {
         const fulfilled = hierarchyItems[showSpecification.id.toString()];
         if (!fulfilled) {
@@ -74,7 +74,7 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery) {
       }),
     });
 
-    const seasons = await this.tmdbApi.getSeasons(intention.data);
+    const seasons = await this.tmdbApi.getSeasons(intention.value);
 
     return new ShowPageSummary({
       tmdb,

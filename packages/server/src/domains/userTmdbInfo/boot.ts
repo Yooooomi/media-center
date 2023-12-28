@@ -1,8 +1,5 @@
 import { CommandBus } from "@media-center/domain-driven";
-import {
-  SetUserTmdbInfoProgressCommand,
-  SetUserTmdbInfoProgressCommandHandler,
-} from "./applicative/setUserTmdbInfoProgress.command";
+import { SetUserTmdbInfoProgressCommandHandler } from "./applicative/setUserTmdbInfoProgress.command";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { InMemoryUserTmdbInfoStore } from "./infrastructure/inMemory.userTmdbInfo.store";
 import { FilesystemUserTmdbInfoStore } from "./infrastructure/filesystem.userTmdbInfo.store";
@@ -16,7 +13,6 @@ export function bootUserTmdbInfo(
     filesystem: () => new FilesystemUserTmdbInfoStore(),
   });
   commandBus.register(
-    SetUserTmdbInfoProgressCommand,
     new SetUserTmdbInfoProgressCommandHandler(userTmdbInfoStore)
   );
 

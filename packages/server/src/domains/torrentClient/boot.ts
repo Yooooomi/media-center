@@ -1,10 +1,7 @@
 import { CommandBus, InMemoryPoll } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { TorrentRequestStore } from "../torrentRequest/applicative/torrentRequest.store";
-import {
-  UpdateTorrentRequestCommand,
-  UpdateTorrentRequestCommandHandler,
-} from "../torrentRequest/applicative/updateTorrentRequest.command";
+import { UpdateTorrentRequestCommandHandler } from "../torrentRequest/applicative/updateTorrentRequest.command";
 import { UpdateTorrentsPoll } from "./applicative/updateTorrents.poll";
 import { DelugeTorrentClient } from "./infrastucture/deluge.torrentClient";
 import { MockTorrentClient } from "./infrastucture/mock.torrentClient";
@@ -24,7 +21,6 @@ export function bootTorrentClient(
   ).poll();
 
   commandBus.register(
-    UpdateTorrentRequestCommand,
     new UpdateTorrentRequestCommandHandler(torrentRequestStore)
   );
 

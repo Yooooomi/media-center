@@ -4,10 +4,10 @@ import {
   DefinitionRuntime,
   DefinitionSerialized,
 } from "./definition";
-import { Shorthands, ShorthandToLonghand } from "./shorthands";
+import { AnyShorthand, ShorthandToLonghand } from "./shorthands";
 
-export type OptionalConfiguration = Shorthands | Definition;
-export type OptionalDefinition<C extends OptionalConfiguration> = Definition<
+export type OptionalConfiguration = AnyShorthand | Definition;
+export type OptionalDefinition<C extends OptionalConfiguration = OptionalConfiguration> = Definition<
   DefinitionRuntime<ShorthandToLonghand<C>> | undefined,
   DefinitionSerialized<ShorthandToLonghand<C>> | undefined
 > & { optional: true };
@@ -26,6 +26,6 @@ export function Optional<C extends OptionalConfiguration>(
     },
     deserialize: (serialized) => {
       return serialized ? longhand.deserialize(serialized) : undefined;
-    },
+    }
   };
 }

@@ -3,22 +3,10 @@ import { EnvironmentHelper } from "../environment/applicative/environmentHelper"
 import { HierarchyStore } from "../fileWatcher/applicative/hierarchy.store";
 import { TmdbAPI } from "../tmdb/applicative/tmdb.api";
 import { CatalogSaga } from "./applicative/catalog.saga";
-import {
-  GetEntriesQuery,
-  GetEntriesQueryHandler,
-} from "./applicative/getEntries.query";
-import {
-  GetEntryQuery,
-  GetEntryQueryHandler,
-} from "./applicative/getEntry.query";
-import {
-  GetMovieEntriesQuery,
-  GetMovieEntriesQueryHandler,
-} from "./applicative/getMovieEntries.query";
-import {
-  GetShowEntriesQuery,
-  GetShowEntriesQueryHandler,
-} from "./applicative/getShowEntries.query";
+import { GetEntriesQueryHandler } from "./applicative/getEntries.query";
+import { GetEntryQueryHandler } from "./applicative/getEntry.query";
+import { GetMovieEntriesQueryHandler } from "./applicative/getMovieEntries.query";
+import { GetShowEntriesQueryHandler } from "./applicative/getShowEntries.query";
 import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
 import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
 
@@ -37,22 +25,18 @@ export function bootCatalog(
   new CatalogSaga(tmdbApi, catalogEntryStore, eventBus).listen(eventBus);
 
   queryBus.register(
-    GetEntryQuery,
     new GetEntryQueryHandler(catalogEntryStore, hierarchyItemStore)
   );
 
   queryBus.register(
-    GetEntriesQuery,
     new GetEntriesQueryHandler(catalogEntryStore, hierarchyItemStore)
   );
 
   queryBus.register(
-    GetMovieEntriesQuery,
     new GetMovieEntriesQueryHandler(catalogEntryStore, hierarchyItemStore)
   );
 
   queryBus.register(
-    GetShowEntriesQuery,
     new GetShowEntriesQueryHandler(catalogEntryStore, hierarchyItemStore)
   );
 

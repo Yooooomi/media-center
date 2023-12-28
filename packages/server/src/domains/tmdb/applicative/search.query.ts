@@ -11,7 +11,7 @@ export class SearchQueryHandler extends QueryHandler(SearchQuery) {
   }
 
   public async execute(query: SearchQuery) {
-    const results = await this.tmdbApi.search(query.data);
+    const results = await this.tmdbApi.search(query.value);
 
     return results;
   }

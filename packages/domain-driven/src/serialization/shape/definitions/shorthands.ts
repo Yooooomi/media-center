@@ -1,4 +1,4 @@
-import { IsShapeConstructor } from "../shape";
+import { IsShapeConstructor } from "../mixins/objectShape";
 import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
 import { DictShorthand, DictDefinition } from "./dict";
@@ -10,16 +10,35 @@ import {
 import { LiteralShorthand, LiteralDefinition } from "./literal";
 import { MultipleDefinition, MultipleShorthand } from "./multiple";
 import { StringEnumDefinition, StringEnumShorthand } from "./stringEnum";
+import { EitherDefinition } from "./either";
+import { OptionalDefinition } from "./optional";
+import { TupleDefinition } from "./tuple";
+import { NothingDefinition, NothingShorthand } from "./nothing";
 
-export type Shorthands =
+export type AnyShorthand =
   | LiteralShorthand
   | DictShorthand
   | MultipleShorthand
   | ChildShorthand
   | SerializableClassShorthand
-  | StringEnumShorthand;
+  | StringEnumShorthand
+  | NothingShorthand;
 
-export type ShorthandToLonghand<T> = T extends IsShapeConstructor<Definition>
+export type AnyDefinition =
+  | ChildDefinition
+  | SerializableClassDefinition
+  | DictDefinition
+  | EitherDefinition
+  | LiteralDefinition
+  | MultipleDefinition
+  | OptionalDefinition
+  | StringEnumDefinition
+  | TupleDefinition
+  | NothingDefinition;
+
+export type ShorthandToLonghand<T> = T extends undefined
+  ? NothingDefinition
+  : T extends IsShapeConstructor<Definition>
   ? ChildDefinition<T>
   : T extends SerializableClassConfiguration
   ? SerializableClassDefinition<T>
@@ -38,5 +57,7 @@ export type ShorthandToLonghand<T> = T extends IsShapeConstructor<Definition>
   : T extends [infer C]
   ? MultipleDefinition<ShorthandToLonghand<C>>
   : T extends Record<string, any>
-  ? DictDefinition<{ [k in keyof T]: ShorthandToLonghand<T[k]> }>
+  ? DictDefinition<{
+      [k in keyof T]: ShorthandToLonghand<T[k]>;
+    }>
   : never;

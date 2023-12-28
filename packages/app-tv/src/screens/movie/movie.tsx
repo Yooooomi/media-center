@@ -13,6 +13,8 @@ import {spacing} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {TorrentRequests} from '../../components/torrentRequests';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
+import {useEvent} from '../../services/useEvent';
+import {CatalogEntryAdded} from '@media-center/server/src/domains/catalog/applicative/catalog.events';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
@@ -22,6 +24,8 @@ export function Movie() {
     GetMoviePageQuery,
     movie.id,
   );
+
+  useEvent(CatalogEntryAdded, reload);
 
   const {
     element,

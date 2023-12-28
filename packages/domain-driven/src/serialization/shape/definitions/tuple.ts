@@ -4,11 +4,11 @@ import {
   DefinitionRuntime,
   DefinitionSerialized,
 } from "./definition";
-import { Shorthands, ShorthandToLonghand } from "./shorthands";
+import { AnyShorthand, ShorthandToLonghand } from "./shorthands";
 
-export type TupleConfiguration = (Shorthands | Definition)[];
+export type TupleConfiguration = (AnyShorthand | Definition)[];
 export type TupleShorthand = TupleConfiguration;
-export type TupleDefinition<C extends TupleConfiguration> = Definition<
+export type TupleDefinition<C extends TupleConfiguration = TupleConfiguration> = Definition<
   {
     [k in keyof C]: DefinitionRuntime<ShorthandToLonghand<C[k]>>;
   },
@@ -31,6 +31,6 @@ export function Tuple<C extends TupleConfiguration>(
       return serialized.map((s, index) =>
         longhand[index]!.deserialize(s)
       ) as any;
-    },
+    }
   };
 }

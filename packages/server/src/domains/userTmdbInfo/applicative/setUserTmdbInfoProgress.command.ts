@@ -18,17 +18,14 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
   }
 
   async execute(command: SetUserTmdbInfoProgressCommand) {
-    const id = UserTmdbInfoId.fromUserAndTmdb(
-      command.data.actorId,
-      command.data.tmdbId
-    );
+    const id = UserTmdbInfoId.fromUserAndTmdb(command.actorId, command.tmdbId);
     const userTmdbInfo =
       (await this.userTmdbInfoStore.load(id)) ??
       new UserTmdbInfo({
         id,
         progress: 0,
       });
-    userTmdbInfo.setProgress(command.data.progress);
+    userTmdbInfo.setProgress(command.progress);
     await this.userTmdbInfoStore.save(userTmdbInfo);
   }
 }

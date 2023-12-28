@@ -64,7 +64,6 @@ public class MainApplication extends Application implements ReactApplication {
     // Change enableKeyDownEvents to true to send both key down and key up events
     ReactFeatureFlags.enableKeyDownEvents = false;
 
-    ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     ApplicationLifecycleDispatcher.onApplicationCreate(this);
   }
 

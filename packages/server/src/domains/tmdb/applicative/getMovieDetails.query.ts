@@ -2,7 +2,6 @@ import {
   Query,
   ApplicativeError,
   QueryHandler,
-  Dict,
 } from "@media-center/domain-driven";
 import { MovieDetails } from "../domain/movieDetails";
 import { TmdbId } from "../domain/tmdbId";
@@ -29,10 +28,10 @@ export class GetMovieDetailsQueryHandler extends QueryHandler(
   }
 
   public async execute(query: GetMovieDetailsQuery) {
-    const details = await this.tmdbApi.getMovieDetails(query.data.tmdbId);
+    const details = await this.tmdbApi.getMovieDetails(query.tmdbId);
 
     if (!details) {
-      throw new DetailsNotFound(query.data.tmdbId);
+      throw new DetailsNotFound(query.tmdbId);
     }
 
     return details;

@@ -1,4 +1,4 @@
-export * from "./intention/intention";
+export * from "./intention/intent";
 export * from "./intention/command";
 export * from "./intention/query";
 

@@ -4,7 +4,6 @@ import {
   Optional,
   Either,
   QueryHandler,
-  Dict,
 } from "@media-center/domain-driven";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
@@ -39,7 +38,7 @@ export class GetEntryQueryHandler extends QueryHandler(GetEntryQuery) {
   }
 
   async execute(query: GetEntryQuery) {
-    const entry = await this.catalogEntryStore.load(query.data.tmdbId);
+    const entry = await this.catalogEntryStore.load(query.tmdbId);
 
     if (!entry) {
       return undefined;

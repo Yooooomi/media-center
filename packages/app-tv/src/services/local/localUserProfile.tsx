@@ -52,10 +52,9 @@ export function useLocalUserProfileContext() {
 
     Beta.setServer(storedUser.serverAddress, storedUser.serverPassword);
     const serverUsers = await Beta.query(new GetDeclaredUsersQuery());
-    setDeclaredUsers(serverUsers);
     const declaredStoredUser = serverUsers.find(u => u === storedUser?.user);
     storedUser.setUser(declaredStoredUser);
-    render();
+    setDeclaredUsers(serverUsers);
   }, [render]);
 
   const value: LocalUserProfileContext = {

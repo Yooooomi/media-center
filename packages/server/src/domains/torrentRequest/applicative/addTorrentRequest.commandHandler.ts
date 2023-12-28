@@ -20,13 +20,11 @@ export class AddTorrentRequestCommandHandler extends CommandHandler(
 
   async execute(command: AddTorrentRequestCommand) {
     await this.torrentIndexer.ensureAccessToDownload();
-    const torrentBuffer = await this.torrentIndexer.download(
-      command.data.torrentId
-    );
+    const torrentBuffer = await this.torrentIndexer.download(command.torrentId);
     const infos = TorrentService.getTorrentInfosFromBuffer(torrentBuffer);
     const request = new TorrentRequest({
       id: new TorrentRequestId(infos.hash),
-      tmdbId: command.data.tmdbId,
+      tmdbId: command.tmdbId,
       name: infos.name,
       size: infos.size,
       speed: 0,
@@ -35,7 +33,7 @@ export class AddTorrentRequestCommandHandler extends CommandHandler(
     await this.torrentRequestStore.save(request);
     await this.torrentClient.download(
       torrentBuffer,
-      command.data.tmdbId.getType() === "show"
+      command.tmdbId.getType() === "show"
     );
   }
 }

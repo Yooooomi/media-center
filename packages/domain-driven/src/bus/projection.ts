@@ -1,14 +1,14 @@
 import { Constructor } from "../serialization";
-import { Event } from "./eventBus/event";
+import { BaseEvent } from "./eventBus/event";
 import { EventBus } from "./eventBus/eventBus";
 
 export class Projection {
   registry = new Map<
-    Constructor<Event<any>>,
-    ((event: Event<any>) => Promise<void>)[]
+    Constructor<BaseEvent<any>>,
+    ((event: BaseEvent<any>) => Promise<void>)[]
   >();
 
-  static on<T extends Event<any>>(event: Constructor<T>) {
+  static on<T extends BaseEvent<any>>(event: Constructor<T>) {
     return <P extends Projection>(
       target: P,
       key: string,

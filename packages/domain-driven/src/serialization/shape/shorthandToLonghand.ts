@@ -7,21 +7,29 @@ import {
 import { Dict, DictConfiguration } from "./definitions/dict";
 import { Literal } from "./definitions/literal";
 import { Multiple } from "./definitions/multiple";
+import { Nothing } from "./definitions/nothing";
 import {
   SerializableClass,
   SerializableClassConfiguration,
 } from "./definitions/serializableClass";
-import { Shorthands, ShorthandToLonghand } from "./definitions/shorthands";
+import {
+  AnyDefinition,
+  AnyShorthand,
+  ShorthandToLonghand,
+} from "./definitions/shorthands";
 import { StringEnum } from "./definitions/stringEnum";
 import { Tuple } from "./definitions/tuple";
 
-export function shorthandToLonghand<D extends Definition | Shorthands>(
+export function shorthandToLonghand<D extends AnyDefinition | AnyShorthand>(
   definition: D
 ): Definition<
   DefinitionRuntime<ShorthandToLonghand<D>>,
   DefinitionSerialized<ShorthandToLonghand<D>>,
   DefinitionRuntime<ShorthandToLonghand<D>>
 > {
+  if (!definition) {
+    return Nothing();
+  }
   if (
     "serialize" in definition &&
     "deserialize" in definition &&
@@ -30,20 +38,20 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
   ) {
     return definition as Definition;
   }
-  if (definition === String) {
+  if ((definition as any) === String) {
     return Literal(String) as any;
   }
-  if (definition === Number) {
+  if ((definition as any) === Number) {
     return Literal(Number) as any;
   }
-  if (definition === Boolean) {
+  if ((definition as any) === Boolean) {
     return Literal(Boolean) as any;
   }
-  if (definition === Date) {
+  if ((definition as any) === Date) {
     return Literal(Date) as any;
   }
   if ("prototype" in definition) {
-    if ('isShape' in definition.prototype) {
+    if ("isShape" in definition.prototype) {
       return Child(definition as ChildConfiguration);
     }
     return SerializableClass(

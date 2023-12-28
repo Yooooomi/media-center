@@ -1,9 +1,6 @@
 import { CommandBus, EventBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
-import {
-  ScanExistingCommand,
-  ScanExistingCommandHandler,
-} from "./applicative/scanExisting.command";
+import { ScanExistingCommandHandler } from "./applicative/scanExisting.command";
 import { DiskFileWatcher } from "./infrastructure/disk.fileWatcher";
 import { FilesystemHierarchyStore } from "./infrastructure/filesystem.hierarchy.store";
 import { InMemoryHierarchyStore } from "./infrastructure/inMemory.hierarchy.store";
@@ -23,7 +20,7 @@ export async function bootFileWatcher(
     environmentHelper
   );
 
-  commandBus.register(ScanExistingCommand, new ScanExistingCommandHandler(watcher));
+  commandBus.register(new ScanExistingCommandHandler(watcher));
 
   await watcher.setup();
 

@@ -4,11 +4,11 @@ import {
   DefinitionRuntime,
   DefinitionSerialized,
 } from "./definition";
-import { Shorthands, ShorthandToLonghand } from "./shorthands";
+import { AnyShorthand, ShorthandToLonghand } from "./shorthands";
 
-export type MultipleConfiguration = Shorthands | Definition;
+export type MultipleConfiguration = AnyShorthand | Definition;
 export type MultipleShorthand = Array<MultipleConfiguration> & { length: 1 };
-export type MultipleDefinition<C extends MultipleConfiguration> = Definition<
+export type MultipleDefinition<C extends MultipleConfiguration = MultipleConfiguration> = Definition<
   DefinitionRuntime<ShorthandToLonghand<C>>[],
   DefinitionSerialized<ShorthandToLonghand<C>>[]
 >;
@@ -24,6 +24,6 @@ export function Multiple<C extends MultipleConfiguration>(
     },
     deserialize: (serialized) => {
       return serialized.map(longhand.deserialize);
-    },
+    }
   };
 }

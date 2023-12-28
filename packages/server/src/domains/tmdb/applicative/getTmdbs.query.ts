@@ -17,7 +17,7 @@ export class GetTmdbsQueryHandler extends QueryHandler(GetTmdbsQuery) {
   }
 
   public async execute(query: GetTmdbsQuery) {
-    const tmdbs = await this.tmdbStore.loadMany(query.data);
+    const tmdbs = await this.tmdbStore.loadMany(query.value);
 
     return tmdbs;
   }

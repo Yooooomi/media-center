@@ -1,7 +1,7 @@
 import {
   InMemoryStore,
   Either,
-  DefinitionSerializer,
+  SerializableSerializer,
 } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "../applicative/catalogEntry.store";
@@ -17,7 +17,7 @@ export class InMemoryCatalogEntryStore
 {
   constructor() {
     super(
-      new DefinitionSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
+      new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
     );
   }
 

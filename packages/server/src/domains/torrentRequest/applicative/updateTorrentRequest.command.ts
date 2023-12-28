@@ -17,20 +17,20 @@ export class UpdateTorrentRequestCommandHandler extends CommandHandler(
 
   async execute(command: UpdateTorrentRequestCommand) {
     let existing = await this.torrentRequestStore.load(
-      command.data.torrentRequestId
+      command.torrentRequestId
     );
 
     if (!existing) {
       console.log(
         "Passing torrent",
-        command.data.torrentRequestId.toString(),
+        command.torrentRequestId.toString(),
         "it was not found in store"
       );
       return;
     }
 
-    existing.setDownloaded(command.data.downloaded);
-    existing.setSpeed(command.data.speed);
+    existing.setDownloaded(command.downloaded);
+    existing.setSpeed(command.speed);
     await this.torrentRequestStore.save(existing);
   }
 }

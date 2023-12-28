@@ -15,12 +15,6 @@ export class SearchTorrentsQuery extends Query(
   [TorrentIndexerResult]
 ) {}
 
-class UnknownTmdb extends ApplicativeError {
-  constructor(tmdbId: TmdbId) {
-    super(`Tmdb with id ${tmdbId.toString()} was not found`);
-  }
-}
-
 export class SearchTorrentsQueryHandler extends QueryHandler(
   SearchTorrentsQuery
 ) {
@@ -32,7 +26,7 @@ export class SearchTorrentsQueryHandler extends QueryHandler(
   }
 
   async execute(query: SearchTorrentsQuery) {
-    const results = await this.torrentIndexer.search(query.data.query);
+    const results = await this.torrentIndexer.search(query.query);
 
     return results;
   }

@@ -7,9 +7,9 @@ import {
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import Express, { urlencoded, json } from "express";
 import * as fs from "fs";
-import { IntentionBus } from "@media-center/domain-driven/lib/bus/intention/intentionBus";
 import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
+import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
 
 export function bootApi(
   queryBus: QueryBus,
@@ -92,7 +92,7 @@ export function bootApi(
   });
 
   async function executeIntention(
-    bus: IntentionBus,
+    bus: IntentBus,
     name: string,
     params: Record<string, any>
   ) {
@@ -124,7 +124,6 @@ export function bootApi(
 
   app.get("/event/:name", async (req, res) => {
     const { name } = req.params;
-    console.log("A guy is listening for", name);
 
     res.writeHead(200, {
       Connection: "keep-alive",
@@ -132,20 +131,12 @@ export function bootApi(
       "Content-Type": "text/event-stream",
     });
 
-    let counter = 0;
-    const interval = setInterval(() => {
-      const chunk = JSON.stringify({ chunk: counter++ });
-      res.write(`data: ${chunk}\n\n`);
-      console.log("sent");
-    }, 100);
-
     const unsubscribe = eventBus.onName(name, (event) => {
-      console.log("I have an event", name, event);
-      res.write(JSON.stringify(event.serialize()));
+      const data = JSON.stringify(event.serialize());
+      res.write(`data: ${data}\n\n`);
     });
 
     res.on("close", () => {
-      clearInterval(interval);
       unsubscribe();
       res.end();
     });

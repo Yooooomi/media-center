@@ -1,12 +1,14 @@
 import { Definition } from "./definition";
 import { SerializableClassConfiguration } from "./serializableClass";
 
-export type EitherConfiguration<T> = SerializableClassConfiguration<T>[];
-export type EitherDefinition<C extends EitherConfiguration<any>> = Definition<
+export type EitherConfiguration = SerializableClassConfiguration[];
+export type EitherDefinition<
+  C extends EitherConfiguration = EitherConfiguration
+> = Definition<
   InstanceType<C[number]>,
   [number, ReturnType<InstanceType<C[number]>["serialize"]>]
 >;
-export function Either<C extends EitherConfiguration<any>>(
+export function Either<C extends EitherConfiguration>(
   ...configuration: C
 ): EitherDefinition<C> {
   return {

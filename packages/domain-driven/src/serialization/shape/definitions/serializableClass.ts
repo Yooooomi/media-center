@@ -7,16 +7,17 @@ type Serialization =
   | number
   | boolean
   | Date
+  | Serialization[]
   | undefined;
 
-export type SerializableClassConfiguration<T = Serialization> = Constructor<{
-  serialize(): T;
+export type SerializableClassConfiguration = Constructor<{
+  serialize(): Serialization;
 }> & {
-  deserialize(serialized: T): any;
+  deserialize(serialized: Serialization): any;
 };
 export type SerializableClassShorthand = SerializableClassConfiguration;
 export type SerializableClassDefinition<
-  C extends SerializableClassConfiguration
+  C extends SerializableClassConfiguration = SerializableClassConfiguration
 > = Definition<InstanceType<C>, ReturnType<InstanceType<C>["serialize"]>>;
 export function SerializableClass<C extends SerializableClassConfiguration>(
   configuration: C

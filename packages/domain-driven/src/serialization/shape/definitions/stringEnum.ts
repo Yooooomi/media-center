@@ -11,7 +11,7 @@ type MatcherParam<cases extends string> =
   | (Matcher<cases> & Catchall);
 
 class Matchable<C extends string> {
-  constructor(public readonly value: C) {}
+  constructor(public readonly value: C) { }
 
   is<U extends C>(value: U): this is this & { value: U; serialize(): U } {
     return this.value === value;
@@ -21,13 +21,13 @@ class Matchable<C extends string> {
     matcher: M
   ): M extends Required<MatcherParam<C>>
     ? {
-        [K in C]: M[K] extends () => infer R ? R : never;
-      }[C]
+      [K in C]: M[K] extends () => infer R ? R : never;
+    }[C]
     :
-        | {
-            [K in C]: M[K] extends () => infer R ? R : never;
-          }[C]
-        | (M extends { _: () => infer R } ? R : never) {
+    | {
+      [K in C]: M[K] extends () => infer R ? R : never;
+    }[C]
+    | (M extends { _: () => infer R } ? R : never) {
     const fn = matcher[this.value] ?? (matcher as any)._;
     return fn() as any;
   }
@@ -35,7 +35,7 @@ class Matchable<C extends string> {
 
 export type StringEnumConfiguration = string[];
 export type StringEnumShorthand = StringEnumConfiguration;
-export type StringEnumDefinition<C extends StringEnumConfiguration> =
+export type StringEnumDefinition<C extends StringEnumConfiguration = StringEnumConfiguration> =
   Definition<Matchable<C[number]>, C[number], C[number]>;
 export function StringEnum<const C extends StringEnumConfiguration>(
   ...configuration: C
@@ -47,6 +47,6 @@ export function StringEnum<const C extends StringEnumConfiguration>(
     },
     deserialize: (serialized) => {
       return serialized;
-    },
+    }
   };
 }

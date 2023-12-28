@@ -18,9 +18,7 @@ export class GetTorrentRequestsQueryHandler extends QueryHandler(
   }
 
   async execute(query: GetTorrentRequestsQuery) {
-    const torrents = await this.torrentRequestStore.loadByTmdbId(
-      query.data.tmdbId
-    );
+    const torrents = await this.torrentRequestStore.loadByTmdbId(query.tmdbId);
 
     return torrents;
   }

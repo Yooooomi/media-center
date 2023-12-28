@@ -1,9 +1,4 @@
-import {
-  Query,
-  Multiple,
-  QueryHandler,
-  Dict,
-} from "@media-center/domain-driven";
+import { Query, QueryHandler } from "@media-center/domain-driven";
 import { ShowSeason } from "../domain/showSeason";
 import { TmdbId } from "../domain/tmdbId";
 import { TmdbAPI } from "./tmdb.api";
@@ -21,7 +16,7 @@ export class GetSeasonsQueryHandler extends QueryHandler(GetSeasonsQuery) {
   }
 
   public async execute(query: GetSeasonsQuery) {
-    const seasons = await this.tmdbApi.getSeasons(query.data.tmdbId);
+    const seasons = await this.tmdbApi.getSeasons(query.tmdbId);
 
     return seasons;
   }

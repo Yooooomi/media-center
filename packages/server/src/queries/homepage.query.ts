@@ -1,4 +1,5 @@
 import {
+  BaseIntent,
   Either,
   Optional,
   Query,

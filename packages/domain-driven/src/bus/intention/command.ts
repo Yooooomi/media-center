@@ -1,8 +1,8 @@
-import { InMemoryIntentionBus } from "./inMemory.intentionBus";
-import { Intention, IntentionHandler } from "./intention";
-import { IntentionBus } from "./intentionBus";
+import { InMemoryIntentionBus } from "./inMemory.intentBus";
+import { Intent, IntentHandler } from "./intent";
+import { IntentBus } from "./intentBus";
 
-export { Intention as Command };
-export { IntentionHandler as CommandHandler };
-export { IntentionBus as CommandBus };
+export { Intent as Command };
+export { IntentHandler as CommandHandler };
+export { IntentBus as CommandBus };
 export { InMemoryIntentionBus as InMemoryCommandBus };

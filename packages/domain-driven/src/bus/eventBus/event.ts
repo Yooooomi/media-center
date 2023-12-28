@@ -1,9 +1,5 @@
-import {
-  DictConfiguration,
-  DictShorthand,
-  IsShapeConstructor,
-  Shape,
-} from "../../serialization";
+import { DictConfiguration, DictShorthand, Shape } from "../../serialization";
+import { IsShapeConstructor } from "../../serialization/shape/mixins/objectShape";
 
 class ParentEvent {
   getName<T extends ParentEvent>(this: T) {

@@ -32,7 +32,9 @@ export abstract class FileWatcher {
   }
 
   protected async triggerAdded(file: File, type: FileType) {
-    const alreadyExisting = await this.hierarchyStore.loadByPath(file.path);
+    const alreadyExisting = await this.hierarchyStore.loadByExactPath(
+      file.path
+    );
     if (alreadyExisting.length > 0) {
       return;
     }

@@ -1,4 +1,8 @@
-import { CommandBus, EventBus } from "@media-center/domain-driven";
+import {
+  CommandBus,
+  EventBus,
+  InMemoryDatabase,
+} from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { ScanExistingCommandHandler } from "./applicative/scanExisting.command";
 import { DiskFileWatcher } from "./infrastructure/disk.fileWatcher";
@@ -6,13 +10,14 @@ import { FilesystemHierarchyStore } from "./infrastructure/filesystem.hierarchy.
 import { InMemoryHierarchyStore } from "./infrastructure/inMemory.hierarchy.store";
 
 export async function bootFileWatcher(
+  database: InMemoryDatabase,
   commandBus: CommandBus,
   eventBus: EventBus,
   environmentHelper: EnvironmentHelper
 ) {
   const hierarchyStore = environmentHelper.match("DI_DATABASE", {
-    memory: () => new InMemoryHierarchyStore(),
-    filesystem: () => new FilesystemHierarchyStore(),
+    memory: () => new InMemoryHierarchyStore(database),
+    filesystem: () => new FilesystemHierarchyStore(environmentHelper, database),
   });
   const watcher = new DiskFileWatcher(
     eventBus,

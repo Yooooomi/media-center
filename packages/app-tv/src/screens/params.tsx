@@ -94,7 +94,6 @@ export function useNavigate() {
           ? void
           : NavigationParams[K],
       ) => {
-        console.log('Path', path, paths[path], params);
         add({pathname: paths[path], params: params ?? undefined});
       },
       [add],

@@ -10,6 +10,7 @@ import * as fs from "fs";
 import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
 import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
+import { streamVideo } from "./videoStreaming/streamVideo";
 
 export function bootApi(
   queryBus: QueryBus,
@@ -52,50 +53,16 @@ export function bootApi(
       console.log("Didnt find item", hierarchyItemId);
       return res.status(404).end();
     }
-    const { range } = req.headers;
 
-    if (!range) {
-      console.log("Didnt find range");
-      return res.status(400).end();
-    }
-
-    // const path =
-    //   "/data/movie/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv";
-    // const path = "/Users/timothee/perso/media-center/aaa/films/sample.mkv";
-    const path = item.file.path;
-    const total = fs.statSync(path).size;
-
-    const [startString, endString] = range.replace(/bytes=/, "").split("-");
-
-    if (!startString) {
-      return res.status(400).end();
-    }
-
-    const start = parseInt(startString, 10);
-    // if last byte position is not present then it is the last byte of the video file.
-    const end = endString ? parseInt(endString, 10) : total - 1;
-    const chunksize = end - start + 1;
-
-    res.writeHead(206, {
-      "Content-Range": "bytes " + start + "-" + end + "/" + total,
-      "Accept-Ranges": "bytes",
-      "Content-Length": chunksize,
-      "Content-Type": "video/x-matroska",
-    });
-
-    return fs
-      .createReadStream(path, {
-        start,
-        end,
-      })
-      .pipe(res);
+    // const paths = {
+    //   mp4: "/Users/timothee/perso/media-center/aaa/films/Avatar (2009) Hybrid MULTi VFI 2160p 10bit 4KLight DV HDR10Plus BluRay DDP 5.1 Atmos x265-QTZ.mp4",
+    //   avi: "/Users/timothee/perso/media-center/aaa/films/Sorry.to.Bother.You.2018.FRENCH.BDRip.XviD-EXTREME.avi",
+    //   mkv: "/Users/timothee/perso/media-center/aaa/films/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv",
+    // };
+    return streamVideo(req, res, item.file.path);
   });
 
-  async function executeIntention(
-    bus: IntentBus,
-    name: string,
-    params: Record<string, any>
-  ) {
+  async function executeIntention(bus: IntentBus, name: string, params: any) {
     const ctor = bus.get(name);
     const deserialized = ctor.needing.deserialize(params);
     const instance = new ctor(deserialized);
@@ -108,7 +75,7 @@ export function bootApi(
 
   app.get("/query/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
-    const { needing } = req.body;
+    const { needing } = req.query;
     logger.info(`< ${req.path}`);
     res.status(200).send(await executeIntention(queryBus, name!, needing));
     logger.info(`> ${req.path}`);
@@ -116,7 +83,11 @@ export function bootApi(
 
   app.get("/reactive/query/:name", async (req, res) => {
     const { name } = req.params;
-    const { needing } = req.query;
+    const { needing: stringifiedNeeding } = req.query;
+
+    const needing = stringifiedNeeding
+      ? JSON.parse(stringifiedNeeding as string)
+      : undefined;
 
     logger.info(`> reactive ${req.path}`);
 
@@ -136,6 +107,7 @@ export function bootApi(
         const runtime = ctor.returning.paramToRuntime(result);
         const serialized = ctor.returning?.serialize(runtime);
         const data = JSON.stringify(serialized);
+        logger.info(`  react ${req.path}`);
         res.write(`data: ${data}\n\n`);
       }
     );

@@ -1,4 +1,5 @@
 import {
+  InMemoryDatabase,
   InMemoryStore,
   SerializableSerializer,
 } from "@media-center/domain-driven";
@@ -9,7 +10,7 @@ export class InMemoryUserTmdbInfoStore
   extends InMemoryStore<UserTmdbInfo>
   implements UserTmdbInfoStore
 {
-  constructor() {
-    super(new SerializableSerializer(UserTmdbInfo));
+  constructor(database: InMemoryDatabase) {
+    super(database, "userTmdbInfo", new SerializableSerializer(UserTmdbInfo));
   }
 }

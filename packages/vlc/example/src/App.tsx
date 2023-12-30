@@ -13,10 +13,10 @@ export default function App() {
           <Vlc
             volume={100}
             onProgress={(event) => {
-              console.log('JS onProgress', event);
+              console.log('JS onProgress', JSON.stringify(event, null, ' '));
             }}
             onVideoInfos={(event) => {
-              console.log('JS onVideoInfos', event);
+              console.log('JS onVideoInfos', JSON.stringify(event, null, ' '));
             }}
             style={styles.box}
             uri="http://192.168.1.153:8080/video/1.mkv"

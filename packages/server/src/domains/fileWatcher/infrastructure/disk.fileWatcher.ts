@@ -1,7 +1,7 @@
 import { File } from "../../../framework/valueObjects/file";
 import { FileWatcher } from "../applicative/fileWatcher";
 import * as fs from "fs";
-import { join } from "path";
+import { join, extname } from "path";
 import { HierarchyStore } from "../applicative/hierarchy.store";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 import {
@@ -9,6 +9,7 @@ import {
   EventBus,
   useLog,
 } from "@media-center/domain-driven";
+import { FileType } from "../applicative/fileWatcher.events";
 
 class CannotWatchSameDirectory extends InfrastructureError {
   constructor(dirname: string) {
@@ -46,6 +47,28 @@ export class DiskFileWatcher extends FileWatcher {
     }
   }
 
+  private onFileChange(dir: string, type: FileType) {
+    return (event: string, filename: string | Buffer) => {
+      if (filename instanceof Buffer || event !== "rename") {
+        return;
+      }
+      const path = join(dir, filename);
+      const exists = fs.existsSync(path);
+
+      if (exists) {
+        const stat = fs.statSync(path);
+
+        if (stat.isFile() && DiskFileWatcher.isValidVideoFile(path)) {
+          this.triggerAdded(new File({ path }), type);
+        } else if (stat.isDirectory()) {
+          this.scanShow(path);
+        }
+      } else {
+        this.triggerDeleted(new File({ path }), type);
+      }
+    };
+  }
+
   protected async initializeMovie() {
     const movieDir = this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
 
@@ -56,19 +79,7 @@ export class DiskFileWatcher extends FileWatcher {
     });
     DiskFileWatcher.logger.info("Watching movie directory", movieDir);
 
-    movieWatcher.on("change", (event, filename) => {
-      if (filename instanceof Buffer || event !== "rename") {
-        return;
-      }
-      const path = join(movieDir, filename);
-      const exists = fs.existsSync(path);
-
-      if (exists) {
-        this.triggerAdded(new File({ path }), "movie");
-      } else {
-        this.triggerDeleted(new File({ path }), "movie");
-      }
-    });
+    movieWatcher.on("change", this.onFileChange(movieDir, "movie"));
   }
 
   protected async initializeShow() {
@@ -82,19 +93,7 @@ export class DiskFileWatcher extends FileWatcher {
     });
     logger.info("Watching show directory", showDir);
 
-    showWatcher.on("change", (event, filename) => {
-      if (filename instanceof Buffer || event !== "rename") {
-        return;
-      }
-      const path = join(showDir, filename);
-      const exists = fs.existsSync(path);
-
-      if (exists) {
-        this.triggerAdded(new File({ path }), "show");
-      } else {
-        this.triggerDeleted(new File({ path }), "show");
-      }
-    });
+    showWatcher.on("change", this.onFileChange(showDir, "show"));
   }
 
   protected async initialize() {
@@ -110,7 +109,14 @@ export class DiskFileWatcher extends FileWatcher {
     await Promise.all([this.initializeMovie(), this.initializeShow()]);
   }
 
-  public async scanMovie(dir: string | undefined = undefined): Promise<void> {
+  private static validVideoExtensions = ["avi", "mkv", "mp4"];
+
+  private static isValidVideoFile(filepath: string) {
+    const extension = extname(filepath).slice(1);
+    return DiskFileWatcher.validVideoExtensions.includes(extension);
+  }
+
+  private async scanMovie(dir: string | undefined = undefined): Promise<void> {
     const movieDir =
       dir ?? this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
 
@@ -120,13 +126,13 @@ export class DiskFileWatcher extends FileWatcher {
       if (stat.isDirectory()) {
         return this.scanMovie(path);
       }
-      if (stat.isFile()) {
+      if (stat.isFile() && DiskFileWatcher.isValidVideoFile(path)) {
         this.triggerAdded(new File({ path }), "movie");
       }
     }
   }
 
-  public async scanShow(dir: string | undefined = undefined): Promise<void> {
+  private async scanShow(dir: string | undefined = undefined): Promise<void> {
     const showDir = dir ?? this.environmentHelper.get("FILE_WATCHER_SHOW_DIR");
 
     for (const entry of fs.readdirSync(showDir)) {
@@ -135,7 +141,7 @@ export class DiskFileWatcher extends FileWatcher {
       if (stat.isDirectory()) {
         return this.scanShow(path);
       }
-      if (stat.isFile()) {
+      if (stat.isFile() && DiskFileWatcher.isValidVideoFile(path)) {
         this.triggerAdded(new File({ path }), "show");
       }
     }

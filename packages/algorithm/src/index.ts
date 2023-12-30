@@ -24,3 +24,41 @@ export function chunk<T>(values: T[], chunkSize: number) {
   }
   return results;
 }
+
+export function uniqBy<T>(value: T[], by: (item: T) => string) {
+  const results: T[] = [];
+  const already = new Set<string>();
+
+  for (const v of value) {
+    const id = by(v);
+    if (already.has(id)) {
+      continue;
+    }
+    already.add(id);
+    results.push(v);
+  }
+  return results;
+}
+
+export function debounce<F extends (...args: any[]) => void>(
+  fn: F,
+  ms: number
+) {
+  let timeoutId: NodeJS.Timeout | undefined;
+
+  return function (...args: any[]) {
+    // If there's a pending timeout, clear it to ensure only the latest call is delayed.
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // Schedule a new timeout to invoke the function after the specified delay.
+    timeoutId = setTimeout(() => {
+      fn(...args);
+    }, ms);
+  };
+}
+
+export function wait(ms: number) {
+  return new Promise((res) => setTimeout(res, ms));
+}

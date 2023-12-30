@@ -4,6 +4,7 @@ import LoggedImage from '../../loggedImage';
 import {ScaleButton} from '../pressable/scaleButton';
 import Box from '../../box';
 import Icon from '../../icon';
+import {DisabledFill} from '../../disabledFill';
 
 interface VerticalCardProps {
   uri: string | undefined;
@@ -34,9 +35,7 @@ export function VerticalCard({
             <Icon name="movie" size={36} />
           </Box>
         )}
-        {disabled ? (
-          <Box style={StyleSheet.absoluteFillObject} bg={['background', 0.8]} />
-        ) : null}
+        {disabled ? <DisabledFill /> : null}
         {progress && progress < 1 ? (
           <View
             style={[styles.progress, {width: `${Math.floor(progress * 100)}%`}]}

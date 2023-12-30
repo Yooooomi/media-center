@@ -7,6 +7,7 @@ import { GetMoviePageQueryHandler } from "./getMoviePage.query";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { GetShowPageQueryHandler } from "./getShowPage.query";
+import { GetShowSeasonPageQueryHandler } from "./getShowSeasonPage.query";
 
 export function bootQueries(
   queryBus: QueryBus,
@@ -37,6 +38,14 @@ export function bootQueries(
       torrentRequestStore,
       catalogEntryStore,
       hierarchyStore
+    )
+  );
+
+  queryBus.register(
+    new GetShowSeasonPageQueryHandler(
+      tmdbApi,
+      hierarchyStore,
+      catalogEntryStore
     )
   );
 }

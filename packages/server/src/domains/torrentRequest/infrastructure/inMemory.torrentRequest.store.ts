@@ -1,4 +1,5 @@
 import {
+  InMemoryDatabase,
   InMemoryStore,
   SerializableSerializer,
 } from "@media-center/domain-driven";
@@ -10,8 +11,12 @@ export class InMemoryTorrentRequestStore
   extends InMemoryStore<TorrentRequest>
   implements TorrentRequestStore
 {
-  constructor() {
-    super(new SerializableSerializer(TorrentRequest));
+  constructor(database: InMemoryDatabase) {
+    super(
+      database,
+      "torrentRequest",
+      new SerializableSerializer(TorrentRequest)
+    );
   }
 
   async loadByTmdbId(tmdbId: TmdbId): Promise<TorrentRequest[]> {

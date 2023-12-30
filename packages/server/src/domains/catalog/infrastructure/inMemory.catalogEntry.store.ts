@@ -2,6 +2,7 @@ import {
   InMemoryStore,
   Either,
   SerializableSerializer,
+  InMemoryDatabase,
 } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "../applicative/catalogEntry.store";
@@ -15,8 +16,10 @@ export class InMemoryCatalogEntryStore
   extends InMemoryStore<AnyCatalogEntry>
   implements CatalogEntryStore
 {
-  constructor() {
+  constructor(database: InMemoryDatabase) {
     super(
+      database,
+      "catalogEntry",
       new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
     );
   }

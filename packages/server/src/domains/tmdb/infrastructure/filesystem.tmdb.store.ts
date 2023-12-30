@@ -1,4 +1,3 @@
-import { FilesystemStore } from "../../../framework/store";
 import { compact } from "@media-center/algorithm";
 import { TmdbAPI } from "../applicative/tmdb.api";
 import { TmdbStore } from "../applicative/tmdb.store";
@@ -6,14 +5,29 @@ import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";
-import { Either, SerializableSerializer } from "@media-center/domain-driven";
+import {
+  Either,
+  InMemoryDatabase,
+  SerializableSerializer,
+} from "@media-center/domain-driven";
+import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
+import { FilesystemStore } from "../../../framework/store";
 
 export class FilesystemTmdbStore
   extends FilesystemStore<AnyTmdb>
   implements TmdbStore
 {
-  constructor(private readonly tmdbAPI: TmdbAPI) {
-    super(new SerializableSerializer(Either(Movie, Show)));
+  constructor(
+    environmentHelper: EnvironmentHelper,
+    database: InMemoryDatabase,
+    private readonly tmdbAPI: TmdbAPI
+  ) {
+    super(
+      environmentHelper,
+      database,
+      "tmdb",
+      new SerializableSerializer(Either(Movie, Show))
+    );
   }
 
   async load(id: TmdbId) {

@@ -48,6 +48,9 @@ export class Bridge {
       const {data} = await this.axios.request({
         url: path,
         method,
+        params: {
+          needing: serialized,
+        },
         data: {
           needing: serialized,
         },
@@ -75,7 +78,10 @@ export class Bridge {
     const url = new URL(
       this.getUrl(`/reactive/query/${query.constructor.name}`),
     );
-    url.searchParams.append('needing', query.serialize());
+    const serialized = query.serialize();
+    if (serialized !== undefined) {
+      url.searchParams.append('needing', JSON.stringify(query.serialize()));
+    }
     const es = new EventSource(url, {
       method: 'GET',
     });

@@ -18,6 +18,7 @@ import {
   CatalogEntryDeleted,
   CatalogEntryUpdated,
 } from "../domains/catalog/applicative/catalog.events";
+import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,
@@ -59,34 +60,12 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
     const requests = await this.torrentRequestStore.loadByTmdbId(
       intention.value
     );
-    const catalogEntry = await this.catalogEntryStore.load(intention.value);
 
-    if (catalogEntry && !(catalogEntry instanceof ShowCatalogEntry)) {
-      throw new Error("Invalid CatalogShowEntry");
-    }
-    const showSpecifications = catalogEntry?.items ?? [];
-    const hierarchyItems = keyBy(
-      catalogEntry
-        ? await this.hierarchyStore.loadMany(
-            showSpecifications.map((e) => e.id)
-          )
-        : [],
-      (e) => e.id.toString()
+    const catalogEntryFulfilled = await getShowCatalogEntryFulfilled(
+      intention.value,
+      this.hierarchyStore,
+      this.catalogEntryStore
     );
-    const catalogEntryFulfilled = new ShowCatalogEntryFulfilled({
-      id: intention.value,
-      items: showSpecifications.map((showSpecification) => {
-        const fulfilled = hierarchyItems[showSpecification.id.toString()];
-        if (!fulfilled) {
-          throw new Error("Cannot find fulfilled hierarchy item");
-        }
-        return new CatalogEntryShowSpecificationFulFilled({
-          item: fulfilled,
-          episode: showSpecification.episode,
-          season: showSpecification.season,
-        });
-      }),
-    });
 
     const seasons = await this.tmdbApi.getSeasons(intention.value);
 

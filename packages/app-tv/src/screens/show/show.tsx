@@ -20,6 +20,7 @@ export function Show() {
   const [{result: showPage}, fetching, reload] = useQuery(
     GetShowPageQuery,
     show.id,
+    {reactive: true},
   );
 
   const {

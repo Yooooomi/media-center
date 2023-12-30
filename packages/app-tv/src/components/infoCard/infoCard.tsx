@@ -5,6 +5,8 @@ import LoggedImage from '../loggedImage';
 import Pill from '../pill';
 import Text from '../text/text';
 import {ScaleButton} from '../ui/pressable/scaleButton';
+import {noop} from '@media-center/algorithm';
+import {DisabledFill} from '../disabledFill';
 
 export interface InfoCardProps {
   imageUri: string | undefined;
@@ -13,6 +15,7 @@ export interface InfoCardProps {
   subtitle: string;
   onPress: () => void;
   focusOnMount?: boolean;
+  disabled?: boolean;
 }
 
 export const InfoCardSize = {
@@ -27,12 +30,17 @@ export default function InfoCard({
   subtitle,
   onPress,
   focusOnMount,
+  disabled,
 }: InfoCardProps) {
   return (
     <Box>
-      <ScaleButton onPress={onPress} focusOnMount={focusOnMount} border>
+      <ScaleButton
+        onPress={disabled ? noop : onPress}
+        focusOnMount={focusOnMount}
+        border>
         <View style={styles.root}>
           <LoggedImage uri={imageUri} style={styles.image} resizeMode="cover" />
+          {disabled ? <DisabledFill /> : null}
         </View>
       </ScaleButton>
       <Box

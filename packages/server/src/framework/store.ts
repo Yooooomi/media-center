@@ -1,49 +1,25 @@
-import { ProcessEnvironmentHelper } from "../domains/environment/infrastructure/process.environmentHelper";
-import * as fs from "fs";
-import * as path from "path";
 import {
   AtLeastId,
-  Id,
-  InMemoryStore,
+  FilesystemStore as DDFilesystemStore,
+  InMemoryDatabase,
   Serializer,
-  useLog,
 } from "@media-center/domain-driven";
+import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
+import * as path from "path";
+import * as fs from "fs";
 
-export class FilesystemStore<M extends AtLeastId> extends InMemoryStore<M> {
-  private readonly location: string;
-
-  constructor(serializer: Serializer<M>) {
-    super(serializer);
-    const env = new ProcessEnvironmentHelper();
-    this.location = env.get("FILESYSTEM_STORE_DIR");
-
-    if (!fs.existsSync(this.location)) {
-      fs.mkdirSync(this.location);
+export class FilesystemStore<M extends AtLeastId> extends DDFilesystemStore<M> {
+  constructor(
+    environmentHelper: EnvironmentHelper,
+    database: InMemoryDatabase,
+    collectionName: string,
+    serializer: Serializer<M>
+  ) {
+    const dir = environmentHelper.get("FILESYSTEM_STORE_DIR");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
     }
-
-    const logger = useLog(this.constructor.name);
-    try {
-      const filename = path.join(this.location, this.constructor.name);
-      this.store = JSON.parse(fs.readFileSync(filename).toString());
-      logger.info(`Initialized with ${Object.keys(this.store).length} entries`);
-    } catch (e) {
-      logger.warn("Could find database, creating empty one");
-      this.store = {};
-    }
-  }
-
-  commit<T extends FilesystemStore<any>>(this: T) {
-    const filename = path.join(this.location, this.constructor.name);
-    fs.writeFileSync(filename, JSON.stringify(this.store));
-  }
-
-  async save(model: M) {
-    await super.save(model);
-    this.commit();
-  }
-
-  async delete(id: Id) {
-    await super.delete(id);
-    this.commit();
+    const filepath = path.join(dir, collectionName);
+    super(filepath, database, collectionName, serializer);
   }
 }

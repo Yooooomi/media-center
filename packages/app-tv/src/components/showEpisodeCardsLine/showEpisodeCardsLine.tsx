@@ -7,6 +7,7 @@ import {ShowCatalogEntryFulfilled} from '@media-center/server/src/domains/catalo
 interface ShowEpisodeCardsLineProps extends ExtraSectionLineProps<ShowEpisode> {
   showSeason: ShowSeason;
   showEpisodes: ShowEpisode[];
+  availableEpisodes: number[];
   catalogEntry: ShowCatalogEntryFulfilled;
   onFocusEpisode?: (episode: ShowEpisode) => void;
   focusFirst?: boolean;
@@ -15,6 +16,7 @@ interface ShowEpisodeCardsLineProps extends ExtraSectionLineProps<ShowEpisode> {
 export default function ShowEpisodeCardsLine({
   showEpisodes,
   showSeason,
+  availableEpisodes,
   catalogEntry,
   focusFirst,
   ...other
@@ -26,6 +28,7 @@ export default function ShowEpisodeCardsLine({
       keyExtractor={showEpisode => showEpisode.episode_number.toString()}
       renderItem={(item, index) => (
         <ShowEpisodeCard
+          disabled={availableEpisodes.indexOf(item.episode_number) === -1}
           focusOnMount={focusFirst && index === 0 ? true : undefined}
           catalogEntry={catalogEntry}
           showEpisode={item}

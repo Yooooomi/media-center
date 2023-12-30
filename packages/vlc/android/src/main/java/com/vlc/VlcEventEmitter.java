@@ -75,6 +75,9 @@ public class VlcEventEmitter {
 
   private String lastVideoInfoSent;
   public void emitVideoInfos() {
+    if (this.mediaPlayer.getCurrentVideoTrack() != null) {
+      Log.i(TAG, "" + this.mediaPlayer.getCurrentVideoTrack().);
+    }
     if (this.mediaPlayer.getAudioTracks() == null) {
       return;
     }

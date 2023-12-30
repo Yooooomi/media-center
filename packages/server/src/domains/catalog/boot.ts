@@ -1,4 +1,8 @@
-import { QueryBus, EventBus } from "@media-center/domain-driven";
+import {
+  QueryBus,
+  EventBus,
+  InMemoryDatabase,
+} from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { HierarchyStore } from "../fileWatcher/applicative/hierarchy.store";
 import { TmdbAPI } from "../tmdb/applicative/tmdb.api";
@@ -11,6 +15,7 @@ import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalog
 import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
 
 export function bootCatalog(
+  database: InMemoryDatabase,
   queryBus: QueryBus,
   eventBus: EventBus,
   environmentHelper: EnvironmentHelper,
@@ -18,8 +23,9 @@ export function bootCatalog(
   hierarchyItemStore: HierarchyStore
 ) {
   const catalogEntryStore = environmentHelper.match("DI_DATABASE", {
-    memory: () => new InMemoryCatalogEntryStore(),
-    filesystem: () => new FilesystemCatalogEntryStore(),
+    memory: () => new InMemoryCatalogEntryStore(database),
+    filesystem: () =>
+      new FilesystemCatalogEntryStore(environmentHelper, database),
   });
 
   new CatalogSaga(tmdbApi, catalogEntryStore, eventBus).listen(eventBus);

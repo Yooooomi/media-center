@@ -7,17 +7,20 @@ import {
   ShowCatalogEntryFulfilled,
 } from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {useCallback} from 'react';
+import {noop} from '@media-center/algorithm';
 
 interface ShowEpisodeCardProps {
   showEpisode: ShowEpisode;
   catalogEntry: ShowCatalogEntryFulfilled;
   focusOnMount?: boolean;
+  disabled?: boolean;
 }
 
 export function ShowEpisodeCard({
   showEpisode,
   catalogEntry,
   focusOnMount,
+  disabled,
 }: ShowEpisodeCardProps) {
   const imageUri = useImageUri(showEpisode.still_path);
   const {actionSheet, play} = usePlayCatalogEntry(
@@ -37,8 +40,9 @@ export function ShowEpisodeCard({
         pillText={`Episode ${showEpisode.episode_number}`}
         title={showEpisode.name}
         subtitle={`${showEpisode.runtime} minutes`}
-        onPress={play}
+        onPress={disabled ? noop : play}
         imageUri={imageUri}
+        disabled={disabled}
       />
       {actionSheet}
     </>

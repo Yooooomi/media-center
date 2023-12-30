@@ -1,6 +1,7 @@
 import { Shape, Multiple } from "@media-center/domain-driven";
 import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
+import { uniqBy } from "@media-center/algorithm";
 
 export class CatalogEntryMovieSpecificationFulFilled extends Shape({
   item: HierarchyItem,
@@ -32,6 +33,10 @@ export class ShowCatalogEntryFulfilled extends Shape({
       }
     }
     return max;
+  }
+
+  numberOfUniqueEpisodes() {
+    return uniqBy(this.items, (i) => i.episode.toString()).length;
   }
 }
 

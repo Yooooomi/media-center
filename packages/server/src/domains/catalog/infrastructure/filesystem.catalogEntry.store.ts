@@ -1,5 +1,9 @@
-import { Either, SerializableSerializer } from "@media-center/domain-driven";
-import { FilesystemStore } from "../../../framework/store";
+import {
+  Either,
+  InMemoryDatabase,
+  InMemoryTransaction,
+  SerializableSerializer,
+} from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "../applicative/catalogEntry.store";
 import {
@@ -7,32 +11,46 @@ import {
   MovieCatalogEntry,
   ShowCatalogEntry,
 } from "../domain/catalogEntry";
+import { FilesystemStore } from "../../../framework/store";
+import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 
 export class FilesystemCatalogEntryStore
   extends FilesystemStore<AnyCatalogEntry>
   implements CatalogEntryStore
 {
-  constructor() {
+  constructor(
+    environmentHelper: EnvironmentHelper,
+    database: InMemoryDatabase
+  ) {
     super(
+      environmentHelper,
+      database,
+      "catalogEntry",
       new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
     );
   }
 
-  loadByHierarchyItemId(hierarchyItemId: HierarchyItemId) {
-    return this.filter((f) =>
-      f.items.some((f) => f.id.equals(hierarchyItemId))
+  loadByHierarchyItemId(
+    hierarchyItemId: HierarchyItemId,
+    transaction?: InMemoryTransaction
+  ) {
+    return this.filter(
+      (f) => f.items.some((f) => f.id.equals(hierarchyItemId)),
+      transaction
     );
   }
 
-  loadMovies() {
-    return this.filter((f) => f instanceof MovieCatalogEntry) as Promise<
-      MovieCatalogEntry[]
-    >;
+  loadMovies(transaction?: InMemoryTransaction) {
+    return this.filter(
+      (f) => f instanceof MovieCatalogEntry,
+      transaction
+    ) as Promise<MovieCatalogEntry[]>;
   }
 
-  loadShows() {
-    return this.filter((f) => f instanceof ShowCatalogEntry) as Promise<
-      ShowCatalogEntry[]
-    >;
+  loadShows(transaction?: InMemoryTransaction) {
+    return this.filter(
+      (f) => f instanceof ShowCatalogEntry,
+      transaction
+    ) as Promise<ShowCatalogEntry[]>;
   }
 }

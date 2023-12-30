@@ -13,6 +13,7 @@ import { bootCatalog } from "./catalog/boot";
 import { FilesystemTorrentRequestStore } from "./torrentRequest/infrastructure/filesystem.torrentRequest.store";
 import {
   InMemoryCommandBus,
+  InMemoryDatabase,
   InMemoryEventBus,
   InMemoryQueryBus,
 } from "@media-center/domain-driven";
@@ -23,6 +24,7 @@ import { bootQueries } from "../queries/boot";
 export async function globalBoot() {
   configureDotenv();
 
+  const database = new InMemoryDatabase();
   const commandBus = new InMemoryCommandBus();
   const eventBus = new InMemoryEventBus();
   const queryBus = new InMemoryQueryBus();
@@ -31,11 +33,16 @@ export async function globalBoot() {
   const environmentHelper = new ProcessEnvironmentHelper();
   // TODO FIX THIS
   const torrentRequestStore = environmentHelper.match("DI_DATABASE", {
-    memory: () => new InMemoryTorrentRequestStore(),
-    filesystem: () => new FilesystemTorrentRequestStore(),
+    memory: () => new InMemoryTorrentRequestStore(database),
+    filesystem: () =>
+      new FilesystemTorrentRequestStore(environmentHelper, database),
   });
 
-  const { tmdbStore, tmdbApi } = bootTmdb(queryBus, environmentHelper);
+  const { tmdbStore, tmdbApi } = bootTmdb(
+    database,
+    queryBus,
+    environmentHelper
+  );
   const { torrentIndexer } = bootTorrentIndexer(
     queryBus,
     tmdbStore,
@@ -55,12 +62,14 @@ export async function globalBoot() {
     torrentRequestStore
   );
   const { hierarchyStore } = await bootFileWatcher(
+    database,
     commandBus,
     eventBus,
     environmentHelper
   );
   bootApi(queryBus, commandBus, hierarchyStore, environmentHelper, eventBus);
   const { catalogEntryStore } = bootCatalog(
+    database,
     queryBus,
     eventBus,
     environmentHelper,
@@ -68,7 +77,7 @@ export async function globalBoot() {
     hierarchyStore
   );
   bootUser(queryBus, environmentHelper);
-  bootUserTmdbInfo(commandBus, environmentHelper);
+  bootUserTmdbInfo(database, commandBus, environmentHelper);
 
   bootQueries(
     queryBus,

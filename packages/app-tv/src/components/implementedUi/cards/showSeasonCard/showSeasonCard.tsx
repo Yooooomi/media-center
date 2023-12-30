@@ -21,13 +21,15 @@ export default function ShowSeasonCard({
   const imageUri = useImageUri(season.poster_path);
   const {navigate} = useNavigate();
 
+  const nbEpisodes = catalogEntry.numberOfUniqueEpisodes();
+
   return (
     <InfoCard
       focusOnMount={focusOnMount}
       onPress={() => navigate('ShowSeason', {show, season, catalogEntry})}
       pillText={season.air_date}
       title={`Saison ${season.season_number}`}
-      subtitle={`${season.episode_count} épisodes`}
+      subtitle={`${nbEpisodes}/${season.episode_count} épisodes`}
       imageUri={imageUri}
     />
   );

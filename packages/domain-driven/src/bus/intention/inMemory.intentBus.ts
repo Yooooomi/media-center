@@ -4,6 +4,7 @@ import { BaseEvent } from "../eventBus/event";
 import { EventBus } from "../eventBus/eventBus";
 import { BaseIntent, BaseIntentConstructor, BaseIntentHandler } from "./intent";
 import { IntentBus } from "./intentBus";
+import { debounce } from "@media-center/algorithm";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -54,10 +55,16 @@ export class InMemoryIntentionBus extends IntentBus {
       if (!handler?.shouldReact(event, intent)) {
         return;
       }
-      handle(await handler.execute(intent));
+      try {
+        handle(await handler.execute(intent));
+      } catch (e) {
+        // We dont send updates if query crashes
+      }
     }
 
-    const listeners = handler.events?.map((e) => bus.on(e, react));
+    const listeners = handler.events?.map((e) =>
+      bus.on(e, debounce(react, 1000))
+    );
 
     handle(await handler.execute(intent));
 

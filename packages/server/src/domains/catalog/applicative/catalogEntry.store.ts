@@ -1,4 +1,4 @@
-import { Store } from "@media-center/domain-driven";
+import { InMemoryTransaction, Store } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import {
   AnyCatalogEntry,
@@ -8,7 +8,8 @@ import {
 
 export abstract class CatalogEntryStore extends Store<AnyCatalogEntry> {
   abstract loadByHierarchyItemId(
-    hierarchyItemId: HierarchyItemId
+    hierarchyItemId: HierarchyItemId,
+    transaction?: InMemoryTransaction
   ): Promise<AnyCatalogEntry[]>;
 
   abstract loadMovies(): Promise<MovieCatalogEntry[]>;

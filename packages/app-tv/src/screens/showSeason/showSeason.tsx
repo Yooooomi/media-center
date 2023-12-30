@@ -6,7 +6,7 @@ import {useImageUri} from '../../services/tmdb';
 import Text from '../../components/text/text';
 import ShowEpisodeCardsLine from '../../components/showEpisodeCardsLine/showEpisodeCardsLine';
 import {useQuery} from '../../services/useQuery';
-import {GetEpisodesQuery} from '@media-center/server/src/domains/tmdb/applicative/getEpisodes.query';
+import {GetShowSeasonPageQuery} from '@media-center/server/src/queries/getShowSeasonPage.query';
 import {useState} from 'react';
 import {ShowEpisode} from '@media-center/server/src/domains/tmdb/domain/showEpisode';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
@@ -18,20 +18,18 @@ export default function ShowSeason() {
     undefined,
   );
 
-  const [{result: showEpisodes}] = useQuery(GetEpisodesQuery, {
-    tmdbId: show.id,
-    seasonNumber: season.season_number,
-  });
+  const [{result: showSeasonPage}] = useQuery(
+    GetShowSeasonPageQuery,
+    {
+      id: show.id,
+      season: season.season_number,
+    },
+    {reactive: true},
+  );
 
-  if (!showEpisodes) {
+  if (!showSeasonPage) {
     return <FullScreenLoading />;
   }
-
-  const shownEpisodes = showEpisodes.filter(e =>
-    catalogEntry.items.some(
-      i => i.season === e.season_number && i.episode === e.episode_number,
-    ),
-  );
 
   return (
     <Box>
@@ -59,7 +57,8 @@ export default function ShowSeason() {
         sectionProps={{ml: 'S32'}}
         onFocusEpisode={setFocusedEpisode}
         showSeason={season}
-        showEpisodes={shownEpisodes}
+        showEpisodes={showSeasonPage.episodes}
+        availableEpisodes={showSeasonPage.shownEpisodes}
         catalogEntry={catalogEntry}
       />
       <SafeAreaView />

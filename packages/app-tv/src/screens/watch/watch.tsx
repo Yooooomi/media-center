@@ -53,7 +53,7 @@ export default function Watch() {
         play={playing}
         style={styles.video}
         volume={100}
-        hwDecode
+        hwDecode={!hierarchyItem.file.path.endsWith('.avi')}
         forceHwDecode={false}
         arguments={[
           '--sout-mux-caching=200',

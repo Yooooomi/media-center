@@ -1,4 +1,4 @@
-import { QueryBus } from "@media-center/domain-driven";
+import { InMemoryDatabase, QueryBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { DiscoverMovieQueryHandler } from "./applicative/discoverMovie.query";
 import { DiscoverShowQueryHandler } from "./applicative/discoverShow.query";
@@ -13,6 +13,7 @@ import { MockTmdbAPI } from "./infrastructure/mock.tmdb.api";
 import { RealTmdbAPI } from "./infrastructure/real.tmdb.api";
 
 export function bootTmdb(
+  database: InMemoryDatabase,
   queryBus: QueryBus,
   environmentHelper: EnvironmentHelper
 ) {
@@ -22,8 +23,9 @@ export function bootTmdb(
   });
 
   const tmdbStore = environmentHelper.match("DI_DATABASE", {
-    memory: () => new InMemoryTmdbStore(tmdbApi),
-    filesystem: () => new FilesystemTmdbStore(tmdbApi),
+    memory: () => new InMemoryTmdbStore(database, tmdbApi),
+    filesystem: () =>
+      new FilesystemTmdbStore(environmentHelper, database, tmdbApi),
   });
   queryBus.register(new DiscoverMovieQueryHandler(tmdbApi));
   queryBus.register(new DiscoverShowQueryHandler(tmdbApi));

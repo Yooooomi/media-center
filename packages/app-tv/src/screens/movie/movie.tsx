@@ -13,12 +13,14 @@ import {spacing} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {TorrentRequests} from '../../components/torrentRequests';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
+import {noop} from '@media-center/algorithm';
+import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
   const imageUri = useImageUri(movie.backdrop_path, true);
 
-  const [{result: moviePage}, fetching, reload] = useQuery(
+  const [{result: moviePage}, _, reload] = useQuery(
     GetMoviePageQuery,
     movie.id,
     {reactive: true},
@@ -31,8 +33,14 @@ export function Movie() {
   } = useQueryTorrents({
     name: `${movie.title} ${movie.getYear()}`,
     tmdbId: movie.id,
-    onDownloaded: reload,
+    onDownloaded: noop,
   });
+
+  const {element: MoreOptionsElement, open: openMoreOptions} =
+    useCatalogEntryMoreOptions({
+      catalogEntry: moviePage?.catalogEntry,
+      reload,
+    });
 
   if (!moviePage) {
     return <FullScreenLoading />;
@@ -68,7 +76,7 @@ export function Movie() {
               onPress={queryTorrents}
               loading={queryTorrentsLoading}
             />
-            <BigPressable icon="refresh" onPress={reload} loading={fetching} />
+            <BigPressable icon="dots-horizontal" onPress={openMoreOptions} />
             <BigInfo info={moviePage.details?.getStringRuntime()} />
             <BigInfo info={movie.getYear()} />
           </Box>
@@ -87,6 +95,7 @@ export function Movie() {
         </Box>
       </View>
       {element}
+      {MoreOptionsElement}
     </>
   );
 }

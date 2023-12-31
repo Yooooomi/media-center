@@ -171,8 +171,8 @@ export class DelugeTorrentClient extends TorrentClient {
     return this._makeCall("core.resume_torrent", [torrentId]);
   }
 
-  delete(torrentId: string) {
-    return this._makeCall("core.remove_torrent", [torrentId, true]);
+  async delete(torrentId: string) {
+    await this._makeCall("core.remove_torrent", [torrentId, true]);
   }
 
   rename(torrentId: string, newName: string) {

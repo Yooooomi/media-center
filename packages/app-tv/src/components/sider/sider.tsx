@@ -1,7 +1,7 @@
 import {useCallback, useMemo, useState} from 'react';
 import {SiderButton} from './siderButton';
 import {color, shadows, spacing} from '../../services/constants';
-import {StyleSheet, View} from 'react-native';
+import {DevSettings, StyleSheet, View} from 'react-native';
 import {useNavigate} from '../../screens/params';
 import {IconName} from '../icon/icon';
 import {Dot} from '../dot';
@@ -41,6 +41,11 @@ export function Sider() {
         icon: 'projector',
         title: 'Vos séries',
         do: () => navigate('Shows', undefined),
+      },
+      {
+        icon: 'refresh',
+        title: 'Reload',
+        do: () => DevSettings.reload(),
       },
     ],
     [navigate],

@@ -9,29 +9,37 @@ import { TorrentClientEntry } from "../domain/torrentClientEntry";
 export class MockTorrentClient extends TorrentClient {
   private store: Map<
     string,
-    { createdFile: boolean; progress: number; buffer: Buffer; isShow: boolean }
+    {
+      filenames: string[] | undefined;
+      progress: number;
+      buffer: Buffer;
+      isShow: boolean;
+    }
   > = new Map();
 
   constructor(private readonly environmentHelper: EnvironmentHelper) {
     super();
   }
 
-  private checkDownloaded() {
+  private getFilepathFromFilename(filename: string, isShow: boolean) {
     const movieDir = this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
     const showDir = this.environmentHelper.get("FILE_WATCHER_SHOW_DIR");
+
+    return path.join(isShow ? showDir : movieDir, filename);
+  }
+
+  private checkDownloaded() {
     for (const value of this.store.values()) {
-      if (value.progress < 1 || value.createdFile) {
+      if (value.progress < 1 || value.filenames) {
         continue;
       }
       const infos = TorrentService.getTorrentInfosFromBuffer(value.buffer);
+      value.filenames = [];
       for (const file of infos.files) {
-        const filename = path.join(
-          value.isShow ? showDir : movieDir,
-          file.name
-        );
+        const filename = this.getFilepathFromFilename(file.name, value.isShow);
         fs.writeFileSync(filename, "fake downloaded file");
+        value.filenames.push(filename);
       }
-      value.createdFile = true;
     }
   }
 
@@ -62,8 +70,20 @@ export class MockTorrentClient extends TorrentClient {
     this.store.set(infos.hash, {
       buffer,
       progress: 0,
-      createdFile: false,
+      filenames: undefined,
       isShow,
+    });
+  }
+
+  async delete(hash: string) {
+    const torrent = this.store.get(hash);
+
+    if (!torrent) {
+      return;
+    }
+
+    torrent.filenames?.forEach((filename) => {
+      fs.rmSync(this.getFilepathFromFilename(filename, torrent.isShow));
     });
   }
 }

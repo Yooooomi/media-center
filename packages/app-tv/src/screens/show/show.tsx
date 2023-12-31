@@ -12,16 +12,16 @@ import {BigInfo} from '../../components/bigInfo';
 import {BigPressable} from '../../components/bigPressable';
 import ShowSeasonCardsLine from '../../components/showSeasonCardsLine/showSeasonCardLine';
 import {TorrentRequests} from '../../components/torrentRequests';
+import {spacing} from '../../services/constants';
+import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 
 export function Show() {
   const {show} = useParams<'Show'>();
   const imageUri = useImageUri(show.backdrop_path, true);
 
-  const [{result: showPage}, fetching, reload] = useQuery(
-    GetShowPageQuery,
-    show.id,
-    {reactive: true},
-  );
+  const [{result: showPage}, _, reload] = useQuery(GetShowPageQuery, show.id, {
+    reactive: true,
+  });
 
   const {
     element,
@@ -37,6 +37,12 @@ export function Show() {
     showPage?.seasons.filter(season =>
       showPage.catalogEntry.items.some(i => i.season === season.season_number),
     ) ?? [];
+
+  const {element: MoreOptionsElement, open: openMoreOptions} =
+    useCatalogEntryMoreOptions({
+      catalogEntry: showPage?.catalogEntry,
+      reload,
+    });
 
   if (!showPage) {
     return <FullScreenLoading />;
@@ -59,7 +65,7 @@ export function Show() {
               onPress={queryTorrents}
               loading={queryTorrentsLoading}
             />
-            <BigPressable icon="refresh" onPress={reload} loading={fetching} />
+            <BigPressable icon="dots-horizontal" onPress={openMoreOptions} />
             <BigInfo info={show.getYear()} />
           </Box>
           <ShowSeasonCardsLine
@@ -83,6 +89,7 @@ export function Show() {
         </Box>
       </ScrollView>
       {element}
+      {MoreOptionsElement}
     </>
   );
 }
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
   },
   topRight: {
     position: 'absolute',
-    top: 16,
-    right: 16,
+    top: spacing.S16,
+    right: spacing.S16,
   },
 });

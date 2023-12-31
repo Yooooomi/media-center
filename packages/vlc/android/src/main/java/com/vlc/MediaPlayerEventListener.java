@@ -19,7 +19,6 @@ public class MediaPlayerEventListener implements MediaPlayer.EventListener {
         this.emitter.emitBasicEvent("onProgress");
         break;
       case MediaPlayer.Event.Buffering:
-        Log.i(TAG, "BUFFERING");
         this.emitter.emitVideoInfos();
         break;
       case MediaPlayer.Event.EncounteredError:

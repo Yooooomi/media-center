@@ -20,6 +20,7 @@ import {
 import { bootUser } from "./user/boot";
 import { bootUserTmdbInfo } from "./userTmdbInfo/boot";
 import { bootQueries } from "../queries/boot";
+import { bootCommands } from "./commands/boot";
 
 export async function globalBoot() {
   configureDotenv();
@@ -78,6 +79,8 @@ export async function globalBoot() {
   );
   bootUser(queryBus, environmentHelper);
   bootUserTmdbInfo(database, commandBus, environmentHelper);
+
+  bootCommands(commandBus, torrentClient, torrentRequestStore);
 
   bootQueries(
     queryBus,

@@ -116,7 +116,7 @@ export class RealTmdbAPI extends TmdbAPI {
   }
   async searchShows(query: string, year?: number): Promise<AnyTmdb[]> {
     const { data } = await globalQueue.queue(() =>
-      this.axios.get<SearchShow>("/search/movie", {
+      this.axios.get<SearchShow>("/search/tv", {
         params: {
           query,
           year,

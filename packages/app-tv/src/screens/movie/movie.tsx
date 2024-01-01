@@ -13,7 +13,6 @@ import {spacing} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {TorrentRequests} from '../../components/torrentRequests';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
-import {noop} from '@media-center/algorithm';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 
 export function Movie() {
@@ -33,7 +32,6 @@ export function Movie() {
   } = useQueryTorrents({
     name: `${movie.title} ${movie.getYear()}`,
     tmdbId: movie.id,
-    onDownloaded: noop,
   });
 
   const {element: MoreOptionsElement, open: openMoreOptions} =

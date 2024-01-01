@@ -30,7 +30,6 @@ export function Show() {
   } = useQueryTorrents({
     name: show.title,
     tmdbId: show.id,
-    onDownloaded: reload,
   });
 
   const shownSeasons =

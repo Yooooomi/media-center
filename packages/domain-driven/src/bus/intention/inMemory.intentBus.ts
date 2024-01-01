@@ -4,7 +4,7 @@ import { BaseEvent } from "../eventBus/event";
 import { EventBus } from "../eventBus/eventBus";
 import { BaseIntent, BaseIntentConstructor, BaseIntentHandler } from "./intent";
 import { IntentBus } from "./intentBus";
-import { debounce } from "@media-center/algorithm";
+import { TimeMeasurer, debounce } from "@media-center/algorithm";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -44,7 +44,7 @@ export class InMemoryIntentionBus extends IntentBus {
   async executeAndReact(
     bus: EventBus,
     intent: BaseIntent<Definition, Definition>,
-    handle: (result: any) => void
+    handle: (result: any, timeMs: number) => void
   ): Promise<() => void> {
     const handler = this.handlerRegistry[intent.constructor.name];
     if (!handler) {
@@ -56,7 +56,9 @@ export class InMemoryIntentionBus extends IntentBus {
         return;
       }
       try {
-        handle(await handler.execute(intent));
+        const measure = TimeMeasurer.fromNow();
+        const result = await handler.execute(intent);
+        handle(result, measure.calc());
       } catch (e) {
         // We dont send updates if query crashes
       }
@@ -66,7 +68,9 @@ export class InMemoryIntentionBus extends IntentBus {
       bus.on(e, debounce(react, 1000))
     );
 
-    handle(await handler.execute(intent));
+    const measure = TimeMeasurer.fromNow();
+    const result = await handler.execute(intent);
+    handle(result, measure.calc());
 
     return () => {
       listeners?.forEach((unsubscribe) => unsubscribe());

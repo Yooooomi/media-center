@@ -22,6 +22,10 @@ import {
   CatalogEntryUpdated,
   CatalogEntryDeleted,
 } from "../domains/catalog/applicative/catalog.events";
+import {
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
+} from "../domains/torrentRequest/domain/torrentRequest.events";
 
 class TorrentRequestFulfilled extends Shape({
   torrent: TorrentRequest,
@@ -51,6 +55,8 @@ export class HomepageQuery extends Query(undefined, HomepageSummary) {}
 export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
   CatalogEntryUpdated,
   CatalogEntryDeleted,
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
 ]) {
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
@@ -60,7 +66,13 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
     super();
   }
 
-  shouldReact(event: CatalogEntryUpdated | CatalogEntryDeleted) {
+  shouldReact(
+    event:
+      | CatalogEntryUpdated
+      | CatalogEntryDeleted
+      | TorrentRequestAdded
+      | TorrentRequestUpdated
+  ) {
     return true;
   }
 

@@ -4,6 +4,7 @@ import {localStore} from '../localStore';
 import {Beta} from '../api';
 import {GetDeclaredUsersQuery} from '@media-center/server/src/domains/user/applicative/getDeclaredUsers.query';
 import {useRender} from '../useRender';
+import {UserId} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfoId';
 
 export class LocalUserProfile extends Shape({
   user: Optional(String),
@@ -50,7 +51,11 @@ export function useLocalUserProfileContext() {
       return;
     }
 
-    Beta.setServer(storedUser.serverAddress, storedUser.serverPassword);
+    Beta.setServer(
+      storedUser.serverAddress,
+      storedUser.serverPassword,
+      storedUser.user ? new UserId(storedUser.user) : undefined,
+    );
     const serverUsers = await Beta.query(new GetDeclaredUsersQuery());
     const declaredStoredUser = serverUsers.find(u => u === storedUser?.user);
     storedUser.setUser(declaredStoredUser);

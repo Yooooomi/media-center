@@ -9,7 +9,6 @@ import {useCallback, useMemo, useState} from 'react';
 import {FlatList, ListRenderItem, Modal} from 'react-native';
 import Box from '../components/box';
 import Text from '../components/text';
-import {HierarchyItem} from '@media-center/server/src/domains/fileWatcher/domain/hierarchyItem';
 import {Pressable} from '../components/ui/pressable/pressable';
 
 export function usePlayCatalogEntry<
@@ -32,10 +31,14 @@ export function usePlayCatalogEntry<
   const hasManyItems = filteredItems.length > 1;
 
   const doPlay = useCallback(
-    (hierarchyItem: HierarchyItem) => {
-      return navigate('Watch', {hierarchyItem});
+    (
+      specification:
+        | CatalogEntryShowSpecificationFulFilled
+        | CatalogEntryMovieSpecificationFulFilled,
+    ) => {
+      return navigate('Watch', {tmdbId: entry.id, specification});
     },
-    [navigate],
+    [entry.id, navigate],
   );
 
   const play = useCallback(() => {
@@ -46,7 +49,7 @@ export function usePlayCatalogEntry<
     if (hasManyItems) {
       return setActionSheetOpen(true);
     }
-    return doPlay(item.item);
+    return doPlay(item);
   }, [doPlay, filteredItems, hasManyItems]);
 
   const renderHierarchyItem = useCallback<
@@ -57,7 +60,7 @@ export function usePlayCatalogEntry<
   >(
     ({item}) => {
       return (
-        <Pressable onPress={() => doPlay(item.item)}>
+        <Pressable onPress={() => doPlay(item)}>
           {({focused}) => (
             <Box
               p="S8"

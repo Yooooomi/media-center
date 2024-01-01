@@ -1,5 +1,4 @@
 import { CommandHandler } from "@media-center/domain-driven";
-import { TorrentService } from "../../../tools/torrentService";
 import { TorrentClient } from "../../torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "../../torrentIndexer/applicative/torrentIndexer";
 import { AddRawTorrentRequestCommand } from "./addRawTorrentRequest.command";
@@ -17,7 +16,6 @@ export class AddRawTorrentRequestCommandHandler extends CommandHandler(
   public async execute(command: AddRawTorrentRequestCommand) {
     await this.torrentIndexer.ensureAccessToDownload();
     const torrentBuffer = await this.torrentIndexer.download(command.torrentId);
-    const infos = TorrentService.getTorrentInfosFromBuffer(torrentBuffer);
     await this.torrentClient.download(torrentBuffer, command.isShow);
   }
 }

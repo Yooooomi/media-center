@@ -3,14 +3,15 @@ import {
   QueryBus,
   CommandBus,
   EventBus,
+  BaseIntent,
 } from "@media-center/domain-driven";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import Express, { urlencoded, json } from "express";
-import * as fs from "fs";
 import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
 import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
 import { streamVideo } from "./videoStreaming/streamVideo";
+import { TimeMeasurer } from "@media-center/algorithm";
 
 export function bootApi(
   queryBus: QueryBus,
@@ -35,10 +36,12 @@ export function bootApi(
   ) => {
     const authorization = req.get("Authorization");
     if (!authorization) {
+      logger.warn(`< ${req.path} 403`);
       return res.status(403).end();
     }
     const password = authorization.split("Bearer ")[1];
     if (password !== base64Password) {
+      logger.warn(`< ${req.path} 403`);
       return res.status(403).end();
     }
     return next();
@@ -76,12 +79,13 @@ export function bootApi(
   app.get("/query/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
     const { needing } = req.query;
+    const measure = TimeMeasurer.fromNow();
     logger.info(`< ${req.path}`);
     res.status(200).send(await executeIntention(queryBus, name!, needing));
-    logger.info(`> ${req.path}`);
+    logger.info(`> ${req.path} ${measure.calc()}ms`);
   });
 
-  app.get("/reactive/query/:name", async (req, res) => {
+  app.get("/reactive/query/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
     const { needing: stringifiedNeeding } = req.query;
 
@@ -97,17 +101,17 @@ export function bootApi(
       "Content-Type": "text/event-stream",
     });
 
-    const ctor = queryBus.get(name);
+    const ctor = queryBus.get(name!);
     const deserialized = ctor.needing.deserialize(needing);
     const instance = new ctor(deserialized);
     const unsubscribe = await queryBus.executeAndReact(
       eventBus,
       instance,
-      (result) => {
+      (result, timeMs) => {
         const runtime = ctor.returning.paramToRuntime(result);
         const serialized = ctor.returning?.serialize(runtime);
         const data = JSON.stringify(serialized);
-        logger.info(`  react ${req.path}`);
+        logger.info(`  react ${req.path} ${timeMs}ms`);
         res.write(`data: ${data}\n\n`);
       }
     );
@@ -122,9 +126,10 @@ export function bootApi(
   app.post("/command/:name", logMiddleware, async (req, res) => {
     const { name } = req.params;
     const { needing } = req.body;
+    const measure = TimeMeasurer.fromNow();
     logger.info(`< ${req.path}`);
     res.status(200).send(await executeIntention(commandBus, name!, needing));
-    logger.info(`> reactive ${req.path}`);
+    logger.info(`> reactive ${req.path} ${measure.calc()}ms`);
   });
 
   app.get("/event/:name", async (req, res) => {

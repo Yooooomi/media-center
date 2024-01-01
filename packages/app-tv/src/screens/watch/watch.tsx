@@ -6,11 +6,14 @@ import Controls from './controls/controls';
 import {useToggle} from '../../services/useToggle';
 import {useCallback, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
+import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
+import {CatalogEntryShowSpecificationFulFilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 
 const {width, height} = Dimensions.get('screen');
 
 export default function Watch() {
-  const {hierarchyItem} = useParams<'Watch'>();
+  const {tmdbId, specification} = useParams<'Watch'>();
+  const {item: hierarchyItem} = specification;
   const videoUri = useVideoUri(hierarchyItem.id);
   const [videoInfo, setVideoInfo] = useState<VLCTrackInfoEvent | undefined>(
     undefined,
@@ -42,6 +45,22 @@ export default function Watch() {
       setSeek(nextPosition);
     },
     [currentProgressMs],
+  );
+
+  const season =
+    specification instanceof CatalogEntryShowSpecificationFulFilled
+      ? specification.season
+      : undefined;
+  const episode =
+    specification instanceof CatalogEntryShowSpecificationFulFilled
+      ? specification.episode
+      : undefined;
+  useSaveCatalogEntryProgress(
+    playing,
+    currentProgress,
+    tmdbId,
+    season,
+    episode,
   );
 
   return (

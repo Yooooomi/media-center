@@ -5,17 +5,19 @@ import { AddTorrentRequestCommandHandler } from "./applicative/addTorrentRequest
 import { GetTorrentRequestsQueryHandler } from "./applicative/getTorrentRequests.query";
 import { TorrentRequestStore } from "./applicative/torrentRequest.store";
 import { GetAllTorrentRequestsQueryHandler } from "./applicative/getAllTorrentRequests.query";
-import { CommandBus, QueryBus } from "@media-center/domain-driven";
+import { CommandBus, EventBus, QueryBus } from "@media-center/domain-driven";
 
 export function bootTorrentRequest(
   commandBus: CommandBus,
   queryBus: QueryBus,
+  eventBus: EventBus,
   torrentClient: TorrentClient,
   torrentIndexer: TorrentIndexer,
   torrentRequestStore: TorrentRequestStore
 ) {
   commandBus.register(
     new AddTorrentRequestCommandHandler(
+      eventBus,
       torrentRequestStore,
       torrentClient,
       torrentIndexer

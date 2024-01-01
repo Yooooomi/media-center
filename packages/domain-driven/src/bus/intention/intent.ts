@@ -56,14 +56,14 @@ export type BaseIntentConstructor<I extends BaseIntent<any>> =
 
 export function IntentHandler<
   const I extends BaseIntent<any, any>,
-  const E extends BaseEvent<any>
->(intent: BaseIntentConstructor<I>, reactOn?: Constructor<E>[]) {
+  const E extends Constructor<BaseEvent<any>>
+>(intent: BaseIntentConstructor<I>, reactOn?: E[]) {
   abstract class Handler {
     public intent = intent;
     public events = reactOn;
 
-    public shouldReact(event: E, intent: I) {
-      return !reactOn || reactOn.length === 0;
+    public shouldReact(event: InstanceType<E>, intent: I) {
+      return !!reactOn && reactOn.length > 0;
     }
 
     abstract execute(
@@ -80,5 +80,5 @@ export function IntentHandler<
 
 export type BaseIntentHandler<
   I extends BaseIntent<any, any>,
-  E extends BaseEvent<any>
+  E extends Constructor<BaseEvent<any>>
 > = InstanceType<ReturnType<typeof IntentHandler<I, E>>>;

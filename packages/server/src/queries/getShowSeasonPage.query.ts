@@ -16,6 +16,10 @@ import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.servic
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { CatalogEntryStore } from "../domains/catalog/applicative/catalogEntry.store";
 import { compact } from "@media-center/algorithm";
+import {
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
+} from "../domains/torrentRequest/domain/torrentRequest.events";
 
 class ShowSeasonPageSummary extends Shape({
   episodes: [ShowEpisode],
@@ -30,7 +34,12 @@ export class GetShowSeasonPageQuery extends Query(
 
 export class GetShowSeasonPageQueryHandler extends QueryHandler(
   GetShowSeasonPageQuery,
-  [CatalogEntryUpdated, CatalogEntryDeleted]
+  [
+    CatalogEntryUpdated,
+    CatalogEntryDeleted,
+    TorrentRequestAdded,
+    TorrentRequestUpdated,
+  ]
 ) {
   constructor(
     private readonly tmdbApi: TmdbAPI,
@@ -41,9 +50,19 @@ export class GetShowSeasonPageQueryHandler extends QueryHandler(
   }
 
   shouldReact(
-    event: CatalogEntryUpdated | CatalogEntryDeleted,
+    event:
+      | CatalogEntryUpdated
+      | CatalogEntryDeleted
+      | TorrentRequestAdded
+      | TorrentRequestUpdated,
     intent: GetShowSeasonPageQuery
   ) {
+    if (
+      event instanceof TorrentRequestAdded ||
+      event instanceof TorrentRequestUpdated
+    ) {
+      return event.tmdbId.equals(intent.id);
+    }
     return event.catalogEntry.id.equals(intent.id);
   }
 

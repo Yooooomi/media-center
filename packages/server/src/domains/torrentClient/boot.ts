@@ -1,4 +1,8 @@
-import { CommandBus, InMemoryPoll } from "@media-center/domain-driven";
+import {
+  CommandBus,
+  EventBus,
+  InMemoryPoll,
+} from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { TorrentRequestStore } from "../torrentRequest/applicative/torrentRequest.store";
 import { UpdateTorrentRequestCommandHandler } from "../torrentRequest/applicative/updateTorrentRequest.command";
@@ -8,6 +12,7 @@ import { MockTorrentClient } from "./infrastucture/mock.torrentClient";
 
 export function bootTorrentClient(
   commandBus: CommandBus,
+  eventBus: EventBus,
   environmentHelper: EnvironmentHelper,
   torrentRequestStore: TorrentRequestStore
 ) {
@@ -21,7 +26,7 @@ export function bootTorrentClient(
   ).poll();
 
   commandBus.register(
-    new UpdateTorrentRequestCommandHandler(torrentRequestStore)
+    new UpdateTorrentRequestCommandHandler(eventBus, torrentRequestStore)
   );
 
   return { torrentClient, unsubscribeUpdateTorrentPoll };

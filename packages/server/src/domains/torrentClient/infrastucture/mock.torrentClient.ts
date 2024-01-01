@@ -38,7 +38,7 @@ export class MockTorrentClient extends TorrentClient {
       for (const file of infos.files) {
         const filename = this.getFilepathFromFilename(file.name, value.isShow);
         fs.writeFileSync(filename, "fake downloaded file");
-        value.filenames.push(filename);
+        value.filenames.push(file.name);
       }
     }
   }
@@ -83,7 +83,8 @@ export class MockTorrentClient extends TorrentClient {
     }
 
     torrent.filenames?.forEach((filename) => {
-      fs.rmSync(this.getFilepathFromFilename(filename, torrent.isShow));
+      const filepath = this.getFilepathFromFilename(filename, torrent.isShow);
+      fs.rmSync(filepath);
     });
   }
 }

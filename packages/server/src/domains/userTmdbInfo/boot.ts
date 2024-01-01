@@ -3,11 +3,13 @@ import { SetUserTmdbInfoProgressCommandHandler } from "./applicative/setUserTmdb
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { InMemoryUserTmdbInfoStore } from "./infrastructure/inMemory.userTmdbInfo.store";
 import { FilesystemUserTmdbInfoStore } from "./infrastructure/filesystem.userTmdbInfo.store";
+import { TmdbStore } from "../tmdb/applicative/tmdb.store";
 
 export function bootUserTmdbInfo(
   database: InMemoryDatabase,
   commandBus: CommandBus,
-  environmentHelper: EnvironmentHelper
+  environmentHelper: EnvironmentHelper,
+  tmdbStore: TmdbStore
 ) {
   const userTmdbInfoStore = environmentHelper.match("DI_DATABASE", {
     memory: () => new InMemoryUserTmdbInfoStore(database),
@@ -15,8 +17,8 @@ export function bootUserTmdbInfo(
       new FilesystemUserTmdbInfoStore(environmentHelper, database),
   });
   commandBus.register(
-    new SetUserTmdbInfoProgressCommandHandler(userTmdbInfoStore)
+    new SetUserTmdbInfoProgressCommandHandler(tmdbStore, userTmdbInfoStore)
   );
 
-  return userTmdbInfoStore;
+  return { userTmdbInfoStore };
 }

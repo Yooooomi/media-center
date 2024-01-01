@@ -9,22 +9,31 @@ import {
 import {Buffer} from 'buffer';
 import EventSource from 'react-native-sse';
 import {SerializableConstructor} from '@media-center/domain-driven/lib/serialization/types';
+import {UserId} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfoId';
 
 export class Bridge {
   private address: string | undefined;
   private password: string | undefined;
+  public userId!: UserId;
   private axios: Axios | undefined;
 
-  public setServer(address: string, password: string) {
+  private getHeaders() {
+    return {
+      Authorization: `Bearer ${this.password}`,
+    };
+  }
+
+  public setServer(address: string, password: string, userId?: UserId) {
     const newPassword = Buffer.from(password).toString('base64');
-    this.axios = StaticAxios.create({
-      baseURL: address,
-      headers: {
-        Authorization: `Bearer ${newPassword}`,
-      },
-    });
     this.address = address;
     this.password = newPassword;
+    if (userId) {
+      this.userId = userId;
+    }
+    this.axios = StaticAxios.create({
+      baseURL: address,
+      headers: this.getHeaders(),
+    });
   }
 
   public getUrl(path: string) {
@@ -43,6 +52,7 @@ export class Bridge {
     if (!this.axios) {
       throw new Error('Cannot make call, server not configured');
     }
+    (query as any).actorId = this.userId;
     const serialized = query.serialize();
     try {
       const {data} = await this.axios.request({
@@ -84,6 +94,7 @@ export class Bridge {
     }
     const es = new EventSource(url, {
       method: 'GET',
+      headers: this.getHeaders(),
     });
 
     es.addEventListener('message', message => {

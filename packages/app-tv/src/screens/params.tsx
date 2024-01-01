@@ -1,8 +1,12 @@
-import {ShowCatalogEntryFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
-import {HierarchyItem} from '@media-center/server/src/domains/fileWatcher/domain/hierarchyItem';
+import {
+  CatalogEntryMovieSpecificationFulFilled,
+  CatalogEntryShowSpecificationFulFilled,
+  ShowCatalogEntryFulfilled,
+} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeason';
+import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-native';
 
@@ -16,7 +20,12 @@ export type NavigationParams = {
     season: ShowSeason;
     catalogEntry: ShowCatalogEntryFulfilled;
   };
-  Watch: {hierarchyItem: HierarchyItem};
+  Watch: {
+    tmdbId: TmdbId;
+    specification:
+      | CatalogEntryShowSpecificationFulFilled
+      | CatalogEntryMovieSpecificationFulFilled;
+  };
   Search: undefined;
   SearchTmdb: undefined;
   SearchTorrent: undefined;

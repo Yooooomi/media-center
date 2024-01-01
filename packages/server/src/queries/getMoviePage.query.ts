@@ -17,6 +17,10 @@ import {
   CatalogEntryDeleted,
   CatalogEntryUpdated,
 } from "../domains/catalog/applicative/catalog.events";
+import {
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
+} from "../domains/torrentRequest/domain/torrentRequest.events";
 
 class MoviePageSummary extends Shape({
   tmdb: Movie,
@@ -30,6 +34,8 @@ export class GetMoviePageQuery extends Query(TmdbId, MoviePageSummary) {}
 export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
   CatalogEntryUpdated,
   CatalogEntryDeleted,
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
 ]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
@@ -42,9 +48,19 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
   }
 
   shouldReact(
-    event: CatalogEntryUpdated | CatalogEntryDeleted,
+    event:
+      | CatalogEntryUpdated
+      | CatalogEntryDeleted
+      | TorrentRequestAdded
+      | TorrentRequestUpdated,
     intent: GetMoviePageQuery
   ) {
+    if (
+      event instanceof TorrentRequestAdded ||
+      event instanceof TorrentRequestUpdated
+    ) {
+      return event.tmdbId.equals(intent.value);
+    }
     return event.catalogEntry.id.equals(intent.value);
   }
 

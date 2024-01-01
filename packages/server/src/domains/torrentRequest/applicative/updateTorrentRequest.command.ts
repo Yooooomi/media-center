@@ -1,6 +1,7 @@
-import { Command, CommandHandler } from "@media-center/domain-driven";
+import { Command, CommandHandler, EventBus } from "@media-center/domain-driven";
 import { TorrentRequestId } from "../domain/torrentRequestId";
 import { TorrentRequestStore } from "./torrentRequest.store";
+import { TorrentRequestUpdated } from "../domain/torrentRequest.events";
 
 export class UpdateTorrentRequestCommand extends Command({
   torrentRequestId: TorrentRequestId,
@@ -11,7 +12,10 @@ export class UpdateTorrentRequestCommand extends Command({
 export class UpdateTorrentRequestCommandHandler extends CommandHandler(
   UpdateTorrentRequestCommand
 ) {
-  constructor(private readonly torrentRequestStore: TorrentRequestStore) {
+  constructor(
+    private readonly eventBus: EventBus,
+    private readonly torrentRequestStore: TorrentRequestStore
+  ) {
     super();
   }
 
@@ -29,8 +33,19 @@ export class UpdateTorrentRequestCommandHandler extends CommandHandler(
       return;
     }
 
+    const updated =
+      existing.downloaded !== command.downloaded ||
+      existing.speed !== command.speed;
+
     existing.setDownloaded(command.downloaded);
     existing.setSpeed(command.speed);
+
     await this.torrentRequestStore.save(existing);
+
+    if (updated) {
+      this.eventBus.publish(
+        new TorrentRequestUpdated({ tmdbId: existing.tmdbId })
+      );
+    }
   }
 }

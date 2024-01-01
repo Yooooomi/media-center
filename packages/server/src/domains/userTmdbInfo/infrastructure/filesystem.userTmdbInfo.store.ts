@@ -1,14 +1,19 @@
 import {
+  Either,
   InMemoryDatabase,
   SerializableSerializer,
 } from "@media-center/domain-driven";
 import { UserTmdbInfoStore } from "../applicative/userTmdbInfo.store";
-import { UserTmdbInfo } from "../domain/userTmdbInfo";
 import { FilesystemStore } from "../../../framework/store";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
+import {
+  AnyUserTmdbInfo,
+  UserTmdbMovieInfo,
+  UserTmdbShowInfo,
+} from "../domain/userTmdbInfo";
 
 export class FilesystemUserTmdbInfoStore
-  extends FilesystemStore<UserTmdbInfo>
+  extends FilesystemStore<AnyUserTmdbInfo>
   implements UserTmdbInfoStore
 {
   constructor(
@@ -19,7 +24,7 @@ export class FilesystemUserTmdbInfoStore
       environmentHelper,
       database,
       "userTmdbInfo",
-      new SerializableSerializer(UserTmdbInfo)
+      new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo))
     );
   }
 }

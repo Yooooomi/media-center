@@ -52,12 +52,14 @@ export async function globalBoot() {
   );
   const { torrentClient, unsubscribeUpdateTorrentPoll } = bootTorrentClient(
     commandBus,
+    eventBus,
     environmentHelper,
     torrentRequestStore
   );
   bootTorrentRequest(
     commandBus,
     queryBus,
+    eventBus,
     torrentClient,
     torrentIndexer,
     torrentRequestStore
@@ -78,7 +80,7 @@ export async function globalBoot() {
     hierarchyStore
   );
   bootUser(queryBus, environmentHelper);
-  bootUserTmdbInfo(database, commandBus, environmentHelper);
+  bootUserTmdbInfo(database, commandBus, environmentHelper, tmdbStore);
 
   bootCommands(commandBus, torrentClient, torrentRequestStore);
 

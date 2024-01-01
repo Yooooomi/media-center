@@ -19,6 +19,10 @@ import {
   CatalogEntryUpdated,
 } from "../domains/catalog/applicative/catalog.events";
 import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
+import {
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
+} from "../domains/torrentRequest/domain/torrentRequest.events";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,
@@ -32,6 +36,8 @@ export class GetShowPageQuery extends Query(TmdbId, ShowPageSummary) {}
 export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
   CatalogEntryUpdated,
   CatalogEntryDeleted,
+  TorrentRequestAdded,
+  TorrentRequestUpdated,
 ]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
@@ -44,9 +50,19 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
   }
 
   shouldReact(
-    event: CatalogEntryUpdated | CatalogEntryDeleted,
+    event:
+      | CatalogEntryUpdated
+      | CatalogEntryDeleted
+      | TorrentRequestAdded
+      | TorrentRequestUpdated,
     intent: GetShowPageQuery
   ) {
+    if (
+      event instanceof TorrentRequestAdded ||
+      event instanceof TorrentRequestUpdated
+    ) {
+      return event.tmdbId.equals(intent.value);
+    }
     return event.catalogEntry.id.equals(intent.value);
   }
 

@@ -10,14 +10,9 @@ import {useBooleanState} from './useBooleanState';
 interface QueryTorrentsProps {
   name: string;
   tmdbId: TmdbId;
-  onDownloaded: () => void;
 }
 
-export function useQueryTorrents({
-  name,
-  tmdbId,
-  onDownloaded,
-}: QueryTorrentsProps) {
+export function useQueryTorrents({name, tmdbId}: QueryTorrentsProps) {
   const [loading, setLoading] = useState(false);
   const [torrents, setTorrents] = useState<TorrentIndexerResult[] | undefined>(
     undefined,
@@ -44,9 +39,8 @@ export function useQueryTorrents({
           tmdbId,
         }),
       );
-      onDownloaded();
     },
-    [closeActionSheet, onDownloaded, tmdbId],
+    [closeActionSheet, tmdbId],
   );
 
   return {

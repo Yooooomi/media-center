@@ -1,4 +1,4 @@
 import { Store } from "@media-center/domain-driven";
-import { UserTmdbInfo } from "../domain/userTmdbInfo";
+import { AnyUserTmdbInfo } from "../domain/userTmdbInfo";
 
-export abstract class UserTmdbInfoStore extends Store<UserTmdbInfo> {}
+export abstract class UserTmdbInfoStore extends Store<AnyUserTmdbInfo> {}

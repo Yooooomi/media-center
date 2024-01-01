@@ -1,16 +1,25 @@
 import {
+  Either,
   InMemoryDatabase,
   InMemoryStore,
   SerializableSerializer,
 } from "@media-center/domain-driven";
 import { UserTmdbInfoStore } from "../applicative/userTmdbInfo.store";
-import { UserTmdbInfo } from "../domain/userTmdbInfo";
+import {
+  AnyUserTmdbInfo,
+  UserTmdbMovieInfo,
+  UserTmdbShowInfo,
+} from "../domain/userTmdbInfo";
 
 export class InMemoryUserTmdbInfoStore
-  extends InMemoryStore<UserTmdbInfo>
+  extends InMemoryStore<AnyUserTmdbInfo>
   implements UserTmdbInfoStore
 {
   constructor(database: InMemoryDatabase) {
-    super(database, "userTmdbInfo", new SerializableSerializer(UserTmdbInfo));
+    super(
+      database,
+      "userTmdbInfo",
+      new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo))
+    );
   }
 }

@@ -75,6 +75,7 @@ export async function globalBoot() {
     eventBus,
     environmentHelper,
     tmdbApi,
+    tmdbStore,
     hierarchyStore
   );
   bootUser(queryBus, environmentHelper);

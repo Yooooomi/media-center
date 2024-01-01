@@ -45,7 +45,7 @@ export class MockTorrentClient extends TorrentClient {
 
   async getState() {
     for (const value of this.store.values()) {
-      value.progress += 0.05;
+      value.progress += 0.15;
     }
 
     this.checkDownloaded();

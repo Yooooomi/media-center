@@ -1,10 +1,5 @@
 import { Shape } from "@media-center/domain-driven";
-
-function customBasename(filePath: string): string {
-  const parts = filePath.split("/");
-  const lastPart = parts[parts.length - 1]!;
-  return lastPart;
-}
+import * as path from "path";
 
 export class File extends Shape({
   path: String,
@@ -14,6 +9,6 @@ export class File extends Shape({
   }
 
   getFilename() {
-    return customBasename(this.path);
+    return path.parse(this.path).name;
   }
 }

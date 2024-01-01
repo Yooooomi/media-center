@@ -13,6 +13,7 @@ import { GetMovieEntriesQueryHandler } from "./applicative/getMovieEntries.query
 import { GetShowEntriesQueryHandler } from "./applicative/getShowEntries.query";
 import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
 import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
+import { TmdbStore } from "../tmdb/applicative/tmdb.store";
 
 export function bootCatalog(
   database: InMemoryDatabase,
@@ -20,6 +21,7 @@ export function bootCatalog(
   eventBus: EventBus,
   environmentHelper: EnvironmentHelper,
   tmdbApi: TmdbAPI,
+  tmdbStore: TmdbStore,
   hierarchyItemStore: HierarchyStore
 ) {
   const catalogEntryStore = environmentHelper.match("DI_DATABASE", {
@@ -28,7 +30,9 @@ export function bootCatalog(
       new FilesystemCatalogEntryStore(environmentHelper, database),
   });
 
-  new CatalogSaga(tmdbApi, catalogEntryStore, eventBus).listen(eventBus);
+  new CatalogSaga(tmdbApi, tmdbStore, catalogEntryStore, eventBus).listen(
+    eventBus
+  );
 
   queryBus.register(
     new GetEntryQueryHandler(catalogEntryStore, hierarchyItemStore)

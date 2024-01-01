@@ -84,15 +84,17 @@ export class RealTmdbAPI extends TmdbAPI {
   }
 
   async searchMovies(query: string, year?: number): Promise<AnyTmdb[]> {
-    const { data } = await this.axios.get<SearchMovie>("/search/movie", {
-      params: {
-        query,
-        year,
-        include_adult: false,
-        language: "fr-FR",
-        page: 1,
-      },
-    });
+    const { data } = await globalQueue.queue(() =>
+      this.axios.get<SearchMovie>("/search/movie", {
+        params: {
+          query,
+          year,
+          include_adult: false,
+          language: "fr-FR",
+          page: 1,
+        },
+      })
+    );
     return data.results.map(
       (e) =>
         new Movie({
@@ -113,15 +115,17 @@ export class RealTmdbAPI extends TmdbAPI {
     );
   }
   async searchShows(query: string, year?: number): Promise<AnyTmdb[]> {
-    const { data } = await this.axios.get<SearchShow>("/search/movie", {
-      params: {
-        query,
-        year,
-        include_adult: false,
-        language: "fr-FR",
-        page: 1,
-      },
-    });
+    const { data } = await globalQueue.queue(() =>
+      this.axios.get<SearchShow>("/search/movie", {
+        params: {
+          query,
+          year,
+          include_adult: false,
+          language: "fr-FR",
+          page: 1,
+        },
+      })
+    );
     return data.results.map(
       (e) =>
         new Show({

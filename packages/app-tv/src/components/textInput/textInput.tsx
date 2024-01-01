@@ -48,6 +48,9 @@ const TextInput = React.forwardRef<TextInputHandle, TextInputProps>(
       <Pressable onPress={handle.focus}>
         {({focused}) => (
           <RNTextInput
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoComplete="off"
             ref={ref}
             textContentType={type}
             placeholder={placeholder}

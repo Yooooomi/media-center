@@ -1,6 +1,8 @@
 import {Platform, StyleSheet} from 'react-native';
 import Navigation from './src/screens';
 import {listenToUpdate} from './src/services/listenToUpdate';
+import {View} from 'react-native';
+import {color} from './src/services/constants';
 
 const fonts = Platform.select<Record<string, string>>({
   default: {
@@ -26,5 +28,16 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
 listenToUpdate();
 
 export default function App() {
-  return <Navigation />;
+  return (
+    <View style={styles.root}>
+      <Navigation />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flexGrow: 1,
+    backgroundColor: color.background,
+  },
+});

@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { SafeRequest } from "./safeRequest";
-import { Filesystem } from "../valueObjects/fileSystem";
+import { EnvironmentHelper } from "../../domains/environment/applicative/environmentHelper";
 
 export interface FlareSolverResponse {
   status: string;
@@ -28,12 +28,14 @@ export interface FlareSolverResponse {
 }
 
 export class SolverSafeRequest extends SafeRequest {
-  constructor(private readonly filesystem: Filesystem) {
+  private endpoint: string;
+
+  constructor(environmentHelper: EnvironmentHelper) {
     super();
+    this.endpoint = `${environmentHelper.get("FLARESOLVERR_ENDPOINT")}/v1`;
   }
 
   private inited = false;
-  private endpoint = "http://localhost:8191/v1";
 
   static SESSION_NAME = "media-center";
 

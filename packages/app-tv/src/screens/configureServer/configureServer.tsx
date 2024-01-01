@@ -14,6 +14,7 @@ export function ConfigureServer({onConfigured}: ConfigureServerProps) {
   return (
     <Box grow items="center" content="center" gap="S8">
       <TextInput
+        type="URL"
         placeholder="Adresse du serveur"
         value={address}
         onChangeText={setAddress}

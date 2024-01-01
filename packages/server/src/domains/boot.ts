@@ -1,7 +1,6 @@
 import { config as configureDotenv } from "dotenv";
 import { bootApi } from "../endpoints/boot";
 import { SolverSafeRequest } from "../framework/safeRequest/solver.safeRequest";
-import { DiskFilesystem } from "../framework/valueObjects/fileSystem";
 import { ProcessEnvironmentHelper } from "./environment/infrastructure/process.environmentHelper";
 import { bootFileWatcher } from "./fileWatcher/boot";
 import { bootTmdb } from "./tmdb/boot";
@@ -29,9 +28,8 @@ export async function globalBoot() {
   const commandBus = new InMemoryCommandBus();
   const eventBus = new InMemoryEventBus();
   const queryBus = new InMemoryQueryBus();
-  const filesystem = new DiskFilesystem();
-  const safeRequest = new SolverSafeRequest(filesystem);
   const environmentHelper = new ProcessEnvironmentHelper();
+  const safeRequest = new SolverSafeRequest(environmentHelper);
   // TODO FIX THIS
   const torrentRequestStore = environmentHelper.match("DI_DATABASE", {
     memory: () => new InMemoryTorrentRequestStore(database),

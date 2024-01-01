@@ -111,6 +111,5 @@ export default function Navigation() {
 const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
-    backgroundColor: color.background,
   },
 });

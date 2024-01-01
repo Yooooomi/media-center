@@ -3,7 +3,6 @@ import {
   QueryBus,
   CommandBus,
   EventBus,
-  BaseIntent,
 } from "@media-center/domain-driven";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import Express, { urlencoded, json } from "express";
@@ -26,7 +25,7 @@ export function bootApi(
   app.use(urlencoded({ extended: false }));
   app.use(json());
 
-  const password = environmentHelper.get("API_KEY");
+  const password = environmentHelper.get("SERVER_PASSWORD");
   const base64Password = Buffer.from(password).toString("base64");
 
   const logMiddleware = (
@@ -46,6 +45,8 @@ export function bootApi(
     }
     return next();
   };
+
+  app.get("/health", (_, res) => res.status(204).end());
 
   app.get("/video/:hierarchyItemId", async (req, res) => {
     const hierarchyItemId = req.params.hierarchyItemId;

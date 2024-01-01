@@ -4,7 +4,10 @@ import { Serializable } from "./types";
 type AdditionalSerialized = { id: string; version: number };
 
 export interface AtLeastId {
-  id: Id;
+  id: {
+    toString(): string;
+    equals(other: any): boolean;
+  };
 }
 
 export abstract class Serializer<M extends AtLeastId> {

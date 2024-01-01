@@ -1,10 +1,10 @@
 import {View, StyleSheet} from 'react-native';
 import {radius, card, cardShadow, color} from '../../../services/constants';
-import LoggedImage from '../../loggedImage';
 import {ScaleButton} from '../pressable/scaleButton';
 import Box from '../../box';
 import Icon from '../../icon';
 import {DisabledFill} from '../../disabledFill';
+import {RateLimitedImage} from '../../rateLimitedImage';
 
 interface VerticalCardProps {
   uri: string | undefined;
@@ -25,7 +25,7 @@ export function VerticalCard({
     <ScaleButton focusOnMount={focusOnMount} onPress={onPress} border>
       <View style={styles.root}>
         {uri ? (
-          <LoggedImage uri={uri} style={styles.image} resizeMode="cover" />
+          <RateLimitedImage uri={uri} style={styles.image} resizeMode="cover" />
         ) : (
           <Box
             style={styles.image}
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    height: 3,
+    height: 4,
     bottom: 0,
     backgroundColor: color.progress,
   },

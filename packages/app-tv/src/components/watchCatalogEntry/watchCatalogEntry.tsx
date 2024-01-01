@@ -1,20 +1,23 @@
-import {
-  MovieCatalogEntryFulfilled,
-  ShowCatalogEntryFulfilled,
-} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
+import {MovieCatalogEntryFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {usePlayCatalogEntry} from '../../services/usePlayCatalogEntry';
 import {BigPressable} from '../bigPressable';
 import {TorrentRequest} from '@media-center/server/src/domains/torrentRequest/domain/torrentRequest';
 import {ReactNode} from 'react';
 import Text from '../text';
+import {UserTmdbMovieInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 
 interface WatchCatalogEntryProps {
-  entry: MovieCatalogEntryFulfilled | ShowCatalogEntryFulfilled;
+  entry: MovieCatalogEntryFulfilled;
+  userInfo: UserTmdbMovieInfo;
   requests: TorrentRequest[];
 }
 
-export function WatchCatalogEntry({entry, requests}: WatchCatalogEntryProps) {
-  const {actionSheet, play} = usePlayCatalogEntry(entry);
+export function WatchCatalogEntry({
+  entry,
+  requests,
+  userInfo,
+}: WatchCatalogEntryProps) {
+  const {actionSheet, play} = usePlayCatalogEntry(entry, userInfo);
 
   const firstRequest = requests?.[0];
   const hasDownloadedItems = entry.items.length > 0;
@@ -26,7 +29,11 @@ export function WatchCatalogEntry({entry, requests}: WatchCatalogEntryProps) {
 
   return (
     <>
-      <BigPressable focusOnMount bg="ctaGreen" icon="play" onPress={play}>
+      <BigPressable
+        focusOnMount
+        bg="ctaGreen"
+        icon={userInfo.progress > 0 ? 'step-forward' : 'play'}
+        onPress={play}>
         {children}
       </BigPressable>
       {actionSheet}

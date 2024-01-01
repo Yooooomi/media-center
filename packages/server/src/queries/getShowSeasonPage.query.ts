@@ -1,9 +1,4 @@
-import {
-  BaseEvent,
-  Query,
-  QueryHandler,
-  Shape,
-} from "@media-center/domain-driven";
+import { Query, QueryHandler, Shape } from "@media-center/domain-driven";
 import { TmdbId } from "../domains/tmdb/domain/tmdbId";
 import { ShowEpisode } from "../domains/tmdb/domain/showEpisode";
 import {
@@ -20,15 +15,22 @@ import {
   TorrentRequestAdded,
   TorrentRequestUpdated,
 } from "../domains/torrentRequest/domain/torrentRequest.events";
+import { UserTmdbShowInfo } from "../domains/userTmdbInfo/domain/userTmdbInfo";
+import {
+  UserId,
+  UserTmdbInfoId,
+} from "../domains/userTmdbInfo/domain/userTmdbInfoId";
+import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
 
 class ShowSeasonPageSummary extends Shape({
   episodes: [ShowEpisode],
   shownEpisodes: [Number],
   catalogEntry: ShowCatalogEntryFulfilled,
+  userInfo: UserTmdbShowInfo,
 }) {}
 
 export class GetShowSeasonPageQuery extends Query(
-  { id: TmdbId, season: Number },
+  { actorId: UserId, tmdbId: TmdbId, season: Number },
   ShowSeasonPageSummary
 ) {}
 
@@ -44,7 +46,8 @@ export class GetShowSeasonPageQueryHandler extends QueryHandler(
   constructor(
     private readonly tmdbApi: TmdbAPI,
     private readonly hierarchyStore: HierarchyStore,
-    private readonly catalogEntryStore: CatalogEntryStore
+    private readonly catalogEntryStore: CatalogEntryStore,
+    private readonly userTmdbInfoStore: UserTmdbInfoStore
   ) {
     super();
   }
@@ -61,15 +64,18 @@ export class GetShowSeasonPageQueryHandler extends QueryHandler(
       event instanceof TorrentRequestAdded ||
       event instanceof TorrentRequestUpdated
     ) {
-      return event.tmdbId.equals(intent.id);
+      return event.tmdbId.equals(intent.tmdbId);
     }
-    return event.catalogEntry.id.equals(intent.id);
+    return event.catalogEntry.id.equals(intent.tmdbId);
   }
 
   async execute(intent: GetShowSeasonPageQuery) {
-    const episodes = await this.tmdbApi.getEpisodes(intent.id, intent.season);
+    const episodes = await this.tmdbApi.getEpisodes(
+      intent.tmdbId,
+      intent.season
+    );
     const catalogEntry = await getShowCatalogEntryFulfilled(
-      intent.id,
+      intent.tmdbId,
       this.hierarchyStore,
       this.catalogEntryStore
     );
@@ -83,10 +89,22 @@ export class GetShowSeasonPageQueryHandler extends QueryHandler(
       )
     );
 
+    const userInfoId = new UserTmdbInfoId(intent.actorId, intent.tmdbId);
+    let userInfo = await this.userTmdbInfoStore.load(userInfoId);
+
+    if (!userInfo || !(userInfo instanceof UserTmdbShowInfo)) {
+      userInfo = new UserTmdbShowInfo({
+        id: userInfoId,
+        progress: [],
+        updatedAt: Date.now(),
+      });
+    }
+
     return new ShowSeasonPageSummary({
       catalogEntry,
       episodes,
       shownEpisodes,
+      userInfo,
     });
   }
 }

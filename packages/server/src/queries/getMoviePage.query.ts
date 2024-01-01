@@ -21,15 +21,25 @@ import {
   TorrentRequestAdded,
   TorrentRequestUpdated,
 } from "../domains/torrentRequest/domain/torrentRequest.events";
+import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
+import {
+  UserId,
+  UserTmdbInfoId,
+} from "../domains/userTmdbInfo/domain/userTmdbInfoId";
+import { UserTmdbMovieInfo } from "../domains/userTmdbInfo/domain/userTmdbInfo";
 
 class MoviePageSummary extends Shape({
   tmdb: Movie,
   details: MovieDetails,
   requests: [TorrentRequest],
   catalogEntry: MovieCatalogEntryFulfilled,
+  userInfo: UserTmdbMovieInfo,
 }) {}
 
-export class GetMoviePageQuery extends Query(TmdbId, MoviePageSummary) {}
+export class GetMoviePageQuery extends Query(
+  { actorId: UserId, tmdbId: TmdbId },
+  MoviePageSummary
+) {}
 
 export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
   CatalogEntryUpdated,
@@ -42,7 +52,8 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
     private readonly tmdbApi: TmdbAPI,
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly hierarchyStore: HierarchyStore
+    private readonly hierarchyStore: HierarchyStore,
+    private readonly userTmdbInfoStore: UserTmdbInfoStore
   ) {
     super();
   }
@@ -59,21 +70,21 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       event instanceof TorrentRequestAdded ||
       event instanceof TorrentRequestUpdated
     ) {
-      return event.tmdbId.equals(intent.value);
+      return event.tmdbId.equals(intent.tmdbId);
     }
-    return event.catalogEntry.id.equals(intent.value);
+    return event.catalogEntry.id.equals(intent.tmdbId);
   }
 
   async execute(intent: GetMoviePageQuery) {
-    const movie = await this.tmdbStore.load(intent.value);
-    const details = await this.tmdbApi.getMovieDetails(intent.value);
+    const movie = await this.tmdbStore.load(intent.tmdbId);
+    const details = await this.tmdbApi.getMovieDetails(intent.tmdbId);
 
     if (!details || !movie || !(movie instanceof Movie)) {
       throw new Error("Did not find TMDB movie");
     }
 
-    const requests = await this.torrentRequestStore.loadByTmdbId(intent.value);
-    const catalogEntry = await this.catalogEntryStore.load(intent.value);
+    const requests = await this.torrentRequestStore.loadByTmdbId(intent.tmdbId);
+    const catalogEntry = await this.catalogEntryStore.load(intent.tmdbId);
 
     if (catalogEntry && !(catalogEntry instanceof MovieCatalogEntry)) {
       throw new Error("Cannot load catalog entry of movie");
@@ -84,17 +95,29 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       : [];
 
     const catalogEntryFulfilled = new MovieCatalogEntryFulfilled({
-      id: intent.value,
+      id: intent.tmdbId,
       items: hierarchyItems.map(
         (e) => new CatalogEntryMovieSpecificationFulFilled({ item: e })
       ),
     });
+
+    const userInfoId = new UserTmdbInfoId(intent.actorId, intent.tmdbId);
+    let userInfo = await this.userTmdbInfoStore.load(userInfoId);
+
+    if (!userInfo || !(userInfo instanceof UserTmdbMovieInfo)) {
+      userInfo = new UserTmdbMovieInfo({
+        id: userInfoId,
+        progress: 0,
+        updatedAt: Date.now(),
+      });
+    }
 
     return new MoviePageSummary({
       tmdb: movie,
       catalogEntry: catalogEntryFulfilled,
       requests,
       details,
+      userInfo,
     });
   }
 }

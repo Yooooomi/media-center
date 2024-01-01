@@ -4,15 +4,16 @@ import {Vlc, VLCTrackInfoEvent, VLCBaseEvent} from '@media-center/vlc';
 import {useVideoUri} from '../../services/api';
 import Controls from './controls/controls';
 import {useToggle} from '../../services/useToggle';
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
 import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
 import {CatalogEntryShowSpecificationFulFilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
+import {progressFromUserInfo} from './progressFromUserInfo';
 
 const {width, height} = Dimensions.get('screen');
 
 export default function Watch() {
-  const {tmdbId, specification} = useParams<'Watch'>();
+  const {tmdbId, specification, userInfo} = useParams<'Watch'>();
   const {item: hierarchyItem} = specification;
   const videoUri = useVideoUri(hierarchyItem.id);
   const [videoInfo, setVideoInfo] = useState<VLCTrackInfoEvent | undefined>(
@@ -23,7 +24,26 @@ export default function Watch() {
   const [audioTrack, setAudioTrack] = useState<number | undefined>(undefined);
   const [textTrack, setTextTrack] = useState<number | undefined>(undefined);
 
+  const season =
+    specification instanceof CatalogEntryShowSpecificationFulFilled
+      ? specification.season
+      : undefined;
+  const episode =
+    specification instanceof CatalogEntryShowSpecificationFulFilled
+      ? specification.episode
+      : undefined;
+
   const [playing, rollPlaying] = useToggle(true);
+  const startAt = progressFromUserInfo(userInfo, season, episode);
+
+  useEffect(() => {
+    if (!videoInfo) {
+      return;
+    }
+    console.log('Starting at', startAt, videoInfo.duration);
+    setSeek(videoInfo.duration * startAt);
+  }, [startAt, videoInfo]);
+
   const [seek, setSeek] = useState(0);
 
   const onProgress = useCallback(
@@ -47,14 +67,6 @@ export default function Watch() {
     [currentProgressMs],
   );
 
-  const season =
-    specification instanceof CatalogEntryShowSpecificationFulFilled
-      ? specification.season
-      : undefined;
-  const episode =
-    specification instanceof CatalogEntryShowSpecificationFulFilled
-      ? specification.episode
-      : undefined;
   useSaveCatalogEntryProgress(
     playing,
     currentProgress,

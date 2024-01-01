@@ -14,6 +14,7 @@ import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {TorrentRequests} from '../../components/torrentRequests';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
+import {Beta} from '../../services/api';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
@@ -21,7 +22,7 @@ export function Movie() {
 
   const [{result: moviePage}, _, reload] = useQuery(
     GetMoviePageQuery,
-    movie.id,
+    {actorId: Beta.userId, tmdbId: movie.id},
     {reactive: true},
   );
 
@@ -67,6 +68,7 @@ export function Movie() {
               <WatchCatalogEntry
                 entry={moviePage.catalogEntry}
                 requests={moviePage.requests}
+                userInfo={moviePage.userInfo}
               />
             )}
             <BigPressable

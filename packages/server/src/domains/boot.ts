@@ -80,7 +80,12 @@ export async function globalBoot() {
     hierarchyStore
   );
   bootUser(queryBus, environmentHelper);
-  bootUserTmdbInfo(database, commandBus, environmentHelper, tmdbStore);
+  const { userTmdbInfoStore } = bootUserTmdbInfo(
+    database,
+    commandBus,
+    environmentHelper,
+    tmdbStore
+  );
 
   bootCommands(commandBus, torrentClient, torrentRequestStore);
 
@@ -90,7 +95,8 @@ export async function globalBoot() {
     torrentRequestStore,
     tmdbStore,
     tmdbApi,
-    hierarchyStore
+    hierarchyStore,
+    userTmdbInfoStore
   );
 
   return { commandBus, eventBus, unsubscribeUpdateTorrentPoll };

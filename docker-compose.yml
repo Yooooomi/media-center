@@ -9,7 +9,7 @@ services:
       - "8080:8080"
     environment:
       AVAILABLE_USERS: "User1,User2"
-      API_KEY: "somerandompassword"
+      SERVER_PASSWORD: "somerandompassword"
 
       DI_DATABASE: filesystem
       DI_TORRENT_INDEXER: yggTorrent

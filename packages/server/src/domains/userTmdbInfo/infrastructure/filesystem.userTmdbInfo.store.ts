@@ -1,6 +1,8 @@
 import {
   Either,
+  Id,
   InMemoryDatabase,
+  InMemoryTransaction,
   SerializableSerializer,
 } from "@media-center/domain-driven";
 import { UserTmdbInfoStore } from "../applicative/userTmdbInfo.store";
@@ -11,6 +13,7 @@ import {
   UserTmdbMovieInfo,
   UserTmdbShowInfo,
 } from "../domain/userTmdbInfo";
+import { UserId } from "../domain/userTmdbInfoId";
 
 export class FilesystemUserTmdbInfoStore
   extends FilesystemStore<AnyUserTmdbInfo>
@@ -26,5 +29,9 @@ export class FilesystemUserTmdbInfoStore
       "userTmdbInfo",
       new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo))
     );
+  }
+
+  async loadByUserId(userId: UserId) {
+    return this.filter((e) => e.id.equalsUserId(userId));
   }
 }

@@ -1,4 +1,4 @@
-import {IsShapeConstructor} from '@media-center/domain-driven';
+import {IsShapeConstructor} from '@media-center/domain-driven/lib/serialization/shape/mixins/objectShape';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 abstract class LocalStore {

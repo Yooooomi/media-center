@@ -8,9 +8,11 @@ import {StatusContext} from '../../contexts/statusContext';
 import {HomepageQuery} from '@media-center/server/src/queries/homepage.query';
 import DownloadingCardLine from '../../components/downloadingCardLine';
 import {ScrollView} from 'react-native';
+import {Beta} from '../../services/api';
+import TmdbCardsLine from '../../components/tmdbCardsLine/tmdbCardsLine';
 
 export default function AddedRecently() {
-  const [{result: homepage, error}] = useQuery(HomepageQuery, undefined, {
+  const [{result: homepage, error}] = useQuery(HomepageQuery, Beta.userId, {
     reactive: true,
   });
 
@@ -28,13 +30,19 @@ export default function AddedRecently() {
     <ScrollView>
       <Box row grow>
         <Box gap="S16" ml="S16" mt="S16">
-          <ShowCardsLine
+          <TmdbCardsLine
             autoFocusFirst
+            title="Continuer à regarder"
+            tmdbs={homepage.continue.map(e => e.tmdb)}
+            infos={homepage.continue.map(e => e.userInfo)}
+          />
+          <ShowCardsLine
             title="Séries récement ajoutées"
             shows={homepage.catalog.shows.map(e => e.tmdb)}
           />
           <MovieCardsLine
             title="Films récement ajoutés"
+            infos={homepage.catalog.movies.map(e => e.userInfo)}
             movies={homepage.catalog.movies.map(e => e.tmdb)}
           />
           <DownloadingCardLine

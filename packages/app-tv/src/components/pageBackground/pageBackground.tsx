@@ -1,7 +1,7 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import {View, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import LoggedImage from '../loggedImage';
+import {RateLimitedImage} from '../rateLimitedImage';
 
 interface PageBackgroundProps {
   imageUri: string | undefined;
@@ -20,7 +20,11 @@ export function PageBackground({imageUri}: PageBackgroundProps) {
           />
         }>
         <>
-          <LoggedImage uri={imageUri} style={styles.cover} resizeMode="cover" />
+          <RateLimitedImage
+            uri={imageUri}
+            style={styles.cover}
+            resizeMode="cover"
+          />
           <View style={styles.blackOverlay} />
         </>
       </MaskedView>

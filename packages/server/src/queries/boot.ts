@@ -8,6 +8,7 @@ import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { GetShowPageQueryHandler } from "./getShowPage.query";
 import { GetShowSeasonPageQueryHandler } from "./getShowSeasonPage.query";
+import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
 
 export function bootQueries(
   queryBus: QueryBus,
@@ -15,10 +16,16 @@ export function bootQueries(
   torrentRequestStore: TorrentRequestStore,
   tmdbStore: TmdbStore,
   tmdbApi: TmdbAPI,
-  hierarchyStore: HierarchyStore
+  hierarchyStore: HierarchyStore,
+  userTmdbInfoStore: UserTmdbInfoStore
 ) {
   queryBus.register(
-    new HomepageQueryHandler(catalogEntryStore, torrentRequestStore, tmdbStore)
+    new HomepageQueryHandler(
+      catalogEntryStore,
+      torrentRequestStore,
+      userTmdbInfoStore,
+      tmdbStore
+    )
   );
 
   queryBus.register(
@@ -27,7 +34,8 @@ export function bootQueries(
       tmdbApi,
       torrentRequestStore,
       catalogEntryStore,
-      hierarchyStore
+      hierarchyStore,
+      userTmdbInfoStore
     )
   );
 
@@ -45,7 +53,8 @@ export function bootQueries(
     new GetShowSeasonPageQueryHandler(
       tmdbApi,
       hierarchyStore,
-      catalogEntryStore
+      catalogEntryStore,
+      userTmdbInfoStore
     )
   );
 }

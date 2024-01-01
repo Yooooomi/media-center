@@ -36,6 +36,7 @@ export function SearchTmdb() {
   return (
     <Box mt="S8" ml="S8" grow>
       <TextInput
+        style={styles.input}
         autoFocus
         onFocus={focus}
         onBlur={blur}
@@ -69,5 +70,8 @@ const styles = StyleSheet.create({
   },
   column: {
     gap: spacing.S8,
+  },
+  input: {
+    width: 300,
   },
 });

@@ -10,11 +10,16 @@ import {FlatList, ListRenderItem, Modal} from 'react-native';
 import Box from '../components/box';
 import Text from '../components/text';
 import {Pressable} from '../components/ui/pressable/pressable';
+import {
+  UserTmdbMovieInfo,
+  UserTmdbShowInfo,
+} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 
 export function usePlayCatalogEntry<
   T extends MovieCatalogEntryFulfilled | ShowCatalogEntryFulfilled,
 >(
   entry: T,
+  userInfo: UserTmdbMovieInfo | UserTmdbShowInfo,
   filter?: (
     item: T extends ShowCatalogEntryFulfilled
       ? CatalogEntryShowSpecificationFulFilled
@@ -36,9 +41,9 @@ export function usePlayCatalogEntry<
         | CatalogEntryShowSpecificationFulFilled
         | CatalogEntryMovieSpecificationFulFilled,
     ) => {
-      return navigate('Watch', {tmdbId: entry.id, specification});
+      return navigate('Watch', {tmdbId: entry.id, specification, userInfo});
     },
-    [entry.id, navigate],
+    [entry.id, navigate, userInfo],
   );
 
   const play = useCallback(() => {

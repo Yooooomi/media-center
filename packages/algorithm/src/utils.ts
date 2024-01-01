@@ -11,6 +11,21 @@ export function keyBy<T>(values: T[], getKey: (value: T) => string) {
   }, {});
 }
 
+export function maxBy<T>(values: T[], getValue: (value: T) => number) {
+  let maxIndex: number | undefined = 0;
+  let maxValue: number | undefined = undefined;
+
+  for (let i = 0; i < values.length; i += 1) {
+    const item = values[i]!;
+    const value = getValue(item);
+    if (maxValue === undefined || value > maxValue) {
+      maxIndex = i;
+      maxValue = value;
+    }
+  }
+  return maxIndex === undefined ? undefined : values[maxIndex];
+}
+
 export function chunk<T>(values: T[], chunkSize: number) {
   const results: T[][] = [];
 

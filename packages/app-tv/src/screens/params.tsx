@@ -7,6 +7,10 @@ import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeason';
 import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
+import {
+  UserTmdbMovieInfo,
+  UserTmdbShowInfo,
+} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-native';
 
@@ -22,6 +26,7 @@ export type NavigationParams = {
   };
   Watch: {
     tmdbId: TmdbId;
+    userInfo: UserTmdbMovieInfo | UserTmdbShowInfo | undefined;
     specification:
       | CatalogEntryShowSpecificationFulFilled
       | CatalogEntryMovieSpecificationFulFilled;

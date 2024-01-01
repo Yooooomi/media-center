@@ -10,6 +10,7 @@ import {
   UserTmdbMovieInfo,
   UserTmdbShowInfo,
 } from "../domain/userTmdbInfo";
+import { UserId } from "../domain/userTmdbInfoId";
 
 export class InMemoryUserTmdbInfoStore
   extends InMemoryStore<AnyUserTmdbInfo>
@@ -21,5 +22,9 @@ export class InMemoryUserTmdbInfoStore
       "userTmdbInfo",
       new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo))
     );
+  }
+
+  loadByUserId(userId: UserId) {
+    return this.filter((e) => e.id.equalsUserId(userId));
   }
 }

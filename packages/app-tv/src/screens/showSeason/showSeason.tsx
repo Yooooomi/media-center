@@ -1,7 +1,6 @@
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {useParams} from '../params';
 import Box from '../../components/box';
-import LoggedImage from '../../components/loggedImage';
 import {useImageUri} from '../../services/tmdb';
 import Text from '../../components/text/text';
 import ShowEpisodeCardsLine from '../../components/showEpisodeCardsLine/showEpisodeCardsLine';
@@ -10,6 +9,8 @@ import {GetShowSeasonPageQuery} from '@media-center/server/src/queries/getShowSe
 import {useState} from 'react';
 import {ShowEpisode} from '@media-center/server/src/domains/tmdb/domain/showEpisode';
 import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
+import {Beta} from '../../services/api';
+import {RateLimitedImage} from '../../components/rateLimitedImage';
 
 export default function ShowSeason() {
   const {show, season, catalogEntry} = useParams<'ShowSeason'>();
@@ -21,7 +22,8 @@ export default function ShowSeason() {
   const [{result: showSeasonPage}] = useQuery(
     GetShowSeasonPageQuery,
     {
-      id: show.id,
+      actorId: Beta.userId,
+      tmdbId: show.id,
       season: season.season_number,
     },
     {reactive: true},
@@ -34,7 +36,7 @@ export default function ShowSeason() {
   return (
     <Box>
       <View style={styles.background}>
-        <LoggedImage blurRadius={200} uri={imageUri} />
+        <RateLimitedImage blurRadius={200} uri={imageUri} />
       </View>
       <Box p="S32" row content="space-between" items="flex-start" h={250}>
         <Box w="70%">
@@ -53,6 +55,7 @@ export default function ShowSeason() {
         </Box>
       </Box>
       <ShowEpisodeCardsLine
+        userInfo={showSeasonPage.userInfo}
         focusFirst
         sectionProps={{ml: 'S32'}}
         onFocusEpisode={setFocusedEpisode}

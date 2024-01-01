@@ -31,7 +31,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
 
   async execute(command: SetUserTmdbInfoProgressCommand) {
     const tmdb = await this.tmdbStore.load(command.tmdbId);
-    const id = UserTmdbInfoId.fromUserAndTmdb(command.actorId, command.tmdbId);
+    const id = new UserTmdbInfoId(command.actorId, command.tmdbId);
     let userTmdbInfo: AnyUserTmdbInfo | undefined;
 
     if (tmdb instanceof Movie) {
@@ -40,11 +40,13 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
         new UserTmdbMovieInfo({
           id,
           progress: 0,
+          updatedAt: Date.now(),
         });
       if (!(userTmdbInfo instanceof UserTmdbMovieInfo)) {
         throw new Error("Inconsistent state");
       }
-      userTmdbInfo.setProgress(command.progress);
+      // userTmdbInfo.setProgress(command.progress);
+      userTmdbInfo.setProgress(0.5);
     } else if (tmdb instanceof Show) {
       if (command.season === undefined || command.episode === undefined) {
         throw new Error(
@@ -56,6 +58,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
         new UserTmdbShowInfo({
           id,
           progress: [],
+          updatedAt: Date.now(),
         });
       if (!(userTmdbInfo instanceof UserTmdbShowInfo)) {
         throw new Error("Inconsistent state");
@@ -63,7 +66,8 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
       userTmdbInfo.setEpisodeProgress(
         command.season,
         command.episode,
-        command.progress
+        0.5
+        // command.progress
       );
     }
 

@@ -1,8 +1,7 @@
 import {useCallback, useState} from 'react';
 import Box from '../../components/box/box';
-import TextInput from '../../components/textInput/textInput';
 import {Beta} from '../../services/api';
-import {ScrollView} from 'react-native';
+import {ScrollView, StyleSheet, TextInput} from 'react-native';
 import Section from '../../components/section/section';
 import {useBooleanState} from '../../services/useBooleanState';
 import {SearchTorrentsQuery} from '@media-center/server/src/domains/torrentIndexer/applicative/searchTorrents.query';
@@ -59,8 +58,9 @@ export default function SearchTorrent() {
   return (
     <ScrollView>
       <Box mt="S8" mh="S8">
-        <Box row gap="S8">
+        <Box row gap="S8" items="center">
           <TextInput
+            style={styles.input}
             autoFocus
             onFocus={focus}
             onBlur={blur}
@@ -68,12 +68,13 @@ export default function SearchTorrent() {
             placeholder="Rechercher"
             value={text}
             onChangeText={setText}
+            onSubmitEditing={updateSearch}
           />
           <IconButton
+            focusOnMount={!isFocused}
             icon="magnify"
             loading={loading}
             onPress={updateSearch}
-            hasTVPreferredFocus={!isFocused}
           />
         </Box>
         <Section title="Résultats" mt="S24">
@@ -91,3 +92,9 @@ export default function SearchTorrent() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    width: 300,
+  },
+});

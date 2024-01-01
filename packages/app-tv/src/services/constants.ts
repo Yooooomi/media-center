@@ -38,6 +38,7 @@ export const rawColor = {
   textondarkgrey: '#2E3B42',
   lightgrey: '#e6e6e6',
   transparent: '#00000000',
+  blue: '#169AFE',
   // t_greyed: '#e6e6e669',
   // t_white: '#ffffff99',
 };
@@ -67,7 +68,7 @@ export const color = {
   statusKO: rawColor.red,
   divider: rawColor.lightgrey,
 
-  progress: rawColor.red,
+  progress: rawColor.blue,
 };
 
 export function opacify(c: keyof typeof color, t: number) {

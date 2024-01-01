@@ -8,10 +8,12 @@ import {
 } from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {useCallback} from 'react';
 import {noop} from '@media-center/algorithm';
+import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 
 interface ShowEpisodeCardProps {
   showEpisode: ShowEpisode;
   catalogEntry: ShowCatalogEntryFulfilled;
+  userInfo: UserTmdbShowInfo;
   focusOnMount?: boolean;
   disabled?: boolean;
 }
@@ -21,10 +23,12 @@ export function ShowEpisodeCard({
   catalogEntry,
   focusOnMount,
   disabled,
+  userInfo,
 }: ShowEpisodeCardProps) {
   const imageUri = useImageUri(showEpisode.still_path);
   const {actionSheet, play} = usePlayCatalogEntry(
     catalogEntry,
+    userInfo,
     useCallback(
       (item: CatalogEntryShowSpecificationFulFilled) =>
         item.season === showEpisode.season_number &&

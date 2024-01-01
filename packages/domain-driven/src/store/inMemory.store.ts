@@ -1,5 +1,4 @@
 import { compact, wait } from "@media-center/algorithm";
-import { Id } from "../id";
 import { Serializer, AtLeastId } from "../serialization";
 import { Store } from "./store";
 import * as fs from "fs";
@@ -236,7 +235,7 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
     );
   }
 
-  async delete(id: Id, transaction?: InMemoryTransaction) {
+  async delete(id: M["id"], transaction?: InMemoryTransaction) {
     this.collection().delete(id.toString(), transaction);
   }
 
@@ -282,7 +281,7 @@ export abstract class FilesystemStore<
     );
   }
 
-  async delete(id: Id, transaction?: InMemoryTransaction | undefined) {
+  async delete(id: M["id"], transaction?: InMemoryTransaction | undefined) {
     await super.delete(id, transaction);
     if (!transaction) {
       this.commit();

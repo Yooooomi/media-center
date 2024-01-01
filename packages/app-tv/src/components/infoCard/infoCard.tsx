@@ -1,12 +1,12 @@
 import {StyleSheet, View} from 'react-native';
 import {cardShadow, hcard, radius} from '../../services/constants';
 import Box from '../box';
-import LoggedImage from '../loggedImage';
 import Pill from '../pill';
 import Text from '../text/text';
 import {ScaleButton} from '../ui/pressable/scaleButton';
 import {noop} from '@media-center/algorithm';
 import {DisabledFill} from '../disabledFill';
+import {RateLimitedImage} from '../rateLimitedImage';
 
 export interface InfoCardProps {
   imageUri: string | undefined;
@@ -39,7 +39,11 @@ export default function InfoCard({
         focusOnMount={focusOnMount}
         border>
         <View style={styles.root}>
-          <LoggedImage uri={imageUri} style={styles.image} resizeMode="cover" />
+          <RateLimitedImage
+            uri={imageUri}
+            style={styles.image}
+            resizeMode="cover"
+          />
           {disabled ? <DisabledFill /> : null}
         </View>
       </ScaleButton>

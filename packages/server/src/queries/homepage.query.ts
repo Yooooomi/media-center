@@ -26,31 +26,43 @@ import {
   TorrentRequestAdded,
   TorrentRequestUpdated,
 } from "../domains/torrentRequest/domain/torrentRequest.events";
+import {
+  UserTmdbMovieInfo,
+  UserTmdbShowInfo,
+} from "../domains/userTmdbInfo/domain/userTmdbInfo";
+import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
+import {
+  UserId,
+  UserTmdbInfoId,
+} from "../domains/userTmdbInfo/domain/userTmdbInfoId";
 
 class TorrentRequestFulfilled extends Shape({
   torrent: TorrentRequest,
   tmdb: Optional(Either(Movie, Show)),
 }) {}
 
-class MovieCatalogEntryFulfilled extends Shape({
+class MovieCatalogEntryContext extends Shape({
   entry: MovieCatalogEntry,
   tmdb: Movie,
+  userInfo: UserTmdbMovieInfo,
 }) {}
 
-class ShowCatalogEntryFulfilled extends Shape({
+class ShowCatalogEntryContext extends Shape({
   entry: ShowCatalogEntry,
   tmdb: Show,
+  userInfo: UserTmdbShowInfo,
 }) {}
 
 export class HomepageSummary extends Shape({
+  continue: [Either(MovieCatalogEntryContext, ShowCatalogEntryContext)],
   catalog: {
-    movies: [MovieCatalogEntryFulfilled],
-    shows: [ShowCatalogEntryFulfilled],
+    movies: [MovieCatalogEntryContext],
+    shows: [ShowCatalogEntryContext],
   },
   downloading: [TorrentRequestFulfilled],
 }) {}
 
-export class HomepageQuery extends Query(undefined, HomepageSummary) {}
+export class HomepageQuery extends Query(UserId, HomepageSummary) {}
 
 export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
   CatalogEntryUpdated,
@@ -61,6 +73,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly torrentRequestStore: TorrentRequestStore,
+    private readonly userTmdbInfoStore: UserTmdbInfoStore,
     private readonly tmdbStore: TmdbStore
   ) {
     super();
@@ -76,9 +89,12 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
     return true;
   }
 
-  async execute(): Promise<HomepageSummary> {
+  async execute(intent: HomepageQuery): Promise<HomepageSummary> {
     const catalogEntries = await this.catalogEntryStore.loadAll();
     const torrentRequests = await this.torrentRequestStore.loadAll();
+    const userInfos = await this.userTmdbInfoStore.loadByUserId(intent.value);
+
+    const userInfosDict = keyBy(userInfos, (info) => info.id.tmdbId.toString());
 
     const neededTmdbs = new Set([
       ...catalogEntries.map((entry) => entry.id.toString()),
@@ -97,9 +113,18 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
         if (!tmdb || !(tmdb instanceof Movie)) {
           throw new Error("Cannot find related tmdb");
         }
-        return new MovieCatalogEntryFulfilled({
+        let userInfo = userInfosDict[tmdb.id.toString()];
+        if (!userInfo || !(userInfo instanceof UserTmdbMovieInfo)) {
+          userInfo = new UserTmdbMovieInfo({
+            id: new UserTmdbInfoId(intent.value, tmdb.id),
+            progress: 0,
+            updatedAt: Date.now(),
+          });
+        }
+        return new MovieCatalogEntryContext({
           entry: movie,
           tmdb,
+          userInfo,
         });
       });
     const fulfilledShows = catalogEntries
@@ -109,9 +134,18 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
         if (!tmdb || !(tmdb instanceof Show)) {
           throw new Error("Cannot find related tmdb");
         }
-        return new ShowCatalogEntryFulfilled({
+        let userInfo = userInfosDict[tmdb.id.toString()];
+        if (!userInfo || !(userInfo instanceof UserTmdbShowInfo)) {
+          userInfo = new UserTmdbShowInfo({
+            id: new UserTmdbInfoId(intent.value, tmdb.id),
+            progress: [],
+            updatedAt: Date.now(),
+          });
+        }
+        return new ShowCatalogEntryContext({
           entry: show,
           tmdb,
+          userInfo,
         });
       });
     const fulfilledRequests = torrentRequests.map((e) => {
@@ -121,7 +155,13 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
       });
     });
 
+    const toContinue = [
+      ...fulfilledMovies.filter((e) => e.userInfo.progress !== 0),
+      ...fulfilledShows.filter((e) => e.userInfo.getShowProgress() !== 0),
+    ].sort((a, b) => b.userInfo.updatedAt - a.userInfo.updatedAt);
+
     return new HomepageSummary({
+      continue: toContinue,
       catalog: {
         movies: fulfilledMovies,
         shows: fulfilledShows,

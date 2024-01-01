@@ -14,7 +14,6 @@ export class TmdbId extends Id {
   }
 
   public getType() {
-    console.log("THIS", this);
     return this.value.split(":")[0]! as TmdbIdType;
   }
 

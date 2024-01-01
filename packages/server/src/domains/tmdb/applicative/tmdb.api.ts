@@ -13,14 +13,29 @@ export abstract class TmdbAPI {
     tmdbId: TmdbId,
     seasonNumber: number
   ): Promise<ShowEpisode[]>;
-  abstract search(
-    query: string,
-    options?: {
-      media?: TmdbIdType;
-      year?: number;
-    }
-  ): Promise<AnyTmdb[]>;
+  abstract searchMovies(query: string, year?: number): Promise<AnyTmdb[]>;
+  abstract searchShows(query: string, year?: number): Promise<AnyTmdb[]>;
   abstract discoverMovie(): Promise<Movie[]>;
   abstract discoverShow(): Promise<Show[]>;
   abstract getMovieDetails(tmdbId: TmdbId): Promise<MovieDetails | undefined>;
+
+  async search(
+    query: string,
+    options?: {
+      year?: number;
+      type?: TmdbIdType;
+    }
+  ) {
+    if (options?.type === "movie") {
+      return this.searchMovies(query, options.year);
+    } else if (options?.type === "show") {
+      return this.searchShows(query, options.year);
+    }
+    return (
+      await Promise.all([
+        this.searchMovies(query, options?.year),
+        this.searchShows(query, options?.year),
+      ])
+    ).flat();
+  }
 }

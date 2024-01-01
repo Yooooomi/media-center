@@ -48,7 +48,7 @@ export class CatalogSaga extends Saga {
           isShow
         );
         const [tmdbEntry] = await this.tmdbApi.search(infosFromFilename.title, {
-          media: isShow ? "show" : "movie",
+          type: isShow ? "show" : "movie",
           year: infosFromFilename.year ? +infosFromFilename.year : undefined,
         });
         if (!tmdbEntry) {

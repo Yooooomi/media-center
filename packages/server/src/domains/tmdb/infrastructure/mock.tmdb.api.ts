@@ -7682,7 +7682,7 @@ export class MockTmdbAPI extends TmdbAPI {
     );
   }
 
-  async search(query: string): Promise<AnyTmdb[]> {
+  async searchMovies(query: string): Promise<Movie[]> {
     return [
       new Movie({
         id: TmdbId.fromIdAndType("976573", "movie"),
@@ -7699,6 +7699,26 @@ export class MockTmdbAPI extends TmdbAPI {
         video: false,
         vote_average: 7.8,
         vote_count: 1050,
+      }),
+    ];
+  }
+
+  async searchShows(query: string, year?: number | undefined): Promise<Show[]> {
+    return [
+      new Show({
+        id: TmdbId.fromIdAndType("125988", "show"),
+        backdrop_path: "/n5FPNMJ0eRoiQrKGfUQQRAZeaxg.jpg",
+        first_air_date: "2023-05-04",
+        title: "Silo",
+        original_language: "en",
+        original_title: "Silo",
+        overview:
+          "In a ruined and toxic future, a community exists in a giant underground silo that plunges hundreds of stories deep. There, men and women live in a society full of regulations they believe are meant to protect them.",
+        popularity: 4495.043,
+        poster_path: "/zBx1X06G1OlndbXTCZI13FECNz2.jpg",
+        vote_average: 7.6,
+        vote_count: 435,
+        season_count: 0,
       }),
     ];
   }

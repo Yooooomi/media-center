@@ -1,41 +1,46 @@
-export interface SearchMulti {
+export interface SearchShow {
   page: number;
-  results: (SearchMultiResultShow | SearchMultiResultMovie)[];
+  results: SearchShowResult[];
   total_pages: number;
   total_results: number;
 }
 
-export interface SearchMultiResultShow {
+export interface SearchShowResult {
   adult: boolean;
   backdrop_path: string;
+  genre_ids: number[];
   id: number;
-  name: string;
+  origin_country: string[];
   original_language: string;
   original_name: string;
   overview: string;
-  poster_path: string;
-  media_type: "tv";
-  genre_ids: number[];
   popularity: number;
+  poster_path: string | null;
   first_air_date: string;
+  name: string;
   vote_average: number;
   vote_count: number;
-  origin_country: string[];
 }
 
-export interface SearchMultiResultMovie {
+export interface SearchMovie {
+  page: number;
+  results: SearchMovieResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface SearchMovieResult {
   adult: boolean;
-  backdrop_path: string;
+  backdrop_path: null | string;
+  genre_ids: number[];
   id: number;
-  title: string;
   original_language: string;
   original_title: string;
   overview: string;
-  poster_path: string;
-  media_type: "movie";
-  genre_ids: number[];
   popularity: number;
+  poster_path: string | null;
   release_date: string;
+  title: string;
   video: boolean;
   vote_average: number;
   vote_count: number;

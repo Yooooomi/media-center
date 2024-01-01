@@ -1,6 +1,6 @@
 import { TmdbAPI } from "../applicative/tmdb.api";
 import Axios, { AxiosInstance } from "axios";
-import { TmdbId, TmdbIdType } from "../domain/tmdbId";
+import { TmdbId } from "../domain/tmdbId";
 import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
@@ -11,11 +11,10 @@ import {
   GetMovie,
   GetShow,
   MovieDetailsQuery,
-  SearchMulti,
+  SearchMovie,
+  SearchShow,
   Season,
-  extractYear,
 } from "./tmdb.api.utils";
-import { compact } from "@media-center/algorithm";
 import { PromiseQueue } from "../../../tools/queue";
 import { ShowSeason } from "../domain/showSeason";
 import { ShowEpisode } from "../domain/showEpisode";
@@ -84,66 +83,60 @@ export class RealTmdbAPI extends TmdbAPI {
     );
   }
 
-  async search(
-    query: string,
-    options?: {
-      media?: TmdbIdType;
-      year?: number;
-    }
-  ) {
-    const { data } = await globalQueue.queue(() =>
-      this.axios.get<SearchMulti>(
-        `/search/multi?query=${query}&include_adult=false&language=fr-FR&page=1`
-      )
+  async searchMovies(query: string, year?: number): Promise<AnyTmdb[]> {
+    const { data } = await this.axios.get<SearchMovie>("/search/movie", {
+      params: {
+        query,
+        year,
+        include_adult: false,
+        language: "fr-FR",
+        page: 1,
+      },
+    });
+    return data.results.map(
+      (e) =>
+        new Movie({
+          id: TmdbId.fromIdAndType(e.id.toString(), "movie"),
+          adult: e.adult,
+          original_language: e.original_language,
+          original_title: e.original_title,
+          overview: e.overview,
+          popularity: e.popularity,
+          release_date: e.release_date,
+          title: e.title,
+          video: e.video,
+          vote_average: e.vote_average,
+          vote_count: e.vote_count,
+          backdrop_path: e.backdrop_path ?? undefined,
+          poster_path: e.poster_path ?? undefined,
+        })
     );
-
-    return compact(
-      data.results
-        .filter(
-          (e) =>
-            ((options?.media && e.media_type === options.media) ||
-              e.media_type === "tv" ||
-              e.media_type === "movie") &&
-            (!options?.year ||
-              (e.media_type === "movie" &&
-                extractYear(e.release_date) === options.year) ||
-              (e.media_type === "tv" &&
-                extractYear(e.first_air_date) === options.year))
-        )
-        .map((e) => {
-          if (e.media_type === "tv") {
-            return new Show({
-              id: TmdbId.fromIdAndType(e.id.toString(), "show"),
-              backdrop_path: e.backdrop_path,
-              original_language: e.original_language,
-              original_title: e.original_name,
-              overview: e.overview,
-              popularity: e.popularity,
-              poster_path: e.poster_path,
-              first_air_date: e.first_air_date,
-              title: e.name,
-              vote_average: e.vote_average,
-              vote_count: e.vote_count,
-              season_count: 0,
-            });
-          } else if (e.media_type === "movie") {
-            return new Movie({
-              id: TmdbId.fromIdAndType(e.id.toString(), "movie"),
-              adult: e.adult,
-              backdrop_path: e.backdrop_path,
-              original_language: e.original_language,
-              original_title: e.original_title,
-              overview: e.overview,
-              popularity: e.popularity,
-              poster_path: e.poster_path,
-              release_date: e.release_date,
-              title: e.title,
-              video: e.video,
-              vote_average: e.vote_average,
-              vote_count: e.vote_count,
-            });
-          }
-          throw new Error("Unknown media type");
+  }
+  async searchShows(query: string, year?: number): Promise<AnyTmdb[]> {
+    const { data } = await this.axios.get<SearchShow>("/search/movie", {
+      params: {
+        query,
+        year,
+        include_adult: false,
+        language: "fr-FR",
+        page: 1,
+      },
+    });
+    return data.results.map(
+      (e) =>
+        new Show({
+          id: TmdbId.fromIdAndType(e.id.toString(), "show"),
+          first_air_date: e.first_air_date,
+          original_language: e.original_language,
+          original_title: e.original_name,
+          overview: e.overview,
+          popularity: e.popularity,
+          season_count: 0,
+          title: e.name,
+          vote_average: e.vote_average,
+          vote_count: e.vote_count,
+          backdrop_path: e.backdrop_path,
+          poster_path: e.poster_path ?? undefined,
         })
     );
   }

@@ -61,7 +61,11 @@ export class DiskFileWatcher extends FileWatcher {
         if (stat.isFile() && DiskFileWatcher.isValidVideoFile(path)) {
           this.triggerAdded(new File({ path }), type);
         } else if (stat.isDirectory()) {
-          this.scanShow(path);
+          if (type === "show") {
+            this.scanShow(path);
+          } else if (type === "movie") {
+            this.scanMovie(path);
+          }
         }
       } else {
         this.triggerDeleted(new File({ path }), type);
@@ -116,7 +120,7 @@ export class DiskFileWatcher extends FileWatcher {
     return DiskFileWatcher.validVideoExtensions.includes(extension);
   }
 
-  private async scanMovie(dir: string | undefined = undefined): Promise<void> {
+  private scanMovie(dir: string | undefined = undefined) {
     const movieDir =
       dir ?? this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR");
 
@@ -124,7 +128,7 @@ export class DiskFileWatcher extends FileWatcher {
       const path = join(movieDir, entry);
       const stat = fs.statSync(path);
       if (stat.isDirectory()) {
-        return this.scanMovie(path);
+        this.scanMovie(path);
       }
       if (stat.isFile() && DiskFileWatcher.isValidVideoFile(path)) {
         this.triggerAdded(new File({ path }), "movie");
@@ -132,14 +136,14 @@ export class DiskFileWatcher extends FileWatcher {
     }
   }
 
-  private async scanShow(dir: string | undefined = undefined): Promise<void> {
+  private scanShow(dir: string | undefined = undefined) {
     const showDir = dir ?? this.environmentHelper.get("FILE_WATCHER_SHOW_DIR");
 
     for (const entry of fs.readdirSync(showDir)) {
       const path = join(showDir, entry);
       const stat = fs.statSync(path);
       if (stat.isDirectory()) {
-        return this.scanShow(path);
+        this.scanShow(path);
       }
       if (stat.isFile() && DiskFileWatcher.isValidVideoFile(path)) {
         this.triggerAdded(new File({ path }), "show");
@@ -148,7 +152,8 @@ export class DiskFileWatcher extends FileWatcher {
   }
 
   public async scan() {
-    await Promise.all([this.scanMovie(), this.scanShow()]);
+    this.scanMovie();
+    this.scanShow();
   }
 
   protected async checkExistence(file: File) {

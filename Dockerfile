@@ -12,11 +12,13 @@ COPY packages/dev/package.json packages/dev/
 
 RUN yarn --frozen-lockfile
 
-COPY packages/server packages/server
-COPY packages/domain-driven packages/domain-driven
-COPY packages/algorithm packages/algorithm
 COPY packages/dev packages/dev
+COPY packages/algorithm packages/algorithm
+COPY packages/domain-driven packages/domain-driven
+COPY packages/server packages/server
 
+RUN yarn workspace @media-center/algorithm build
+RUN yarn workspace @media-center/domain-driven build
 RUN yarn workspace @media-center/server build:production
 
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +

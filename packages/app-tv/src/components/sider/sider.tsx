@@ -15,8 +15,8 @@ import {useSignal} from '../../contexts/useSignal';
 export function Sider() {
   const {navigate} = useNavigate();
 
-  const buttons = useMemo<{title: string; do: () => void; icon: IconName}[]>(
-    () => [
+  const buttons = useMemo(() => {
+    const options: {title: string; do: () => void; icon: IconName}[] = [
       {
         icon: 'new-box',
         title: 'Ajouté récement',
@@ -42,14 +42,16 @@ export function Sider() {
         title: 'Vos séries',
         do: () => navigate('Shows', undefined),
       },
-      {
+    ];
+    if (__DEV__) {
+      options.push({
         icon: 'refresh',
         title: 'Reload',
         do: () => DevSettings.reload(),
-      },
-    ],
-    [navigate],
-  );
+      });
+    }
+    return options;
+  }, [navigate]);
 
   const getUpNameFromIndex = useCallback(
     (index: number) => {

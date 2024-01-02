@@ -9,8 +9,10 @@ import {
 import {useCallback} from 'react';
 import {noop} from '@media-center/algorithm';
 import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
+import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 
 interface ShowEpisodeCardProps {
+  show: Show;
   showEpisode: ShowEpisode;
   catalogEntry: ShowCatalogEntryFulfilled;
   userInfo: UserTmdbShowInfo;
@@ -19,6 +21,7 @@ interface ShowEpisodeCardProps {
 }
 
 export function ShowEpisodeCard({
+  show,
   showEpisode,
   catalogEntry,
   focusOnMount,
@@ -27,6 +30,7 @@ export function ShowEpisodeCard({
 }: ShowEpisodeCardProps) {
   const imageUri = useImageUri(showEpisode.still_path);
   const {actionSheet, play} = usePlayCatalogEntry(
+    `${show.title} - ${showEpisode.name}`,
     catalogEntry,
     userInfo,
     useCallback(
@@ -40,6 +44,10 @@ export function ShowEpisodeCard({
   return (
     <>
       <InfoCard
+        progress={userInfo.getEpisodeProgress(
+          showEpisode.season_number,
+          showEpisode.episode_number,
+        )}
         focusOnMount={focusOnMount}
         pillText={`Episode ${showEpisode.episode_number}`}
         title={showEpisode.name}

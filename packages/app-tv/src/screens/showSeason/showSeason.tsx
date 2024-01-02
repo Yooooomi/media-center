@@ -59,6 +59,7 @@ export default function ShowSeason() {
         focusFirst
         sectionProps={{ml: 'S32'}}
         onFocusEpisode={setFocusedEpisode}
+        show={show}
         showSeason={season}
         showEpisodes={showSeasonPage.episodes}
         availableEpisodes={showSeasonPage.shownEpisodes}

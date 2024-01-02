@@ -7,17 +7,19 @@ import Text from '../text';
 import {UserTmdbMovieInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 
 interface WatchCatalogEntryProps {
+  name: string;
   entry: MovieCatalogEntryFulfilled;
   userInfo: UserTmdbMovieInfo;
   requests: TorrentRequest[];
 }
 
 export function WatchCatalogEntry({
+  name,
   entry,
   requests,
   userInfo,
 }: WatchCatalogEntryProps) {
-  const {actionSheet, play} = usePlayCatalogEntry(entry, userInfo);
+  const {actionSheet, play} = usePlayCatalogEntry(name, entry, userInfo);
 
   const firstRequest = requests?.[0];
   const hasDownloadedItems = entry.items.length > 0;

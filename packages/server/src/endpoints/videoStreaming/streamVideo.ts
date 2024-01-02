@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as path from "path";
 import * as fs from "fs";
+import { Logger } from "@media-center/domain-driven";
 
 const contentTypes = {
   mkv: "video/x-matroska",
@@ -11,8 +12,10 @@ const contentTypes = {
 export function streamVideo(
   request: Request,
   response: Response,
-  filepath: string
+  filepath: string,
+  logger: Logger
 ) {
+  logger.info(" > stream");
   const extension = path.extname(filepath).slice(1);
   const total = fs.statSync(filepath).size;
   const { range } = request.headers;
@@ -46,5 +49,8 @@ export function streamVideo(
       start: Math.min(start, end),
       end,
     })
-    .pipe(response);
+    .pipe(response)
+    .on("close", () => {
+      logger.info(" < stream");
+    });
 }

@@ -45,8 +45,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
       if (!(userTmdbInfo instanceof UserTmdbMovieInfo)) {
         throw new Error("Inconsistent state");
       }
-      // userTmdbInfo.setProgress(command.progress);
-      userTmdbInfo.setProgress(0.5);
+      userTmdbInfo.setProgress(command.progress);
     } else if (tmdb instanceof Show) {
       if (command.season === undefined || command.episode === undefined) {
         throw new Error(
@@ -66,8 +65,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
       userTmdbInfo.setEpisodeProgress(
         command.season,
         command.episode,
-        0.5
-        // command.progress
+        command.progress
       );
     }
 

@@ -66,6 +66,7 @@ export function Movie() {
           <Box row gap="S8">
             {moviePage.catalogEntry.items.length > 0 && (
               <WatchCatalogEntry
+                name={moviePage.tmdb.title}
                 entry={moviePage.catalogEntry}
                 requests={moviePage.requests}
                 userInfo={moviePage.userInfo}

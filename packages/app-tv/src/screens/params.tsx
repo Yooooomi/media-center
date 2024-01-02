@@ -25,6 +25,7 @@ export type NavigationParams = {
     catalogEntry: ShowCatalogEntryFulfilled;
   };
   Watch: {
+    name: string;
     tmdbId: TmdbId;
     userInfo: UserTmdbMovieInfo | UserTmdbShowInfo | undefined;
     specification:

@@ -1,10 +1,11 @@
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {radius, card, cardShadow, color} from '../../../services/constants';
 import {ScaleButton} from '../pressable/scaleButton';
 import Box from '../../box';
 import Icon from '../../icon';
 import {DisabledFill} from '../../disabledFill';
 import {RateLimitedImage} from '../../rateLimitedImage';
+import {ProgressOverlay} from '../../progressOverlay';
 
 interface VerticalCardProps {
   uri: string | undefined;
@@ -23,7 +24,7 @@ export function VerticalCard({
 }: VerticalCardProps) {
   return (
     <ScaleButton focusOnMount={focusOnMount} onPress={onPress} border>
-      <View style={styles.root}>
+      <ProgressOverlay style={styles.root} progress={progress}>
         {uri ? (
           <RateLimitedImage uri={uri} style={styles.image} resizeMode="cover" />
         ) : (
@@ -36,17 +37,7 @@ export function VerticalCard({
           </Box>
         )}
         {disabled ? <DisabledFill /> : null}
-        {progress && progress < 1 ? (
-          <View
-            style={[styles.progress, {width: `${Math.floor(progress * 100)}%`}]}
-          />
-        ) : null}
-        {progress && progress === 1 ? (
-          <View style={styles.finished}>
-            <Icon name="check" />
-          </View>
-        ) : null}
-      </View>
+      </ProgressOverlay>
     </ScaleButton>
   );
 }
@@ -70,10 +61,5 @@ const styles = StyleSheet.create({
     height: 4,
     bottom: 0,
     backgroundColor: color.progress,
-  },
-  finished: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

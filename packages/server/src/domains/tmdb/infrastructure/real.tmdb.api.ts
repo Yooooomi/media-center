@@ -21,7 +21,8 @@ import { ShowEpisode } from "../domain/showEpisode";
 import { MovieDetails } from "../domain/movieDetails";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 
-const globalQueue = new PromiseQueue(150);
+// Limit is 50 per seconds
+const globalQueue = new PromiseQueue(1000 / 40);
 
 export class RealTmdbAPI extends TmdbAPI {
   axios: AxiosInstance;

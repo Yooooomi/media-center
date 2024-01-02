@@ -8,6 +8,12 @@ export class File extends Shape({
     return other instanceof File && this.path === other.path;
   }
 
+  getFilenameWithExtension() {
+    const parts = this.path.split("/");
+    const lastPart = parts[parts.length - 1];
+    return lastPart ?? "";
+  }
+
   getFilename() {
     return path.parse(this.path).name;
   }

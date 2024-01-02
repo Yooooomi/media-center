@@ -27,14 +27,27 @@ export class CatalogSaga extends Saga {
     super();
   }
 
+  private static movieReplacements: ((filename: string) => string)[] = [
+    (filename) => filename.replace(/[-_.]/g, " "),
+    (filename) => filename.replace(/[0-9]/g, ""),
+    (filename) => filename.split(" ").slice(0, -1).join(" ").trim(),
+  ];
+
+  private static showReplacements: ((filename: string) => string)[] = [
+    (filename) => filename.replace(/[-_.]/g, " "),
+    (filename) => filename.split(" ").slice(0, -1).join(" ").trim(),
+  ];
+
   private async searchWithFallback(
     name: string,
     isShow: boolean,
     year: number | undefined
   ) {
-    name = name.replace(/[-_.]/g, " ");
     let tmdbEntry: AnyTmdb | undefined;
-    while (name.length > 0) {
+    const replacements = isShow
+      ? CatalogSaga.showReplacements
+      : CatalogSaga.movieReplacements;
+    for (let i = 0; name.length > 0; i += 1) {
       [tmdbEntry] = await this.tmdbApi.search(name, {
         type: isShow ? "show" : "movie",
         year: year,
@@ -42,8 +55,9 @@ export class CatalogSaga extends Saga {
       if (tmdbEntry) {
         return tmdbEntry;
       }
-      console.log("Splitting", name);
-      name = name.split(" ").slice(0, -1).join(" ").trim();
+      const replacement =
+        replacements[i] ?? replacements[replacements.length - 1]!;
+      name = replacement(name);
     }
     return undefined;
   }

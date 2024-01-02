@@ -20,6 +20,7 @@ import ProgressBar from '../../../components/progressBar/progressBar';
 import {IconButton} from '../../../components/ui/pressable/iconButton';
 
 interface ControlsProps {
+  name: string;
   progress: SharedValue<number>;
   isPlaying: boolean;
   rollPlay: () => void;
@@ -37,6 +38,7 @@ const REWIND_MS = 10000;
 const FORWARD_MS = 30000;
 
 const Controls = ({
+  name,
   isPlaying,
   onBack,
   onNext,
@@ -129,6 +131,9 @@ const Controls = ({
           entering={FadeIn}
           exiting={FadeOut}
           style={[styles.root, style]}>
+          <Box mt="S16" ml="S32">
+            <Text>{name}</Text>
+          </Box>
           <Box w="100%" ph="S32" row items="center" gap="S16">
             <RealtimeText style={styles.progressText} value={progressString} />
             <Box grow>
@@ -192,11 +197,8 @@ const Controls = ({
 const styles = StyleSheet.create({
   root: {
     width: '100%',
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.S16,
     backgroundColor: `${color.background}69`,
+    paddingBottom: spacing.S16,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,

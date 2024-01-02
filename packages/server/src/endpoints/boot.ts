@@ -63,7 +63,7 @@ export function bootApi(
     //   avi: "/Users/timothee/perso/media-center/aaa/films/Sorry.to.Bother.You.2018.FRENCH.BDRip.XviD-EXTREME.avi",
     //   mkv: "/Users/timothee/perso/media-center/aaa/films/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv",
     // };
-    return streamVideo(req, res, item.file.path);
+    return streamVideo(req, res, item.file.path, logger);
   });
 
   async function executeIntention(bus: IntentBus, name: string, params: any) {

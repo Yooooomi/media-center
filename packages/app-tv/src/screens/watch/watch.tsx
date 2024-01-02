@@ -13,7 +13,7 @@ import {progressFromUserInfo} from './progressFromUserInfo';
 const {width, height} = Dimensions.get('screen');
 
 export default function Watch() {
-  const {tmdbId, specification, userInfo} = useParams<'Watch'>();
+  const {name, tmdbId, specification, userInfo} = useParams<'Watch'>();
   const {item: hierarchyItem} = specification;
   const videoUri = useVideoUri(hierarchyItem.id);
   const [videoInfo, setVideoInfo] = useState<VLCTrackInfoEvent | undefined>(
@@ -40,7 +40,6 @@ export default function Watch() {
     if (!videoInfo) {
       return;
     }
-    console.log('Starting at', startAt, videoInfo.duration);
     setSeek(videoInfo.duration * startAt);
   }, [startAt, videoInfo]);
 
@@ -102,6 +101,7 @@ export default function Watch() {
       />
       {videoInfo && (
         <Controls
+          name={name}
           progress={currentProgressMs}
           videoInfo={videoInfo}
           style={styles.controls}

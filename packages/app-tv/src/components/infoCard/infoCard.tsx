@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {cardShadow, hcard, radius} from '../../services/constants';
 import Box from '../box';
 import Pill from '../pill';
@@ -7,6 +7,7 @@ import {ScaleButton} from '../ui/pressable/scaleButton';
 import {noop} from '@media-center/algorithm';
 import {DisabledFill} from '../disabledFill';
 import {RateLimitedImage} from '../rateLimitedImage';
+import {ProgressOverlay} from '../progressOverlay';
 
 export interface InfoCardProps {
   imageUri: string | undefined;
@@ -16,6 +17,7 @@ export interface InfoCardProps {
   onPress: () => void;
   focusOnMount?: boolean;
   disabled?: boolean;
+  progress?: number;
 }
 
 export const InfoCardSize = {
@@ -31,6 +33,7 @@ export default function InfoCard({
   onPress,
   focusOnMount,
   disabled,
+  progress,
 }: InfoCardProps) {
   return (
     <Box>
@@ -38,14 +41,14 @@ export default function InfoCard({
         onPress={disabled ? noop : onPress}
         focusOnMount={focusOnMount}
         border>
-        <View style={styles.root}>
+        <ProgressOverlay style={styles.root} progress={progress}>
           <RateLimitedImage
             uri={imageUri}
             style={styles.image}
             resizeMode="cover"
           />
           {disabled ? <DisabledFill /> : null}
-        </View>
+        </ProgressOverlay>
       </ScaleButton>
       <Box
         row

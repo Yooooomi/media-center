@@ -6,7 +6,7 @@ import {
 } from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {useNavigate} from '../screens/params';
 import {useCallback, useMemo, useState} from 'react';
-import {FlatList, ListRenderItem, Modal} from 'react-native';
+import {FlatList, ListRenderItem} from 'react-native';
 import Box from '../components/box';
 import Text from '../components/text';
 import {Pressable} from '../components/ui/pressable/pressable';
@@ -14,10 +14,12 @@ import {
   UserTmdbMovieInfo,
   UserTmdbShowInfo,
 } from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
+import Modal from '../components/modal';
 
 export function usePlayCatalogEntry<
   T extends MovieCatalogEntryFulfilled | ShowCatalogEntryFulfilled,
 >(
+  name: string,
   entry: T,
   userInfo: UserTmdbMovieInfo | UserTmdbShowInfo,
   filter?: (
@@ -41,9 +43,14 @@ export function usePlayCatalogEntry<
         | CatalogEntryShowSpecificationFulFilled
         | CatalogEntryMovieSpecificationFulFilled,
     ) => {
-      return navigate('Watch', {tmdbId: entry.id, specification, userInfo});
+      return navigate('Watch', {
+        name,
+        tmdbId: entry.id,
+        specification,
+        userInfo,
+      });
     },
-    [entry.id, navigate, userInfo],
+    [entry.id, name, navigate, userInfo],
   );
 
   const play = useCallback(() => {
@@ -71,7 +78,7 @@ export function usePlayCatalogEntry<
               p="S8"
               bg={focused ? 'buttonBackgroundFocused' : 'buttonBackground'}>
               <Text color={focused ? 'buttonTextFocused' : 'buttonText'}>
-                {item.item.file.getFilename()}
+                {item.item.file.getFilenameWithExtension()}
               </Text>
             </Box>
           )}
@@ -86,7 +93,10 @@ export function usePlayCatalogEntry<
       return null;
     }
     return (
-      <Modal visible={actionSheetOpen}>
+      <Modal
+        title="Selectionner le fichier à regarder"
+        open={actionSheetOpen}
+        onClose={() => setActionSheetOpen(false)}>
         <FlatList data={entry.items} renderItem={renderHierarchyItem} />
       </Modal>
     );

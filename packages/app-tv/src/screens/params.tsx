@@ -13,6 +13,7 @@ import {
 } from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-native';
+import {useBack} from '../services/useBack';
 
 export type NavigationParams = {
   Discover: undefined;
@@ -37,6 +38,7 @@ export type NavigationParams = {
   SearchTorrent: undefined;
   Movies: undefined;
   Shows: undefined;
+  Settings: undefined;
 };
 
 export const paths: Record<keyof NavigationParams, string> = {
@@ -51,6 +53,7 @@ export const paths: Record<keyof NavigationParams, string> = {
   SearchTorrent: '/search_torrent',
   Movies: '/movies',
   Shows: '/shows',
+  Settings: '/settings',
 };
 
 export function useParams<K extends keyof NavigationParams>() {
@@ -76,23 +79,34 @@ export function useNavigationContext() {
     {pathname: paths.Library, params: {}},
   ]);
 
+  const add = useCallback((item: HistoryItem) => {
+    setHistory(old => {
+      return [...old.filter(o => o.pathname !== item.pathname), item];
+    });
+  }, []);
+
+  const pop = useCallback(() => {
+    setHistory(old => {
+      if (old.length === 1) {
+        return old;
+      }
+      return old.slice(0, -1);
+    });
+  }, []);
+
   const value = useMemo<NavigationContext>(
     () => ({
-      add: (item: HistoryItem) => {
-        setHistory(old => {
-          return [...old.filter(o => o.pathname !== item.pathname), item];
-        });
-      },
-      pop: () => {
-        setHistory(old => {
-          if (old.length === 1) {
-            return old;
-          }
-          return old.slice(0, -1);
-        });
-      },
+      add,
+      pop,
     }),
-    [],
+    [add, pop],
+  );
+
+  useBack(
+    useCallback(() => {
+      pop();
+      return true;
+    }, [pop]),
   );
 
   return {value, currentRoute: history[history.length - 1]!};

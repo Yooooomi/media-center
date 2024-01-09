@@ -8,7 +8,7 @@ interface ProgressBarProps {
   style?: ViewStyle;
 }
 
-export default function ProgressBar({progress, style}: ProgressBarProps) {
+export function ProgressBar({progress, style}: ProgressBarProps) {
   const bar = useAnimatedStyle(() => ({
     backgroundColor: 'white',
     flexGrow: 1,

@@ -1,7 +1,7 @@
 import {TorrentRequest} from '@media-center/server/src/domains/torrentRequest/domain/torrentRequest';
 import {StyleSheet, Text} from 'react-native';
-import Box from '../box';
-import ProgressBar from '../progressBar';
+import {Box} from '../box';
+import {ProgressBar} from '../progressBar';
 
 interface TorrentRequestLineProps {
   torrentRequest: TorrentRequest;

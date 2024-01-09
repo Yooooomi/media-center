@@ -1,6 +1,6 @@
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import Box from '../box';
-import Icon, {IconName} from '../icon/icon';
+import {Box} from '../box';
+import {Icon, IconName} from '../icon/icon';
 import {BoxProps} from '../box/box';
 import {ReactNode} from 'react';
 import {BlurView} from '@react-native-community/blur';

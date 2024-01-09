@@ -10,13 +10,13 @@ import Animated, {
   useDerivedValue,
 } from 'react-native-reanimated';
 import {useAdditiveThrottle} from '../../../services/useAdditiveThrottle';
-import Box from '../../../components/box/box';
-import Text from '../../../components/text/text';
-import ControlsActionSheet from './controlsActionSheet';
+import {Box} from '../../../components/box/box';
+import {Text} from '../../../components/text/text';
+import {ControlsActionSheet} from './controlsActionSheet';
 import {VLCTrackInfoEvent} from '@media-center/vlc';
 import {formatVideoDuration} from '../../../services/string';
-import RealtimeText from '../../../components/realtimeText/realtimeText';
-import ProgressBar from '../../../components/progressBar/progressBar';
+import {RealtimeText} from '../../../components/realtimeText/realtimeText';
+import {ProgressBar} from '../../../components/progressBar/progressBar';
 import {IconButton} from '../../../components/ui/pressable/iconButton';
 
 interface ControlsProps {
@@ -37,7 +37,7 @@ const SHOW_DURATION_MS = 3000;
 const REWIND_MS = 10000;
 const FORWARD_MS = 30000;
 
-const Controls = ({
+export const Controls = ({
   name,
   isPlaying,
   onBack,
@@ -227,5 +227,3 @@ const styles = StyleSheet.create({
     fontSize: fontSize.default,
   },
 });
-
-export default Controls;

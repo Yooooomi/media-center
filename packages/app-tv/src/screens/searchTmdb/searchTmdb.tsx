@@ -1,5 +1,5 @@
 import {useCallback, useState} from 'react';
-import Box from '../../components/box/box';
+import {Box} from '../../components/box/box';
 import {useAdditiveThrottle} from '../../services/useAdditiveThrottle';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {SearchQuery} from '@media-center/server/src/domains/tmdb/applicative/search.query';
@@ -8,10 +8,10 @@ import {Beta} from '../../services/api';
 import {FlatList, StyleSheet} from 'react-native';
 import {MovieCard} from '../../components/implementedUi/cards/movieCard/movieCard';
 import {ShowCard} from '../../components/implementedUi/cards/showCard/showCard';
-import Section from '../../components/section/section';
+import {Section} from '../../components/section/section';
 import {useBooleanState} from '../../services/useBooleanState';
-import {TextInput} from 'react-native';
 import {spacing} from '../../services/constants';
+import {TextInput} from '../../components/ui/textInput';
 
 export function SearchTmdb() {
   const [isFocused, focus, blur] = useBooleanState();
@@ -73,5 +73,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 300,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
 });

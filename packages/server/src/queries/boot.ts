@@ -7,8 +7,11 @@ import { GetMoviePageQueryHandler } from "./getMoviePage.query";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { GetShowPageQueryHandler } from "./getShowPage.query";
-import { GetShowSeasonPageQueryHandler } from "./getShowSeasonPage.query";
 import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
+import { SettingsPageQueryHandler } from "./settingsPage.query";
+import { GetMoviesPageQueryHandler } from "./getMoviesPage.query";
+import { GetShowsPageQueryHandler } from "./getShowsPage.query";
+import { DiscoverPageQueryHandler } from "./discoverPage.query";
 
 export function bootQueries(
   queryBus: QueryBus,
@@ -45,16 +48,20 @@ export function bootQueries(
       tmdbApi,
       torrentRequestStore,
       catalogEntryStore,
-      hierarchyStore
+      hierarchyStore,
+      userTmdbInfoStore
     )
   );
 
   queryBus.register(
-    new GetShowSeasonPageQueryHandler(
-      tmdbApi,
-      hierarchyStore,
-      catalogEntryStore,
-      userTmdbInfoStore
-    )
+    new SettingsPageQueryHandler(hierarchyStore, catalogEntryStore)
   );
+
+  queryBus.register(
+    new GetMoviesPageQueryHandler(catalogEntryStore, tmdbStore)
+  );
+
+  queryBus.register(new GetShowsPageQueryHandler(catalogEntryStore, tmdbStore));
+
+  queryBus.register(new DiscoverPageQueryHandler(tmdbApi));
 }

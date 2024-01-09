@@ -5,7 +5,7 @@ interface DividerProps {
   width: ViewStyle['width'];
 }
 
-export default function Divider({width}: DividerProps) {
+export function Divider({width}: DividerProps) {
   return <View style={[styles.root, {width}]} />;
 }
 

@@ -14,4 +14,6 @@ export abstract class CatalogEntryStore extends Store<AnyCatalogEntry> {
 
   abstract loadMovies(): Promise<MovieCatalogEntry[]>;
   abstract loadShows(): Promise<ShowCatalogEntry[]>;
+  abstract loadNewestMovies(limit: number): Promise<MovieCatalogEntry[]>;
+  abstract loadNewestShows(limit: number): Promise<ShowCatalogEntry[]>;
 }

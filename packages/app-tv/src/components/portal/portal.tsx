@@ -10,10 +10,7 @@ interface PortalProps {
 
 let uniqueId = 0;
 
-export default function Portal({
-  children,
-  name = DEFAULT_HOSTNAME,
-}: PortalProps) {
+export function Portal({children, name = DEFAULT_HOSTNAME}: PortalProps) {
   const ref = useRef(uniqueId++);
 
   return (

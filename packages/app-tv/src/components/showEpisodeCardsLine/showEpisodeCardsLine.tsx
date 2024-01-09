@@ -1,14 +1,12 @@
 import {ShowEpisode} from '@media-center/server/src/domains/tmdb/domain/showEpisode';
-import SectionLine, {ExtraSectionLineProps} from '../sectionLine/sectionLine';
 import {ShowEpisodeCard} from '../implementedUi/cards/showEpisodeCard/showEpisodeCard';
-import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeason';
 import {ShowCatalogEntryFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
+import {LineList} from '../lineList';
 
-interface ShowEpisodeCardsLineProps extends ExtraSectionLineProps<ShowEpisode> {
+interface ShowEpisodeCardsLineProps {
   show: Show;
-  showSeason: ShowSeason;
   showEpisodes: ShowEpisode[];
   availableEpisodes: number[];
   userInfo: UserTmdbShowInfo;
@@ -17,19 +15,16 @@ interface ShowEpisodeCardsLineProps extends ExtraSectionLineProps<ShowEpisode> {
   focusFirst?: boolean;
 }
 
-export default function ShowEpisodeCardsLine({
+export function ShowEpisodeCardsLine({
   show,
   showEpisodes,
-  showSeason,
   availableEpisodes,
   catalogEntry,
   focusFirst,
   userInfo,
-  ...other
 }: ShowEpisodeCardsLineProps) {
   return (
-    <SectionLine
-      {...other}
+    <LineList
       data={showEpisodes}
       keyExtractor={showEpisode => showEpisode.episode_number.toString()}
       renderItem={(item, index) => (
@@ -42,8 +37,6 @@ export default function ShowEpisodeCardsLine({
           showEpisode={item}
         />
       )}
-      title={`Episodes de la saison ${showSeason.season_number}`}
-      subtitle={`${showSeason.episode_count} épisodes`}
     />
   );
 }

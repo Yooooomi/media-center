@@ -1,7 +1,5 @@
 import { InMemoryDatabase, QueryBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
-import { DiscoverMovieQueryHandler } from "./applicative/discoverMovie.query";
-import { DiscoverShowQueryHandler } from "./applicative/discoverShow.query";
 import { GetEpisodesQueryHandler } from "./applicative/getEpisodes.query";
 import { GetMovieDetailsQueryHandler } from "./applicative/getMovieDetails.query";
 import { GetSeasonsQueryHandler } from "./applicative/getSeasons.query";
@@ -27,8 +25,6 @@ export function bootTmdb(
     filesystem: () =>
       new FilesystemTmdbStore(environmentHelper, database, tmdbApi),
   });
-  queryBus.register(new DiscoverMovieQueryHandler(tmdbApi));
-  queryBus.register(new DiscoverShowQueryHandler(tmdbApi));
   queryBus.register(new GetTmdbsQueryHandler(tmdbStore));
   queryBus.register(new GetSeasonsQueryHandler(tmdbApi));
   queryBus.register(new GetEpisodesQueryHandler(tmdbApi));

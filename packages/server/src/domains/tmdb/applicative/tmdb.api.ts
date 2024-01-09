@@ -18,6 +18,7 @@ export abstract class TmdbAPI {
   abstract discoverMovie(): Promise<Movie[]>;
   abstract discoverShow(): Promise<Show[]>;
   abstract getMovieDetails(tmdbId: TmdbId): Promise<MovieDetails | undefined>;
+  abstract getAsBuffer(path: string): Promise<Buffer>;
 
   async search(
     query: string,
@@ -36,6 +37,8 @@ export abstract class TmdbAPI {
         this.searchMovies(query, options?.year),
         this.searchShows(query, options?.year),
       ])
-    ).flat();
+    )
+      .flat()
+      .sort((a, b) => b.popularity - a.popularity);
   }
 }

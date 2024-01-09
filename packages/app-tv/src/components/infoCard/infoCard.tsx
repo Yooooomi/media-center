@@ -1,8 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {cardShadow, hcard, radius} from '../../services/constants';
-import Box from '../box';
-import Pill from '../pill';
-import Text from '../text/text';
+import {Box} from '../box';
+import {Pill} from '../pill';
+import {Text} from '../text/text';
 import {ScaleButton} from '../ui/pressable/scaleButton';
 import {noop} from '@media-center/algorithm';
 import {DisabledFill} from '../disabledFill';
@@ -25,7 +25,7 @@ export const InfoCardSize = {
   height: hcard.height + 30,
 };
 
-export default function InfoCard({
+export function InfoCard({
   imageUri,
   pillText,
   title,

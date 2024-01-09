@@ -18,7 +18,7 @@ export interface TextProps extends RNTextProps {
   align?: TextStyle['textAlign'];
 }
 
-export default function Text({
+export function Text({
   size = 'default',
   bold,
   children,

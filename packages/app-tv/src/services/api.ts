@@ -54,25 +54,20 @@ export class Bridge {
     }
     (query as any).actorId = this.userId;
     const serialized = query.serialize();
-    try {
-      const {data} = await this.axios.request({
-        url: path,
-        method,
-        params: {
-          needing: serialized,
-        },
-        data: {
-          needing: serialized,
-        },
-      });
-      const deserialized = (
-        query.constructor as BaseIntentConstructor<any>
-      ).returning?.deserialize(data);
-      return deserialized;
-    } catch (e) {
-      console.error('API error', e);
-      throw e;
-    }
+    const {data} = await this.axios.request({
+      url: path,
+      method,
+      params: {
+        needing: JSON.stringify(serialized),
+      },
+      data: {
+        needing: serialized,
+      },
+    });
+    const deserialized = (
+      query.constructor as BaseIntentConstructor<any>
+    ).returning?.deserialize(data);
+    return deserialized;
   }
 
   async query<Q extends BaseIntent<any, any>>(

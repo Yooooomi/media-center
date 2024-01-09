@@ -9,6 +9,7 @@ export class CatalogEntryMovieSpecification extends Shape({
 @Freeze()
 export class MovieCatalogEntry extends Shape({
   id: TmdbId,
+  updatedAt: Date,
   items: Multiple(CatalogEntryMovieSpecification),
 }) {
   public addSpecification(specification: CatalogEntryMovieSpecification) {
@@ -25,6 +26,10 @@ export class MovieCatalogEntry extends Shape({
     }
     this.items.splice(index, 1);
   }
+
+  markUpdated(date: Date) {
+    this.updatedAt = date;
+  }
 }
 
 export class CatalogEntryShowSpecification extends Shape({
@@ -36,6 +41,7 @@ export class CatalogEntryShowSpecification extends Shape({
 @Freeze()
 export class ShowCatalogEntry extends Shape({
   id: TmdbId,
+  updatedAt: Date,
   items: Multiple(CatalogEntryShowSpecification),
 }) {
   public addSpecification(specification: CatalogEntryShowSpecification) {
@@ -51,6 +57,10 @@ export class ShowCatalogEntry extends Shape({
       return;
     }
     this.items.splice(index, 1);
+  }
+
+  markUpdated(date: Date) {
+    this.updatedAt = date;
   }
 }
 

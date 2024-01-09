@@ -11,10 +11,11 @@ import { TorrentRequestStore } from "../domains/torrentRequest/applicative/torre
 import { CatalogEntryStore } from "../domains/catalog/applicative/catalogEntry.store";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { ShowCatalogEntry } from "../domains/catalog/domain/catalogEntry";
-import { keyBy } from "@media-center/algorithm";
+import { keyBy, uniqBy } from "@media-center/algorithm";
 import { ShowSeason } from "../domains/tmdb/domain/showSeason";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import {
+  CatalogDeleted,
   CatalogEntryDeleted,
   CatalogEntryUpdated,
 } from "../domains/catalog/applicative/catalog.events";
@@ -23,17 +24,30 @@ import {
   TorrentRequestAdded,
   TorrentRequestUpdated,
 } from "../domains/torrentRequest/domain/torrentRequest.events";
+import { ShowEpisode } from "../domains/tmdb/domain/showEpisode";
+import { UserTmdbShowInfo } from "../domains/userTmdbInfo/domain/userTmdbInfo";
+import {
+  UserId,
+  UserTmdbInfoId,
+} from "../domains/userTmdbInfo/domain/userTmdbInfoId";
+import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,
   requests: [TorrentRequest],
   catalogEntry: ShowCatalogEntryFulfilled,
   seasons: [ShowSeason],
+  episodes: [{ season: Number, episodes: [ShowEpisode] }],
+  userInfo: UserTmdbShowInfo,
 }) {}
 
-export class GetShowPageQuery extends Query(TmdbId, ShowPageSummary) {}
+export class GetShowPageQuery extends Query(
+  { actorId: UserId, tmdbId: TmdbId },
+  ShowPageSummary
+) {}
 
 export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
+  CatalogDeleted,
   CatalogEntryUpdated,
   CatalogEntryDeleted,
   TorrentRequestAdded,
@@ -44,52 +58,78 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
     private readonly tmdbApi: TmdbAPI,
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly hierarchyStore: HierarchyStore
+    private readonly hierarchyStore: HierarchyStore,
+    private readonly userTmdbInfoStore: UserTmdbInfoStore
   ) {
     super();
   }
 
   shouldReact(
     event:
+      | CatalogDeleted
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
       | TorrentRequestUpdated,
     intent: GetShowPageQuery
   ) {
+    if (event instanceof CatalogDeleted) {
+      return true;
+    }
     if (
       event instanceof TorrentRequestAdded ||
       event instanceof TorrentRequestUpdated
     ) {
-      return event.tmdbId.equals(intent.value);
+      return event.tmdbId.equals(intent.tmdbId);
     }
-    return event.catalogEntry.id.equals(intent.value);
+    return event.catalogEntry.id.equals(intent.tmdbId);
   }
 
-  async execute(intention: GetShowPageQuery): Promise<ShowPageSummary> {
-    const tmdb = await this.tmdbStore.load(intention.value);
+  async execute(intent: GetShowPageQuery): Promise<ShowPageSummary> {
+    const tmdb = await this.tmdbStore.load(intent.tmdbId);
 
     if (!tmdb || !(tmdb instanceof Show)) {
       throw new Error("Cannot load Show TMDB");
     }
 
-    const requests = await this.torrentRequestStore.loadByTmdbId(
-      intention.value
-    );
+    const requests = await this.torrentRequestStore.loadByTmdbId(intent.tmdbId);
 
     const catalogEntryFulfilled = await getShowCatalogEntryFulfilled(
-      intention.value,
+      intent.tmdbId,
       this.hierarchyStore,
       this.catalogEntryStore
     );
 
-    const seasons = await this.tmdbApi.getSeasons(intention.value);
+    const seasons = await this.tmdbApi.getSeasons(intent.tmdbId);
+    const neededSeasonNumbers = catalogEntryFulfilled.availableSeasons();
+    const neededSeasons = seasons.filter((season) =>
+      neededSeasonNumbers.includes(season.season_number)
+    );
+    const episodes = await Promise.all(
+      neededSeasonNumbers.map(async (seasonNumber) => ({
+        season: seasonNumber,
+        episodes: await this.tmdbApi.getEpisodes(intent.tmdbId, seasonNumber),
+      }))
+    );
+
+    const userInfoId = new UserTmdbInfoId(intent.actorId, intent.tmdbId);
+    let userInfo = await this.userTmdbInfoStore.load(userInfoId);
+
+    if (!userInfo || !(userInfo instanceof UserTmdbShowInfo)) {
+      userInfo = new UserTmdbShowInfo({
+        id: userInfoId,
+        progress: [],
+        updatedAt: Date.now(),
+      });
+    }
 
     return new ShowPageSummary({
       tmdb,
       requests,
       catalogEntry: catalogEntryFulfilled,
-      seasons,
+      seasons: neededSeasons,
+      episodes,
+      userInfo,
     });
   }
 }

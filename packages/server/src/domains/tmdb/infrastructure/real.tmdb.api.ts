@@ -189,53 +189,53 @@ export class RealTmdbAPI extends TmdbAPI {
 
   async discoverShow(): Promise<Show[]> {
     const { data } = await globalQueue.queue(() =>
-      this.axios.get<DiscoverShow>(
-        "/discover/tv?include_adult=false&include_video=false&language=fr-FR&page=1&sort_by=popularity.desc&with_release_type=4|5|6"
+      this.axios.get<DiscoverShow>("/trending/tv/week?language=fr-FR")
+    );
+    return data.results
+      .map(
+        (d) =>
+          new Show({
+            id: TmdbId.fromIdAndType(d.id.toString(), "show"),
+            backdrop_path: d.backdrop_path,
+            original_language: d.original_language,
+            original_title: d.original_name,
+            overview: d.overview,
+            popularity: d.popularity,
+            poster_path: d.poster_path,
+            first_air_date: d.first_air_date,
+            title: d.name,
+            vote_average: d.vote_average,
+            vote_count: d.vote_count,
+            season_count: 0,
+          })
       )
-    );
-    return data.results.map(
-      (d) =>
-        new Show({
-          id: TmdbId.fromIdAndType(d.id.toString(), "show"),
-          backdrop_path: d.backdrop_path,
-          original_language: d.original_language,
-          original_title: d.original_name,
-          overview: d.overview,
-          popularity: d.popularity,
-          poster_path: d.poster_path,
-          first_air_date: d.first_air_date,
-          title: d.name,
-          vote_average: d.vote_average,
-          vote_count: d.vote_count,
-          season_count: 0,
-        })
-    );
+      .sort((a, b) => b.popularity - a.popularity);
   }
 
   async discoverMovie() {
     const { data } = await globalQueue.queue(() =>
-      this.axios.get<DiscoverMovie>(
-        "/discover/movie?include_adult=false&include_video=false&language=fr-FR&page=1&sort_by=popularity.desc&with_release_type=4|5|6"
+      this.axios.get<DiscoverMovie>("/trending/movie/week?language=fr-FR")
+    );
+    return data.results
+      .map(
+        (d) =>
+          new Movie({
+            id: TmdbId.fromIdAndType(d.id.toString(), "movie"),
+            adult: d.adult,
+            backdrop_path: d.backdrop_path,
+            original_language: d.original_language,
+            original_title: d.original_title,
+            overview: d.overview,
+            popularity: d.popularity,
+            poster_path: d.poster_path,
+            release_date: d.release_date,
+            title: d.title,
+            video: d.video,
+            vote_average: d.vote_average,
+            vote_count: d.vote_count,
+          })
       )
-    );
-    return data.results.map(
-      (d) =>
-        new Movie({
-          id: TmdbId.fromIdAndType(d.id.toString(), "movie"),
-          adult: d.adult,
-          backdrop_path: d.backdrop_path,
-          original_language: d.original_language,
-          original_title: d.original_title,
-          overview: d.overview,
-          popularity: d.popularity,
-          poster_path: d.poster_path,
-          release_date: d.release_date,
-          title: d.title,
-          video: d.video,
-          vote_average: d.vote_average,
-          vote_count: d.vote_count,
-        })
-    );
+      .sort((a, b) => b.popularity - a.popularity);
   }
 
   async getMovieDetails(tmdbId: TmdbId) {
@@ -254,5 +254,14 @@ export class RealTmdbAPI extends TmdbAPI {
     } catch (e) {
       return undefined;
     }
+  }
+
+  async getAsBuffer(path: string) {
+    const { data } = await globalQueue.queue(() =>
+      Axios.get(path, {
+        responseType: "arraybuffer",
+      })
+    );
+    return data;
   }
 }

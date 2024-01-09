@@ -1,1 +1,1 @@
-export {default} from './realtimeText';
+export * from './realtimeText';

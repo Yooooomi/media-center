@@ -74,6 +74,35 @@ export function debounce<F extends (...args: any[]) => void>(
   };
 }
 
+export function debounceOverflow<F extends (...args: any[]) => void>(
+  fn: F,
+  ms: number,
+  overflowAt: number
+) {
+  let timeoutId: NodeJS.Timeout | undefined;
+  let currentQueueSize = 0;
+
+  return function (...args: any[]) {
+    // If there's a pending timeout, clear it to ensure only the latest call is delayed.
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    currentQueueSize += 1;
+
+    if (currentQueueSize === overflowAt) {
+      currentQueueSize = 0;
+      fn(...args);
+    } else {
+      // Schedule a new timeout to invoke the function after the specified delay.
+      timeoutId = setTimeout(() => {
+        currentQueueSize = 0;
+        fn(...args);
+      }, ms);
+    }
+  };
+}
+
 export function wait(ms: number) {
   return new Promise((res) => setTimeout(res, ms));
 }

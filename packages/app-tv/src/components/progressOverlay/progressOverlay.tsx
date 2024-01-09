@@ -1,7 +1,7 @@
 import {ReactNode} from 'react';
 import {StyleSheet, View, ViewStyle} from 'react-native';
 import {color, radius, spacing} from '../../services/constants';
-import Icon from '../icon';
+import {Icon} from '../icon';
 
 interface ProgressOverlayProps {
   progress?: number;

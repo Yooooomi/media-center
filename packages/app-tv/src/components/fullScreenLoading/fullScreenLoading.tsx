@@ -1,7 +1,7 @@
 import {ActivityIndicator, StyleSheet} from 'react-native';
 import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 
-export default function FullScreenLoading() {
+export function FullScreenLoading() {
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.root}>
       <ActivityIndicator size={48} />

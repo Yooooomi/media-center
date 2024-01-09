@@ -1,17 +1,19 @@
 import {useCallback, useState} from 'react';
-import Box from '../../components/box/box';
+import {Box} from '../../components/box/box';
 import {Beta} from '../../services/api';
-import {ScrollView, StyleSheet, TextInput} from 'react-native';
-import Section from '../../components/section/section';
+import {ScrollView, StyleSheet} from 'react-native';
+import {Section} from '../../components/section/section';
 import {useBooleanState} from '../../services/useBooleanState';
 import {SearchTorrentsQuery} from '@media-center/server/src/domains/torrentIndexer/applicative/searchTorrents.query';
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
-import TorrentIndexerResultLine from '../../components/torrentIndexerResultLine/torrentIndexerResultLine';
+import {TorrentIndexerResultLine} from '../../components/torrentIndexerResultLine/torrentIndexerResultLine';
 import {AddRawTorrentRequestCommand} from '@media-center/server/src/domains/torrentRequest/applicative/addRawTorrentRequest.command';
 import {useAlert} from '../../components/alert/alertProvider';
 import {IconButton} from '../../components/ui/pressable/iconButton';
+import {TextInput} from '../../components/ui/textInput';
+import {SearchQuery} from '@media-center/server/src/tools/searchQuery';
 
-export default function SearchTorrent() {
+export function SearchTorrent() {
   const [isFocused, focus, blur] = useBooleanState();
   const [results, setResults] = useState<TorrentIndexerResult[]>([]);
   const [text, setText] = useState('');
@@ -22,7 +24,7 @@ export default function SearchTorrent() {
     setLoading(true);
     const newResults = await Beta.query(
       new SearchTorrentsQuery({
-        query: text,
+        queries: [SearchQuery.from(text)],
       }),
     );
     setResults(newResults);

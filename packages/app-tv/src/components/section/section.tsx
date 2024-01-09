@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
-import Box, {BoxProps} from '../box/box';
-import Text, {TextProps} from '../text/text';
+import {Box, BoxProps} from '../box/box';
+import {Text, TextProps} from '../text/text';
 import {StyleSheet} from 'react-native';
 
 export interface SectionProps extends BoxProps {
@@ -12,7 +12,7 @@ export interface SectionProps extends BoxProps {
   right?: ReactNode;
 }
 
-export default function Section({
+export function Section({
   title,
   subtitle,
   children,

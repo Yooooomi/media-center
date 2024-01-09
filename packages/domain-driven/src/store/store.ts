@@ -1,22 +1,23 @@
-import { AtLeastId } from "../serialization";
-import { InMemoryTransaction } from "./inMemory.store";
+import { AtLeastId, Constructor } from "../serialization";
+
+export type Transaction = any;
+
+export type Database = any;
 
 export abstract class Store<M extends AtLeastId> {
-  abstract transactionnally<T>(
-    executor: (transaction: InMemoryTransaction) => Promise<T>
-  ): Promise<T>;
-  abstract load(
-    id: M["id"],
-    transaction?: InMemoryTransaction
-  ): Promise<M | undefined>;
-  abstract loadMany(
-    ids: M["id"][],
-    transaction?: InMemoryTransaction
-  ): Promise<M[]>;
-  abstract loadAll(transaction?: InMemoryTransaction): Promise<M[]>;
-  abstract save(model: M, transaction?: InMemoryTransaction): Promise<void>;
-  abstract delete(
-    id: M["id"],
-    transaction?: InMemoryTransaction
-  ): Promise<void>;
+  abstract load(id: M["id"], transaction?: Transaction): Promise<M | undefined>;
+  abstract loadMany(ids: M["id"][], transaction?: Transaction): Promise<M[]>;
+  abstract loadAll(transaction?: Transaction): Promise<M[]>;
+  abstract save(model: M, transaction?: Transaction): Promise<void>;
+  abstract delete(id: M["id"], transaction?: Transaction): Promise<void>;
+  abstract deleteAll(transaction?: Transaction): Promise<void>;
+  abstract countAll(transaction?: Transaction): Promise<number>;
+}
+
+export abstract class TransactionPerformer<
+  T extends Transaction = Transaction
+> {
+  abstract transactionnally<R>(
+    executor: (transaction: T) => Promise<R>
+  ): Promise<R>;
 }

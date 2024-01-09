@@ -1,1 +1,1 @@
-export {default} from './showEpisodeCardsLine';
+export * from './showEpisodeCardsLine';

@@ -6,7 +6,7 @@ interface PortalHostProps {
   style?: ViewStyle;
 }
 
-export default function PortalHost({name, style}: PortalHostProps) {
+export function PortalHost({name, style}: PortalHostProps) {
   return (
     <View style={[style, styles.root]}>
       <PPortalHost name={name} />

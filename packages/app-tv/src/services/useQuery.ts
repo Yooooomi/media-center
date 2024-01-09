@@ -6,6 +6,12 @@ import {
   IntentNeeding,
   IntentReturning,
 } from '@media-center/domain-driven';
+import {unstable_batchedUpdates} from 'react-native';
+
+interface State<R> {
+  result: R | undefined;
+  error: Error | undefined;
+}
 
 export function useQuery<
   T extends BaseIntent<any, any>,
@@ -19,24 +25,31 @@ export function useQuery<
     reactive?: boolean;
   },
 ) {
-  const [fetching, setFetching] = useState(false);
-  const [result, setResult] = useState<{
-    result: R | undefined;
-    error: any | undefined;
-  }>({result: undefined, error: undefined});
-  const unsubscribe = useRef<(() => void) | undefined>(undefined);
   const previousDependsOn =
     options && Object.hasOwn(options, 'dependsOn')
       ? // eslint-disable-next-line react-hooks/rules-of-hooks
         useRef(options.dependsOn)
       : undefined;
-
   const shouldTrigger = previousDependsOn
     ? previousDependsOn.current === undefined &&
       options?.dependsOn !== undefined
     : true;
 
-  const f = useCallback(async () => {
+  const [fetching, setFetching] = useState(shouldTrigger);
+  const [result, setResult] = useState<State<R>>({
+    result: undefined,
+    error: undefined,
+  });
+  const unsubscribe = useRef<(() => void) | undefined>(undefined);
+
+  const setNewResults = useCallback((newResults: State<R>) => {
+    unstable_batchedUpdates(() => {
+      setResult(newResults);
+      setFetching(false);
+    });
+  }, []);
+
+  const fetch = useCallback(async () => {
     setFetching(true);
     try {
       if (options?.reactive) {
@@ -45,20 +58,19 @@ export function useQuery<
         }
         unsubscribe.current = Beta.reactiveQuery(
           new queryConstructor(parameters),
-          (newResults: any) => {
-            setResult({
+          (newResults: any) =>
+            setNewResults({
               result: options?.alterResult
                 ? options.alterResult(newResults)
                 : newResults,
               error: undefined,
-            });
-          },
+            }),
         );
       } else {
         const newResults: any = await Beta.query(
           new queryConstructor(parameters),
         );
-        setResult({
+        setNewResults({
           result: options?.alterResult
             ? options.alterResult(newResults)
             : newResults,
@@ -66,19 +78,17 @@ export function useQuery<
         });
       }
     } catch (e) {
-      console.log('Failed to fetch', e);
-      setResult({result: undefined, error: e});
+      setNewResults({result: undefined, error: e as Error});
     }
-    setFetching(false);
-  }, [options, parameters, queryConstructor]);
-  const fref = useRef(f);
-  fref.current = f;
+  }, [options, parameters, queryConstructor, setNewResults]);
 
   useEffect(() => () => unsubscribe.current?.(), []);
 
+  const fetchRef = useRef(fetch);
+  fetchRef.current = fetch;
   useEffect(() => {
     if (shouldTrigger) {
-      fref.current().catch(console.error);
+      fetchRef.current().catch(console.warn);
     }
   }, [shouldTrigger]);
 
@@ -86,5 +96,5 @@ export function useQuery<
     previousDependsOn.current = options?.dependsOn;
   }
 
-  return [result, fetching, f] as const;
+  return [result, fetching, fetch] as const;
 }

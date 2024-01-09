@@ -1,16 +1,14 @@
-import Box from '../../components/box';
-import {DiscoverMovieQuery} from '@media-center/server/src/domains/tmdb/applicative/discoverMovie.query';
-import ShowCardsLine from '../../components/showCardsLine/showCardsLine';
-import MovieCardsLine from '../../components/movieCardsLine/movieCardsLine';
+import {Box} from '../../components/box';
+import {DiscoverPageQuery} from '@media-center/server/src/queries/discoverPage.query';
+import {ShowCardsLine} from '../../components/showCardsLine/showCardsLine';
+import {MovieCardsLine} from '../../components/movieCardsLine/movieCardsLine';
 import {useQuery} from '../../services/useQuery';
-import {DiscoverShowQuery} from '@media-center/server/src/domains/tmdb/applicative/discoverShow.query';
-import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
+import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 
-export default function Home() {
-  const [{result: movies}] = useQuery(DiscoverMovieQuery, undefined);
-  const [{result: shows}] = useQuery(DiscoverShowQuery, undefined);
+export function Discover() {
+  const [{result: discoverPage}] = useQuery(DiscoverPageQuery, undefined);
 
-  if (!movies || !shows) {
+  if (!discoverPage) {
     return <FullScreenLoading />;
   }
 
@@ -19,9 +17,9 @@ export default function Home() {
       <MovieCardsLine
         autoFocusFirst
         title="Découvrir des films"
-        movies={movies}
+        movies={discoverPage.movies}
       />
-      <ShowCardsLine title="Découvrir des séries" shows={shows} />
+      <ShowCardsLine title="Découvrir des séries" shows={discoverPage.shows} />
     </Box>
   );
 }

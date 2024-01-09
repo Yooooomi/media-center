@@ -1,6 +1,6 @@
-import Text from '../text/text';
-import Modal from '../modal/modal';
-import Box from '../box/box';
+import {Text} from '../text/text';
+import {Modal} from '../modal/modal';
+import {Box} from '../box/box';
 import {TextButton} from '../ui/pressable/textButton';
 
 interface AlertProps<T extends string> {
@@ -10,7 +10,7 @@ interface AlertProps<T extends string> {
   onPress: (pressed: T | undefined) => void;
 }
 
-export default function Alert<T extends string>({
+export function Alert<T extends string>({
   title,
   text,
   buttons,

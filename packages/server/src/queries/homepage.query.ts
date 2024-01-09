@@ -21,6 +21,7 @@ import { keyBy } from "@media-center/algorithm";
 import {
   CatalogEntryUpdated,
   CatalogEntryDeleted,
+  CatalogDeleted,
 } from "../domains/catalog/applicative/catalog.events";
 import {
   TorrentRequestAdded,
@@ -65,6 +66,7 @@ export class HomepageSummary extends Shape({
 export class HomepageQuery extends Query(UserId, HomepageSummary) {}
 
 export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
+  CatalogDeleted,
   CatalogEntryUpdated,
   CatalogEntryDeleted,
   TorrentRequestAdded,
@@ -81,6 +83,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
 
   shouldReact(
     event:
+      | CatalogDeleted
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
@@ -90,7 +93,12 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
   }
 
   async execute(intent: HomepageQuery): Promise<HomepageSummary> {
-    const catalogEntries = await this.catalogEntryStore.loadAll();
+    const catalogEntries = (
+      await Promise.all([
+        this.catalogEntryStore.loadNewestMovies(25),
+        this.catalogEntryStore.loadNewestShows(25),
+      ])
+    ).flat();
     const torrentRequests = await this.torrentRequestStore.loadAll();
     const userInfos = await this.userTmdbInfoStore.loadByUserId(intent.value);
 

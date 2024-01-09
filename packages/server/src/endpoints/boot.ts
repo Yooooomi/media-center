@@ -11,13 +11,18 @@ import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
 import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
 import { streamVideo } from "./videoStreaming/streamVideo";
 import { TimeMeasurer } from "@media-center/algorithm";
+import { FilesystemEndpointCaching } from "./caching";
+import axios from "axios";
+import { PromiseQueue } from "../tools/queue";
+import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 
 export function bootApi(
   queryBus: QueryBus,
   commandBus: CommandBus,
   hierarchyItemStore: HierarchyStore,
   environmentHelper: EnvironmentHelper,
-  eventBus: EventBus
+  eventBus: EventBus,
+  tmdbApi: TmdbAPI
 ) {
   const logger = useLog("Express");
 
@@ -78,9 +83,14 @@ export function bootApi(
   }
 
   app.get("/query/:name", logMiddleware, async (req, res) => {
-    const { name } = req.params;
-    const { needing } = req.query;
     const measure = TimeMeasurer.fromNow();
+    const { name } = req.params;
+    const { needing: stringifiedNeeding } = req.query;
+
+    const needing = stringifiedNeeding
+      ? JSON.parse(stringifiedNeeding as string)
+      : undefined;
+
     logger.info(`< ${req.path}`);
     res.status(200).send(await executeIntention(queryBus, name!, needing));
     logger.info(`> ${req.path} ${measure.calc()}ms`);
@@ -151,6 +161,25 @@ export function bootApi(
       unsubscribe();
       res.end();
     });
+  });
+
+  const endpointCaching = new FilesystemEndpointCaching(environmentHelper);
+  app.get("/proxy/:path", async (req, res) => {
+    logger.info(`< proxy`);
+
+    const measure = new TimeMeasurer(Date.now());
+
+    const { path } = req.params;
+    const encodedPath = encodeURIComponent(path);
+    const buffer = await endpointCaching.get(encodedPath);
+    if (buffer) {
+      logger.info(`> proxy hit ${measure.calc()}ms`);
+      return buffer.pipe(res);
+    }
+    const response = await tmdbApi.getAsBuffer(path);
+    await endpointCaching.set(encodedPath, response);
+    logger.info(`> proxy miss ${measure.calc()}ms`);
+    return res.status(200).send(response);
   });
 
   app.listen(8080, () => {

@@ -15,6 +15,7 @@ import {
   InMemoryDatabase,
   InMemoryEventBus,
   InMemoryQueryBus,
+  InMemoryTransactionPerformer,
 } from "@media-center/domain-driven";
 import { bootUser } from "./user/boot";
 import { bootUserTmdbInfo } from "./userTmdbInfo/boot";
@@ -25,6 +26,7 @@ export async function globalBoot() {
   configureDotenv();
 
   const database = new InMemoryDatabase();
+  const transactionPerformer = new InMemoryTransactionPerformer(database);
   const commandBus = new InMemoryCommandBus();
   const eventBus = new InMemoryEventBus();
   const queryBus = new InMemoryQueryBus();
@@ -44,7 +46,6 @@ export async function globalBoot() {
   );
   const { torrentIndexer } = bootTorrentIndexer(
     queryBus,
-    tmdbStore,
     environmentHelper,
     safeRequest
   );
@@ -68,10 +69,19 @@ export async function globalBoot() {
     eventBus,
     environmentHelper
   );
-  bootApi(queryBus, commandBus, hierarchyStore, environmentHelper, eventBus);
+  bootApi(
+    queryBus,
+    commandBus,
+    hierarchyStore,
+    environmentHelper,
+    eventBus,
+    tmdbApi
+  );
   const { catalogEntryStore } = bootCatalog(
     database,
+    transactionPerformer,
     queryBus,
+    commandBus,
     eventBus,
     environmentHelper,
     tmdbApi,

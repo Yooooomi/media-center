@@ -1,6 +1,6 @@
 import {useImageUri} from '../../../../services/tmdb';
 import {ShowEpisode} from '@media-center/server/src/domains/tmdb/domain/showEpisode';
-import InfoCard from '../../../infoCard/infoCard';
+import {InfoCard} from '../../../infoCard/infoCard';
 import {usePlayCatalogEntry} from '../../../../services/usePlayCatalogEntry';
 import {
   CatalogEntryShowSpecificationFulFilled,

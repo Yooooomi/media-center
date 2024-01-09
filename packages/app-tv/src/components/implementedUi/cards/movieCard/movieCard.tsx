@@ -3,8 +3,8 @@ import {StyleSheet} from 'react-native';
 import {card, spacing} from '../../../../services/constants';
 import {useNavigate} from '../../../../screens/params';
 import {useImageUri} from '../../../../services/tmdb';
-import Text from '../../../text/text';
-import Box from '../../../box/box';
+import {Text} from '../../../text/text';
+import {Box} from '../../../box/box';
 import React from 'react';
 import {VerticalCard} from '../../../ui/cards/verticalCard';
 
@@ -39,7 +39,12 @@ export function MovieCard({
         progress={progress}
       />
       <Box items="flex-start" style={styles.title} bg="background">
-        <Text size="small" align="left" numberOfLines={1} style={styles.text}>
+        <Text
+          size="small"
+          align="left"
+          numberOfLines={1}
+          style={styles.text}
+          textBreakStrategy="simple">
           {movie.title}
         </Text>
       </Box>

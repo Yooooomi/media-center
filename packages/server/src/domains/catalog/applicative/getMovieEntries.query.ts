@@ -1,7 +1,6 @@
 import {
   ApplicativeError,
   Query,
-  Multiple,
   QueryHandler,
 } from "@media-center/domain-driven";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";

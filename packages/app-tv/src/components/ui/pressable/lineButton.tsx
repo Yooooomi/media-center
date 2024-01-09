@@ -1,6 +1,6 @@
 import {color} from '../../../services/constants';
-import Box from '../../box';
-import Text from '../../text';
+import {Box} from '../../box';
+import {Text} from '../../text';
 import {Pressable} from './pressable';
 
 type Variants = 'default' | 'delete';
@@ -9,6 +9,7 @@ interface LineButtonProps {
   text: string;
   onPress: () => void;
   variant?: Variants;
+  focusOnMount?: boolean;
 }
 
 const variants: Record<
@@ -32,9 +33,10 @@ export function LineButton({
   text,
   onPress,
   variant = 'default',
+  focusOnMount,
 }: LineButtonProps) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} focusOnMount={focusOnMount}>
       {({focused}) => (
         <Box
           r="default"

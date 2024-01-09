@@ -59,6 +59,10 @@ export class UserTmdbShowInfo extends Shape({
     );
     return latest?.progress ?? 0;
   }
+
+  getLastSeasonBegan() {
+    return maxBy(this.progress, (p) => p.season)?.season;
+  }
 }
 
 export type AnyUserTmdbInfo = UserTmdbMovieInfo | UserTmdbShowInfo;

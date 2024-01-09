@@ -53,7 +53,7 @@ function getComputedColor(
   return color[c];
 }
 
-export default function Box({
+export function Box({
   mb,
   ml,
   mr,

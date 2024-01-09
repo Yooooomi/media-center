@@ -1,1 +1,1 @@
-export {default} from './pill';
+export * from './pill';

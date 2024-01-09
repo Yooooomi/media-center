@@ -1,6 +1,6 @@
 import {BlurView} from '@react-native-community/blur';
-import Box from '../box';
-import Text, {Accepted} from '../text/text';
+import {Box} from '../box';
+import {Text, Accepted} from '../text/text';
 import {StyleSheet} from 'react-native';
 
 interface BigInfoProps {

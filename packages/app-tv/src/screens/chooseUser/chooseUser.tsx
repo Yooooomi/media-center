@@ -1,4 +1,4 @@
-import Box from '../../components/box';
+import {Box} from '../../components/box';
 import {IconTextButton} from '../../components/ui/pressable/iconTextButton';
 
 interface ChooseUserProps {

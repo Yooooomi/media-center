@@ -5,8 +5,8 @@ import {DevSettings, StyleSheet, View} from 'react-native';
 import {useNavigate} from '../../screens/params';
 import {IconName} from '../icon/icon';
 import {Dot} from '../dot';
-import Box from '../box/box';
-import Text from '../text/text';
+import {Box} from '../box/box';
+import {Text} from '../text/text';
 import {StatusContext} from '../../contexts/statusContext';
 import {useAnimatedValue} from '../../services/useAnimatedValue';
 import Animated from 'react-native-reanimated';
@@ -41,6 +41,11 @@ export function Sider() {
         icon: 'projector',
         title: 'Vos séries',
         do: () => navigate('Shows', undefined),
+      },
+      {
+        icon: 'cog',
+        title: 'Paramètres',
+        do: () => navigate('Settings', undefined),
       },
     ];
     if (__DEV__) {
@@ -78,7 +83,7 @@ export function Sider() {
   const widthStyle = useAnimatedValue(isOpen ? openWidth : closedWidth);
 
   const onFocus = () => setFocused(o => o + 1);
-  const onBlur = () => setTimeout(() => setFocused(o => o - 1), 0);
+  const onBlur = () => setTimeout(() => setFocused(o => Math.max(0, o - 1)), 0);
 
   const serverStatus = useSignal(StatusContext.server);
 

@@ -8,7 +8,7 @@ interface RealtimeTextProps {
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
-export default function RealtimeText({value, style}: RealtimeTextProps) {
+export function RealtimeText({value, style}: RealtimeTextProps) {
   const props = useAnimatedProps(
     () =>
       ({

@@ -3,7 +3,7 @@ import {usePlayCatalogEntry} from '../../services/usePlayCatalogEntry';
 import {BigPressable} from '../bigPressable';
 import {TorrentRequest} from '@media-center/server/src/domains/torrentRequest/domain/torrentRequest';
 import {ReactNode} from 'react';
-import Text from '../text';
+import {Text} from '../text';
 import {UserTmdbMovieInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 
 interface WatchCatalogEntryProps {

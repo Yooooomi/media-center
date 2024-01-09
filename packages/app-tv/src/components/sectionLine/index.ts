@@ -1,1 +1,1 @@
-export {default} from './sectionLine';
+export * from './sectionLine';

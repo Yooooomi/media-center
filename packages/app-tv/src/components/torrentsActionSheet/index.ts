@@ -1,1 +1,1 @@
-export {default} from './torrentsActionSheet';
+export * from './torrentsActionSheet';

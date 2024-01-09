@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import Alert from './alert';
+import {Alert} from './alert';
 
 interface AlertInfo<T extends string> {
   title: string;
@@ -39,7 +39,7 @@ export function useAlert() {
   );
 }
 
-export default function AlertProvider({children}: AlertProviderProps) {
+export function AlertProvider({children}: AlertProviderProps) {
   const [alerts, setAlerts] = useState<AlertInfo<any>[]>([]);
 
   const onPress = useCallback((index: number, reason: string | undefined) => {

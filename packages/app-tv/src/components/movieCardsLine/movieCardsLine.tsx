@@ -1,6 +1,6 @@
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {MovieCard} from '../implementedUi/cards/movieCard/movieCard';
-import SectionLine, {ExtraSectionLineProps} from '../sectionLine/sectionLine';
+import {SectionLine, ExtraSectionLineProps} from '../sectionLine/sectionLine';
 import {UserTmdbMovieInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 
 interface MovieCardsLine extends ExtraSectionLineProps<Movie> {
@@ -10,7 +10,7 @@ interface MovieCardsLine extends ExtraSectionLineProps<Movie> {
   autoFocusFirst?: boolean;
 }
 
-export default function MovieCardsLine({
+export function MovieCardsLine({
   movies,
   title,
   autoFocusFirst,

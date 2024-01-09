@@ -1,1 +1,1 @@
-export {default} from './showCardsLine';
+export * from './showCardsLine';

@@ -38,6 +38,16 @@ export class ShowCatalogEntryFulfilled extends Shape({
   numberOfUniqueEpisodes() {
     return uniqBy(this.items, (i) => i.episode.toString()).length;
   }
+
+  availableSeasons() {
+    return [...new Set(this.items.map((e) => e.season)).values()];
+  }
+
+  getEpisodesOfSeason(season: number) {
+    return this.items
+      .filter((item) => item.season === season)
+      .sort((a, b) => a.episode - b.episode);
+  }
 }
 
 export class MovieCatalogEntryFulfilled extends Shape({

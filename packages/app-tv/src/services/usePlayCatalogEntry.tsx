@@ -7,14 +7,14 @@ import {
 import {useNavigate} from '../screens/params';
 import {useCallback, useMemo, useState} from 'react';
 import {FlatList, ListRenderItem} from 'react-native';
-import Box from '../components/box';
-import Text from '../components/text';
+import {Box} from '../components/box';
+import {Text} from '../components/text';
 import {Pressable} from '../components/ui/pressable/pressable';
 import {
   UserTmdbMovieInfo,
   UserTmdbShowInfo,
 } from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
-import Modal from '../components/modal';
+import {Modal} from '../components/modal';
 
 export function usePlayCatalogEntry<
   T extends MovieCatalogEntryFulfilled | ShowCatalogEntryFulfilled,

@@ -1,7 +1,7 @@
 import {FlatList, StyleSheet} from 'react-native';
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
-import TorrentIndexerResultLine from '../torrentIndexerResultLine/torrentIndexerResultLine';
-import Modal from '../modal/modal';
+import {TorrentIndexerResultLine} from '../torrentIndexerResultLine/torrentIndexerResultLine';
+import {Modal} from '../modal/modal';
 
 interface TorrentsActionSheetProps {
   torrents: TorrentIndexerResult[];
@@ -10,7 +10,7 @@ interface TorrentsActionSheetProps {
   onClose: () => void;
 }
 
-export default function TorrentsActionSheet({
+export function TorrentsActionSheet({
   open,
   torrents,
   onTorrentPress,

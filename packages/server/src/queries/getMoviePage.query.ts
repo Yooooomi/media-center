@@ -14,6 +14,7 @@ import {
   MovieCatalogEntryFulfilled,
 } from "../domains/catalog/applicative/catalogEntryFulfilled.front";
 import {
+  CatalogDeleted,
   CatalogEntryDeleted,
   CatalogEntryUpdated,
 } from "../domains/catalog/applicative/catalog.events";
@@ -42,6 +43,7 @@ export class GetMoviePageQuery extends Query(
 ) {}
 
 export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
+  CatalogDeleted,
   CatalogEntryUpdated,
   CatalogEntryDeleted,
   TorrentRequestAdded,
@@ -60,12 +62,16 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
 
   shouldReact(
     event:
+      | CatalogDeleted
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
       | TorrentRequestUpdated,
     intent: GetMoviePageQuery
   ) {
+    if (event instanceof CatalogDeleted) {
+      return true;
+    }
     if (
       event instanceof TorrentRequestAdded ||
       event instanceof TorrentRequestUpdated

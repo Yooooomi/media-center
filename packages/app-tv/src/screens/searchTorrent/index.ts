@@ -1,1 +1,1 @@
-export {default} from './searchTorrent';
+export * from './searchTorrent';

@@ -3,16 +3,17 @@ import {useCallback, useState} from 'react';
 import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
 import {AddTorrentRequestCommand} from '@media-center/server/src/domains/torrentRequest/applicative/addTorrentRequest.command';
-import TorrentsActionSheet from '../components/torrentsActionSheet';
+import {TorrentsActionSheet} from '../components/torrentsActionSheet';
 import {Beta} from './api';
 import {useBooleanState} from './useBooleanState';
+import {SearchQuery} from '@media-center/server/src/tools/searchQuery';
 
 interface QueryTorrentsProps {
-  name: string;
+  names: string[];
   tmdbId: TmdbId;
 }
 
-export function useQueryTorrents({name, tmdbId}: QueryTorrentsProps) {
+export function useQueryTorrents({names, tmdbId}: QueryTorrentsProps) {
   const [loading, setLoading] = useState(false);
   const [torrents, setTorrents] = useState<TorrentIndexerResult[] | undefined>(
     undefined,
@@ -23,12 +24,14 @@ export function useQueryTorrents({name, tmdbId}: QueryTorrentsProps) {
   const queryTorrents = useCallback(async () => {
     setLoading(true);
     try {
-      const d = await Beta.query(new SearchTorrentsQuery({query: name}));
+      const d = await Beta.query(
+        new SearchTorrentsQuery({queries: names.map(SearchQuery.from)}),
+      );
       setTorrents(d);
       openActionSheet();
     } catch (e) {}
     setLoading(false);
-  }, [name, openActionSheet]);
+  }, [names, openActionSheet]);
 
   const downloadTorrent = useCallback(
     async (torrent: TorrentIndexerResult) => {

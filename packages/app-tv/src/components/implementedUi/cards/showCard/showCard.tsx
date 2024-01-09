@@ -3,8 +3,8 @@ import {card, spacing} from '../../../../services/constants';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {useImageUri} from '../../../../services/tmdb';
 import {useNavigate} from '../../../../screens/params';
-import Box from '../../../box';
-import Text from '../../../text/text';
+import {Box} from '../../../box';
+import {Text} from '../../../text/text';
 import React from 'react';
 import {VerticalCard} from '../../../ui/cards/verticalCard';
 
@@ -39,7 +39,12 @@ export function ShowCard({
         progress={progress}
       />
       <Box items="flex-start" style={styles.title} bg="background">
-        <Text size="small" align="left" numberOfLines={1} style={styles.text}>
+        <Text
+          size="small"
+          align="left"
+          numberOfLines={1}
+          style={styles.text}
+          textBreakStrategy="simple">
           {show.title}
         </Text>
       </Box>

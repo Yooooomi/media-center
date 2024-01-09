@@ -1,5 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
-import Navigation from './src/screens';
+import {Navigation} from './src/screens';
 import {listenToUpdate} from './src/services/listenToUpdate';
 import {View} from 'react-native';
 import {color} from './src/services/constants';
@@ -27,7 +27,7 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
 
 listenToUpdate();
 
-export default function App() {
+export function App() {
   return (
     <View style={styles.root}>
       <Navigation />

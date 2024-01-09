@@ -1,8 +1,8 @@
 import {StyleSheet, View} from 'react-native';
 import {useParams} from '../params';
 import {useImageUri} from '../../services/tmdb';
-import Text from '../../components/text/text';
-import Box from '../../components/box/box';
+import {Text} from '../../components/text/text';
+import {Box} from '../../components/box/box';
 import {GetMoviePageQuery} from '@media-center/server/src/queries/getMoviePage.query';
 import {useQuery} from '../../services/useQuery';
 import {PageBackground} from '../../components/pageBackground/pageBackground';
@@ -12,7 +12,7 @@ import {BigPressable} from '../../components/bigPressable/bigPressable';
 import {spacing} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {TorrentRequests} from '../../components/torrentRequests';
-import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
+import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 import {Beta} from '../../services/api';
 
@@ -31,7 +31,10 @@ export function Movie() {
     loading: queryTorrentsLoading,
     queryTorrents,
   } = useQueryTorrents({
-    name: `${movie.title} ${movie.getYear()}`,
+    names: [
+      `${movie.title} ${movie.getYear()}`,
+      `${movie.original_title} ${movie.getYear()}`,
+    ],
     tmdbId: movie.id,
   });
 
@@ -44,6 +47,8 @@ export function Movie() {
   if (!moviePage) {
     return <FullScreenLoading />;
   }
+
+  const hasHierarchyItems = moviePage.catalogEntry.items.length > 0;
 
   return (
     <>
@@ -64,7 +69,7 @@ export function Movie() {
             {movie.title.toUpperCase()}
           </Text>
           <Box row gap="S8">
-            {moviePage.catalogEntry.items.length > 0 && (
+            {hasHierarchyItems && (
               <WatchCatalogEntry
                 name={moviePage.tmdb.title}
                 entry={moviePage.catalogEntry}
@@ -73,6 +78,7 @@ export function Movie() {
               />
             )}
             <BigPressable
+              focusOnMount={!hasHierarchyItems}
               icon="download"
               onPress={queryTorrents}
               loading={queryTorrentsLoading}

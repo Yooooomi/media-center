@@ -2,8 +2,8 @@ import {ReactNode, useCallback} from 'react';
 import {View, StyleSheet, Modal as RNModal} from 'react-native';
 import {color, opacify, radius, spacing} from '../../services/constants';
 import {useBack} from '../../services/useBack';
-import Box from '../box';
-import Text from '../text/text';
+import {Box} from '../box';
+import {Text} from '../text/text';
 
 interface ModalProps {
   title: string;
@@ -12,7 +12,7 @@ interface ModalProps {
   onClose: () => void;
 }
 
-export default function Modal({children, open, title, onClose}: ModalProps) {
+export function Modal({children, open, title, onClose}: ModalProps) {
   useBack(
     useCallback(() => {
       if (open) {

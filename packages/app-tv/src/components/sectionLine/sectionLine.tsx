@@ -1,8 +1,6 @@
 import {ReactNode} from 'react';
-import {FlatList, FlatListProps, StyleSheet} from 'react-native';
-import Section, {SectionProps} from '../section/section';
-import {spacing} from '../../services/constants';
-import Box from '../box/box';
+import {Section, SectionProps} from '../section/section';
+import {LineList} from '../lineList';
 
 export interface SectionLineProps<T> {
   title: string;
@@ -12,13 +10,12 @@ export interface SectionLineProps<T> {
   renderItem: (data: T, index: number) => ReactNode;
 }
 
-export interface ExtraSectionLineProps<T> {
+export interface ExtraSectionLineProps {
   itemPerLine?: number;
   sectionProps?: Omit<SectionProps, 'children' | 'title'>;
-  scrollViewProps?: Omit<FlatListProps<T>, 'renderItem' | 'data'>;
 }
 
-export default function SectionLine<T>({
+export function SectionLine<T>({
   title,
   subtitle,
   data,
@@ -26,8 +23,7 @@ export default function SectionLine<T>({
   renderItem,
   itemPerLine,
   sectionProps,
-  scrollViewProps,
-}: SectionLineProps<T> & ExtraSectionLineProps<T>) {
+}: SectionLineProps<T> & ExtraSectionLineProps) {
   const isHorizontal = itemPerLine === undefined;
 
   return (
@@ -36,35 +32,12 @@ export default function SectionLine<T>({
       subtitle={subtitle}
       grow={isHorizontal ? undefined : true}
       {...sectionProps}>
-      <FlatList
-        // removeClippedSubviews
-        keyExtractor={keyExtractor}
+      <LineList
         data={data}
-        renderItem={({item, index}) => (
-          <Box p="S8">{renderItem(item, index)}</Box>
-        )}
-        numColumns={itemPerLine}
-        {...scrollViewProps}
-        style={[
-          styles.root,
-          isHorizontal ? undefined : styles.verticalScrollView,
-        ]}
-        horizontal={isHorizontal}
-        showsHorizontalScrollIndicator={false}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        itemPerLine={itemPerLine}
       />
     </Section>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flexGrow: 1,
-  },
-  verticalScrollView: {
-    flexBasis: 0,
-  },
-  verticalLine: {
-    flexDirection: 'row',
-    gap: spacing.S16,
-  },
-});

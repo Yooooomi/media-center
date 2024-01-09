@@ -1,1 +1,1 @@
-export {default} from './tmdbCardsLine';
+export * from './tmdbCardsLine';

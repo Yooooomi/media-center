@@ -1,7 +1,7 @@
 import {useState} from 'react';
-import Box from '../../components/box';
-import TextInput from '../../components/textInput';
+import {Box} from '../../components/box';
 import {TextButton} from '../../components/ui/pressable/textButton';
+import {TextInput} from '../../components/ui/textInput';
 
 interface ConfigureServerProps {
   onConfigured: (address: string, password: string) => void;
@@ -14,7 +14,7 @@ export function ConfigureServer({onConfigured}: ConfigureServerProps) {
   return (
     <Box grow items="center" content="center" gap="S8">
       <TextInput
-        type="URL"
+        keyboardType="url"
         placeholder="Adresse du serveur"
         value={address}
         onChangeText={setAddress}

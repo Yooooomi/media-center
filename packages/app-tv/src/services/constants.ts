@@ -53,12 +53,15 @@ export const color = {
   buttonText: rawColor.white,
   buttonTextFocused: rawColor.black,
   buttonTextDisabled: rawColor.grey,
+
   buttonBackground: rawColor.transparent,
+  buttonBackgroundFaded: opacifyRaw(rawColor.white, 0.3),
   buttonBackgroundFocused: rawColor.white,
   buttonBackgroundDisabled: rawColor.transparent,
 
   textInputText: rawColor.black,
   textInputTextFocused: rawColor.black,
+
   textInputBackground: rawColor.lightgrey,
   textInputBackgroundFocused: rawColor.white,
 
@@ -71,10 +74,14 @@ export const color = {
   progress: rawColor.blue,
 };
 
-export function opacify(c: keyof typeof color, t: number) {
-  return `${color[c]}${Math.floor(t * 256)
+function opacifyRaw(c: string, t: number) {
+  return `${c}${Math.floor(t * 256)
     .toString(16)
     .padStart(2, '0')}`;
+}
+
+export function opacify(c: keyof typeof color, t: number) {
+  return opacifyRaw(color[c], t);
 }
 
 export const debugBorder = (c = 'red') => ({

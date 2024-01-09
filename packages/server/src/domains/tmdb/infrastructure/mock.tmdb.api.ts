@@ -8481,4 +8481,8 @@ export class MockTmdbAPI extends TmdbAPI {
       runtime: 123,
     });
   }
+
+  async getAsBuffer() {
+    return Buffer.from("");
+  }
 }

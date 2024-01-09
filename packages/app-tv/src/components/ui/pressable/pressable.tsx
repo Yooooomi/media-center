@@ -1,11 +1,4 @@
-import React, {
-  ForwardedRef,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, {MutableRefObject, ReactNode, useCallback, useState} from 'react';
 import {Pressable as RNPressable, View, ViewStyle} from 'react-native';
 
 interface PressableProps {
@@ -26,28 +19,20 @@ interface PressableProps {
 
 const focuses: Record<string, number> = {};
 
-function bindRef(ref: ForwardedRef<any>, node: any) {
-  if (typeof ref === 'function') {
-    ref(node);
-  } else if (ref) {
-    ref.current = node;
-  }
-}
-
-const combineRef =
-  (a: ForwardedRef<any>, b: ForwardedRef<any>) => (node: any) => {
-    bindRef(a, node);
-    bindRef(b, node);
+function mergeRefs(
+  ...refs: (((node: any) => void) | MutableRefObject<any> | null)[]
+) {
+  return (node: any) => {
+    refs.forEach(ref => {
+      if (ref === null) {
+        return;
+      } else if (typeof ref === 'function') {
+        ref(node);
+      } else {
+        ref.current = node;
+      }
+    });
   };
-
-function useCombineRef(a: ForwardedRef<any>, b: ForwardedRef<any>) {
-  const ref = useRef(combineRef(a, b));
-
-  useMemo(() => {
-    ref.current = combineRef(a, b);
-  }, [a, b]);
-
-  return ref.current;
 }
 
 export const Pressable = React.forwardRef<View, PressableProps>(
@@ -90,11 +75,9 @@ export const Pressable = React.forwardRef<View, PressableProps>(
       return focuses[n];
     }, []);
 
-    const combinedRef = useCombineRef(ref, registerFocus);
-
     return (
       <RNPressable
-        ref={combinedRef}
+        ref={mergeRefs(ref, registerFocus)}
         hasTVPreferredFocus={focusOnMount}
         style={style}
         onFocus={() => {

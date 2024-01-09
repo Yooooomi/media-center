@@ -13,7 +13,7 @@ interface IconProps {
   style?: ComponentProps<typeof Icons>['style'];
 }
 
-const Icon = React.forwardRef<Icons, IconProps>(
+export const Icon = React.forwardRef<Icons, IconProps>(
   ({name, size, color, style}, ref) => {
     return (
       <Icons
@@ -28,5 +28,3 @@ const Icon = React.forwardRef<Icons, IconProps>(
 );
 
 export const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-
-export default Icon;

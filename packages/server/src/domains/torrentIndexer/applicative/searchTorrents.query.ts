@@ -1,16 +1,12 @@
-import {
-  Query,
-  ApplicativeError,
-  QueryHandler,
-} from "@media-center/domain-driven";
-import { TmdbStore } from "../../tmdb/applicative/tmdb.store";
-import { TmdbId } from "../../tmdb/domain/tmdbId";
+import { Query, QueryHandler } from "@media-center/domain-driven";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
 import { TorrentIndexer } from "./torrentIndexer";
+import { SearchQuery } from "../../../tools/searchQuery";
+import { uniqBy } from "@media-center/algorithm";
 
 export class SearchTorrentsQuery extends Query(
   {
-    query: String,
+    queries: [SearchQuery],
   },
   [TorrentIndexerResult]
 ) {}
@@ -18,16 +14,20 @@ export class SearchTorrentsQuery extends Query(
 export class SearchTorrentsQueryHandler extends QueryHandler(
   SearchTorrentsQuery
 ) {
-  constructor(
-    private readonly tmdbStore: TmdbStore,
-    private readonly torrentIndexer: TorrentIndexer
-  ) {
+  constructor(private readonly torrentIndexer: TorrentIndexer) {
     super();
   }
 
   async execute(query: SearchTorrentsQuery) {
-    const results = await this.torrentIndexer.search(query.query);
+    const results: TorrentIndexerResult[] = [];
+    for (const q of query.queries) {
+      const r = await this.torrentIndexer.search(q.value);
+      results.push(...r);
+    }
 
-    return results;
+    return uniqBy(
+      results.sort((a, b) => b.seeders - a.seeders),
+      (torrent) => torrent.id.toString()
+    );
   }
 }

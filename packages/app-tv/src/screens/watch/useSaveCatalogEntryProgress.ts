@@ -15,7 +15,6 @@ export function useSaveCatalogEntryProgress(
   const saveProgress = useCallback(
     async (newProgress: number) => {
       try {
-        console.log('Saving progress');
         await Beta.command(
           new SetUserTmdbInfoProgressCommand({
             actorId: Beta.userId,
@@ -26,7 +25,7 @@ export function useSaveCatalogEntryProgress(
           }),
         );
       } catch (e) {
-        console.error(e);
+        console.warn(e);
       }
     },
     [episode, season, tmdbId],

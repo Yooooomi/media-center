@@ -1,14 +1,12 @@
 import { QueryBus } from "@media-center/domain-driven";
 import { SafeRequest } from "../../framework/safeRequest/safeRequest";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
-import { TmdbStore } from "../tmdb/applicative/tmdb.store";
 import { SearchTorrentsQueryHandler } from "./applicative/searchTorrents.query";
 import { MockTorrentIndexer } from "./infrastructure/mock.torrentIndexer";
 import { YggTorrentIndexer } from "./infrastructure/ygg.torrentIndexer";
 
 export function bootTorrentIndexer(
   queryBus: QueryBus,
-  tmdbStore: TmdbStore,
   environmentHelper: EnvironmentHelper,
   safeRequest: SafeRequest
 ) {
@@ -17,7 +15,7 @@ export function bootTorrentIndexer(
     yggTorrent: () => new YggTorrentIndexer(safeRequest),
   });
 
-  queryBus.register(new SearchTorrentsQueryHandler(tmdbStore, torrentIndexer));
+  queryBus.register(new SearchTorrentsQueryHandler(torrentIndexer));
 
   return { torrentIndexer };
 }

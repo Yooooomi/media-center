@@ -1,1 +1,1 @@
-export {default} from './torrentIndexerResultLine';
+export * from './torrentIndexerResultLine';

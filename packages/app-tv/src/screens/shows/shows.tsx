@@ -1,25 +1,14 @@
-import FullScreenLoading from '../../components/fullScreenLoading/fullScreenLoading';
+import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 import {useQuery} from '../../services/useQuery';
-import {GetShowEntriesQuery} from '@media-center/server/src/domains/catalog/applicative/getShowEntries.query';
-import {GetTmdbsQuery} from '@media-center/server/src/domains/tmdb/applicative/getTmdbs.query';
-import Box from '../../components/box/box';
-import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
-import ShowCardsLine from '../../components/showCardsLine/showCardsLine';
+import {GetShowsPageQuery} from '@media-center/server/src/queries/getShowsPage.query';
+import {Box} from '../../components/box/box';
+import {ShowCardsLine} from '../../components/showCardsLine/showCardsLine';
 import {maxCardsPerLine} from '../../services/constants';
 
-export default function Shows() {
-  const [{result: showEntries}] = useQuery(GetShowEntriesQuery, undefined);
-  const [{result: tmdbs}] = useQuery(
-    GetTmdbsQuery,
-    showEntries?.map(e => e.id) ?? [],
-    {
-      alterResult: r =>
-        r.sort((a, b) => a.title.localeCompare(b.title)) as Show[],
-      dependsOn: showEntries,
-    },
-  );
+export function Shows() {
+  const [{result: shows}] = useQuery(GetShowsPageQuery, undefined);
 
-  if (!showEntries || !tmdbs) {
+  if (!shows) {
     return <FullScreenLoading />;
   }
 
@@ -28,7 +17,7 @@ export default function Shows() {
       <ShowCardsLine
         autoFocusFirst
         title="Vos séries"
-        shows={tmdbs}
+        shows={shows}
         itemPerLine={maxCardsPerLine}
       />
     </Box>

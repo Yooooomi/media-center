@@ -1,9 +1,4 @@
-import {
-  Query,
-  Multiple,
-  Either,
-  QueryHandler,
-} from "@media-center/domain-driven";
+import { Query, Either, QueryHandler } from "@media-center/domain-driven";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbId } from "../domain/tmdbId";

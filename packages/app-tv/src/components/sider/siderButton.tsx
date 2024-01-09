@@ -2,9 +2,9 @@ import {radius, spacing} from '../../services/constants';
 import {IconName} from '../icon/icon';
 import {StyleSheet, View} from 'react-native';
 import {Pressable} from '../ui/pressable/pressable';
-import Icon from '../icon';
-import Text from '../text/text';
-import Box from '../box';
+import {Icon} from '../icon';
+import {Text} from '../text/text';
+import {Box} from '../box';
 
 interface SiderButtonProps {
   text: string;

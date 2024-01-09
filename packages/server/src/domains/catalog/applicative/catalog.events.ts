@@ -8,3 +8,5 @@ export class CatalogEntryUpdated extends Event({
 export class CatalogEntryDeleted extends Event({
   catalogEntry: Either(ShowCatalogEntry, MovieCatalogEntry),
 }) {}
+
+export class CatalogDeleted extends Event({}) {}

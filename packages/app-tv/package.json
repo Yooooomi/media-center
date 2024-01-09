@@ -13,7 +13,8 @@
     "start": "react-native start",
     "test": "jest",
     "update": "eas update",
-    "typecheck": "tsc --build"
+    "typecheck": "tsc --build",
+    "typecheck:open": "code `yarn typecheck | grep error | cut -d \"(\" -f 1 | uniq | xargs`"
   },
   "dependencies": {
     "@gorhom/portal": "^1.0.14",

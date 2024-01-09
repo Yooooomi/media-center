@@ -1,6 +1,6 @@
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
-import Box from '../box';
-import Text from '../text/text';
+import {Box} from '../box';
+import {Text} from '../text/text';
 import {StyleSheet} from 'react-native';
 import {Pressable} from '../ui/pressable/pressable';
 
@@ -10,7 +10,7 @@ interface TorrentIndexerResultLineProps {
   focusOnMount?: boolean;
 }
 
-export default function TorrentIndexerResultLine({
+export function TorrentIndexerResultLine({
   torrentIndexerResult,
   onPress,
   focusOnMount,

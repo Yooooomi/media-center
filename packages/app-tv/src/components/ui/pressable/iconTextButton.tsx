@@ -1,9 +1,9 @@
 import {StyleSheet} from 'react-native';
 import {fontSize} from '../../../services/constants';
-import Box from '../../box';
-import Icon from '../../icon';
+import {Box} from '../../box';
+import {Icon} from '../../icon';
 import {IconName} from '../../icon/icon';
-import Text from '../../text';
+import {Text} from '../../text';
 import {Pressable} from './pressable';
 
 interface IconTextButtonProps {

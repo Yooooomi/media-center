@@ -3,7 +3,7 @@ import {
   ShowCatalogEntryFulfilled,
 } from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {DeleteCatalogEntryCommand} from '@media-center/server/src/domains/commands/deleteCatalogEntry.command';
-import Modal from '../components/modal';
+import {Modal} from '../components/modal';
 import {useBooleanState} from './useBooleanState';
 import {useCallback} from 'react';
 import {LineButton} from '../components/ui/pressable/lineButton';
@@ -30,14 +30,14 @@ function CatalogEntryMoreOptions({
     try {
       await Beta.command(new DeleteCatalogEntryCommand(catalogEntry.id));
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
     close();
   }, [catalogEntry?.id, close]);
 
   return (
     <>
-      <LineButton text="Recharger" onPress={reload} />
+      <LineButton text="Recharger" onPress={reload} focusOnMount />
       <LineButton variant="delete" text="Supprimer" onPress={handleDelete} />
     </>
   );

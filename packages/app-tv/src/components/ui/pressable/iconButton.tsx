@@ -1,7 +1,7 @@
-import Icon from '../../icon';
+import {Icon} from '../../icon';
 import {IconName} from '../../icon/icon';
 import {Pressable} from './pressable';
-import Box from '../../box';
+import {Box} from '../../box';
 import {ActivityIndicator} from 'react-native';
 
 interface IconButtonProps {

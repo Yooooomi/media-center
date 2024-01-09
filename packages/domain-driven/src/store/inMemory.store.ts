@@ -1,6 +1,6 @@
 import { compact, wait } from "@media-center/algorithm";
 import { Serializer, AtLeastId } from "../serialization";
-import { Store } from "./store";
+import { Database, Store, TransactionPerformer } from "./store";
 import * as fs from "fs";
 
 interface Document {
@@ -69,6 +69,8 @@ export class InMemoryTransaction {
 }
 
 class Collection {
+  private readonly onWrites: (() => void)[] = [];
+
   constructor(private readonly name: string) {}
 
   protected storage: Record<string, Document> = {};
@@ -79,6 +81,14 @@ class Collection {
 
   public getStorage() {
     return this.storage;
+  }
+
+  private written() {
+    this.onWrites.forEach((onWrite) => onWrite());
+  }
+
+  public onWrite(onWrite: () => void) {
+    this.onWrites.push(onWrite);
   }
 
   public read(id: string, transaction?: InMemoryTransaction) {
@@ -92,6 +102,7 @@ class Collection {
       transaction.markWritten(this.name, id, data);
     } else {
       this.storage[id] = { updatedAt: Date.now(), data };
+      this.written();
     }
   }
 
@@ -100,7 +111,14 @@ class Collection {
       transaction.markDeleted(this.name, id);
     } else {
       delete this.storage[id.toString()];
+      this.written();
     }
+  }
+
+  public deleteAll(transaction?: InMemoryTransaction) {
+    return Object.keys(this.storage).forEach((id) => {
+      this.delete(id, transaction);
+    });
   }
 
   public readAll(transaction?: InMemoryTransaction) {
@@ -128,13 +146,17 @@ class Collection {
   }
 }
 
-export class InMemoryDatabase {
+export class InMemoryDatabase implements Database {
   protected readonly collections: Record<string, Collection> = {};
 
   public getCollection(name: string) {
     const collection = this.collections[name] ?? new Collection(name);
     this.collections[name] = collection;
     return collection;
+  }
+
+  public getTransactionPerformer() {
+    return new InMemoryTransactionPerformer(this);
   }
 
   static waits = [
@@ -239,6 +261,12 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
     this.collection().delete(id.toString(), transaction);
   }
 
+  async deleteAll(
+    transaction?: InMemoryTransaction | undefined
+  ): Promise<void> {
+    this.collection().deleteAll(transaction);
+  }
+
   protected async filter(
     predicate: (item: M) => boolean,
     transaction?: InMemoryTransaction
@@ -251,6 +279,10 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
       }
       return undefined;
     }, transaction);
+  }
+
+  async countAll(transaction?: InMemoryTransaction | undefined) {
+    return this.collection().readAll(transaction).length;
   }
 }
 
@@ -268,6 +300,7 @@ export abstract class FilesystemStore<
   }
 
   init() {
+    this.collection().onWrite(this.commit.bind(this));
     try {
       const content = JSON.parse(fs.readFileSync(this.filepath).toString());
       this.collection().setStorage(content);
@@ -283,23 +316,27 @@ export abstract class FilesystemStore<
 
   async delete(id: M["id"], transaction?: InMemoryTransaction | undefined) {
     await super.delete(id, transaction);
-    if (!transaction) {
-      this.commit();
-    }
+  }
+
+  async deleteAll(
+    transaction?: InMemoryTransaction | undefined
+  ): Promise<void> {
+    await super.deleteAll(transaction);
   }
 
   async save(model: M, transaction?: InMemoryTransaction) {
     await super.save(model, transaction);
-    if (!transaction) {
-      this.commit();
-    }
+  }
+}
+
+export class InMemoryTransactionPerformer extends TransactionPerformer<InMemoryTransaction> {
+  constructor(private readonly database: InMemoryDatabase) {
+    super();
   }
 
-  public async transactionnally<T>(
-    executor: (transaction: InMemoryTransaction) => Promise<T>
-  ) {
-    const result = await super.transactionnally(executor);
-    this.commit();
-    return result;
+  async transactionnally<R>(
+    executor: (transaction: InMemoryTransaction) => Promise<R>
+  ): Promise<R> {
+    return await this.database.transactionnally(executor);
   }
 }

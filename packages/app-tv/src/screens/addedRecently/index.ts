@@ -1,1 +1,1 @@
-export {default} from './addedRecently';
+export * from './addedRecently';

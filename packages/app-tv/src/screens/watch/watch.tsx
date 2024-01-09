@@ -2,7 +2,7 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {useParams} from '../params';
 import {Vlc, VLCTrackInfoEvent, VLCBaseEvent} from '@media-center/vlc';
 import {useVideoUri} from '../../services/api';
-import Controls from './controls/controls';
+import {Controls} from './controls/controls';
 import {useToggle} from '../../services/useToggle';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
@@ -12,7 +12,7 @@ import {progressFromUserInfo} from './progressFromUserInfo';
 
 const {width, height} = Dimensions.get('screen');
 
-export default function Watch() {
+export function Watch() {
   const {name, tmdbId, specification, userInfo} = useParams<'Watch'>();
   const {item: hierarchyItem} = specification;
   const videoUri = useVideoUri(hierarchyItem.id);

@@ -1,6 +1,6 @@
 import {FlatList} from 'react-native';
 import {VLCTrack} from '@media-center/vlc';
-import Modal from '../../../components/modal/modal';
+import {Modal} from '../../../components/modal/modal';
 import {LineButton} from '../../../components/ui/pressable/lineButton';
 
 interface ControlsActionSheetProps {
@@ -12,7 +12,7 @@ interface ControlsActionSheetProps {
   onTextTrack: (id: number) => void;
 }
 
-export default function ControlsActionSheet({
+export function ControlsActionSheet({
   open,
   onClose,
   audioTracks,

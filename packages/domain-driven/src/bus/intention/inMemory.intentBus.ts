@@ -4,7 +4,7 @@ import { BaseEvent } from "../eventBus/event";
 import { EventBus } from "../eventBus/eventBus";
 import { BaseIntent, BaseIntentConstructor, BaseIntentHandler } from "./intent";
 import { IntentBus } from "./intentBus";
-import { TimeMeasurer, debounce } from "@media-center/algorithm";
+import { TimeMeasurer, debounceOverflow } from "@media-center/algorithm";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -65,7 +65,7 @@ export class InMemoryIntentionBus extends IntentBus {
     }
 
     const listeners = handler.events?.map((e) =>
-      bus.on(e, debounce(react, 1000))
+      bus.on(e, debounceOverflow(react, 1000, 20))
     );
 
     const measure = TimeMeasurer.fromNow();

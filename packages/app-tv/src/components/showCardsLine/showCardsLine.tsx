@@ -1,4 +1,4 @@
-import SectionLine, {ExtraSectionLineProps} from '../sectionLine/sectionLine';
+import {SectionLine, ExtraSectionLineProps} from '../sectionLine/sectionLine';
 import {ShowCard} from '../implementedUi/cards/showCard/showCard';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
@@ -10,7 +10,7 @@ interface ShowCardsLine extends ExtraSectionLineProps<Show> {
   autoFocusFirst?: boolean;
 }
 
-export default function ShowCardsLine({
+export function ShowCardsLine({
   shows,
   title,
   autoFocusFirst,

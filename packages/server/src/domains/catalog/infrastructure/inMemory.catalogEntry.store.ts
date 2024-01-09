@@ -41,4 +41,18 @@ export class InMemoryCatalogEntryStore
       ShowCatalogEntry[]
     >;
   }
+
+  async loadNewestMovies(limit: number) {
+    return (await this.loadAll())
+      .filter((e): e is MovieCatalogEntry => e instanceof MovieCatalogEntry)
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      .slice(0, limit);
+  }
+
+  async loadNewestShows(limit: number) {
+    return (await this.loadAll())
+      .filter((e): e is ShowCatalogEntry => e instanceof ShowCatalogEntry)
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      .slice(0, limit);
+  }
 }

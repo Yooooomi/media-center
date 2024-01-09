@@ -1,1 +1,1 @@
-export {default} from './downloadingCardLine';
+export * from './downloadingCardLine';

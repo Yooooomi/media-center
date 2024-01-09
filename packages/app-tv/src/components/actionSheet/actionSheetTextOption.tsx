@@ -1,6 +1,6 @@
-import Text from '../text/text';
+import {Text} from '../text/text';
 import {Pressable} from '../ui/pressable/pressable';
-import Box from '../box';
+import {Box} from '../box';
 
 interface ActionSheetOptionProps {
   name: string;

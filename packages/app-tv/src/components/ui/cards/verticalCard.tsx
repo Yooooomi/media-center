@@ -1,8 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {radius, card, cardShadow, color} from '../../../services/constants';
 import {ScaleButton} from '../pressable/scaleButton';
-import Box from '../../box';
-import Icon from '../../icon';
+import {Box} from '../../box';
+import {Icon} from '../../icon';
 import {DisabledFill} from '../../disabledFill';
 import {RateLimitedImage} from '../../rateLimitedImage';
 import {ProgressOverlay} from '../../progressOverlay';

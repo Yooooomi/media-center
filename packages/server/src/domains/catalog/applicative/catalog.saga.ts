@@ -1,4 +1,9 @@
-import { EventBus, Saga, useLog } from "@media-center/domain-driven";
+import {
+  EventBus,
+  Saga,
+  TransactionPerformer,
+  useLog,
+} from "@media-center/domain-driven";
 import { FilenameParse } from "../../../tools/filename";
 import {
   HierarchyItemAdded,
@@ -19,6 +24,7 @@ import { TmdbStore } from "../../tmdb/applicative/tmdb.store";
 
 export class CatalogSaga extends Saga {
   constructor(
+    private readonly transactionPerformer: TransactionPerformer,
     private readonly tmdbApi: TmdbAPI,
     private readonly tmdbStore: TmdbStore,
     private readonly catalogEntryStore: CatalogEntryStore,
@@ -66,7 +72,7 @@ export class CatalogSaga extends Saga {
   async onFileAdded(event: HierarchyItemAdded) {
     const logger = useLog(CatalogSaga.name);
 
-    const catalogEntry = await this.catalogEntryStore.transactionnally(
+    const catalogEntry = await this.transactionPerformer.transactionnally(
       async (transaction) => {
         const fileAlreadyAdded =
           await this.catalogEntryStore.loadByHierarchyItemId(
@@ -101,8 +107,16 @@ export class CatalogSaga extends Saga {
         const alreadyExisting =
           (await this.catalogEntryStore.load(tmdbEntry.id, transaction)) ??
           (isShow
-            ? new ShowCatalogEntry({ id: tmdbEntry.id, items: [] })
-            : new MovieCatalogEntry({ id: tmdbEntry.id, items: [] }));
+            ? new ShowCatalogEntry({
+                id: tmdbEntry.id,
+                items: [],
+                updatedAt: new Date(),
+              })
+            : new MovieCatalogEntry({
+                id: tmdbEntry.id,
+                items: [],
+                updatedAt: new Date(),
+              }));
         if (alreadyExisting instanceof ShowCatalogEntry) {
           if (!("isTv" in infosFromFilename)) {
             console.warn("File added in show but not analyzed as show");
@@ -156,13 +170,16 @@ export class CatalogSaga extends Saga {
 
   @Saga.on(HierarchyItemDeleted)
   async onFileDeleted(event: HierarchyItemDeleted) {
-    const { updated, deleted } = await this.catalogEntryStore.transactionnally(
-      async (transaction) => {
+    const { updated, deleted } =
+      await this.transactionPerformer.transactionnally(async (transaction) => {
         const existing = await this.catalogEntryStore.loadByHierarchyItemId(
           event.item.id,
           transaction
         );
-        existing.forEach((e) => e.deleteHierarchyItemId(event.item.id));
+        existing.forEach((e) => {
+          e.deleteHierarchyItemId(event.item.id);
+          e.markUpdated(new Date());
+        });
         const deleted: AnyCatalogEntry[] = [];
         const updated: AnyCatalogEntry[] = [];
         await Promise.all(
@@ -176,8 +193,7 @@ export class CatalogSaga extends Saga {
           })
         );
         return { updated, deleted };
-      }
-    );
+      });
     deleted.forEach((d) =>
       this.eventBus.publish(new CatalogEntryDeleted({ catalogEntry: d }))
     );

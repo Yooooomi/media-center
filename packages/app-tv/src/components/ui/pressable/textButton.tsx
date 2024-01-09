@@ -1,21 +1,49 @@
-import Text from '../../text/text';
+import {Text} from '../../text/text';
 import {Pressable} from './pressable';
-import Box from '../../box';
+import {Box} from '../../box';
+import {color} from '../../../services/constants';
+
+type Variants = 'default' | 'selected';
 
 interface TextButtonProps {
   text: string;
   onPress: () => void;
+  focusOnMount?: boolean;
+  variant?: Variants;
 }
 
-export function TextButton({text, onPress}: TextButtonProps) {
+const variants: Record<
+  Variants,
+  [
+    [keyof typeof color, keyof typeof color],
+    [keyof typeof color, keyof typeof color],
+  ]
+> = {
+  default: [
+    ['buttonBackgroundFocused', 'buttonBackground'],
+    ['buttonTextFocused', 'buttonText'],
+  ],
+  selected: [
+    ['buttonBackgroundFocused', 'buttonBackgroundFaded'],
+    ['buttonTextFocused', 'buttonText'],
+  ],
+};
+
+export function TextButton({
+  text,
+  onPress,
+  focusOnMount,
+  variant = 'default',
+}: TextButtonProps) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} focusOnMount={focusOnMount}>
       {({focused}) => (
         <Box
-          bg={focused ? 'buttonBackgroundFocused' : 'buttonBackground'}
+          bg={focused ? variants[variant][0][0] : variants[variant][0][1]}
           p="S8"
           r="default">
-          <Text color={focused ? 'buttonTextFocused' : 'buttonText'}>
+          <Text
+            color={focused ? variants[variant][1][0] : variants[variant][1][1]}>
             {text}
           </Text>
         </Box>

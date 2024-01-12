@@ -22,10 +22,12 @@ export class LocalUserProfile extends Shape({
   }
 
   setServerAddress(serverAddress: string) {
+    console.log('Setting address', serverAddress);
     this.serverAddress = serverAddress;
   }
 
   setServerPassword(serverPassword: string) {
+    console.log('Setting password', serverPassword);
     this.serverPassword = serverPassword;
   }
 }
@@ -96,13 +98,14 @@ export function LocalUserContextProvider({
   if (!reactive.instance?.serverAddress || !reactive.instance?.serverPassword) {
     return (
       <ConfigureServer
-        onConfigured={(address, password) => {
+        onConfigured={async (address, password) => {
           if (!reactive.instance) {
             return;
           }
           reactive.call('setServerAddress', address);
           reactive.call('setServerPassword', password);
-          localStore.set('user', reactive.instance);
+          await localStore.set('user', reactive.instance);
+          init();
         }}
       />
     );
@@ -112,7 +115,7 @@ export function LocalUserContextProvider({
     return <FullScreenLoading />;
   }
 
-  if (!reactive.instance) {
+  if (!reactive.instance.user) {
     return (
       <ChooseUser
         declaredUsers={declaredUsers}

@@ -31,15 +31,15 @@ export function Text({
   const styles = useMemo<StyleProp<TextStyle>>(
     () => [
       {
-        fontFamily: bold ? 'Rubik-Medium' : 'Rubik',
         fontSize: fontSize[size],
         color: pcolor ? color[pcolor] : color.whiteText,
         textAlign: align,
         lineHeight,
+        fontWeight: bold ? 'bold' : undefined,
       },
       style,
     ],
-    [align, bold, pcolor, size, style, lineHeight],
+    [bold, size, pcolor, align, lineHeight, style],
   );
 
   return (

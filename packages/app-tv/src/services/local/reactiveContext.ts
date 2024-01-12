@@ -30,7 +30,7 @@ export class ReactiveShape<T> {
       ? Parameters<NonNullable<T>[F]>
       : never
   ) {
-    (this.instance?.[fn] as any).bind(this)(...args);
+    (this.instance?.[fn] as any).bind(this.instance)(...args);
     this.render();
   }
 }

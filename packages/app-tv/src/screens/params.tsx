@@ -14,6 +14,7 @@ import {
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-native';
 import {useBack} from '../services/useBack';
+import {BackHandler} from 'react-native';
 
 export type NavigationParams = {
   Discover: undefined;
@@ -88,6 +89,7 @@ export function useNavigationContext() {
   const pop = useCallback(() => {
     setHistory(old => {
       if (old.length === 1) {
+        BackHandler.exitApp();
         return old;
       }
       return old.slice(0, -1);

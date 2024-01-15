@@ -5,7 +5,7 @@
   "scripts": {
     "android": "react-native run-android --no-packager",
     "android:clean": "cd android && ./gradlew clean ; cd -",
-    "android:release": "react-native run-android --variant Release --no-packager",
+    "android:release": "react-native run-android --mode Release --no-packager",
     "android:bundle": "react-native bundle --platform android --dev true --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug ; cd -",
     "ios": "react-native run-ios --no-packager",
     "tvos": "expo run:ios --scheme timotex-tvOS --device \"Apple TV\"",

@@ -1,8 +1,8 @@
 import {Platform, StyleSheet} from 'react-native';
 import {Navigation} from './src/screens';
-import {listenToUpdate} from './src/services/listenToUpdate';
 import {View} from 'react-native';
 import {color} from './src/services/constants';
+import {useListenToUpdate} from './src/services/listenToUpdate';
 
 const fonts = Platform.select<Record<string, string>>({
   default: {
@@ -25,9 +25,9 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
   return fonts[next] ?? next;
 });
 
-listenToUpdate();
-
 export function App() {
+  useListenToUpdate();
+
   return (
     <View style={styles.root}>
       <Navigation />

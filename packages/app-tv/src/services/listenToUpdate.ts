@@ -1,5 +1,9 @@
 import * as Updates from 'expo-updates';
-import {AppState, Platform} from 'react-native';
+import {useEffect} from 'react';
+import {Alert, AppState, Platform} from 'react-native';
+import {UpdateStore} from './local/updateContext';
+
+let ignoreNext = false;
 
 async function onFetchUpdateAsync() {
   try {
@@ -9,19 +13,45 @@ async function onFetchUpdateAsync() {
 
     const update = await Updates.checkForUpdateAsync();
 
-    console.log('update available', update.isAvailable);
     if (update.isAvailable) {
       await Updates.fetchUpdateAsync();
+      const userUpdate = await UpdateStore.load();
+      userUpdate.setUpdated();
+      await UpdateStore.save(userUpdate);
       await Updates.reloadAsync();
     }
   } catch (error) {
-    // You can also add an alert() to see the error message in case of an error when fetching updates.
-    console.log('Error', error);
+    if (!__DEV__) {
+      console.log('Update error', error);
+      ignoreNext = true;
+      Alert.alert(
+        'Erreur',
+        'Erreur lors de la mise a jour, certaines fonctionnalités peuvent ne pas fonctionner',
+      );
+    }
   }
 }
 
-export function listenToUpdate() {
-  AppState.addEventListener('focus', () => {
-    onFetchUpdateAsync().catch(console.error);
-  });
+export function useListenToUpdate() {
+  useEffect(() => {
+    async function setupUpdates() {
+      const userUpdate = await UpdateStore.load();
+      if (userUpdate.updated) {
+        Alert.alert('Mise à jour', "L'application vient d'être mise à jour");
+        userUpdate.announcedUpdated();
+        await UpdateStore.save(userUpdate);
+      }
+      onFetchUpdateAsync().catch(console.error);
+    }
+    setupUpdates().catch(console.log);
+    const subscription = AppState.addEventListener('focus', state => {
+      console.log('State', state);
+      if (ignoreNext) {
+        ignoreNext = false;
+        return;
+      }
+      onFetchUpdateAsync().catch(console.error);
+    });
+    return subscription.remove;
+  }, []);
 }

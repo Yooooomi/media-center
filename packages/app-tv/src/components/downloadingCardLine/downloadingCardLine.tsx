@@ -10,11 +10,7 @@ import {StyleSheet} from 'react-native';
 import {Text} from '../text';
 import {card} from '../../services/constants';
 
-interface DownloadingCardLine
-  extends ExtraSectionLineProps<{
-    tmdb: Movie | Show | undefined;
-    request: TorrentRequest;
-  }> {
+interface DownloadingCardLine extends ExtraSectionLineProps {
   autoFocusFirst?: boolean;
   entries: {tmdb: Movie | Show | undefined; request: TorrentRequest}[];
   title: string;

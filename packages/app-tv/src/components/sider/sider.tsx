@@ -10,7 +10,7 @@ import {Text} from '../text/text';
 import {StatusContext} from '../../contexts/statusContext';
 import {useAnimatedValue} from '../../services/useAnimatedValue';
 import Animated from 'react-native-reanimated';
-import {useSignal} from '../../contexts/useSignal';
+import {useMeshContext} from '../../contexts/meshContext';
 
 export function Sider() {
   const {navigate} = useNavigate();
@@ -18,7 +18,7 @@ export function Sider() {
   const buttons = useMemo(() => {
     const options: {title: string; do: () => void; icon: IconName}[] = [
       {
-        icon: 'new-box',
+        icon: 'home',
         title: 'Ajouté récement',
         do: () => navigate('Library', undefined),
       },
@@ -82,29 +82,38 @@ export function Sider() {
 
   const widthStyle = useAnimatedValue(isOpen ? openWidth : closedWidth);
 
-  const onFocus = () => setFocused(o => o + 1);
-  const onBlur = () => setTimeout(() => setFocused(o => Math.max(0, o - 1)), 0);
+  const onFocus = useCallback(() => setFocused(o => o + 1), []);
+  const onBlur = useCallback(
+    () => setTimeout(() => setFocused(o => Math.max(0, o - 1)), 0),
+    [],
+  );
 
-  const serverStatus = useSignal(StatusContext.server);
+  const {status} = useMeshContext(StatusContext);
+
+  const renderedButtons = useMemo(
+    () =>
+      buttons.map((button, index) => (
+        <SiderButton
+          key={button.title}
+          icon={button.icon}
+          text={button.title}
+          onPress={button.do}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          upName={getUpNameFromIndex(index)}
+          downName={getDownNameFromIndex(index)}
+        />
+      )),
+    [buttons, getDownNameFromIndex, getUpNameFromIndex, onBlur, onFocus],
+  );
 
   return (
     <View style={[styles.root, focused ? styles.over : undefined]}>
       <Animated.View style={[styles.container, shadows.default, widthStyle]}>
-        {buttons.map((button, index) => (
-          <SiderButton
-            key={button.title}
-            icon={button.icon}
-            text={button.title}
-            onPress={button.do}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            upName={getUpNameFromIndex(index)}
-            downName={getDownNameFromIndex(index)}
-          />
-        ))}
+        {renderedButtons}
         <View style={styles.status}>
           <Box row ml="S16" mb="S16" gap="S8" items="center">
-            <Dot color={serverStatus ? 'statusOK' : 'statusKO'} />
+            <Dot color={status ? 'statusOK' : 'statusKO'} />
             {isOpen && <Text size="small">Serveur</Text>}
           </Box>
         </View>

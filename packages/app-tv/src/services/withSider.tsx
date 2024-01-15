@@ -7,7 +7,7 @@ export function withSider<C extends (args: any) => ReactNode>(
   Component: C,
 ): FC {
   return (a: Parameters<C>['0']) => (
-    <Box row>
+    <Box row grow>
       <Box h="100%">
         <Sider />
       </Box>
@@ -16,7 +16,9 @@ export function withSider<C extends (args: any) => ReactNode>(
         trapFocusDown
         trapFocusUp
         autoFocus>
-        <Component {...a} />
+        <Box grow>
+          <Component {...a} />
+        </Box>
       </TVFocusGuideView>
     </Box>
   );

@@ -2,15 +2,20 @@ import {Section} from '../../components/section';
 import {Box} from '../../components/box';
 import {LineButton} from '../../components/ui/pressable/lineButton';
 import {noop} from '@media-center/algorithm';
-import {useContext} from 'react';
+import {useCallback, useContext} from 'react';
 import {LocalUserContext} from '../../services/local/localUserProfile';
 import {useQuery} from '../../services/useQuery';
 import {SettingsPageQuery} from '@media-center/server/src/queries/settingsPage.query';
 
 export function Settings() {
-  const user = useContext(LocalUserContext);
+  const {user, save} = useContext(LocalUserContext);
 
   const [{result}] = useQuery(SettingsPageQuery, undefined);
+
+  const resetAccount = useCallback(() => {
+    user.call('setUser', undefined);
+    save();
+  }, [save, user]);
 
   return (
     <Box p="S16">
@@ -27,6 +32,10 @@ export function Settings() {
         <LineButton
           text={`Nombre de d'entrées dans le catalogue: ${result?.catalogEntries}`}
           onPress={noop}
+        />
+        <LineButton
+          text={`Changer de compte: ${user.instance?.user}`}
+          onPress={resetAccount}
         />
         <LineButton
           text="Rescanner la librairie (peut prendre longtemps)"

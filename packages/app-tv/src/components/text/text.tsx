@@ -31,11 +31,11 @@ export function Text({
   const styles = useMemo<StyleProp<TextStyle>>(
     () => [
       {
+        fontFamily: bold ? 'Montserrat-Bold' : 'Montserrat',
         fontSize: fontSize[size],
         color: pcolor ? color[pcolor] : color.whiteText,
         textAlign: align,
         lineHeight,
-        fontWeight: bold ? 'bold' : undefined,
       },
       style,
     ],

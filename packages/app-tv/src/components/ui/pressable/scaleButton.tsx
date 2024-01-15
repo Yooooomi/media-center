@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import {Pressable} from './pressable';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 import {color, radius, rawColor} from '../../../services/constants';
 
 interface ScaleButtonProps {
@@ -8,6 +8,8 @@ interface ScaleButtonProps {
   onPress: () => void;
   focusOnMount?: boolean;
   border?: boolean | keyof typeof radius;
+  style?: ViewStyle;
+  onFocus?: () => void;
 }
 
 export function ScaleButton({
@@ -15,9 +17,15 @@ export function ScaleButton({
   onPress,
   focusOnMount,
   border,
+  style,
+  onFocus,
 }: ScaleButtonProps) {
   return (
-    <Pressable onPress={onPress} focusOnMount={focusOnMount}>
+    <Pressable
+      onPress={onPress}
+      focusOnMount={focusOnMount}
+      style={style}
+      onFocus={onFocus}>
       {({focused}) => (
         <View
           style={[
@@ -26,7 +34,7 @@ export function ScaleButton({
               borderRadius:
                 border && typeof border === 'string'
                   ? radius[border]
-                  : radius.default,
+                  : radius.small,
               borderColor:
                 border && focused ? color.whiteText : rawColor.transparent,
               transform: [{scale: focused ? 1.05 : 1}],
@@ -42,5 +50,6 @@ export function ScaleButton({
 const styles = StyleSheet.create({
   root: {
     borderWidth: 2,
+    overflow: 'hidden',
   },
 });

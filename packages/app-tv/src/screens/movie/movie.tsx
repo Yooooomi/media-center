@@ -1,20 +1,20 @@
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {useParams} from '../params';
 import {useImageUri} from '../../services/tmdb';
 import {Text} from '../../components/text/text';
 import {Box} from '../../components/box/box';
 import {GetMoviePageQuery} from '@media-center/server/src/queries/getMoviePage.query';
 import {useQuery} from '../../services/useQuery';
-import {PageBackground} from '../../components/pageBackground/pageBackground';
 import {useQueryTorrents} from '../../services/useQueryTorrents';
-import {BigInfo} from '../../components/bigInfo';
 import {BigPressable} from '../../components/bigPressable/bigPressable';
-import {spacing} from '../../services/constants';
+import {rawColor} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
-import {TorrentRequests} from '../../components/torrentRequests';
 import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 import {Beta} from '../../services/api';
+import {RateLimitedImage} from '../../components/rateLimitedImage';
+import {ProgressOverlay} from '../../components/progressOverlay';
+import {TorrentRequests} from '../../components/torrentRequests';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
@@ -52,23 +52,49 @@ export function Movie() {
 
   return (
     <>
-      <View style={styles.grow}>
-        <PageBackground imageUri={imageUri} />
-        <View style={styles.topRight}>
-          <TorrentRequests requests={moviePage.requests} />
-        </View>
-        <Box p="S32" style={styles.box}>
-          <Box row gap="S8" style={{marginBottom: -spacing.S4}}>
-            {moviePage.details.genres.map(genre => (
-              <Text key={genre} size="smaller">
-                {genre}
+      <Box grow row ph="S32" pv="S24" gap="S32">
+        <RateLimitedImage
+          uri={imageUri}
+          style={StyleSheet.absoluteFillObject}
+          blurRadius={50}
+        />
+        <View style={styles.blackOverlay} />
+        <Box style={styles.background} r="small" overflow="hidden">
+          <ProgressOverlay
+            style={styles.grow}
+            progress={moviePage.userInfo.progress}>
+            <RateLimitedImage uri={imageUri} style={styles.grow} />
+          </ProgressOverlay>
+        </Box>
+        <Box pv="S24" shrink content="space-between">
+          <Box grow>
+            <Box mb="S8" row content="space-between">
+              <Text size="title" bold>
+                {moviePage.tmdb.title}
               </Text>
-            ))}
+              <Text size="title" color="textFaded">
+                {moviePage.tmdb.getYear()}
+              </Text>
+            </Box>
+            <Box mb="S24">
+              <Box row gap="S32">
+                <Text>
+                  🍿 {moviePage.tmdb.getRoundedNote()}% ・{' '}
+                  {moviePage.details.getStringRuntime()} ・{' '}
+                  {moviePage.details.genres[0]}
+                </Text>
+              </Box>
+            </Box>
+            <Text size="smaller" color="textFaded" lineHeight={20}>
+              {moviePage.tmdb.overview}
+            </Text>
+            <ScrollView style={styles.torrentRequestsScrollview}>
+              <Box mt="S16">
+                <TorrentRequests requests={moviePage.requests} />
+              </Box>
+            </ScrollView>
           </Box>
-          <Text bold size="big">
-            {movie.title.toUpperCase()}
-          </Text>
-          <Box row gap="S8">
+          <Box w="100%" row gap="S16" debug>
             {hasHierarchyItems && (
               <WatchCatalogEntry
                 name={moviePage.tmdb.title}
@@ -78,29 +104,25 @@ export function Movie() {
               />
             )}
             <BigPressable
+              text="Télécharger"
               focusOnMount={!hasHierarchyItems}
               icon="download"
               onPress={queryTorrents}
               loading={queryTorrentsLoading}
             />
-            <BigPressable icon="dots-horizontal" onPress={openMoreOptions} />
-            <BigInfo info={moviePage.details?.getStringRuntime()} />
-            <BigInfo info={movie.getYear()} />
-          </Box>
-          <Box w="60%" mt="S16">
-            <Box mb="S4">
-              <Text color="text" bold size="default">
-                Synopsis
-              </Text>
-            </Box>
-            <Box>
-              <Text lineHeight={16} size="small">
-                {movie.overview}
-              </Text>
-            </Box>
+            <BigPressable
+              text="Marqué vu"
+              icon="eye"
+              onPress={openMoreOptions}
+            />
+            <BigPressable
+              text="Options"
+              icon="dots-horizontal"
+              onPress={openMoreOptions}
+            />
           </Box>
         </Box>
-      </View>
+      </Box>
       {element}
       {MoreOptionsElement}
     </>
@@ -108,15 +130,27 @@ export function Movie() {
 }
 
 const styles = StyleSheet.create({
-  box: {
-    marginTop: 100,
+  blackOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.4,
+    backgroundColor: rawColor.black,
+  },
+  background: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+    elevation: 12,
+    width: '33%',
   },
   grow: {
     flexGrow: 1,
   },
-  topRight: {
-    position: 'absolute',
-    top: spacing.S16,
-    right: spacing.S16,
+  torrentRequestsScrollview: {
+    flexBasis: 0,
+    flexShrink: 1,
   },
 });

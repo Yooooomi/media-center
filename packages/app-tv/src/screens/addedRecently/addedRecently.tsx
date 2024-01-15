@@ -11,17 +11,19 @@ import {ScrollView} from 'react-native';
 import {Beta} from '../../services/api';
 import {TmdbCardsLine} from '../../components/tmdbCardsLine/tmdbCardsLine';
 import {Text} from '../../components/text';
+import {useMeshContext} from '../../contexts/meshContext';
 
 export function AddedRecently() {
+  const {setStatus} = useMeshContext(StatusContext);
   const [{result: homepage, error}] = useQuery(HomepageQuery, Beta.userId, {
     reactive: true,
   });
 
   useEffect(() => {
     if (error) {
-      StatusContext.server.value = false;
+      setStatus(false);
     }
-  }, [error]);
+  }, [error, setStatus]);
 
   if (!homepage) {
     return <FullScreenLoading />;
@@ -64,8 +66,7 @@ export function AddedRecently() {
           {homepage.catalog.movies.length > 0 ? (
             <MovieCardsLine
               autoFocusFirst={
-                homepage.continue.length === 0 &&
-                homepage.catalog.shows.length === 0
+                homepage.continue.length + homepage.catalog.shows.length === 0
               }
               title="Films récemment ajoutés"
               infos={homepage.catalog.movies.map(e => e.userInfo)}
@@ -76,6 +77,12 @@ export function AddedRecently() {
             <DownloadingCardLine
               title="En téléchargement"
               entries={downloading}
+              autoFocusFirst={
+                homepage.continue.length +
+                  homepage.catalog.shows.length +
+                  homepage.catalog.movies.length ===
+                0
+              }
             />
           ) : null}
         </Box>

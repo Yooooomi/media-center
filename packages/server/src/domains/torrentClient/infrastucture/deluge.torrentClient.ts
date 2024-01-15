@@ -58,6 +58,7 @@ export class DelugeTorrentClient extends TorrentClient {
   private readonly movieLocation: string;
   private readonly showLocation: string;
   private readonly axios: InstanceType<typeof Axios>;
+  private cookies: string | undefined;
 
   constructor(environmentHelper: EnvironmentHelper) {
     super();
@@ -70,17 +71,18 @@ export class DelugeTorrentClient extends TorrentClient {
     });
   }
 
-  async _makeCall(method: string, params: any[] = []) {
+  private async _makeCall(method: string, params: any[] = []) {
     if (this.messageId === 1024) {
       this.messageId = 0;
     }
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      Cookie: this.cookies ?? "",
     };
 
     const { data, headers: receivedHeaders } = await this.axios.post(
-      this.endpoint + "json",
+      "json",
       {
         method,
         params,
@@ -94,20 +96,23 @@ export class DelugeTorrentClient extends TorrentClient {
     return { data: data, headers: receivedHeaders as Record<string, string> };
   }
 
-  async auth() {
+  private async auth() {
     const { data: checkSession } = await this._makeCall("auth.check_session");
 
     if (checkSession.result) {
       return true;
     }
-    const { data } = await this._makeCall("auth.login", [this.password]);
+    const { data, headers } = await this._makeCall("auth.login", [
+      this.password,
+    ]);
+    this.cookies = headers["set-cookie"] as string;
     if (!data.result) {
-      throw new Error("Auth failed, does the password valided?");
+      throw new Error("Auth failed, is the password valid?");
     }
     return true;
   }
 
-  async call(method: string, params: any[] = []) {
+  private async call(method: string, params: any[] = []) {
     return this._makeCall(method, params).then((response) => {
       const data = response.data;
       if (data.error) {
@@ -131,7 +136,8 @@ export class DelugeTorrentClient extends TorrentClient {
    */
   async getTorrentRecord(): Promise<DelugeRequest> {
     await this.auth();
-    return this.call("web.update_ui", [
+
+    const records: DelugeRequest = await this.call("web.update_ui", [
       [
         "distributed_copies",
         "download_payload_rate",
@@ -159,32 +165,40 @@ export class DelugeTorrentClient extends TorrentClient {
       ],
       {},
     ]);
+    Object.values(records.torrents).forEach((torrent) => {
+      torrent.progress = torrent.progress / 100;
+    });
+    return records;
   }
 
   // {"id": 1, "result": ["core.upload_plugin", "core.rescan_plugins", "core.force_recheck", "core.glob", "core.remove_torrent", "core.resume_all_torrents", "core.queue_top", "daemon.get_method_list", "ltconfig.get_settings", "core.set_torrent_options", "core.set_torrent_prioritize_first_last", "core.get_session_state", "core.set_torrent_move_completed", "core.get_available_plugins", "core.set_torrent_file_priorities", "core.get_config", "core.disable_plugin", "core.test_listen_port", "core.connect_peer", "core.enable_plugin", "core.get_filter_tree", "ltconfig.get_original_settings", "core.set_torrent_remove_at_ratio", "core.get_torrent_status", "core.get_config_values", "core.pause_torrent", "core.move_storage", "core.force_reannounce", "core.add_torrent_file", "core.get_listen_port", "core.set_torrent_move_completed_path", "core.set_torrent_stop_at_ratio", "core.rename_folder", "core.add_torrent_url", "core.get_enabled_plugins", "core.get_libtorrent_version", "core.get_path_size", "core.set_torrent_max_connections", "core.get_config_value", "core.get_session_status", "core.create_torrent", "core.add_torrent_magnet", "daemon.info", "core.set_torrent_stop_ratio", "core.set_torrent_auto_managed", "core.pause_all_torrents", "ltconfig.get_preferences", "core.get_torrents_status", "core.rename_files", "core.get_free_space", "core.queue_bottom", "core.set_torrent_max_upload_speed", "ltconfig.get_preset", "ltconfig.set_preferences", "core.resume_torrent", "core.set_torrent_max_upload_slots", "core.set_config", "core.get_cache_status", "core.queue_down", "daemon.shutdown", "core.get_num_connections", "core.set_torrent_max_download_speed", "core.queue_up", "core.set_torrent_trackers"], "error": null}
 
-  pause(torrentId: string) {
-    return this._makeCall("core.pause_torrent", [torrentId]);
+  async pause(torrentId: string) {
+    await this.auth();
+    await this._makeCall("core.pause_torrent", [torrentId]);
   }
 
-  start(torrentId: string) {
-    return this._makeCall("core.resume_torrent", [torrentId]);
+  async start(torrentId: string) {
+    await this.auth();
+    await this._makeCall("core.resume_torrent", [torrentId]);
   }
 
   async delete(torrentId: string) {
+    await this.auth();
     await this._makeCall("core.remove_torrent", [torrentId, true]);
   }
 
-  rename(torrentId: string, newName: string) {
-    return this._makeCall("core.rename_files", [torrentId, [[0, newName]]]);
+  async rename(torrentId: string, newName: string) {
+    await this.auth();
+    await this._makeCall("core.rename_files", [torrentId, [[0, newName]]]);
   }
 
-  async addTorrent(torrent: Buffer, isShow: boolean) {
+  async download(torrent: Buffer, isShow: boolean) {
     await this.auth();
 
     const form = new FormData();
     // @ts-ignore
-    form.append("file", torrent, "file");
+    form.append("file", new Blob([torrent]), "file");
 
     const { data: filesAdded } = await this.axios.post("upload", form);
     const [fileAdded] = filesAdded.files;
@@ -201,10 +215,12 @@ export class DelugeTorrentClient extends TorrentClient {
       },
     };
 
-    return this.call("notifier.add_torrent_with_username", ["", config]);
+    return this.call("web.add_torrents", [[config]]);
   }
 
   async getState() {
+    await this.auth();
+
     const torrents = await this.getTorrentRecord();
     return Object.entries(torrents.torrents).map(
       ([id, torrent]) =>
@@ -214,9 +230,5 @@ export class DelugeTorrentClient extends TorrentClient {
           speed: torrent.download_payload_rate,
         })
     );
-  }
-
-  async download(buffer: Buffer, isShow: boolean) {
-    return this.addTorrent(buffer, isShow);
   }
 }

@@ -60,8 +60,12 @@ export class UserTmdbShowInfo extends Shape({
     return latest?.progress ?? 0;
   }
 
-  getLastSeasonBegan() {
-    return maxBy(this.progress, (p) => p.season)?.season;
+  getLastWatchedInfo() {
+    const lastSeen = maxBy(this.progress, (p) => p.season);
+    if (!lastSeen) {
+      return undefined;
+    }
+    return { season: lastSeen.season, episode: lastSeen.episode };
   }
 }
 

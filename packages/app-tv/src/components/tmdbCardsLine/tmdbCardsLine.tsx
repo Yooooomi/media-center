@@ -8,7 +8,7 @@ import {
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {ShowCard} from '../implementedUi/cards/showCard';
 
-interface MovieCardsLine extends ExtraSectionLineProps<Movie | Show> {
+interface MovieCardsLine extends ExtraSectionLineProps {
   tmdbs: (Movie | Show)[];
   infos?: (UserTmdbMovieInfo | UserTmdbShowInfo)[];
   title: string;

@@ -19,6 +19,7 @@ import {SearchTmdb} from './searchTmdb';
 import {Settings} from './settings';
 import {LocalUserContextProvider} from '../services/local/localUserProfile';
 import {useMemo} from 'react';
+import {StatusContextProvider} from '../contexts/statusContext';
 
 export function Navigation() {
   const {value, currentRoute} = useNavigationContext();
@@ -55,7 +56,9 @@ export function Navigation() {
         <NativeRouter>
           <AlertProvider>
             <NavigationContext.Provider value={value}>
-              <LocalUserContextProvider>{routes}</LocalUserContextProvider>
+              <LocalUserContextProvider>
+                <StatusContextProvider>{routes}</StatusContextProvider>
+              </LocalUserContextProvider>
             </NavigationContext.Provider>
           </AlertProvider>
         </NativeRouter>

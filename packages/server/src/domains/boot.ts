@@ -108,5 +108,10 @@ export async function globalBoot() {
     userTmdbInfoStore
   );
 
-  return { commandBus, eventBus, unsubscribeUpdateTorrentPoll };
+  return {
+    commandBus,
+    eventBus,
+    unsubscribeUpdateTorrentPoll,
+    environmentHelper,
+  };
 }

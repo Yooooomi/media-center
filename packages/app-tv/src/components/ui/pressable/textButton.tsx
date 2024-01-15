@@ -2,14 +2,16 @@ import {Text} from '../../text/text';
 import {Pressable} from './pressable';
 import {Box} from '../../box';
 import {color} from '../../../services/constants';
+import {ViewStyle} from 'react-native';
 
-type Variants = 'default' | 'selected';
+type Variants = 'default';
 
 interface TextButtonProps {
   text: string;
   onPress: () => void;
   focusOnMount?: boolean;
   variant?: Variants;
+  style?: ViewStyle;
 }
 
 const variants: Record<
@@ -23,10 +25,6 @@ const variants: Record<
     ['buttonBackgroundFocused', 'buttonBackground'],
     ['buttonTextFocused', 'buttonText'],
   ],
-  selected: [
-    ['buttonBackgroundFocused', 'buttonBackgroundFaded'],
-    ['buttonTextFocused', 'buttonText'],
-  ],
 };
 
 export function TextButton({
@@ -34,9 +32,10 @@ export function TextButton({
   onPress,
   focusOnMount,
   variant = 'default',
+  style,
 }: TextButtonProps) {
   return (
-    <Pressable onPress={onPress} focusOnMount={focusOnMount}>
+    <Pressable onPress={onPress} focusOnMount={focusOnMount} style={style}>
       {({focused}) => (
         <Box
           bg={focused ? variants[variant][0][0] : variants[variant][0][1]}

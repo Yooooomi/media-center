@@ -13,6 +13,7 @@ interface VerticalCardProps {
   onPress: () => void;
   disabled?: boolean;
   progress?: number;
+  onFocus?: () => void;
 }
 
 export function VerticalCard({
@@ -21,9 +22,14 @@ export function VerticalCard({
   focusOnMount,
   disabled,
   progress,
+  onFocus,
 }: VerticalCardProps) {
   return (
-    <ScaleButton focusOnMount={focusOnMount} onPress={onPress} border>
+    <ScaleButton
+      focusOnMount={focusOnMount}
+      onPress={onPress}
+      onFocus={onFocus}
+      border>
       <ProgressOverlay style={styles.root} progress={progress}>
         {uri ? (
           <RateLimitedImage uri={uri} style={styles.image} resizeMode="cover" />

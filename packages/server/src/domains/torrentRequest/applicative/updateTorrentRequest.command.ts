@@ -25,11 +25,6 @@ export class UpdateTorrentRequestCommandHandler extends CommandHandler(
     );
 
     if (!existing) {
-      console.log(
-        "Passing torrent",
-        command.torrentRequestId.toString(),
-        "it was not found in store"
-      );
       return;
     }
 

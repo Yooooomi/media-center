@@ -119,7 +119,6 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
       .map((movie) => {
         const tmdb = tmdbs[movie.id.toString()];
         if (!tmdb || !(tmdb instanceof Movie)) {
-          console.log("Movie", tmdb, movie.serialize());
           throw new Error("Cannot find related tmdb");
         }
         let userInfo = userInfosDict[tmdb.id.toString()];
@@ -141,7 +140,6 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
       .map((show) => {
         const tmdb = tmdbs[show.id.toString()];
         if (!tmdb || !(tmdb instanceof Show)) {
-          console.log("Show", tmdb);
           throw new Error("Cannot find related tmdb");
         }
         let userInfo = userInfosDict[tmdb.id.toString()];

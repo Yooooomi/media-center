@@ -1,6 +1,6 @@
 import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeason';
-import {TextButton} from '../../components/ui/pressable/textButton';
 import {Box} from '../../components/box';
+import {TabButton} from '../../components/ui/pressable/tabButton';
 
 interface SeasonSelectorProps {
   seasons: ShowSeason[];
@@ -14,11 +14,11 @@ export function SeasonSelector({
   onSeasonChange,
 }: SeasonSelectorProps) {
   return (
-    <Box row shrink gap="S8">
+    <Box row gap="S8">
       {seasons.map(s => (
-        <TextButton
+        <TabButton
           key={s.season_number}
-          variant={season === s.season_number ? 'selected' : 'default'}
+          selected={season === s.season_number}
           text={`Saison ${s.season_number}`}
           onPress={() => onSeasonChange(s.season_number)}
         />

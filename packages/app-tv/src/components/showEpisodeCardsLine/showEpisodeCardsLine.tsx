@@ -4,6 +4,7 @@ import {ShowCatalogEntryFulfilled} from '@media-center/server/src/domains/catalo
 import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {LineList} from '../lineList';
+import {StyleSheet} from 'react-native';
 
 interface ShowEpisodeCardsLineProps {
   show: Show;
@@ -12,7 +13,7 @@ interface ShowEpisodeCardsLineProps {
   userInfo: UserTmdbShowInfo;
   catalogEntry: ShowCatalogEntryFulfilled;
   onFocusEpisode?: (episode: ShowEpisode) => void;
-  focusFirst?: boolean;
+  focusIndex?: number;
 }
 
 export function ShowEpisodeCardsLine({
@@ -20,11 +21,12 @@ export function ShowEpisodeCardsLine({
   showEpisodes,
   availableEpisodes,
   catalogEntry,
-  focusFirst,
+  focusIndex,
   userInfo,
 }: ShowEpisodeCardsLineProps) {
   return (
     <LineList
+      style={styles.root}
       data={showEpisodes}
       keyExtractor={showEpisode => showEpisode.episode_number.toString()}
       renderItem={(item, index) => (
@@ -32,7 +34,9 @@ export function ShowEpisodeCardsLine({
           show={show}
           userInfo={userInfo}
           disabled={availableEpisodes.indexOf(item.episode_number) === -1}
-          focusOnMount={focusFirst && index === 0 ? true : undefined}
+          focusOnMount={
+            focusIndex !== undefined && index === focusIndex ? true : undefined
+          }
           catalogEntry={catalogEntry}
           showEpisode={item}
         />
@@ -40,3 +44,9 @@ export function ShowEpisodeCardsLine({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    marginLeft: -8,
+  },
+});

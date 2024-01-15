@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    height: 4,
+    height: 5,
     bottom: 0,
     backgroundColor: color.progress,
   },

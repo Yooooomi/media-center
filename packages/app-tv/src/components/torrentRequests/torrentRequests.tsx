@@ -10,7 +10,7 @@ export function TorrentRequests({requests}: TorrentRequestsProps) {
   return (
     <>
       {requests?.map(request => (
-        <Box mb="S8" key={request.id.toString()}>
+        <Box grow mb="S8" key={request.id.toString()}>
           <TorrentRequestLine torrentRequest={request} />
         </Box>
       ))}

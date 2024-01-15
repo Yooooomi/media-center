@@ -1,5 +1,11 @@
 import {Optional, Shape} from '@media-center/domain-driven';
-import React, {ReactNode, useCallback, useEffect, useState} from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {localStore} from '../localStore';
 import {Beta} from '../api';
 import {GetDeclaredUsersQuery} from '@media-center/server/src/domains/user/applicative/getDeclaredUsers.query';
@@ -32,9 +38,10 @@ export class LocalUserProfile extends Shape({
   }
 }
 
-export const LocalUserContext = React.createContext<
-  ReactiveShape<LocalUserProfile | undefined>
->({} as any);
+export const LocalUserContext = React.createContext<{
+  user: ReactiveShape<LocalUserProfile | undefined>;
+  save: () => void;
+}>({} as any);
 
 interface LocalUserContextProviderProps {
   children: ReactNode;
@@ -78,6 +85,32 @@ export function LocalUserContextProvider({
   useEffect(() => {
     init().catch(console.error);
   }, [init]);
+
+  const value = useMemo(
+    () => ({
+      user: reactive,
+      save: async () => {
+        if (!reactive.instance) {
+          return;
+        }
+        await localStore.set('user', reactive.instance);
+        if (
+          !reactive.instance.serverAddress ||
+          !reactive.instance.serverPassword
+        ) {
+          return;
+        }
+        Beta.setServer(
+          reactive.instance.serverAddress,
+          reactive.instance.serverPassword,
+          reactive.instance.user
+            ? new UserId(reactive.instance.user)
+            : undefined,
+        );
+      },
+    }),
+    [reactive],
+  );
 
   if (error) {
     return (
@@ -131,7 +164,7 @@ export function LocalUserContextProvider({
   }
 
   return (
-    <LocalUserContext.Provider value={reactive}>
+    <LocalUserContext.Provider value={value}>
       {children}
     </LocalUserContext.Provider>
   );

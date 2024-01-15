@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet} from 'react-native';
 import {useParams} from '../params';
 import {useImageUri} from '../../services/tmdb';
 import {Text} from '../../components/text/text';
@@ -8,10 +8,8 @@ import {GetShowPageQuery} from '@media-center/server/src/queries/getShowPage.que
 import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 import {PageBackground} from '../../components/pageBackground/pageBackground';
 import {useQueryTorrents} from '../../services/useQueryTorrents';
-import {BigInfo} from '../../components/bigInfo';
 import {BigPressable} from '../../components/bigPressable';
 import {TorrentRequests} from '../../components/torrentRequests';
-import {spacing} from '../../services/constants';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 import {SeasonSelector} from './seasonSelector';
 import {useState} from 'react';
@@ -52,10 +50,10 @@ export function Show() {
   }
 
   const hasSeasons = showPage.seasons.length > 0;
+  const userLastSeen = showPage.userInfo.getLastWatchedInfo();
   const highlightedSeason =
-    seasonIndex !== -1
-      ? seasonIndex
-      : showPage.userInfo.getLastSeasonBegan() ?? 1;
+    seasonIndex !== -1 ? seasonIndex : userLastSeen?.season ?? 1;
+  const highlightedEpisode = userLastSeen?.episode ?? 0;
   const season = showPage.seasons.find(
     s => s.season_number === highlightedSeason,
   );
@@ -70,31 +68,43 @@ export function Show() {
     <>
       <ScrollView style={styles.grow}>
         <PageBackground imageUri={imageUri} />
-        <View style={styles.topRight}>
-          <TorrentRequests requests={showPage.requests} />
-        </View>
-        <Box p="S32" style={styles.box}>
-          <Text bold size="big">
-            {show.title.toUpperCase()}
-          </Text>
-          <Box row gap="S8" mb="S8">
-            <BigPressable
-              focusOnMount={!hasSeasons}
-              icon="download"
-              onPress={queryTorrents}
-              loading={queryTorrentsLoading}
-            />
-            <BigPressable icon="dots-horizontal" onPress={openMoreOptions} />
-            <BigInfo info={show.getYear()} />
+        <Box p="S32">
+          <Box mb="S16">
+            <Text bold size="big">
+              {show.title.toUpperCase()}
+            </Text>
+            <Text color="textFaded">{show.getYear()}</Text>
           </Box>
-          <SeasonSelector
-            seasons={showPage.seasons}
-            season={highlightedSeason}
-            onSeasonChange={setSeasonIndex}
-          />
+          <Box
+            row
+            gap="S8"
+            mb="S16"
+            items="flex-end"
+            content="space-between"
+            style={{borderBottomWidth: 0.5, borderBottomColor: 'white'}}>
+            <SeasonSelector
+              seasons={showPage.seasons}
+              season={highlightedSeason}
+              onSeasonChange={setSeasonIndex}
+            />
+            <Box row w={200} mb="S4">
+              <BigPressable
+                text="Télécharger"
+                focusOnMount={!hasSeasons}
+                icon="download"
+                onPress={queryTorrents}
+                loading={queryTorrentsLoading}
+              />
+              <BigPressable
+                text="Options"
+                icon="dots-horizontal"
+                onPress={openMoreOptions}
+              />
+            </Box>
+          </Box>
           {season && seasonEpisodes ? (
             <ShowEpisodeCardsLine
-              focusFirst
+              focusIndex={highlightedEpisode}
               show={show}
               userInfo={showPage.userInfo}
               availableEpisodes={availableEpisodes}
@@ -108,11 +118,12 @@ export function Show() {
                 Synopsis
               </Text>
             </Box>
-            <Box>
-              <Text lineHeight={16} size="small">
+            <Box mb="S16">
+              <Text lineHeight={20} size="small" color="textFaded">
                 {show.overview}
               </Text>
             </Box>
+            <TorrentRequests requests={showPage.requests} />
           </Box>
         </Box>
       </ScrollView>
@@ -128,13 +139,5 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     flexGrow: 1,
-  },
-  box: {
-    marginTop: 100,
-  },
-  topRight: {
-    position: 'absolute',
-    top: spacing.S16,
-    right: spacing.S16,
   },
 });

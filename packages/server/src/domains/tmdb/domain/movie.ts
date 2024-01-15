@@ -22,6 +22,6 @@ export class Movie extends Shape({
   }
 
   getRoundedNote() {
-    return Math.floor(this.vote_average * 10) / 10;
+    return Math.floor(this.vote_average * 10);
   }
 }

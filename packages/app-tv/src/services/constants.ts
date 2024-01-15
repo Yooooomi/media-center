@@ -47,6 +47,7 @@ export const color = {
   background: rawColor.greyy,
   lightBackground: rawColor.darkgrey,
   text: rawColor.grey,
+  textFaded: opacifyRaw(rawColor.white, 0.9),
   whiteText: rawColor.white,
   darkText: rawColor.black,
 

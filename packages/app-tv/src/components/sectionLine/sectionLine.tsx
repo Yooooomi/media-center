@@ -1,6 +1,8 @@
 import {ReactNode} from 'react';
 import {Section, SectionProps} from '../section/section';
 import {LineList} from '../lineList';
+import {StyleSheet} from 'react-native';
+import {spacing} from '../../services/constants';
 
 export interface SectionLineProps<T> {
   title: string;
@@ -33,6 +35,7 @@ export function SectionLine<T>({
       grow={isHorizontal ? undefined : true}
       {...sectionProps}>
       <LineList
+        style={styles.align}
         data={data}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
@@ -41,3 +44,9 @@ export function SectionLine<T>({
     </Section>
   );
 }
+
+const styles = StyleSheet.create({
+  align: {
+    marginLeft: -spacing.S8,
+  },
+});

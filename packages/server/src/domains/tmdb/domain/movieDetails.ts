@@ -10,6 +10,6 @@ export class MovieDetails extends Shape({
   getStringRuntime() {
     const hours = Math.floor(this.runtime / 60);
     const minutes = this.runtime - hours * 60;
-    return `${hours}h${minutes}m`;
+    return `${hours} hr ${minutes}min`;
   }
 }

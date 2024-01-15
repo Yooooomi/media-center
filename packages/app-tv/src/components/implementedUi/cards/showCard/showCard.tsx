@@ -5,7 +5,7 @@ import {useImageUri} from '../../../../services/tmdb';
 import {useNavigate} from '../../../../screens/params';
 import {Box} from '../../../box';
 import {Text} from '../../../text/text';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {VerticalCard} from '../../../ui/cards/verticalCard';
 
 interface ShowCardProps {
@@ -13,6 +13,7 @@ interface ShowCardProps {
   focusOnMount?: boolean;
   disabled?: boolean;
   progress?: number;
+  onFocus?: (show: Show) => void;
 }
 
 export const ShowCardSize = {
@@ -20,37 +21,44 @@ export const ShowCardSize = {
   height: card.height + 24,
 };
 
-export function ShowCard({
+function ShowCard_({
   show,
   focusOnMount,
   disabled,
   progress,
+  onFocus,
 }: ShowCardProps) {
   const imageUri = useImageUri(show.poster_path ?? show.backdrop_path);
   const {navigate} = useNavigate();
+
+  const handlePress = useCallback(() => {
+    navigate('Show', {show});
+  }, [navigate, show]);
+
+  const handleFocus = useCallback(() => {
+    onFocus?.(show);
+  }, [onFocus, show]);
 
   return (
     <Box>
       <VerticalCard
         focusOnMount={focusOnMount}
         uri={imageUri}
-        onPress={() => navigate('Show', {show})}
+        onPress={handlePress}
         disabled={disabled}
         progress={progress}
+        onFocus={handleFocus}
       />
-      <Box items="flex-start" style={styles.title} bg="background">
-        <Text
-          size="small"
-          align="left"
-          numberOfLines={1}
-          style={styles.text}
-          textBreakStrategy="simple">
+      <Box items="flex-start" style={styles.title}>
+        <Text size="small" align="left" numberOfLines={1} style={styles.text}>
           {show.title}
         </Text>
       </Box>
     </Box>
   );
 }
+
+export const ShowCard = React.memo(ShowCard_);
 
 const styles = StyleSheet.create({
   title: {
@@ -62,5 +70,6 @@ const styles = StyleSheet.create({
   text: {
     marginTop: spacing.S4,
     marginLeft: spacing.S4,
+    width: '100%',
   },
 });

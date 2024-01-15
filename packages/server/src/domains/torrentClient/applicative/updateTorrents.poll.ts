@@ -11,19 +11,20 @@ export class UpdateTorrentsPoll extends Polling {
     super();
   }
 
-  public intervalMs = 5000;
+  public intervalMs = 10_000;
 
   async execute() {
     const torrents = await this.torrentClient.getState();
 
     await Promise.all(
       torrents.map((torrent) => {
-        const a = new UpdateTorrentRequestCommand({
-          torrentRequestId: new TorrentRequestId(torrent.hash),
-          downloaded: torrent.downloaded,
-          speed: torrent.speed,
-        });
-        this.commandBus.execute(a);
+        this.commandBus.execute(
+          new UpdateTorrentRequestCommand({
+            torrentRequestId: new TorrentRequestId(torrent.hash),
+            downloaded: torrent.downloaded,
+            speed: torrent.speed,
+          })
+        );
       })
     );
   }

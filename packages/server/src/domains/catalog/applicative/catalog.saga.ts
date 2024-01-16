@@ -12,9 +12,8 @@ import {
 import { TmdbAPI } from "../../tmdb/applicative/tmdb.api";
 import {
   AnyCatalogEntry,
-  CatalogEntryMovieSpecification,
-  CatalogEntryShowSpecification,
   MovieCatalogEntry,
+  MovieCatalogEntryDataset,
   ShowCatalogEntry,
 } from "../domain/catalogEntry";
 import { CatalogEntryStore } from "./catalogEntry.store";
@@ -104,17 +103,18 @@ export class CatalogSaga extends Saga {
         }
         // Caches the entry in the store already
         await this.tmdbStore.load(tmdbEntry.id);
+
         const alreadyExisting =
           (await this.catalogEntryStore.load(tmdbEntry.id, transaction)) ??
           (isShow
             ? new ShowCatalogEntry({
                 id: tmdbEntry.id,
-                items: [],
+                dataset: [],
                 updatedAt: new Date(),
               })
             : new MovieCatalogEntry({
                 id: tmdbEntry.id,
-                items: [],
+                dataset: new MovieCatalogEntryDataset({ hierarchyItemIds: [] }),
                 updatedAt: new Date(),
               }));
         if (alreadyExisting instanceof ShowCatalogEntry) {
@@ -131,12 +131,11 @@ export class CatalogSaga extends Saga {
             );
             return undefined;
           }
-          const specification = new CatalogEntryShowSpecification({
-            id: event.item.id,
-            season: season ?? 1,
+          alreadyExisting.addHierarchyItemIdForEpisode(
+            season ?? 1,
             episode,
-          });
-          alreadyExisting.addSpecification(specification);
+            event.item.id
+          );
           logger.info(
             `Found tmdb entry for filename ${event.item.file.getFilename()}: ${
               tmdbEntry.title
@@ -145,10 +144,7 @@ export class CatalogSaga extends Saga {
             }E${episode})`
           );
         } else if (alreadyExisting instanceof MovieCatalogEntry) {
-          const specification = new CatalogEntryMovieSpecification({
-            id: event.item.id,
-          });
-          alreadyExisting.addSpecification(specification);
+          alreadyExisting.addHierarchyItemId(event.item.id);
           logger.info(
             `Found tmdb entry for filename ${event.item.file.getFilename()}: ${
               tmdbEntry.title
@@ -184,7 +180,7 @@ export class CatalogSaga extends Saga {
         const updated: AnyCatalogEntry[] = [];
         await Promise.all(
           existing.map(async (e) => {
-            if (e.items.length === 0) {
+            if (!e.hasHierarchyItems()) {
               deleted.push(e);
               return this.catalogEntryStore.delete(e.id, transaction);
             }

@@ -5,9 +5,9 @@ import {
   StyleProp,
 } from 'react-native';
 import {color, fontSize} from '../../services/constants';
-import {useMemo} from 'react';
+import {ReactNode, useMemo} from 'react';
 
-export type Accepted = string | number | undefined;
+export type Accepted = string | number | ReactNode | undefined;
 
 export interface TextProps extends RNTextProps {
   size?: keyof typeof fontSize;

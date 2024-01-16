@@ -162,6 +162,8 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
       this.vlc.release();
     }
     if (this.mediaPlayer != null) {
+      this.mediaPlayer.detachViews();
+      this.mediaPlayer.getVLCVout().detachViews();
       this.mediaPlayer.release();
     }
   }

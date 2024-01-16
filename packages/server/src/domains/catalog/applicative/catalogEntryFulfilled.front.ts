@@ -1,74 +1,106 @@
-import { Shape, Multiple } from "@media-center/domain-driven";
+import { Shape } from "@media-center/domain-driven";
 import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { uniqBy } from "@media-center/algorithm";
 
-export class CatalogEntryMovieSpecificationFulFilled extends Shape({
-  item: HierarchyItem,
-}) {}
-
-export class CatalogEntryShowSpecificationFulFilled extends Shape({
-  item: HierarchyItem,
-  season: Number,
-  episode: Number,
-}) {}
-
-export class ShowCatalogEntryFulfilled extends Shape({
-  id: TmdbId,
-  items: Multiple(CatalogEntryShowSpecificationFulFilled),
+export class MovieCatalogEntryDatasetFulfilled extends Shape({
+  hierarchyItems: [HierarchyItem],
 }) {
+  equals(other: unknown) {
+    return (
+      other instanceof MovieCatalogEntryDatasetFulfilled &&
+      this.hierarchyItems.every((item, index) =>
+        item.equals(other.hierarchyItems[index])
+      )
+    );
+  }
+
   getLatestItem() {
-    const [firstItem] = this.items;
+    const [firstItem] = this.hierarchyItems;
     if (!firstItem) {
       return undefined;
     }
     let max = firstItem;
-    for (let i = 1; i < this.items.length; i += 1) {
-      const item = this.items[i];
+    for (let i = 1; i < this.hierarchyItems.length; i += 1) {
+      const item = this.hierarchyItems[i];
       if (!item) {
         continue;
       }
-      if (item.item.addedAt.getTime() < max.item.addedAt.getTime()) {
+      if (item.addedAt.getTime() < max.addedAt.getTime()) {
         max = item;
       }
     }
     return max;
   }
+}
 
+export class ShowCatalogEntryDatasetFulfilled extends Shape({
+  hierarchyItems: [HierarchyItem],
+  season: Number,
+  episode: Number,
+}) {
+  equals(other: unknown) {
+    return (
+      other instanceof ShowCatalogEntryDatasetFulfilled &&
+      this.season === other.season &&
+      this.episode === other.episode &&
+      this.hierarchyItems.every((item, index) =>
+        item.equals(other.hierarchyItems[index])
+      )
+    );
+  }
+
+  getLatestItem() {
+    const [firstItem] = this.hierarchyItems;
+    if (!firstItem) {
+      return undefined;
+    }
+    let max = firstItem;
+    for (let i = 1; i < this.hierarchyItems.length; i += 1) {
+      const item = this.hierarchyItems[i];
+      if (!item) {
+        continue;
+      }
+      if (item.addedAt.getTime() < max.addedAt.getTime()) {
+        max = item;
+      }
+    }
+    return max;
+  }
+}
+
+export class ShowCatalogEntryFulfilled extends Shape({
+  id: TmdbId,
+  dataset: [ShowCatalogEntryDatasetFulfilled],
+}) {
   numberOfUniqueEpisodes() {
-    return uniqBy(this.items, (i) => i.episode.toString()).length;
+    return uniqBy(this.dataset, (i) => i.episode.toString()).length;
   }
 
   availableSeasons() {
-    return [...new Set(this.items.map((e) => e.season)).values()];
+    return [...new Set(this.dataset.map((e) => e.season)).values()];
   }
 
   getEpisodesOfSeason(season: number) {
-    return this.items
+    return this.dataset
       .filter((item) => item.season === season)
       .sort((a, b) => a.episode - b.episode);
+  }
+
+  hasHierarchyItems() {
+    return this.dataset.length > 0;
   }
 }
 
 export class MovieCatalogEntryFulfilled extends Shape({
   id: TmdbId,
-  items: Multiple(CatalogEntryMovieSpecificationFulFilled),
+  dataset: MovieCatalogEntryDatasetFulfilled,
 }) {
   getLatestItem() {
-    const [firstItem] = this.items;
-    if (!firstItem) {
-      return undefined;
-    }
-    let max = firstItem;
-    for (let i = 1; i < this.items.length; i += 1) {
-      const item = this.items[i];
-      if (!item) {
-        continue;
-      }
-      if (item.item.addedAt.getTime() < max.item.addedAt.getTime()) {
-        max = item;
-      }
-    }
-    return max;
+    return this.dataset.getLatestItem();
+  }
+
+  hasHierarchyItems() {
+    return this.dataset.hierarchyItems.length > 0;
   }
 }

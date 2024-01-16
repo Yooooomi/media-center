@@ -110,6 +110,7 @@ export function Show() {
               availableEpisodes={availableEpisodes}
               showEpisodes={seasonEpisodes}
               catalogEntry={showPage.catalogEntry}
+              season={season.season_number}
             />
           ) : null}
           <Box w="60%" mt="S16">

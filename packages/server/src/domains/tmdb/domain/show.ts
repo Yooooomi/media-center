@@ -21,6 +21,6 @@ export class Show extends Shape({
   }
 
   getRoundedNote() {
-    return this.vote_average;
+    return Math.floor(this.vote_average * 10);
   }
 }

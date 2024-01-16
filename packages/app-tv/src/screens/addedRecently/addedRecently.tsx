@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useContext, useEffect} from 'react';
 import {ShowCardsLine} from '../../components/showCardsLine/showCardsLine';
 import {MovieCardsLine} from '../../components/movieCardsLine/movieCardsLine';
 import {useQuery} from '../../services/useQuery';
@@ -12,8 +12,10 @@ import {Beta} from '../../services/api';
 import {TmdbCardsLine} from '../../components/tmdbCardsLine/tmdbCardsLine';
 import {Text} from '../../components/text';
 import {useMeshContext} from '../../contexts/meshContext';
+import {SplashScreenContext} from '../../services/local/splashScreenContext';
 
 export function AddedRecently() {
+  const {hide} = useContext(SplashScreenContext);
   const {setStatus} = useMeshContext(StatusContext);
   const [{result: homepage, error}] = useQuery(HomepageQuery, Beta.userId, {
     reactive: true,
@@ -24,6 +26,12 @@ export function AddedRecently() {
       setStatus(false);
     }
   }, [error, setStatus]);
+
+  useEffect(() => {
+    if (homepage) {
+      setTimeout(hide, 0);
+    }
+  }, [hide, homepage]);
 
   if (!homepage) {
     return <FullScreenLoading />;

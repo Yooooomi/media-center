@@ -7,9 +7,10 @@ import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "./catalogEntry.store";
 import {
-  CatalogEntryMovieSpecificationFulFilled,
+  MovieCatalogEntryDatasetFulfilled,
   MovieCatalogEntryFulfilled,
 } from "./catalogEntryFulfilled.front";
+import { keyBy } from "@media-center/algorithm";
 
 class NotMatchingHierarchyItem extends ApplicativeError {
   constructor(id: HierarchyItemId) {
@@ -34,26 +35,33 @@ export class GetMovieEntriesQueryHandler extends QueryHandler(
   async execute() {
     const entries = await this.catalogEntryStore.loadMovies();
 
-    const ids = new Set<string>();
+    const neededHierarchyItemIds = new Set<string>();
     entries.forEach((entry) => {
-      entry.items.flatMap((i) => i.id).forEach((i) => ids.add(i.toString()));
+      entry.dataset.hierarchyItemIds.forEach((i) =>
+        neededHierarchyItemIds.add(i.toString())
+      );
     });
-    const items = await this.hierarchyItemStore.loadMany(
-      [...ids.values()].map((i) => new HierarchyItemId(i))
+    const items = keyBy(
+      await this.hierarchyItemStore.loadMany(
+        [...neededHierarchyItemIds.values()].map((i) => new HierarchyItemId(i))
+      ),
+      (e) => e.id.toString()
     );
 
     return entries.map((entry) => {
+      const hierarchyItems = entry.dataset.hierarchyItemIds.map(
+        (hierarchyItemId) => {
+          const item = items[hierarchyItemId.toString()];
+          if (!item) {
+            throw new NotMatchingHierarchyItem(hierarchyItemId);
+          }
+          return item;
+        }
+      );
+
       return new MovieCatalogEntryFulfilled({
         id: entry.id,
-        items: entry.items.map((e) => {
-          const item = items.find((i) => i.id.equals(e.id));
-          if (!item) {
-            throw new NotMatchingHierarchyItem(e.id);
-          }
-          return new CatalogEntryMovieSpecificationFulFilled({
-            item,
-          });
-        }),
+        dataset: new MovieCatalogEntryDatasetFulfilled({ hierarchyItems }),
       });
     });
   }

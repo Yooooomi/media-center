@@ -10,7 +10,7 @@ import { CatalogEntryStore } from "../domains/catalog/applicative/catalogEntry.s
 import { MovieDetails } from "../domains/tmdb/domain/movieDetails";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import {
-  CatalogEntryMovieSpecificationFulFilled,
+  MovieCatalogEntryDatasetFulfilled,
   MovieCatalogEntryFulfilled,
 } from "../domains/catalog/applicative/catalogEntryFulfilled.front";
 import {
@@ -97,14 +97,14 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
     }
 
     const hierarchyItems = catalogEntry
-      ? await this.hierarchyStore.loadMany(catalogEntry.items.map((e) => e.id))
+      ? await this.hierarchyStore.loadMany(
+          catalogEntry.dataset.hierarchyItemIds
+        )
       : [];
 
     const catalogEntryFulfilled = new MovieCatalogEntryFulfilled({
       id: intent.tmdbId,
-      items: hierarchyItems.map(
-        (e) => new CatalogEntryMovieSpecificationFulFilled({ item: e })
-      ),
+      dataset: new MovieCatalogEntryDatasetFulfilled({ hierarchyItems }),
     });
 
     const userInfoId = new UserTmdbInfoId(intent.actorId, intent.tmdbId);

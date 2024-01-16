@@ -1,16 +1,16 @@
 import {
   ApplicativeError,
   Query,
-  Multiple,
   QueryHandler,
 } from "@media-center/domain-driven";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "./catalogEntry.store";
 import {
-  CatalogEntryShowSpecificationFulFilled,
+  ShowCatalogEntryDatasetFulfilled,
   ShowCatalogEntryFulfilled,
 } from "./catalogEntryFulfilled.front";
+import { keyBy } from "@media-center/algorithm";
 
 class NotMatchingHierarchyItem extends ApplicativeError {
   constructor(id: HierarchyItemId) {
@@ -35,24 +35,33 @@ export class GetShowEntriesQueryHandler extends QueryHandler(
   async execute() {
     const entries = await this.catalogEntryStore.loadShows();
 
-    const ids = new Set<string>();
+    const neededHierarchyItemIds = new Set<string>();
     entries.forEach((entry) => {
-      entry.items.flatMap((i) => i.id).forEach((i) => ids.add(i.toString()));
+      entry.dataset
+        .flatMap((i) => i.hierarchyItemIds)
+        .forEach((i) => neededHierarchyItemIds.add(i.toString()));
     });
-    const items = await this.hierarchyItemStore.loadMany(
-      [...ids.values()].map((i) => new HierarchyItemId(i))
+    const neededHierarchyItems = keyBy(
+      await this.hierarchyItemStore.loadMany(
+        [...neededHierarchyItemIds.values()].map((i) => new HierarchyItemId(i))
+      ),
+      (e) => e.id.toString()
     );
 
     return entries.map((entry) => {
       return new ShowCatalogEntryFulfilled({
         id: entry.id,
-        items: entry.items.map((e) => {
-          const item = items.find((i) => i.id.equals(e.id));
-          if (!item) {
-            throw new NotMatchingHierarchyItem(e.id);
-          }
-          return new CatalogEntryShowSpecificationFulFilled({
-            item,
+        dataset: entry.dataset.map((e) => {
+          const hierarchyItems = e.hierarchyItemIds.map((hierarchyItemId) => {
+            const hierarchyItem =
+              neededHierarchyItems[hierarchyItemId.toString()];
+            if (!hierarchyItem) {
+              throw new NotMatchingHierarchyItem(hierarchyItemId);
+            }
+            return hierarchyItem;
+          });
+          return new ShowCatalogEntryDatasetFulfilled({
+            hierarchyItems,
             season: e.season,
             episode: e.episode,
           });

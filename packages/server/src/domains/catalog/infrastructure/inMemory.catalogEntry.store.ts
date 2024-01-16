@@ -25,9 +25,14 @@ export class InMemoryCatalogEntryStore
   }
 
   loadByHierarchyItemId(hierarchyItemId: HierarchyItemId) {
-    return this.filter((f) =>
-      f.items.some((f) => f.id.equals(hierarchyItemId))
-    );
+    return this.filter((f) => {
+      if (f instanceof MovieCatalogEntry) {
+        return f.dataset.has(hierarchyItemId);
+      } else if (f instanceof ShowCatalogEntry) {
+        return f.dataset.some((dataset) => dataset.has(hierarchyItemId));
+      }
+      return false;
+    });
   }
 
   loadMovies() {

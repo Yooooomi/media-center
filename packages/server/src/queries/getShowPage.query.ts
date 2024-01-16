@@ -1,10 +1,7 @@
 import { Query, QueryHandler, Shape } from "@media-center/domain-driven";
 import { Show } from "../domains/tmdb/domain/show";
 import { TorrentRequest } from "../domains/torrentRequest/domain/torrentRequest";
-import {
-  CatalogEntryShowSpecificationFulFilled,
-  ShowCatalogEntryFulfilled,
-} from "../domains/catalog/applicative/catalogEntryFulfilled.front";
+import { ShowCatalogEntryFulfilled } from "../domains/catalog/applicative/catalogEntryFulfilled.front";
 import { TmdbId } from "../domains/tmdb/domain/tmdbId";
 import { TmdbStore } from "../domains/tmdb/applicative/tmdb.store";
 import { TorrentRequestStore } from "../domains/torrentRequest/applicative/torrentRequest.store";

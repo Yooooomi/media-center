@@ -3,6 +3,8 @@ import {Navigation} from './src/screens';
 import {View} from 'react-native';
 import {color} from './src/services/constants';
 import {useListenToUpdate} from './src/services/listenToUpdate';
+import {useMemo} from 'react';
+import {SplashScreenContextProvider} from './src/services/local/splashScreenContext';
 
 const fonts = Platform.select<Record<string, string>>({
   default: {
@@ -28,11 +30,16 @@ StyleSheet.setStyleAttributePreprocessor('fontFamily', next => {
 export function App() {
   useListenToUpdate();
 
-  return (
-    <View style={styles.root}>
-      <Navigation />
-    </View>
+  const content = useMemo(
+    () => (
+      <View style={styles.root}>
+        <Navigation />
+      </View>
+    ),
+    [],
   );
+
+  return <SplashScreenContextProvider>{content}</SplashScreenContextProvider>;
 }
 
 const styles = StyleSheet.create({

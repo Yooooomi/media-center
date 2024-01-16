@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, ViewStyle} from 'react-native';
+import {FlatList, StyleSheet, TVFocusGuideView, ViewStyle} from 'react-native';
 import {Box} from '../box';
 import {ReactNode} from 'react';
 import {spacing} from '../../services/constants';
@@ -22,27 +22,30 @@ export function LineList<T>({
   const isHorizontal = itemPerLine === undefined;
 
   return (
-    <FlatList
-      keyExtractor={keyExtractor}
-      data={data}
-      renderItem={({item, index}) => (
-        <Box p="S8">{renderItem(item, index)}</Box>
-      )}
-      getItemLayout={(_, index) => ({
-        index,
-        length: data.length,
-        offset: index * MovieCardSize.height,
-      })}
-      numColumns={itemPerLine}
+    <TVFocusGuideView
+      trapFocusRight
       style={[
         styles.root,
         isHorizontal ? undefined : styles.verticalScrollView,
         style,
-      ]}
-      horizontal={isHorizontal}
-      showsHorizontalScrollIndicator={false}
-      windowSize={3}
-    />
+      ]}>
+      <FlatList
+        keyExtractor={keyExtractor}
+        data={data}
+        renderItem={({item, index}) => (
+          <Box p="S8">{renderItem(item, index)}</Box>
+        )}
+        getItemLayout={(_, index) => ({
+          index,
+          length: data.length,
+          offset: index * MovieCardSize.height,
+        })}
+        numColumns={itemPerLine}
+        horizontal={isHorizontal}
+        showsHorizontalScrollIndicator={false}
+        windowSize={3}
+      />
+    </TVFocusGuideView>
   );
 }
 

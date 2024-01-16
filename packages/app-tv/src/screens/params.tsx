@@ -1,20 +1,28 @@
 import {
-  CatalogEntryMovieSpecificationFulFilled,
-  CatalogEntryShowSpecificationFulFilled,
+  MovieCatalogEntryDatasetFulfilled,
+  ShowCatalogEntryDatasetFulfilled,
   ShowCatalogEntryFulfilled,
 } from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeason';
 import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
-import {
-  UserTmdbMovieInfo,
-  UserTmdbShowInfo,
-} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-native';
 import {useBack} from '../services/useBack';
 import {BackHandler} from 'react-native';
+
+export interface PlaylistItem<T extends 'show' | 'movie'> {
+  progress: number;
+  dataset: T extends 'show'
+    ? ShowCatalogEntryDatasetFulfilled
+    : MovieCatalogEntryDatasetFulfilled;
+}
+
+export interface Playlist<T extends 'show' | 'movie'> {
+  tmdbId: TmdbId;
+  items: PlaylistItem<T>[];
+}
 
 export type NavigationParams = {
   Discover: undefined;
@@ -28,11 +36,8 @@ export type NavigationParams = {
   };
   Watch: {
     name: string;
-    tmdbId: TmdbId;
-    userInfo: UserTmdbMovieInfo | UserTmdbShowInfo | undefined;
-    specification:
-      | CatalogEntryShowSpecificationFulFilled
-      | CatalogEntryMovieSpecificationFulFilled;
+    playlist: Playlist<any>;
+    startingPlaylistIndex: number;
   };
   Search: undefined;
   SearchTmdb: undefined;
@@ -64,6 +69,7 @@ export function useParams<K extends keyof NavigationParams>() {
 interface HistoryItem {
   pathname: string;
   params: Record<string, any> | undefined;
+  key: string;
 }
 
 interface NavigationContext {
@@ -77,7 +83,7 @@ export const NavigationContext = React.createContext<NavigationContext>(
 
 export function useNavigationContext() {
   const [history, setHistory] = useState<HistoryItem[]>([
-    {pathname: paths.Library, params: {}},
+    {pathname: paths.Library, params: {}, key: 'default'},
   ]);
 
   const add = useCallback((item: HistoryItem) => {
@@ -114,6 +120,8 @@ export function useNavigationContext() {
   return {value, currentRoute: history[history.length - 1]!};
 }
 
+let uniqueId = 0;
+
 export function useNavigate() {
   const {add, pop} = useContext(NavigationContext);
 
@@ -125,7 +133,11 @@ export function useNavigate() {
           ? void
           : NavigationParams[K],
       ) => {
-        add({pathname: paths[path], params: params ?? undefined});
+        add({
+          pathname: paths[path],
+          params: params ?? undefined,
+          key: (uniqueId++).toString(),
+        });
       },
       [add],
     ),

@@ -7,7 +7,7 @@ import {GetMoviePageQuery} from '@media-center/server/src/queries/getMoviePage.q
 import {useQuery} from '../../services/useQuery';
 import {useQueryTorrents} from '../../services/useQueryTorrents';
 import {BigPressable} from '../../components/bigPressable/bigPressable';
-import {rawColor} from '../../services/constants';
+import {color, rawColor} from '../../services/constants';
 import {WatchCatalogEntry} from '../../components/watchCatalogEntry';
 import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
@@ -15,10 +15,11 @@ import {Beta} from '../../services/api';
 import {RateLimitedImage} from '../../components/rateLimitedImage';
 import {ProgressOverlay} from '../../components/progressOverlay';
 import {TorrentRequests} from '../../components/torrentRequests';
+import {TmdbNote} from '../../components/tmdbNote';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
-  const imageUri = useImageUri(movie.backdrop_path, true);
+  const imageUri = useImageUri(movie.poster_path, true);
 
   const [{result: moviePage}, _, reload] = useQuery(
     GetMoviePageQuery,
@@ -48,7 +49,7 @@ export function Movie() {
     return <FullScreenLoading />;
   }
 
-  const hasHierarchyItems = moviePage.catalogEntry.items.length > 0;
+  const hasHierarchyItems = moviePage.catalogEntry.hasHierarchyItems();
 
   return (
     <>
@@ -61,12 +62,16 @@ export function Movie() {
         <View style={styles.blackOverlay} />
         <Box style={styles.background} r="small" overflow="hidden">
           <ProgressOverlay
-            style={styles.grow}
+            style={styles.coverContainer}
             progress={moviePage.userInfo.progress}>
-            <RateLimitedImage uri={imageUri} style={styles.grow} />
+            <RateLimitedImage
+              resizeMode="cover"
+              uri={imageUri}
+              style={styles.grow}
+            />
           </ProgressOverlay>
         </Box>
-        <Box pv="S24" shrink content="space-between">
+        <Box pv="S24" grow shrink content="space-between">
           <Box grow>
             <Box mb="S8" row content="space-between">
               <Text size="title" bold>
@@ -79,7 +84,7 @@ export function Movie() {
             <Box mb="S24">
               <Box row gap="S32">
                 <Text>
-                  🍿 {moviePage.tmdb.getRoundedNote()}% ・{' '}
+                  <TmdbNote note={moviePage.tmdb.getRoundedNote()} />・{' '}
                   {moviePage.details.getStringRuntime()} ・{' '}
                   {moviePage.details.genres[0]}
                 </Text>
@@ -94,7 +99,7 @@ export function Movie() {
               </Box>
             </ScrollView>
           </Box>
-          <Box w="100%" row gap="S16" debug>
+          <Box w="100%" row gap="S16">
             {hasHierarchyItems && (
               <WatchCatalogEntry
                 name={moviePage.tmdb.title}
@@ -144,7 +149,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
     elevation: 12,
-    width: '33%',
+    width: '39%',
+  },
+  coverContainer: {
+    flexGrow: 1,
+    backgroundColor: color.background,
   },
   grow: {
     flexGrow: 1,

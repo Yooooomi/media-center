@@ -3,5 +3,13 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+  <!-- Dependency: react-native-bootsplash -->
+    <style name="BootTheme" parent="Theme.BootSplash">
+        <item name="bootSplashBackground">@color/background</item>
+        <item name="bootSplashLogo">@drawable/bootsplash</item>
+        <item name="postBootSplashTheme">@style/AppTheme</item>
     </style>
 </resources>

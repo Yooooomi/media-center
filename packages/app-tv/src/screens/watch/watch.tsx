@@ -7,14 +7,14 @@ import {useToggle} from '../../services/useToggle';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
 import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
-import {CatalogEntryShowSpecificationFulFilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
-import {progressFromUserInfo} from './progressFromUserInfo';
+import {ShowCatalogEntryDatasetFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 
 const {width, height} = Dimensions.get('screen');
 
 export function Watch() {
-  const {name, tmdbId, specification, userInfo} = useParams<'Watch'>();
-  const {item: hierarchyItem} = specification;
+  const {name, playlist, startingPlaylistIndex} = useParams<'Watch'>();
+  const {dataset, progress} = playlist.items[startingPlaylistIndex]!;
+  const hierarchyItem = dataset.getLatestItem()!;
   const videoUri = useVideoUri(hierarchyItem.id);
   const [videoInfo, setVideoInfo] = useState<VLCTrackInfoEvent | undefined>(
     undefined,
@@ -25,23 +25,22 @@ export function Watch() {
   const [textTrack, setTextTrack] = useState<number | undefined>(undefined);
 
   const season =
-    specification instanceof CatalogEntryShowSpecificationFulFilled
-      ? specification.season
+    dataset instanceof ShowCatalogEntryDatasetFulfilled
+      ? dataset.season
       : undefined;
   const episode =
-    specification instanceof CatalogEntryShowSpecificationFulFilled
-      ? specification.episode
+    dataset instanceof ShowCatalogEntryDatasetFulfilled
+      ? dataset.episode
       : undefined;
 
   const [playing, rollPlaying] = useToggle(true);
-  const startAt = progressFromUserInfo(userInfo, season, episode);
 
   useEffect(() => {
     if (!videoInfo) {
       return;
     }
-    setSeek(videoInfo.duration * startAt);
-  }, [startAt, videoInfo]);
+    setSeek(videoInfo.duration * progress);
+  }, [progress, videoInfo]);
 
   const [seek, setSeek] = useState(0);
 
@@ -69,7 +68,7 @@ export function Watch() {
   useSaveCatalogEntryProgress(
     playing,
     currentProgress,
-    tmdbId,
+    playlist.tmdbId,
     season,
     episode,
   );

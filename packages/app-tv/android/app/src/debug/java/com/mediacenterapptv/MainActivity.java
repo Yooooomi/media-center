@@ -13,10 +13,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
 
+// Dependency: react-native-bootsplash
+import com.zoontek.rnbootsplash.RNBootSplash;
+
 public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle state){
+    // Dependency: react-native-bootsplash
+    RNBootSplash.init(this, R.style.BootTheme); // ⬅️ initialize the splash screen
     super.onCreate(state);
 
     SharedPreferences preferences = 

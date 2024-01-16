@@ -34,10 +34,14 @@ export class FilesystemCatalogEntryStore
     hierarchyItemId: HierarchyItemId,
     transaction?: InMemoryTransaction
   ) {
-    return this.filter(
-      (f) => f.items.some((f) => f.id.equals(hierarchyItemId)),
-      transaction
-    );
+    return this.filter((f) => {
+      if (f instanceof MovieCatalogEntry) {
+        return f.dataset.has(hierarchyItemId);
+      } else if (f instanceof ShowCatalogEntry) {
+        return f.dataset.some((dataset) => dataset.has(hierarchyItemId));
+      }
+      return false;
+    });
   }
 
   loadMovies(transaction?: InMemoryTransaction) {

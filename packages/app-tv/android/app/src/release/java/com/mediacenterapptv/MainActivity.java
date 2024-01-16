@@ -8,6 +8,10 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 // Dependency: expo
 import expo.modules.ReactActivityDelegateWrapper;
 
+// Dependency: react-native-bootsplash
+import android.os.Bundle;
+import com.zoontek.rnbootsplash.RNBootSplash;
+
 public class MainActivity extends ReactActivity {
 
   /**
@@ -33,5 +37,12 @@ public class MainActivity extends ReactActivity {
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
         DefaultNewArchitectureEntryPoint.getFabricEnabled()
       ));
+  }
+
+  // Dependency: react-native-bootsplash
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    RNBootSplash.init(this, R.style.BootTheme); // ⬅️ initialize the splash screen
+    super.onCreate(savedInstanceState); // super.onCreate(null) with react-native-screens
   }
 }

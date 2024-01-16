@@ -2,70 +2,127 @@ import { Shape, Multiple, Freeze } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 
-export class CatalogEntryMovieSpecification extends Shape({
-  id: HierarchyItemId,
-}) {}
+export class MovieCatalogEntryDataset extends Shape({
+  hierarchyItemIds: [HierarchyItemId],
+}) {
+  has(hierarchyItemId: HierarchyItemId) {
+    return Boolean(
+      this.hierarchyItemIds.find((e) => e.equals(hierarchyItemId))
+    );
+  }
+
+  add(hierarchyItemId: HierarchyItemId) {
+    if (this.has(hierarchyItemId)) {
+      return;
+    }
+    this.hierarchyItemIds.push(hierarchyItemId);
+  }
+
+  delete(hierarchyItemId: HierarchyItemId) {
+    const index = this.hierarchyItemIds.findIndex((e) =>
+      e.equals(hierarchyItemId)
+    );
+    if (index >= 0) {
+      this.hierarchyItemIds.splice(index, 1);
+    }
+  }
+}
 
 @Freeze()
 export class MovieCatalogEntry extends Shape({
   id: TmdbId,
   updatedAt: Date,
-  items: Multiple(CatalogEntryMovieSpecification),
+  dataset: MovieCatalogEntryDataset,
 }) {
-  public addSpecification(specification: CatalogEntryMovieSpecification) {
-    if (this.items.some((f) => f.id.equals(specification.id))) {
-      return;
-    }
-    this.items.push(specification);
+  public addHierarchyItemId(hierarchyItemId: HierarchyItemId) {
+    this.dataset.add(hierarchyItemId);
   }
 
   public deleteHierarchyItemId(hierarchyItemId: HierarchyItemId) {
-    const index = this.items.findIndex((f) => f.id.equals(hierarchyItemId));
-    if (index < 0) {
-      return;
-    }
-    this.items.splice(index, 1);
+    this.dataset.delete(hierarchyItemId);
   }
 
-  markUpdated(date: Date) {
+  public hasHierarchyItems() {
+    return this.dataset.hierarchyItemIds.length > 0;
+  }
+
+  public markUpdated(date: Date) {
     this.updatedAt = date;
   }
 }
 
-export class CatalogEntryShowSpecification extends Shape({
-  id: HierarchyItemId,
+export class ShowCatalogEntryDataset extends Shape({
+  hierarchyItemIds: [HierarchyItemId],
   season: Number,
   episode: Number,
-}) {}
+}) {
+  has(hierarchyItemId: HierarchyItemId) {
+    return Boolean(
+      this.hierarchyItemIds.find((e) => e.equals(hierarchyItemId))
+    );
+  }
+
+  add(hierarchyItemId: HierarchyItemId) {
+    if (this.has(hierarchyItemId)) {
+      return;
+    }
+    this.hierarchyItemIds.push(hierarchyItemId);
+  }
+
+  delete(hierarchyItemId: HierarchyItemId) {
+    const index = this.hierarchyItemIds.findIndex((e) =>
+      e.equals(hierarchyItemId)
+    );
+    if (index >= 0) {
+      this.hierarchyItemIds.splice(index, 1);
+    }
+  }
+}
 
 @Freeze()
 export class ShowCatalogEntry extends Shape({
   id: TmdbId,
   updatedAt: Date,
-  items: Multiple(CatalogEntryShowSpecification),
+  dataset: [ShowCatalogEntryDataset],
 }) {
-  public addSpecification(specification: CatalogEntryShowSpecification) {
-    if (this.items.some((f) => f.id.equals(specification.id))) {
-      return;
+  public addHierarchyItemIdForEpisode(
+    season: number,
+    episode: number,
+    hierarchyItemId: HierarchyItemId
+  ) {
+    const exists = this.dataset.find(
+      (e) => e.season === season && e.episode === episode
+    );
+    if (exists) {
+      exists.add(hierarchyItemId);
+    } else {
+      this.dataset.push(
+        new ShowCatalogEntryDataset({
+          season,
+          episode,
+          hierarchyItemIds: [hierarchyItemId],
+        })
+      );
     }
-    this.items.push(specification);
   }
 
   public deleteHierarchyItemId(hierarchyItemId: HierarchyItemId) {
-    const index = this.items.findIndex((f) => f.id.equals(hierarchyItemId));
-    if (index < 0) {
-      return;
+    for (const dataset of this.dataset) {
+      dataset.delete(hierarchyItemId);
     }
-    this.items.splice(index, 1);
   }
 
-  markUpdated(date: Date) {
+  public hasHierarchyItems() {
+    return this.dataset.length > 0;
+  }
+
+  public markUpdated(date: Date) {
     this.updatedAt = date;
   }
 }
 
 export type AnyCatalogEntry = MovieCatalogEntry | ShowCatalogEntry;
 
-export type AnyCatalogEntrySpecification =
-  | CatalogEntryMovieSpecification
-  | CatalogEntryShowSpecification;
+export type AnyCatalogEntryDataset =
+  | MovieCatalogEntryDataset
+  | ShowCatalogEntryDataset;

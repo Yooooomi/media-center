@@ -2,6 +2,7 @@ import {Optional, Shape} from '@media-center/domain-driven';
 import React, {
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -17,6 +18,7 @@ import {TextButton} from '../../components/ui/pressable/textButton';
 import {ChooseUser} from '../../screens/chooseUser';
 import {ConfigureServer} from '../../screens/configureServer';
 import {Text} from '../../components/text';
+import {SplashScreenContext} from './splashScreenContext';
 
 export class LocalUserProfile extends Shape({
   user: Optional(String),
@@ -50,6 +52,7 @@ interface LocalUserContextProviderProps {
 export function LocalUserContextProvider({
   children,
 }: LocalUserContextProviderProps) {
+  const {hide} = useContext(SplashScreenContext);
   const [error, setError] = useState<Error | undefined>(undefined);
   const reactive = ReactiveShape.use<LocalUserProfile | undefined>(undefined);
   const [declaredUsers, setDeclaredUsers] = useState<string[] | undefined>(
@@ -65,7 +68,12 @@ export function LocalUserContextProvider({
       reactive.updateInstance(storedUser);
 
       if (!storedUser.serverAddress || !storedUser.serverPassword) {
+        hide();
         return;
+      }
+
+      if (!storedUser.user) {
+        hide();
       }
 
       Beta.setServer(
@@ -78,9 +86,10 @@ export function LocalUserContextProvider({
       const declaredStoredUser = serverUsers.find(u => u === storedUser?.user);
       storedUser.setUser(declaredStoredUser);
     } catch (e) {
+      hide();
       setError(e as Error);
     }
-  }, [reactive]);
+  }, [hide, reactive]);
 
   useEffect(() => {
     init().catch(console.error);
@@ -153,11 +162,20 @@ export function LocalUserContextProvider({
       <ChooseUser
         declaredUsers={declaredUsers}
         chooseUser={selected => {
-          if (!reactive.instance) {
+          if (
+            !reactive.instance ||
+            !reactive.instance.serverAddress ||
+            !reactive.instance.serverPassword
+          ) {
             return;
           }
           reactive.call('setUser', selected);
           localStore.set('user', reactive.instance);
+          Beta.setServer(
+            reactive.instance.serverAddress,
+            reactive.instance.serverPassword,
+            new UserId(selected),
+          );
         }}
       />
     );

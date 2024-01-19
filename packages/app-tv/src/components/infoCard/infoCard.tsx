@@ -18,6 +18,7 @@ export interface InfoCardProps {
   focusOnMount?: boolean;
   disabled?: boolean;
   progress?: number;
+  onFocus?: () => void;
 }
 
 export const InfoCardSize = {
@@ -34,12 +35,14 @@ export function InfoCard({
   focusOnMount,
   disabled,
   progress,
+  onFocus,
 }: InfoCardProps) {
   return (
     <Box>
       <ScaleButton
         onPress={disabled ? noop : onPress}
         focusOnMount={focusOnMount}
+        onFocus={onFocus}
         border>
         <ProgressOverlay style={styles.root} progress={progress}>
           <RateLimitedImage

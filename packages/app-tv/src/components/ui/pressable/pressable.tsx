@@ -3,6 +3,7 @@ import {Pressable as RNPressable, View, ViewStyle} from 'react-native';
 
 interface PressableProps {
   style?: ViewStyle;
+  disabled?: boolean;
   children: ReactNode | ((infos: {focused: boolean}) => ReactNode);
   onPress: () => void;
   onFocus?: () => void;
@@ -49,6 +50,7 @@ export const Pressable = React.forwardRef<View, PressableProps>(
       left,
       right,
       up,
+      disabled,
     },
     ref,
   ) => {
@@ -77,8 +79,12 @@ export const Pressable = React.forwardRef<View, PressableProps>(
 
     return (
       <RNPressable
+        accessible={!disabled}
+        disabled={disabled}
+        focusable={!disabled}
+        isTVSelectable={!disabled}
         ref={mergeRefs(ref, registerFocus)}
-        hasTVPreferredFocus={focusOnMount}
+        hasTVPreferredFocus={!disabled && focusOnMount}
         style={style}
         onFocus={() => {
           setFocused(true);

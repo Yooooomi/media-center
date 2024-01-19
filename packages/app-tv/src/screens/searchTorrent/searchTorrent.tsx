@@ -12,6 +12,7 @@ import {useAlert} from '../../components/alert/alertProvider';
 import {IconButton} from '../../components/ui/pressable/iconButton';
 import {TextInput} from '../../components/ui/textInput';
 import {SearchQuery} from '@media-center/server/src/tools/searchQuery';
+import {handleBasicUserQuery} from '../../components/ui/promptAlert';
 
 export function SearchTorrent() {
   const [isFocused, focus, blur] = useBooleanState();
@@ -33,11 +34,13 @@ export function SearchTorrent() {
 
   const doDownload = useCallback(
     async (item: TorrentIndexerResult, isShow: boolean) => {
-      await Beta.command(
-        new AddRawTorrentRequestCommand({
-          isShow,
-          torrentId: item.id,
-        }),
+      handleBasicUserQuery(
+        Beta.command(
+          new AddRawTorrentRequestCommand({
+            isShow,
+            torrentId: item.id,
+          }),
+        ),
       );
     },
     [],

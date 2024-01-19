@@ -29,6 +29,15 @@ export class LocalUserProfile extends Shape({
     this.user = user;
   }
 
+  resetUser() {
+    this.user = undefined;
+  }
+
+  resetServer() {
+    this.serverAddress = undefined;
+    this.serverPassword = undefined;
+  }
+
   setServerAddress(serverAddress: string) {
     console.log('Setting address', serverAddress);
     this.serverAddress = serverAddress;
@@ -186,4 +195,20 @@ export function LocalUserContextProvider({
       {children}
     </LocalUserContext.Provider>
   );
+}
+
+export function useLocalUser() {
+  const {user, save} = useContext(LocalUserContext);
+
+  const resetAccount = useCallback(() => {
+    user.call('resetUser');
+    save();
+  }, [save, user]);
+
+  const resetServer = useCallback(() => {
+    user.call('resetServer');
+    save();
+  }, [save, user]);
+
+  return {user, resetAccount, resetServer};
 }

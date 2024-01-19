@@ -34,6 +34,8 @@ export function ScaleButton({
               borderRadius:
                 border && typeof border === 'string'
                   ? radius[border]
+                  : focused
+                  ? radius.small + 4
                   : radius.small,
               borderColor:
                 border && focused ? color.whiteText : rawColor.transparent,

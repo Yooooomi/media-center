@@ -164,7 +164,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
     });
 
     const toContinue = [
-      ...fulfilledMovies.filter((e) => e.userInfo.progress !== 0),
+      ...fulfilledMovies.filter((e) => !e.userInfo.isFinished()),
       ...fulfilledShows.filter((e) => e.userInfo.getShowProgress() !== 0),
     ].sort((a, b) => b.userInfo.updatedAt - a.userInfo.updatedAt);
 

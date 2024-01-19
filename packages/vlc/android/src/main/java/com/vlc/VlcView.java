@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class VlcView extends TextureView implements TextureView.SurfaceTextureListener, View.OnLayoutChangeListener, IVLCVout.OnNewVideoLayoutListener, IVLCVout.Callback, AudioManager.OnAudioFocusChangeListener {
+public class VlcView extends TextureView implements TextureView.SurfaceTextureListener, IVLCVout.OnNewVideoLayoutListener, IVLCVout.Callback, View.OnLayoutChangeListener {
   private static String TAG = "VlcView";
   private SurfaceTexture currentSurface;
   private LibVLC vlc;
@@ -31,7 +31,6 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
 
   // PROPS
   private String uri;
-  private VlcEventEmitter emitter;
   private boolean autoplay = true;
   private ArrayList<String> arguments = new ArrayList<>();
   private boolean hwDecode = false;
@@ -40,7 +39,6 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
   public VlcView(@NonNull ThemedReactContext context) {
     super(context);
     this.setSurfaceTextureListener(this);
-    this.addOnLayoutChangeListener(this);
     this.lifecycleListener = new LifecycleListener(context);
   }
 
@@ -143,7 +141,6 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
     if (this.autoplay) {
       this.mediaPlayer.play();
     }
-    Log.i(TAG, "Created player");
   }
 
   public void setUri(String uri) {
@@ -151,20 +148,25 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
     if (this.vlc == null || this.mediaPlayer == null) {
       return;
     }
+    boolean wasPlaying = this.mediaPlayer.isPlaying();
     Media media = new Media(this.vlc, Uri.parse(this.uri));
     media.setHWDecoderEnabled(this.hwDecode, this.forceHwDecode);
 
     this.mediaPlayer.setMedia(media);
+    if (wasPlaying) {
+      this.mediaPlayer.play();
+    }
   }
 
   public void clear() {
-    if (this.vlc != null) {
-      this.vlc.release();
-    }
     if (this.mediaPlayer != null) {
+      this.mediaPlayer.stop();
       this.mediaPlayer.detachViews();
       this.mediaPlayer.getVLCVout().detachViews();
       this.mediaPlayer.release();
+    }
+    if (this.vlc != null) {
+      this.vlc.release();
     }
   }
 
@@ -175,16 +177,10 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
   }
 
   @Override
-  public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {}
-
-  @Override
   public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surfaceTexture) {
     this.currentSurface = null;
     return false;
   }
-
-  @Override
-  public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surfaceTexture) {}
 
   @Override
   public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
@@ -193,6 +189,12 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
     }
     this.setWindowSize();
   }
+
+  @Override
+  public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {}
+
+  @Override
+  public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surfaceTexture) {}
 
   @Override
   public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
@@ -207,10 +209,5 @@ public class VlcView extends TextureView implements TextureView.SurfaceTextureLi
   @Override
   public void onSurfacesDestroyed(IVLCVout vlcVout) {
     Log.i(TAG, "VLC Deleted surface");
-  }
-
-  @Override
-  public void onAudioFocusChange(int i) {
-
   }
 }

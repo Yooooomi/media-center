@@ -16,6 +16,9 @@ import {RateLimitedImage} from '../../components/rateLimitedImage';
 import {ProgressOverlay} from '../../components/progressOverlay';
 import {TorrentRequests} from '../../components/torrentRequests';
 import {TmdbNote} from '../../components/tmdbNote';
+import {useCallback} from 'react';
+import {handleBasicUserQuery} from '../../components/ui/promptAlert';
+import {SetUserTmdbInfoProgressCommand} from '@media-center/server/src/domains/userTmdbInfo/applicative/setUserTmdbInfoProgress.command';
 
 export function Movie() {
   const {movie} = useParams<'Movie'>();
@@ -45,11 +48,36 @@ export function Movie() {
       reload,
     });
 
+  const markViewed = useCallback(async () => {
+    handleBasicUserQuery(
+      Beta.command(
+        new SetUserTmdbInfoProgressCommand({
+          actorId: Beta.userId,
+          tmdbId: movie.id,
+          progress: 1,
+        }),
+      ),
+    );
+  }, [movie.id]);
+
+  const markNotViewed = useCallback(async () => {
+    handleBasicUserQuery(
+      Beta.command(
+        new SetUserTmdbInfoProgressCommand({
+          actorId: Beta.userId,
+          tmdbId: movie.id,
+          progress: 0,
+        }),
+      ),
+    );
+  }, [movie.id]);
+
   if (!moviePage) {
     return <FullScreenLoading />;
   }
 
   const hasHierarchyItems = moviePage.catalogEntry.hasHierarchyItems();
+  const isFinished = moviePage.userInfo.isFinished();
 
   return (
     <>
@@ -116,9 +144,9 @@ export function Movie() {
               loading={queryTorrentsLoading}
             />
             <BigPressable
-              text="Marqué vu"
-              icon="eye"
-              onPress={openMoreOptions}
+              text={isFinished ? 'Marquer pas vu' : 'Marquer vu'}
+              icon={isFinished ? 'eye-off' : 'eye'}
+              onPress={isFinished ? markNotViewed : markViewed}
             />
             <BigPressable
               text="Options"

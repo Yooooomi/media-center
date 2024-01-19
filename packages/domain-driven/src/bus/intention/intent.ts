@@ -4,6 +4,7 @@ import {
   Constructor,
   DefinitionParameter,
   DefinitionRuntime,
+  DictConfiguration,
   Shape,
   ShapeConstructor,
   ShorthandToLonghand,

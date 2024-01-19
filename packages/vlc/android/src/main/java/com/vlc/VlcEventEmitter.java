@@ -82,7 +82,6 @@ public class VlcEventEmitter {
     if (this.lastVideoInfoSent != null && this.lastVideoInfoSent.equals(mediaUri)) {
       return;
     }
-    Log.i(TAG, "Sending video infos for video uri: " + mediaUri);
     this.lastVideoInfoSent = mediaUri;
     WritableMap map = this.basicEvent();
     map.putInt("audioTrack", this.mediaPlayer.getAudioTrack());

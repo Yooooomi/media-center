@@ -7,6 +7,7 @@ import {TorrentsActionSheet} from '../components/torrentsActionSheet';
 import {Beta} from './api';
 import {useBooleanState} from './useBooleanState';
 import {SearchQuery} from '@media-center/server/src/tools/searchQuery';
+import {handleBasicUserQuery} from '../components/ui/promptAlert';
 
 interface QueryTorrentsProps {
   names: string[];
@@ -36,11 +37,13 @@ export function useQueryTorrents({names, tmdbId}: QueryTorrentsProps) {
   const downloadTorrent = useCallback(
     async (torrent: TorrentIndexerResult) => {
       closeActionSheet();
-      await Beta.command(
-        new AddTorrentRequestCommand({
-          torrentId: torrent.id,
-          tmdbId,
-        }),
+      handleBasicUserQuery(
+        Beta.command(
+          new AddTorrentRequestCommand({
+            torrentId: torrent.id,
+            tmdbId,
+          }),
+        ),
       );
     },
     [closeActionSheet, tmdbId],

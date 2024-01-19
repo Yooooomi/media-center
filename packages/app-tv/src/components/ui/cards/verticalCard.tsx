@@ -36,7 +36,7 @@ export function VerticalCard({
         ) : (
           <Box
             style={styles.image}
-            bg="lightBackground"
+            bg="background"
             items="center"
             content="center">
             <Icon name="movie" size={36} />

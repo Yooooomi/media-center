@@ -6,7 +6,7 @@ import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {LineList} from '../lineList';
 import {StyleSheet} from 'react-native';
 import {Playlist} from '../../screens/params';
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 
 interface ShowEpisodeCardsLineProps {
   show: Show;
@@ -27,6 +27,7 @@ export function ShowEpisodeCardsLine({
   focusIndex,
   userInfo,
   season,
+  onFocusEpisode,
 }: ShowEpisodeCardsLineProps) {
   const playlist: Playlist<'show'> = useMemo(
     () => ({
@@ -35,11 +36,34 @@ export function ShowEpisodeCardsLine({
         .filter(a => a.season === season)
         .sort((a, b) => a.episode - b.episode)
         .map(dataset => ({
+          name: `${show.title} - ${
+            showEpisodes.find(e => e.episode_number === dataset.episode)
+              ?.name ?? ''
+          }`,
           dataset,
           progress: userInfo.getEpisodeProgress(season, dataset.episode),
         })),
     }),
-    [catalogEntry.dataset, season, show.id, userInfo],
+    [catalogEntry.dataset, season, show.id, show.title, showEpisodes, userInfo],
+  );
+
+  const renderItem = useCallback(
+    (data: ShowEpisode, index: number) => {
+      return (
+        <ShowEpisodeCard
+          show={show}
+          playlist={playlist}
+          userInfo={userInfo}
+          disabled={availableEpisodes.indexOf(data.episode_number) === -1}
+          focusOnMount={
+            focusIndex !== undefined && index === focusIndex ? true : undefined
+          }
+          onFocus={onFocusEpisode}
+          showEpisode={data}
+        />
+      );
+    },
+    [availableEpisodes, focusIndex, onFocusEpisode, playlist, show, userInfo],
   );
 
   return (
@@ -47,18 +71,7 @@ export function ShowEpisodeCardsLine({
       style={styles.root}
       data={showEpisodes}
       keyExtractor={showEpisode => showEpisode.episode_number.toString()}
-      renderItem={(item, index) => (
-        <ShowEpisodeCard
-          show={show}
-          playlist={playlist}
-          userInfo={userInfo}
-          disabled={availableEpisodes.indexOf(item.episode_number) === -1}
-          focusOnMount={
-            focusIndex !== undefined && index === focusIndex ? true : undefined
-          }
-          showEpisode={item}
-        />
-      )}
+      renderItem={renderItem}
     />
   );
 }

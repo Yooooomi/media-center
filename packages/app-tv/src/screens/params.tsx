@@ -14,6 +14,7 @@ import {BackHandler} from 'react-native';
 
 export interface PlaylistItem<T extends 'show' | 'movie'> {
   progress: number;
+  name: string;
   dataset: T extends 'show'
     ? ShowCatalogEntryDatasetFulfilled
     : MovieCatalogEntryDatasetFulfilled;
@@ -35,7 +36,6 @@ export type NavigationParams = {
     catalogEntry: ShowCatalogEntryFulfilled;
   };
   Watch: {
-    name: string;
     playlist: Playlist<any>;
     startingPlaylistIndex: number;
   };

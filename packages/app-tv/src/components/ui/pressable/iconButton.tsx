@@ -22,7 +22,10 @@ export function IconButton({
   size,
 }: IconButtonProps) {
   return (
-    <Pressable onPress={onPress} focusOnMount={focusOnMount}>
+    <Pressable
+      disabled={disabled}
+      onPress={onPress}
+      focusOnMount={focusOnMount}>
       {({focused}) => (
         <Box
           r="default"

@@ -11,6 +11,18 @@ export class UserTmdbMovieInfo extends Shape({
     this.progress = progress;
     this.updatedAt = Date.now();
   }
+
+  public markNotViewed() {
+    this.setProgress(0);
+  }
+
+  public markViewed() {
+    this.setProgress(1);
+  }
+
+  isFinished() {
+    return this.progress > 0.9;
+  }
 }
 
 class UserTmdbShowEpisodeInfo extends Shape({
@@ -43,6 +55,18 @@ export class UserTmdbShowInfo extends Shape({
       info.setProgress(progress);
     }
     this.updatedAt = Date.now();
+  }
+
+  public markEpisodeViewed(season: number, episode: number) {
+    this.setEpisodeProgress(season, episode, 1);
+  }
+
+  public markEpisodeNotViewed(season: number, episode: number) {
+    this.setEpisodeProgress(season, episode, 0);
+  }
+
+  public isEpisodeFinished(season: number, episode: number) {
+    return this.getEpisodeProgress(season, episode) > 0.9;
   }
 
   getEpisodeProgress(season: number, episode: number) {

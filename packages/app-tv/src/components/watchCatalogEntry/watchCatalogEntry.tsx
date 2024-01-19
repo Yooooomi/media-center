@@ -23,9 +23,9 @@ export function WatchCatalogEntry({
   const playlist: Playlist<'movie'> = useMemo(
     () => ({
       tmdbId: entry.id,
-      items: [{dataset: entry.dataset, progress: userInfo.progress}],
+      items: [{name, dataset: entry.dataset, progress: userInfo.progress}],
     }),
-    [entry.dataset, entry.id, userInfo.progress],
+    [entry.dataset, entry.id, name, userInfo.progress],
   );
   const {play} = usePlayCatalogEntry(name, playlist, 0);
 

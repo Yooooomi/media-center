@@ -49,6 +49,7 @@ type VlcProps = {
   forceHwDecode?: boolean;
 
   onProgress?: (event: VLCBaseEvent) => void;
+  onError?: (event: VLCBaseEvent) => void;
   onVideoInfos?: (event: VLCTrackInfoEvent) => void;
 };
 
@@ -68,6 +69,7 @@ function createListener<T>(path: string) {
   const listeners: Record<string, ((args: T) => void)[]> = {};
 
   VlcEventEmitter.addListener(path, (a) => {
+    console.log('Triggered!!', path, a);
     listeners[a.id]?.forEach((fn) => fn(a));
   });
 
@@ -77,7 +79,7 @@ function createListener<T>(path: string) {
     listeners[id] = listener;
 
     return () => {
-      const index = listener.findIndex(cb as any);
+      const index = listener.indexOf(cb);
       if (index < 0) {
         return;
       }
@@ -90,6 +92,7 @@ function createListener<T>(path: string) {
 
 const videoInfoListener = createListener<VLCTrackInfoEvent>('onVideoInfos');
 const onProgressListener = createListener<VLCBaseEvent>('onProgress');
+const onErrorListener = createListener<VLCBaseEvent>('onError');
 
 export function Vlc(props: VlcProps) {
   const ref = useRef<{ _nativeTag: number }>(null);
@@ -113,6 +116,13 @@ export function Vlc(props: VlcProps) {
       props.onProgress
     );
   }, [props.onProgress]);
+
+  useEffect(() => {
+    if (!ref.current || !props.onError) {
+      return;
+    }
+    return onErrorListener.register(ref.current._nativeTag, props.onError);
+  }, [props.onError]);
 
   return <VlcView ref={ref} {...props} />;
 }

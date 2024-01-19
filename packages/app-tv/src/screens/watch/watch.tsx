@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import {useParams} from '../params';
+import {Alert, Dimensions, StyleSheet, View} from 'react-native';
+import {useNavigate, useParams} from '../params';
 import {Vlc, VLCTrackInfoEvent, VLCBaseEvent} from '@media-center/vlc';
 import {useVideoUri} from '../../services/api';
 import {Controls} from './controls/controls';
@@ -8,12 +8,15 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
 import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
 import {ShowCatalogEntryDatasetFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
+import {usePreviousNext} from './usePreviousNext';
+import {rawColor} from '../../services/constants';
+import {FullScreenLoading} from '../../components/fullScreenLoading';
 
 const {width, height} = Dimensions.get('screen');
 
 export function Watch() {
-  const {name, playlist, startingPlaylistIndex} = useParams<'Watch'>();
-  const {dataset, progress} = playlist.items[startingPlaylistIndex]!;
+  const {playlist, startingPlaylistIndex} = useParams<'Watch'>();
+  const {dataset, progress, name} = playlist.items[startingPlaylistIndex]!;
   const hierarchyItem = dataset.getLatestItem()!;
   const videoUri = useVideoUri(hierarchyItem.id);
   const [videoInfo, setVideoInfo] = useState<VLCTrackInfoEvent | undefined>(
@@ -23,6 +26,7 @@ export function Watch() {
   const currentProgressMs = useSharedValue(0);
   const [audioTrack, setAudioTrack] = useState<number | undefined>(undefined);
   const [textTrack, setTextTrack] = useState<number | undefined>(undefined);
+  const {goBack} = useNavigate();
 
   const season =
     dataset instanceof ShowCatalogEntryDatasetFulfilled
@@ -41,6 +45,15 @@ export function Watch() {
     }
     setSeek(videoInfo.duration * progress);
   }, [progress, videoInfo]);
+
+  const onError = useCallback(() => {
+    Alert.alert(
+      'Erreur',
+      'Erreur lors de la lecture de la vidéo',
+      [{isPreferred: true, onPress: goBack, text: 'Ok'}],
+      {cancelable: false},
+    );
+  }, [goBack]);
 
   const [seek, setSeek] = useState(0);
 
@@ -73,8 +86,16 @@ export function Watch() {
     episode,
   );
 
+  const {previousAllowed, previous, nextAllowed, next} = usePreviousNext(
+    playlist,
+    startingPlaylistIndex,
+  );
+
   return (
     <>
+      <View style={styles.background}>
+        {!videoInfo && <FullScreenLoading />}
+      </View>
       <Vlc
         audioTrack={audioTrack}
         textTrack={textTrack}
@@ -97,6 +118,7 @@ export function Watch() {
         onProgress={onProgress}
         onVideoInfos={setVideoInfo}
         uri={videoUri}
+        onError={onError}
       />
       {videoInfo && (
         <Controls
@@ -105,8 +127,10 @@ export function Watch() {
           videoInfo={videoInfo}
           style={styles.controls}
           isPlaying={playing}
-          onBack={() => {}}
-          onNext={() => {}}
+          previousAllowed={previousAllowed}
+          onPrevious={previous}
+          nextAllowed={nextAllowed}
+          onNext={next}
           setTextTrack={setTextTrack}
           setAudioTrack={setAudioTrack}
           rollPlay={rollPlaying}
@@ -127,5 +151,9 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  background: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: rawColor.black,
   },
 });

@@ -24,8 +24,10 @@ interface ControlsProps {
   progress: SharedValue<number>;
   isPlaying: boolean;
   rollPlay: () => void;
+  previousAllowed: boolean;
+  onPrevious: () => void;
+  nextAllowed: boolean;
   onNext: () => void;
-  onBack: () => void;
   seek: (diff: number) => void;
   videoInfo: VLCTrackInfoEvent;
   setTextTrack: (id: number) => void;
@@ -40,7 +42,9 @@ const FORWARD_MS = 30000;
 export const Controls = ({
   name,
   isPlaying,
-  onBack,
+  previousAllowed,
+  onPrevious,
+  nextAllowed,
   onNext,
   rollPlay,
   seek,
@@ -157,7 +161,12 @@ export const Controls = ({
               />
             </Box>
             <Box flex={3} row grow items="center" content="center" gap="S16">
-              <IconButton size={24} onPress={onBack} icon="skip-backward" />
+              <IconButton
+                size={24}
+                disabled={!previousAllowed}
+                onPress={onPrevious}
+                icon="skip-backward"
+              />
               <IconButton size={24} onPress={rewind} icon="rewind" />
               <IconButton
                 size={24}
@@ -166,7 +175,12 @@ export const Controls = ({
                 icon={isPlaying ? 'pause' : 'play'}
               />
               <IconButton size={24} onPress={fastForward} icon="fast-forward" />
-              <IconButton size={24} onPress={onNext} icon="skip-forward" />
+              <IconButton
+                size={24}
+                disabled={!nextAllowed}
+                onPress={onNext}
+                icon="skip-forward"
+              />
             </Box>
             <Box flex={1}>
               <View />

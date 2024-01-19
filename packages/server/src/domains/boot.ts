@@ -92,6 +92,7 @@ export async function globalBoot() {
   const { userTmdbInfoStore } = bootUserTmdbInfo(
     database,
     commandBus,
+    eventBus,
     environmentHelper,
     tmdbStore
   );

@@ -2,20 +2,26 @@ import {Section} from '../../components/section';
 import {Box} from '../../components/box';
 import {LineButton} from '../../components/ui/pressable/lineButton';
 import {noop} from '@media-center/algorithm';
-import {useCallback, useContext} from 'react';
-import {LocalUserContext} from '../../services/local/localUserProfile';
+import {useLocalUser} from '../../services/local/localUserProfile';
 import {useQuery} from '../../services/useQuery';
 import {SettingsPageQuery} from '@media-center/server/src/queries/settingsPage.query';
+import {ReinitCatalogCommand} from '@media-center/server/src/domains/catalog/applicative/reinit.command';
+import {ScanExistingCommand} from '@media-center/server/src/domains/fileWatcher/applicative/scanExisting.command';
+import {useCallback} from 'react';
+import {Beta} from '../../services/api';
+import {handleBasicUserQuery} from '../../components/ui/promptAlert';
 
 export function Settings() {
-  const {user, save} = useContext(LocalUserContext);
-
   const [{result}] = useQuery(SettingsPageQuery, undefined);
+  const {user, resetAccount, resetServer} = useLocalUser();
 
-  const resetAccount = useCallback(() => {
-    user.call('setUser', undefined);
-    save();
-  }, [save, user]);
+  const rescanLibrary = useCallback(async () => {
+    handleBasicUserQuery(Beta.command(new ReinitCatalogCommand()));
+  }, []);
+
+  const scanLibrary = useCallback(async () => {
+    handleBasicUserQuery(Beta.command(new ScanExistingCommand()));
+  }, []);
 
   return (
     <Box p="S16">
@@ -38,9 +44,19 @@ export function Settings() {
           onPress={resetAccount}
         />
         <LineButton
-          text="Rescanner la librairie (peut prendre longtemps)"
+          text={`Changer de serveur: ${user.instance?.serverAddress}`}
+          onPress={resetServer}
           variant="delete"
-          onPress={noop}
+        />
+        <LineButton
+          text="Scanner la librairie (s'il manque un fichier)"
+          variant="delete"
+          onPress={scanLibrary}
+        />
+        <LineButton
+          text="Re-scanner la librairie (peut prendre longtemps)"
+          variant="delete"
+          onPress={rescanLibrary}
         />
       </Section>
     </Box>

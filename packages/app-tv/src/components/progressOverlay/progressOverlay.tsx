@@ -22,7 +22,7 @@ export function ProgressOverlay({
           style={[styles.progress, {width: `${Math.floor(progress * 100)}%`}]}
         />
       ) : null}
-      {progress && progress === 0.9 ? (
+      {progress && progress > 0.9 ? (
         <View style={styles.finishedWrapper}>
           <Icon name="check" size={16} color="whiteText" />
         </View>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.max,
     backgroundColor: color.progress,
     position: 'absolute',
-    top: spacing.S12,
-    right: spacing.S12,
+    top: spacing.S8,
+    right: spacing.S8,
   },
 });

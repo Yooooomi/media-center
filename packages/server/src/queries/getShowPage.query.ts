@@ -28,6 +28,7 @@ import {
   UserTmdbInfoId,
 } from "../domains/userTmdbInfo/domain/userTmdbInfoId";
 import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
+import { UserTmdbInfoUpdated } from "../domains/userTmdbInfo/domain/userTmdbInfo.events";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,
@@ -49,6 +50,7 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
   CatalogEntryDeleted,
   TorrentRequestAdded,
   TorrentRequestUpdated,
+  UserTmdbInfoUpdated,
 ]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
@@ -67,9 +69,13 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
-      | TorrentRequestUpdated,
+      | TorrentRequestUpdated
+      | UserTmdbInfoUpdated,
     intent: GetShowPageQuery
-  ) {
+  ): boolean {
+    if (event instanceof UserTmdbInfoUpdated) {
+      return event.userTmdbInfoId.equals(event.userTmdbInfoId);
+    }
     if (event instanceof CatalogDeleted) {
       return true;
     }

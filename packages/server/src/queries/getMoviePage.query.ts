@@ -28,6 +28,7 @@ import {
   UserTmdbInfoId,
 } from "../domains/userTmdbInfo/domain/userTmdbInfoId";
 import { UserTmdbMovieInfo } from "../domains/userTmdbInfo/domain/userTmdbInfo";
+import { UserTmdbInfoUpdated } from "../domains/userTmdbInfo/domain/userTmdbInfo.events";
 
 class MoviePageSummary extends Shape({
   tmdb: Movie,
@@ -48,6 +49,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
   CatalogEntryDeleted,
   TorrentRequestAdded,
   TorrentRequestUpdated,
+  UserTmdbInfoUpdated,
 ]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
@@ -66,9 +68,13 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
-      | TorrentRequestUpdated,
+      | TorrentRequestUpdated
+      | UserTmdbInfoUpdated,
     intent: GetMoviePageQuery
   ) {
+    if (event instanceof UserTmdbInfoUpdated) {
+      return event.userTmdbInfoId.equals(event.userTmdbInfoId);
+    }
     if (event instanceof CatalogDeleted) {
       return true;
     }

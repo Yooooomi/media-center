@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   background: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: color.lightBackground,
+    backgroundColor: color.background,
     borderRadius: radius.default - 2,
     opacity: 0.6,
   },

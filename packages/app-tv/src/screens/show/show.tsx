@@ -12,13 +12,19 @@ import {BigPressable} from '../../components/bigPressable';
 import {TorrentRequests} from '../../components/torrentRequests';
 import {useCatalogEntryMoreOptions} from '../../services/useCatalogEntryMoreOptions';
 import {SeasonSelector} from './seasonSelector';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {ShowEpisodeCardsLine} from '../../components/showEpisodeCardsLine';
 import {Beta} from '../../services/api';
+import {handleBasicUserQuery} from '../../components/ui/promptAlert';
+import {ShowEpisode} from '@media-center/server/src/domains/tmdb/domain/showEpisode';
+import {SetUserTmdbInfoProgressCommand} from '@media-center/server/src/domains/userTmdbInfo/applicative/setUserTmdbInfoProgress.command';
 
 export function Show() {
   const {show} = useParams<'Show'>();
   const imageUri = useImageUri(show.backdrop_path, true);
+  const [focusedEpisode, setFocusedEpisode] = useState<ShowEpisode | undefined>(
+    undefined,
+  );
 
   const [{result: showPage}, _, reload] = useQuery(
     GetShowPageQuery,
@@ -45,6 +51,40 @@ export function Show() {
       reload,
     });
 
+  const markViewed = useCallback(() => {
+    if (!focusedEpisode) {
+      return;
+    }
+    handleBasicUserQuery(
+      Beta.command(
+        new SetUserTmdbInfoProgressCommand({
+          actorId: Beta.userId,
+          tmdbId: show.id,
+          season: focusedEpisode?.season_number,
+          episode: focusedEpisode?.episode_number,
+          progress: 1,
+        }),
+      ),
+    );
+  }, [focusedEpisode, show.id]);
+
+  const markNotViewed = useCallback(() => {
+    if (!focusedEpisode) {
+      return;
+    }
+    handleBasicUserQuery(
+      Beta.command(
+        new SetUserTmdbInfoProgressCommand({
+          actorId: Beta.userId,
+          tmdbId: show.id,
+          season: focusedEpisode?.season_number,
+          episode: focusedEpisode?.episode_number,
+          progress: 0,
+        }),
+      ),
+    );
+  }, [focusedEpisode, show.id]);
+
   if (!showPage) {
     return <FullScreenLoading />;
   }
@@ -63,6 +103,13 @@ export function Show() {
   const availableEpisodes = showPage.catalogEntry
     .getEpisodesOfSeason(highlightedSeason)
     .map(e => e.episode);
+  const focusedEpisodeFinished =
+    (focusedEpisode &&
+      showPage.userInfo.isEpisodeFinished(
+        focusedEpisode.season_number,
+        focusedEpisode.episode_number,
+      )) ??
+    false;
 
   return (
     <>
@@ -81,13 +128,13 @@ export function Show() {
             mb="S16"
             items="flex-end"
             content="space-between"
-            style={{borderBottomWidth: 0.5, borderBottomColor: 'white'}}>
+            style={styles.tabContainer}>
             <SeasonSelector
               seasons={showPage.seasons}
               season={highlightedSeason}
               onSeasonChange={setSeasonIndex}
             />
-            <Box row w={200} mb="S4">
+            <Box row w={330} mb="S4">
               <BigPressable
                 text="Télécharger"
                 focusOnMount={!hasSeasons}
@@ -95,6 +142,17 @@ export function Show() {
                 onPress={queryTorrents}
                 loading={queryTorrentsLoading}
               />
+              {focusedEpisode ? (
+                <BigPressable
+                  text={
+                    focusedEpisodeFinished
+                      ? 'Marquer pas vu'
+                      : 'Marquer comme vu'
+                  }
+                  icon={focusedEpisodeFinished ? 'eye-off' : 'eye'}
+                  onPress={focusedEpisodeFinished ? markNotViewed : markViewed}
+                />
+              ) : null}
               <BigPressable
                 text="Options"
                 icon="dots-horizontal"
@@ -104,6 +162,7 @@ export function Show() {
           </Box>
           {season && seasonEpisodes ? (
             <ShowEpisodeCardsLine
+              onFocusEpisode={setFocusedEpisode}
               focusIndex={highlightedEpisode}
               show={show}
               userInfo={showPage.userInfo}
@@ -140,5 +199,9 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     flexGrow: 1,
+  },
+  tabContainer: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'white',
   },
 });

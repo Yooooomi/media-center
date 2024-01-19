@@ -15,3 +15,9 @@ export class InfrastructureError extends Error {
     super(`[Infrastructure Error]: ${message}`);
   }
 }
+
+export class UnknownApplicativeError extends ApplicativeError {
+  constructor() {
+    super("Unknown error");
+  }
+}

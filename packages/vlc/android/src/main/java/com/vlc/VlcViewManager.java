@@ -26,7 +26,6 @@ public class VlcViewManager extends SimpleViewManager<VlcView> {
   @Override
   @NonNull
   public VlcView createViewInstance(ThemedReactContext reactContext) {
-    Log.i(TAG, "Creating view instance " + id);
     return new VlcView(reactContext);
   }
 

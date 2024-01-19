@@ -1,4 +1,10 @@
-import { Command, CommandHandler, Optional } from "@media-center/domain-driven";
+import {
+  Command,
+  CommandHandler,
+  EventBus,
+  Optional,
+  UnknownApplicativeError,
+} from "@media-center/domain-driven";
 import { UserId, UserTmdbInfoId } from "../domain/userTmdbInfoId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 import { UserTmdbInfoStore } from "./userTmdbInfo.store";
@@ -10,6 +16,7 @@ import {
   UserTmdbMovieInfo,
   UserTmdbShowInfo,
 } from "../domain/userTmdbInfo";
+import { UserTmdbInfoUpdated } from "../domain/userTmdbInfo.events";
 
 export class SetUserTmdbInfoProgressCommand extends Command({
   actorId: UserId,
@@ -23,6 +30,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
   SetUserTmdbInfoProgressCommand
 ) {
   constructor(
+    private readonly eventBus: EventBus,
     private readonly tmdbStore: TmdbStore,
     private readonly userTmdbInfoStore: UserTmdbInfoStore
   ) {
@@ -31,14 +39,14 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
 
   async execute(command: SetUserTmdbInfoProgressCommand) {
     const tmdb = await this.tmdbStore.load(command.tmdbId);
-    const id = new UserTmdbInfoId(command.actorId, command.tmdbId);
+    const userTmdbInfoId = new UserTmdbInfoId(command.actorId, command.tmdbId);
     let userTmdbInfo: AnyUserTmdbInfo | undefined;
 
     if (tmdb instanceof Movie) {
       userTmdbInfo =
-        (await this.userTmdbInfoStore.load(id)) ??
+        (await this.userTmdbInfoStore.load(userTmdbInfoId)) ??
         new UserTmdbMovieInfo({
-          id,
+          id: userTmdbInfoId,
           progress: 0,
           updatedAt: Date.now(),
         });
@@ -53,9 +61,9 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
         );
       }
       userTmdbInfo =
-        (await this.userTmdbInfoStore.load(id)) ??
+        (await this.userTmdbInfoStore.load(userTmdbInfoId)) ??
         new UserTmdbShowInfo({
-          id,
+          id: userTmdbInfoId,
           progress: [],
           updatedAt: Date.now(),
         });
@@ -70,8 +78,15 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
     }
 
     if (!userTmdbInfo) {
-      return;
+      throw new UnknownApplicativeError();
     }
+
     await this.userTmdbInfoStore.save(userTmdbInfo);
+
+    this.eventBus.publish(
+      new UserTmdbInfoUpdated({
+        userTmdbInfoId,
+      })
+    );
   }
 }

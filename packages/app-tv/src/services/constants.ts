@@ -34,7 +34,7 @@ export const rawColor = {
   red: '#FF0000',
   grey: '#d6d6d6',
   darkgrey: '#05161E',
-  greyy: '#181A27',
+  greyy: '#222222',
   textondarkgrey: '#2E3B42',
   lightgrey: '#e6e6e6',
   transparent: '#00000000',
@@ -45,7 +45,7 @@ export const rawColor = {
 
 export const color = {
   background: rawColor.greyy,
-  lightBackground: rawColor.darkgrey,
+  darkBackground: shadeColor(rawColor.greyy, -0.4),
   text: rawColor.grey,
   textFaded: opacifyRaw(rawColor.white, 0.9),
   whiteText: rawColor.white,
@@ -74,6 +74,30 @@ export const color = {
 
   progress: rawColor.blue,
 };
+
+function shadeColor(c: string, percent: number) {
+  let R = parseInt(c.substring(1, 3), 16);
+  let G = parseInt(c.substring(3, 5), 16);
+  let B = parseInt(c.substring(5, 7), 16);
+
+  R = Math.floor(R * (1 + percent));
+  G = Math.floor(G * (1 + percent));
+  B = Math.floor(B * (1 + percent));
+
+  R = R < 255 ? R : 255;
+  G = G < 255 ? G : 255;
+  B = B < 255 ? B : 255;
+
+  R = Math.round(R);
+  G = Math.round(G);
+  B = Math.round(B);
+
+  let RR = R.toString(16).length === 1 ? '0' + R.toString(16) : R.toString(16);
+  let GG = G.toString(16).length === 1 ? '0' + G.toString(16) : G.toString(16);
+  let BB = B.toString(16).length === 1 ? '0' + B.toString(16) : B.toString(16);
+
+  return '#' + RR + GG + BB;
+}
 
 function opacifyRaw(c: string, t: number) {
   return `${c}${Math.floor(t * 256)

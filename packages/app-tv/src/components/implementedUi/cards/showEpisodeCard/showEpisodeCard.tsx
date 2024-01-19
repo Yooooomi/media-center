@@ -6,7 +6,7 @@ import {noop} from '@media-center/algorithm';
 import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
 import {Playlist} from '../../../../screens/params';
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 
 interface ShowEpisodeCardProps {
   show: Show;
@@ -15,6 +15,7 @@ interface ShowEpisodeCardProps {
   focusOnMount?: boolean;
   disabled?: boolean;
   playlist: Playlist<'show'>;
+  onFocus?: (episode: ShowEpisode) => void;
 }
 
 export function ShowEpisodeCard({
@@ -24,6 +25,7 @@ export function ShowEpisodeCard({
   userInfo,
   playlist,
   show,
+  onFocus,
 }: ShowEpisodeCardProps) {
   const imageUri = useImageUri(showEpisode.still_path);
   const index = useMemo(
@@ -39,6 +41,10 @@ export function ShowEpisodeCard({
 
   const {play} = usePlayCatalogEntry(show.title, playlist, index);
 
+  const handleFocus = useCallback(() => {
+    onFocus?.(showEpisode);
+  }, [onFocus, showEpisode]);
+
   return (
     <InfoCard
       progress={userInfo.getEpisodeProgress(
@@ -52,6 +58,7 @@ export function ShowEpisodeCard({
       onPress={disabled ? noop : play}
       imageUri={imageUri}
       disabled={disabled}
+      onFocus={handleFocus}
     />
   );
 }

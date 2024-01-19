@@ -8,6 +8,7 @@ import {useBooleanState} from './useBooleanState';
 import {useCallback} from 'react';
 import {LineButton} from '../components/ui/pressable/lineButton';
 import {Beta} from './api';
+import {handleBasicUserQuery} from '../components/ui/promptAlert';
 
 interface CatalogEntryMoreOptionsProps {
   catalogEntry:
@@ -27,11 +28,9 @@ function CatalogEntryMoreOptions({
     if (!catalogEntry?.id) {
       return;
     }
-    try {
-      await Beta.command(new DeleteCatalogEntryCommand(catalogEntry.id));
-    } catch (e) {
-      console.warn(e);
-    }
+    handleBasicUserQuery(
+      Beta.command(new DeleteCatalogEntryCommand(catalogEntry.id)),
+    );
     close();
   }, [catalogEntry?.id, close]);
 

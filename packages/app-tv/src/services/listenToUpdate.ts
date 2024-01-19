@@ -2,8 +2,13 @@ import * as Updates from 'expo-updates';
 import {useEffect} from 'react';
 import {Alert, AppState, Platform} from 'react-native';
 import {UpdateStore} from './local/updateContext';
+import {PromptAlert} from '../components/ui/promptAlert';
 
 let ignoreNext = false;
+
+export function ignoreNextForeground() {
+  ignoreNext = true;
+}
 
 async function onFetchUpdateAsync() {
   try {
@@ -23,8 +28,7 @@ async function onFetchUpdateAsync() {
   } catch (error) {
     if (!__DEV__) {
       console.log('Update error', error);
-      ignoreNext = true;
-      Alert.alert(
+      PromptAlert(
         'Erreur',
         'Erreur lors de la mise a jour, certaines fonctionnalités peuvent ne pas fonctionner',
       );

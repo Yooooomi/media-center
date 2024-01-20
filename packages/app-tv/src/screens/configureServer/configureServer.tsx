@@ -1,8 +1,8 @@
 import {useState} from 'react';
-import {Box} from '../../components/box';
-import {TextButton} from '../../components/ui/pressable/textButton';
-import {TextInput} from '../../components/ui/textInput';
 import {StyleSheet} from 'react-native';
+import {Box} from '../../components/ui/display/box';
+import {TextButton} from '../../components/ui/input/pressable/textButton';
+import {TextInput} from '../../components/ui/input/textInput/textInput';
 
 interface ConfigureServerProps {
   onConfigured: (address: string, password: string) => void;

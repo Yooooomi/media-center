@@ -1,6 +1,6 @@
 import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeason';
-import {Box} from '../../components/box';
-import {TabButton} from '../../components/ui/pressable/tabButton';
+import {Box} from '../../components/ui/display/box';
+import {TabButton} from '../../components/ui/input/pressable/tabButton';
 
 interface SeasonSelectorProps {
   seasons: ShowSeason[];

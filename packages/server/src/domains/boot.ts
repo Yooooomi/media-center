@@ -106,7 +106,9 @@ export async function globalBoot() {
     tmdbStore,
     tmdbApi,
     hierarchyStore,
-    userTmdbInfoStore
+    userTmdbInfoStore,
+    torrentClient,
+    torrentIndexer
   );
 
   return {

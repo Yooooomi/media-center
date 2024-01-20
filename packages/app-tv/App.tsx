@@ -1,10 +1,9 @@
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
+import {useMemo} from 'react';
 import {Navigation} from './src/screens';
-import {View} from 'react-native';
 import {color} from './src/services/constants';
 import {useListenToUpdate} from './src/services/listenToUpdate';
-import {useMemo} from 'react';
-import {SplashScreenContextProvider} from './src/services/local/splashScreenContext';
+import {SplashScreenContextProvider} from './src/services/contexts/splashScreen.context';
 
 const fonts = Platform.select<Record<string, string>>({
   default: {

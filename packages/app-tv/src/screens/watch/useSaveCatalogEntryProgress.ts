@@ -1,9 +1,9 @@
 import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
 import {SetUserTmdbInfoProgressCommand} from '@media-center/server/src/domains/userTmdbInfo/applicative/setUserTmdbInfoProgress.command';
 import {RefObject, useCallback, useEffect, useRef} from 'react';
-import {Beta} from '../../services/api';
 import {VLCBaseEvent} from '@media-center/vlc';
-import {useAppState} from '../../services/useAppState';
+import {Beta} from '../../services/api';
+import {useAppState} from '../../services/hooks/useAppState';
 
 export function useSaveCatalogEntryProgress(
   isPlaying: boolean,

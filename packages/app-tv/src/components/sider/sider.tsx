@@ -1,16 +1,14 @@
 import {useCallback, useMemo, useState} from 'react';
-import {SiderButton} from './siderButton';
-import {color, shadows, spacing} from '../../services/constants';
 import {DevSettings, StyleSheet, View} from 'react-native';
-import {useNavigate} from '../../screens/params';
-import {IconName} from '../icon/icon';
-import {Dot} from '../dot';
-import {Box} from '../box/box';
-import {Text} from '../text/text';
-import {StatusContext} from '../../contexts/statusContext';
-import {useAnimatedValue} from '../../services/useAnimatedValue';
 import Animated from 'react-native-reanimated';
-import {useMeshContext} from '../../contexts/meshContext';
+import {color, shadows, spacing} from '../../services/constants';
+import {useNavigate} from '../../screens/params';
+import {IconName} from '../ui/display/icon/icon';
+import {StatusContext} from '../../services/contexts/status.context';
+import {useAnimatedValue} from '../../services/hooks/useAnimatedValue';
+import {useMeshContext} from '../../services/contexts/mesh.context';
+import {SiderButton} from './siderButton';
+import {StatusLine} from './statusLine';
 
 export function Sider() {
   const {navigate} = useNavigate();
@@ -112,10 +110,21 @@ export function Sider() {
       <Animated.View style={[styles.container, shadows.default, widthStyle]}>
         {renderedButtons}
         <View style={styles.status}>
-          <Box row ml="S16" mb="S16" gap="S8" items="center">
-            <Dot color={status ? 'statusOK' : 'statusKO'} />
-            {isOpen && <Text size="small">Serveur</Text>}
-          </Box>
+          <StatusLine
+            extended={isOpen}
+            title="Serveur"
+            status={status?.server ?? false}
+          />
+          <StatusLine
+            extended={isOpen}
+            title="Indexeur"
+            status={status?.torrentIndexer ?? false}
+          />
+          <StatusLine
+            extended={isOpen}
+            title="Client"
+            status={status?.torrentClient ?? false}
+          />
         </View>
       </Animated.View>
     </View>

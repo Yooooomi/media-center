@@ -12,8 +12,6 @@ import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentB
 import { streamVideo } from "./videoStreaming/streamVideo";
 import { TimeMeasurer } from "@media-center/algorithm";
 import { FilesystemEndpointCaching } from "./caching";
-import axios from "axios";
-import { PromiseQueue } from "../tools/queue";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 
 export function bootApi(

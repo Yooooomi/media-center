@@ -1,12 +1,12 @@
-import {useImageUri} from '../../../../services/tmdb';
 import {ShowEpisode} from '@media-center/server/src/domains/tmdb/domain/showEpisode';
-import {InfoCard} from '../../../infoCard/infoCard';
-import {usePlayCatalogEntry} from '../../../../services/usePlayCatalogEntry';
 import {noop} from '@media-center/algorithm';
 import {UserTmdbShowInfo} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfo';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
-import {Playlist} from '../../../../screens/params';
 import {useCallback, useMemo} from 'react';
+import {Playlist} from '../../../../screens/params';
+import {usePlayCatalogEntry} from '../../../../services/hooks/usePlayCatalogEntry';
+import {InfoCard} from '../../../ui/display/infoCard/infoCard';
+import {useImageUri} from '../../../../services/tmdb';
 
 interface ShowEpisodeCardProps {
   show: Show;

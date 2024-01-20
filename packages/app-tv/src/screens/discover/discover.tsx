@@ -1,15 +1,15 @@
-import {Box} from '../../components/box';
 import {DiscoverPageQuery} from '@media-center/server/src/queries/discoverPage.query';
-import {ShowCardsLine} from '../../components/showCardsLine/showCardsLine';
-import {MovieCardsLine} from '../../components/movieCardsLine/movieCardsLine';
-import {useQuery} from '../../services/useQuery';
-import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
 import {useState} from 'react';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
-import {Text} from '../../components/text';
 import {ScrollView} from 'react-native';
-import {TmdbNote} from '../../components/tmdbNote';
+import {Box} from '../../components/ui/display/box';
+import {ShowCardsLine} from '../../components/implementedUi/showCardsLine/showCardsLine';
+import {MovieCardsLine} from '../../components/implementedUi/movieCardsLine/movieCardsLine';
+import {useQuery} from '../../services/hooks/useQuery';
+import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading/fullScreenLoading';
+import {Text} from '../../components/ui/input/text';
+import {TmdbNote} from '../../components/ui/display/tmdbNote';
 
 export function Discover() {
   const [{result: discoverPage}] = useQuery(DiscoverPageQuery, undefined);

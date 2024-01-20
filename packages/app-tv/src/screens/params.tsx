@@ -9,8 +9,8 @@ import {ShowSeason} from '@media-center/server/src/domains/tmdb/domain/showSeaso
 import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-native';
-import {useBack} from '../services/useBack';
 import {BackHandler} from 'react-native';
+import {useBack} from '../services/hooks/useBack';
 
 export interface PlaylistItem<T extends 'show' | 'movie'> {
   progress: number;

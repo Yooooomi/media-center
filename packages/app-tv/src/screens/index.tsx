@@ -1,25 +1,25 @@
 import {NativeRouter, Route, Routes} from 'react-router-native';
+import {PortalProvider} from '@gorhom/portal';
+import {StyleSheet, View} from 'react-native';
+import {useMemo} from 'react';
+import {DEFAULT_HOSTNAME} from '../components/ui/tools/portal/portal';
+import {PortalHost} from '../components/ui/tools/portal';
+import {AlertProvider} from '../components/ui/tools/alert/alertProvider';
+import {withSider} from '../services/hocs/withSider';
+import {LocalUserContextProvider} from '../services/localUserProfile';
+import {StatusContextProvider} from '../services/contexts/status.context';
 import {Discover} from './discover';
 import {Movie} from './movie/movie';
-import {PortalProvider} from '@gorhom/portal';
-import {DEFAULT_HOSTNAME} from '../components/portal/portal';
-import {PortalHost} from '../components/portal';
-import {StyleSheet, View} from 'react-native';
 import {Watch} from './watch/watch';
 import {Show} from './show/show';
 import {AddedRecently} from './addedRecently/addedRecently';
 import {NavigationContext, paths, useNavigationContext} from './params';
 import {Search} from './search';
 import {SearchTorrent} from './searchTorrent';
-import {AlertProvider} from '../components/alert/alertProvider';
-import {withSider} from '../services/withSider';
 import {Movies} from './movies/movies';
 import {Shows} from './shows/shows';
 import {SearchTmdb} from './searchTmdb';
 import {Settings} from './settings';
-import {LocalUserContextProvider} from '../services/local/localUserProfile';
-import {useMemo} from 'react';
-import {StatusContextProvider} from '../contexts/statusContext';
 
 export function Navigation() {
   const {value, currentRoute} = useNavigationContext();

@@ -1,17 +1,17 @@
 import {useCallback, useState} from 'react';
-import {Box} from '../../components/box/box';
-import {useAdditiveThrottle} from '../../services/useAdditiveThrottle';
 import {Movie} from '@media-center/server/src/domains/tmdb/domain/movie';
 import {SearchQuery} from '@media-center/server/src/domains/tmdb/applicative/search.query';
 import {Show} from '@media-center/server/src/domains/tmdb/domain/show';
-import {Beta} from '../../services/api';
 import {FlatList, StyleSheet} from 'react-native';
+import {Beta} from '../../services/api';
+import {useAdditiveThrottle} from '../../services/hooks/useAdditiveThrottle';
+import {Box} from '../../components/ui/display/box/box';
 import {MovieCard} from '../../components/implementedUi/cards/movieCard/movieCard';
 import {ShowCard} from '../../components/implementedUi/cards/showCard/showCard';
-import {Section} from '../../components/section/section';
-import {useBooleanState} from '../../services/useBooleanState';
+import {Section} from '../../components/ui/display/section/section';
+import {useBooleanState} from '../../services/hooks/useBooleanState';
 import {spacing} from '../../services/constants';
-import {TextInput} from '../../components/ui/textInput';
+import {TextInput} from '../../components/ui/input/textInput/textInput';
 
 export function SearchTmdb() {
   const [isFocused, focus, blur] = useBooleanState();

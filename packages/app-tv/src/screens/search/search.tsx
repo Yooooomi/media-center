@@ -1,5 +1,5 @@
-import {Box} from '../../components/box';
-import {IconTextButton} from '../../components/ui/pressable/iconTextButton';
+import {Box} from '../../components/ui/display/box';
+import {IconTextButton} from '../../components/ui/input/pressable/iconTextButton';
 import {useNavigate} from '../params';
 
 export function Search() {

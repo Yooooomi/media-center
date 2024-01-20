@@ -1,7 +1,7 @@
 import {FlatList} from 'react-native';
 import {VLCTrack} from '@media-center/vlc';
-import {Modal} from '../../../components/modal/modal';
-import {LineButton} from '../../../components/ui/pressable/lineButton';
+import {Modal} from '../../../components/ui/tools/modal/modal';
+import {LineButton} from '../../../components/ui/input/pressable/lineButton';
 
 interface ControlsActionSheetProps {
   open: 'text' | 'audio' | undefined;

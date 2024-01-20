@@ -1,31 +1,29 @@
 import {useContext, useEffect} from 'react';
-import {ShowCardsLine} from '../../components/showCardsLine/showCardsLine';
-import {MovieCardsLine} from '../../components/movieCardsLine/movieCardsLine';
-import {useQuery} from '../../services/useQuery';
-import {Box} from '../../components/box/box';
-import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
-import {StatusContext} from '../../contexts/statusContext';
 import {HomepageQuery} from '@media-center/server/src/queries/homepage.query';
-import {DownloadingCardLine} from '../../components/downloadingCardLine';
 import {ScrollView} from 'react-native';
+import {ShowCardsLine} from '../../components/implementedUi/showCardsLine/showCardsLine';
+import {MovieCardsLine} from '../../components/implementedUi/movieCardsLine/movieCardsLine';
+import {useQuery} from '../../services/hooks/useQuery';
+import {Box} from '../../components/ui/display/box/box';
+import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading/fullScreenLoading';
+import {StatusContext} from '../../services/contexts/status.context';
+import {DownloadingCardLine} from '../../components/implementedUi/downloadingCardLine';
 import {Beta} from '../../services/api';
-import {TmdbCardsLine} from '../../components/tmdbCardsLine/tmdbCardsLine';
-import {Text} from '../../components/text';
-import {useMeshContext} from '../../contexts/meshContext';
-import {SplashScreenContext} from '../../services/local/splashScreenContext';
+import {TmdbCardsLine} from '../../components/implementedUi/tmdbCardsLine/tmdbCardsLine';
+import {Text} from '../../components/ui/input/text';
+import {useMeshContext} from '../../services/contexts/mesh.context';
+import {SplashScreenContext} from '../../services/contexts/splashScreen.context';
 
 export function AddedRecently() {
   const {hide} = useContext(SplashScreenContext);
-  const {setStatus} = useMeshContext(StatusContext);
-  const [{result: homepage, error}] = useQuery(HomepageQuery, Beta.userId, {
+  const {initStatus} = useMeshContext(StatusContext);
+  const [{result: homepage}] = useQuery(HomepageQuery, Beta.userId, {
     reactive: true,
   });
 
   useEffect(() => {
-    if (error) {
-      setStatus(false);
-    }
-  }, [error, setStatus]);
+    initStatus();
+  }, [initStatus]);
 
   useEffect(() => {
     if (homepage) {

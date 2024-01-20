@@ -1,7 +1,4 @@
 import {StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
-import {color, fontSize, spacing} from '../../../services/constants';
-import {useRemote} from '../../../services/useRemote';
-import {useBooleanState} from '../../../services/useBooleanState';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Animated, {
   FadeIn,
@@ -9,15 +6,18 @@ import Animated, {
   SharedValue,
   useDerivedValue,
 } from 'react-native-reanimated';
-import {useAdditiveThrottle} from '../../../services/useAdditiveThrottle';
-import {Box} from '../../../components/box/box';
-import {Text} from '../../../components/text/text';
-import {ControlsActionSheet} from './controlsActionSheet';
 import {VLCTrackInfoEvent} from '@media-center/vlc';
+import {color, fontSize, spacing} from '../../../services/constants';
+import {useRemote} from '../../../services/hooks/useRemote';
+import {useBooleanState} from '../../../services/hooks/useBooleanState';
+import {useAdditiveThrottle} from '../../../services/hooks/useAdditiveThrottle';
+import {Box} from '../../../components/ui/display/box/box';
+import {Text} from '../../../components/ui/input/text/text';
 import {formatVideoDuration} from '../../../services/string';
-import {RealtimeText} from '../../../components/realtimeText/realtimeText';
-import {ProgressBar} from '../../../components/progressBar/progressBar';
-import {IconButton} from '../../../components/ui/pressable/iconButton';
+import {RealtimeText} from '../../../components/ui/display/realtimeText/realtimeText';
+import {ProgressBar} from '../../../components/ui/display/progressBar/progressBar';
+import {IconButton} from '../../../components/ui/input/pressable/iconButton';
+import {ControlsActionSheet} from './controlsActionSheet';
 
 interface ControlsProps {
   name: string;

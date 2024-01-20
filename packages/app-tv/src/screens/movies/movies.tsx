@@ -1,8 +1,8 @@
-import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
-import {MovieCardsLine} from '../../components/movieCardsLine/movieCardsLine';
-import {useQuery} from '../../services/useQuery';
 import {GetMoviesPageQuery} from '@media-center/server/src/queries/getMoviesPage.query';
-import {Box} from '../../components/box/box';
+import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading/fullScreenLoading';
+import {MovieCardsLine} from '../../components/implementedUi/movieCardsLine/movieCardsLine';
+import {useQuery} from '../../services/hooks/useQuery';
+import {Box} from '../../components/ui/display/box/box';
 import {maxCardsPerLine} from '../../services/constants';
 
 export function Movies() {

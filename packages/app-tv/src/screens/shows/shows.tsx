@@ -1,8 +1,8 @@
-import {FullScreenLoading} from '../../components/fullScreenLoading/fullScreenLoading';
-import {useQuery} from '../../services/useQuery';
 import {GetShowsPageQuery} from '@media-center/server/src/queries/getShowsPage.query';
-import {Box} from '../../components/box/box';
-import {ShowCardsLine} from '../../components/showCardsLine/showCardsLine';
+import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading/fullScreenLoading';
+import {useQuery} from '../../services/hooks/useQuery';
+import {Box} from '../../components/ui/display/box/box';
+import {ShowCardsLine} from '../../components/implementedUi/showCardsLine/showCardsLine';
 import {maxCardsPerLine} from '../../services/constants';
 
 export function Shows() {

@@ -1,18 +1,18 @@
 import {useCallback, useState} from 'react';
-import {Box} from '../../components/box/box';
-import {Beta} from '../../services/api';
 import {ScrollView, StyleSheet} from 'react-native';
-import {Section} from '../../components/section/section';
-import {useBooleanState} from '../../services/useBooleanState';
 import {SearchTorrentsQuery} from '@media-center/server/src/domains/torrentIndexer/applicative/searchTorrents.query';
 import {TorrentIndexerResult} from '@media-center/server/src/domains/torrentIndexer/domain/torrentIndexerResult';
-import {TorrentIndexerResultLine} from '../../components/torrentIndexerResultLine/torrentIndexerResultLine';
 import {AddRawTorrentRequestCommand} from '@media-center/server/src/domains/torrentRequest/applicative/addRawTorrentRequest.command';
-import {useAlert} from '../../components/alert/alertProvider';
-import {IconButton} from '../../components/ui/pressable/iconButton';
-import {TextInput} from '../../components/ui/textInput';
 import {SearchQuery} from '@media-center/server/src/tools/searchQuery';
-import {handleBasicUserQuery} from '../../components/ui/promptAlert';
+import {Box} from '../../components/ui/display/box/box';
+import {Beta} from '../../services/api';
+import {Section} from '../../components/ui/display/section/section';
+import {useBooleanState} from '../../services/hooks/useBooleanState';
+import {TorrentIndexerResultLine} from '../../components/implementedUi/torrentIndexerResultLine/torrentIndexerResultLine';
+import {useAlert} from '../../components/ui/tools/alert/alertProvider';
+import {IconButton} from '../../components/ui/input/pressable/iconButton';
+import {TextInput} from '../../components/ui/input/textInput/textInput';
+import {handleBasicUserQuery} from '../../components/ui/tools/promptAlert';
 
 export function SearchTorrent() {
   const [isFocused, focus, blur] = useBooleanState();

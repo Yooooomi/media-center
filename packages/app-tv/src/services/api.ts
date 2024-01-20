@@ -1,3 +1,4 @@
+import {Buffer} from 'buffer';
 import StaticAxios, {Axios} from 'axios';
 import {HierarchyItemId} from '@media-center/server/src/domains/fileWatcher/domain/hierarchyItemId';
 import {
@@ -6,7 +7,6 @@ import {
   BaseIntentConstructor,
   IntentReturning,
 } from '@media-center/domain-driven';
-import {Buffer} from 'buffer';
 import EventSource from 'react-native-sse';
 import {SerializableConstructor} from '@media-center/domain-driven/lib/serialization/types';
 import {UserId} from '@media-center/server/src/domains/userTmdbInfo/domain/userTmdbInfoId';

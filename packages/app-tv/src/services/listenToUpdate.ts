@@ -1,8 +1,8 @@
 import * as Updates from 'expo-updates';
 import {useEffect} from 'react';
 import {Alert, AppState, Platform} from 'react-native';
-import {UpdateStore} from './local/updateContext';
-import {PromptAlert} from '../components/ui/promptAlert';
+import {PromptAlert} from '../components/ui/tools/promptAlert';
+import {UpdateStore} from './contexts/update.context';
 
 let ignoreNext = false;
 

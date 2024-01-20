@@ -1,19 +1,22 @@
-import {Section} from '../../components/section';
-import {Box} from '../../components/box';
-import {LineButton} from '../../components/ui/pressable/lineButton';
 import {noop} from '@media-center/algorithm';
-import {useLocalUser} from '../../services/local/localUserProfile';
-import {useQuery} from '../../services/useQuery';
 import {SettingsPageQuery} from '@media-center/server/src/queries/settingsPage.query';
 import {ReinitCatalogCommand} from '@media-center/server/src/domains/catalog/applicative/reinit.command';
 import {ScanExistingCommand} from '@media-center/server/src/domains/fileWatcher/applicative/scanExisting.command';
 import {useCallback} from 'react';
+import {Section} from '../../components/ui/display/section';
+import {Box} from '../../components/ui/display/box';
+import {LineButton} from '../../components/ui/input/pressable/lineButton';
+import {useLocalUser} from '../../services/localUserProfile';
+import {useQuery} from '../../services/hooks/useQuery';
 import {Beta} from '../../services/api';
-import {handleBasicUserQuery} from '../../components/ui/promptAlert';
+import {handleBasicUserQuery} from '../../components/ui/tools/promptAlert';
+import {useMeshContext} from '../../services/contexts/mesh.context';
+import {StatusContext} from '../../services/contexts/status.context';
 
 export function Settings() {
   const [{result}] = useQuery(SettingsPageQuery, undefined);
   const {user, resetAccount, resetServer} = useLocalUser();
+  const {initStatus} = useMeshContext(StatusContext);
 
   const rescanLibrary = useCallback(async () => {
     handleBasicUserQuery(Beta.command(new ReinitCatalogCommand()));
@@ -39,6 +42,7 @@ export function Settings() {
           text={`Nombre de d'entrées dans le catalogue: ${result?.catalogEntries}`}
           onPress={noop}
         />
+        <LineButton text="Rafraichir le statut" onPress={initStatus} />
         <LineButton
           text={`Changer de compte: ${user.instance?.user}`}
           onPress={resetAccount}

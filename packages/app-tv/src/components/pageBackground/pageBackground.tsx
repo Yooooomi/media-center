@@ -1,7 +1,7 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import {View, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {RateLimitedImage} from '../rateLimitedImage';
+import {RateLimitedImage} from '../ui/display/rateLimitedImage';
 
 interface PageBackgroundProps {
   imageUri: string | undefined;

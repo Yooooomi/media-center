@@ -1,16 +1,16 @@
 import {Alert, Dimensions, StyleSheet, View} from 'react-native';
-import {useNavigate, useParams} from '../params';
 import {Vlc, VLCTrackInfoEvent, VLCBaseEvent} from '@media-center/vlc';
-import {useVideoUri} from '../../services/api';
-import {Controls} from './controls/controls';
-import {useToggle} from '../../services/useToggle';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
-import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
 import {ShowCatalogEntryDatasetFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
-import {usePreviousNext} from './usePreviousNext';
+import {useToggle} from '../../services/hooks/useToggle';
+import {useVideoUri} from '../../services/api';
+import {useNavigate, useParams} from '../params';
 import {rawColor} from '../../services/constants';
-import {FullScreenLoading} from '../../components/fullScreenLoading';
+import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading';
+import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
+import {Controls} from './controls/controls';
+import {usePreviousNext} from './usePreviousNext';
 
 const {width, height} = Dimensions.get('screen');
 

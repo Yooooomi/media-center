@@ -12,6 +12,9 @@ import { SettingsPageQueryHandler } from "./settingsPage.query";
 import { GetMoviesPageQueryHandler } from "./getMoviesPage.query";
 import { GetShowsPageQueryHandler } from "./getShowsPage.query";
 import { DiscoverPageQueryHandler } from "./discoverPage.query";
+import { StatusQueryHandler } from "./status.query";
+import { TorrentClient } from "../domains/torrentClient/applicative/torrentClient";
+import { TorrentIndexer } from "../domains/torrentIndexer/applicative/torrentIndexer";
 
 export function bootQueries(
   queryBus: QueryBus,
@@ -20,7 +23,9 @@ export function bootQueries(
   tmdbStore: TmdbStore,
   tmdbApi: TmdbAPI,
   hierarchyStore: HierarchyStore,
-  userTmdbInfoStore: UserTmdbInfoStore
+  userTmdbInfoStore: UserTmdbInfoStore,
+  torrentClient: TorrentClient,
+  torrentIndexer: TorrentIndexer
 ) {
   queryBus.register(
     new HomepageQueryHandler(
@@ -64,4 +69,6 @@ export function bootQueries(
   queryBus.register(new GetShowsPageQueryHandler(catalogEntryStore, tmdbStore));
 
   queryBus.register(new DiscoverPageQueryHandler(tmdbApi));
+
+  queryBus.register(new StatusQueryHandler(torrentClient, torrentIndexer));
 }

@@ -8,12 +8,12 @@ import {
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
 import { HierarchyStore } from "../fileWatcher/applicative/hierarchy.store";
 import { TmdbAPI } from "../tmdb/applicative/tmdb.api";
+import { TmdbStore } from "../tmdb/applicative/tmdb.store";
 import { CatalogSaga } from "./applicative/catalog.saga";
 import { GetMovieEntriesQueryHandler } from "./applicative/getMovieEntries.query";
 import { GetShowEntriesQueryHandler } from "./applicative/getShowEntries.query";
 import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
 import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
-import { TmdbStore } from "../tmdb/applicative/tmdb.store";
 import { ReinitCatalogCommandHandler } from "./applicative/reinit.command";
 
 export function bootCatalog(

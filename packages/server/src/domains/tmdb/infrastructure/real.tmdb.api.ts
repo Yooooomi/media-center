@@ -1,9 +1,14 @@
-import { TmdbAPI } from "../applicative/tmdb.api";
 import Axios, { AxiosInstance } from "axios";
+import { TmdbAPI } from "../applicative/tmdb.api";
 import { TmdbId } from "../domain/tmdbId";
 import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
+import { PromiseQueue } from "../../../tools/queue";
+import { ShowSeason } from "../domain/showSeason";
+import { ShowEpisode } from "../domain/showEpisode";
+import { MovieDetails } from "../domain/movieDetails";
+import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 import {
   DiscoverMovie,
   DiscoverShow,
@@ -15,11 +20,6 @@ import {
   SearchShow,
   Season,
 } from "./tmdb.api.utils";
-import { PromiseQueue } from "../../../tools/queue";
-import { ShowSeason } from "../domain/showSeason";
-import { ShowEpisode } from "../domain/showEpisode";
-import { MovieDetails } from "../domain/movieDetails";
-import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 
 // Limit is 50 per seconds
 const globalQueue = new PromiseQueue(1000 / 40);

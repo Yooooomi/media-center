@@ -1,4 +1,5 @@
 import { Query, QueryHandler, Shape } from "@media-center/domain-driven";
+import { keyBy, uniqBy } from "@media-center/algorithm";
 import { Show } from "../domains/tmdb/domain/show";
 import { TorrentRequest } from "../domains/torrentRequest/domain/torrentRequest";
 import { ShowCatalogEntryFulfilled } from "../domains/catalog/applicative/catalogEntryFulfilled.front";
@@ -8,7 +9,6 @@ import { TorrentRequestStore } from "../domains/torrentRequest/applicative/torre
 import { CatalogEntryStore } from "../domains/catalog/applicative/catalogEntry.store";
 import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { ShowCatalogEntry } from "../domains/catalog/domain/catalogEntry";
-import { keyBy, uniqBy } from "@media-center/algorithm";
 import { ShowSeason } from "../domains/tmdb/domain/showSeason";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
 import {
@@ -16,7 +16,6 @@ import {
   CatalogEntryDeleted,
   CatalogEntryUpdated,
 } from "../domains/catalog/applicative/catalog.events";
-import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 import {
   TorrentRequestAdded,
   TorrentRequestUpdated,
@@ -29,6 +28,7 @@ import {
 } from "../domains/userTmdbInfo/domain/userTmdbInfoId";
 import { UserTmdbInfoStore } from "../domains/userTmdbInfo/applicative/userTmdbInfo.store";
 import { UserTmdbInfoUpdated } from "../domains/userTmdbInfo/domain/userTmdbInfo.events";
+import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,

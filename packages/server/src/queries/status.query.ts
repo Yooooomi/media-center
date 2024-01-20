@@ -1,7 +1,7 @@
 import { Query, QueryHandler } from "@media-center/domain-driven";
+import { noop } from "@media-center/algorithm";
 import { TorrentClient } from "../domains/torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "../domains/torrentIndexer/applicative/torrentIndexer";
-import { noop } from "@media-center/algorithm";
 
 export class StatusQuery extends Query(undefined, {
   torrentClientStatus: Boolean,

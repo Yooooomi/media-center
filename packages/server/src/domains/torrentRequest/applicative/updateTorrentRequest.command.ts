@@ -1,7 +1,7 @@
 import { Command, CommandHandler, EventBus } from "@media-center/domain-driven";
 import { TorrentRequestId } from "../domain/torrentRequestId";
-import { TorrentRequestStore } from "./torrentRequest.store";
 import { TorrentRequestUpdated } from "../domain/torrentRequest.events";
+import { TorrentRequestStore } from "./torrentRequest.store";
 
 export class UpdateTorrentRequestCommand extends Command({
   torrentRequestId: TorrentRequestId,

@@ -1,8 +1,8 @@
 import { Query, QueryHandler } from "@media-center/domain-driven";
+import { uniqBy } from "@media-center/algorithm";
 import { Show } from "../domains/tmdb/domain/show";
 import { CatalogEntryStore } from "../domains/catalog/applicative/catalogEntry.store";
 import { TmdbStore } from "../domains/tmdb/applicative/tmdb.store";
-import { uniqBy } from "@media-center/algorithm";
 
 export class GetShowsPageQuery extends Query(undefined, [Show]) {}
 

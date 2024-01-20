@@ -1,6 +1,14 @@
 import { config as configureDotenv } from "dotenv";
+import {
+  InMemoryCommandBus,
+  InMemoryDatabase,
+  InMemoryEventBus,
+  InMemoryQueryBus,
+  InMemoryTransactionPerformer,
+} from "@media-center/domain-driven";
 import { bootApi } from "../endpoints/boot";
 import { SolverSafeRequest } from "../framework/safeRequest/solver.safeRequest";
+import { bootQueries } from "../queries/boot";
 import { ProcessEnvironmentHelper } from "./environment/infrastructure/process.environmentHelper";
 import { bootFileWatcher } from "./fileWatcher/boot";
 import { bootTmdb } from "./tmdb/boot";
@@ -10,16 +18,8 @@ import { bootTorrentRequest } from "./torrentRequest/boot";
 import { InMemoryTorrentRequestStore } from "./torrentRequest/infrastructure/inMemory.torrentRequest.store";
 import { bootCatalog } from "./catalog/boot";
 import { FilesystemTorrentRequestStore } from "./torrentRequest/infrastructure/filesystem.torrentRequest.store";
-import {
-  InMemoryCommandBus,
-  InMemoryDatabase,
-  InMemoryEventBus,
-  InMemoryQueryBus,
-  InMemoryTransactionPerformer,
-} from "@media-center/domain-driven";
 import { bootUser } from "./user/boot";
 import { bootUserTmdbInfo } from "./userTmdbInfo/boot";
-import { bootQueries } from "../queries/boot";
 import { bootCommands } from "./commands/boot";
 
 export async function globalBoot() {

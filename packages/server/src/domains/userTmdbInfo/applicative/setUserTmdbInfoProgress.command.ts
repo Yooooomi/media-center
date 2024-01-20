@@ -7,7 +7,6 @@ import {
 } from "@media-center/domain-driven";
 import { UserId, UserTmdbInfoId } from "../domain/userTmdbInfoId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
-import { UserTmdbInfoStore } from "./userTmdbInfo.store";
 import { TmdbStore } from "../../tmdb/applicative/tmdb.store";
 import { Movie } from "../../tmdb/domain/movie";
 import { Show } from "../../tmdb/domain/show";
@@ -17,6 +16,7 @@ import {
   UserTmdbShowInfo,
 } from "../domain/userTmdbInfo";
 import { UserTmdbInfoUpdated } from "../domain/userTmdbInfo.events";
+import { UserTmdbInfoStore } from "./userTmdbInfo.store";
 
 export class SetUserTmdbInfoProgressCommand extends Command({
   actorId: UserId,

@@ -1,7 +1,7 @@
 import { CommandBus } from "@media-center/domain-driven";
-import { DeleteCatalogEntryCommandHandler } from "./deleteCatalogEntry.command";
 import { TorrentClient } from "../torrentClient/applicative/torrentClient";
 import { TorrentRequestStore } from "../torrentRequest/applicative/torrentRequest.store";
+import { DeleteCatalogEntryCommandHandler } from "./deleteCatalogEntry.command";
 
 export function bootCommands(
   commandBus: CommandBus,

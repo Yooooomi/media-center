@@ -2,8 +2,8 @@ import { InMemoryDatabase } from "@media-center/domain-driven";
 import { FilesystemStore } from "../../../framework/store";
 import { HierarchyStore } from "../applicative/hierarchy.store";
 import { HierarchyItem } from "../domain/hierarchyItem";
-import { HierarchyItemUpcastSerializer } from "./hierarchyItem.upcast";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
+import { HierarchyItemUpcastSerializer } from "./hierarchyItem.upcast";
 
 export class FilesystemHierarchyStore
   extends FilesystemStore<HierarchyItem>

@@ -1,5 +1,5 @@
-import { TorrentIndexer } from "../applicative/torrentIndexer";
 import * as fs from "fs";
+import { TorrentIndexer } from "../applicative/torrentIndexer";
 import { TorrentIndexerResultId } from "../domain/torrentIndexerResultId";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
 import { GetAsset } from "../../../tools/meta";

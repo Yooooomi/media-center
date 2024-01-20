@@ -1,7 +1,7 @@
 import { Shape } from "@media-center/domain-driven";
+import { uniqBy } from "@media-center/algorithm";
 import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
-import { uniqBy } from "@media-center/algorithm";
 
 export class MovieCatalogEntryDatasetFulfilled extends Shape({
   hierarchyItems: [HierarchyItem],

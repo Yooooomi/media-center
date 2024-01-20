@@ -1,9 +1,9 @@
+import * as fs from "fs";
+import * as path from "path";
 import { compact } from "@media-center/algorithm";
 import { TorrentService } from "../../../tools/torrentService";
 import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 import { TorrentClient } from "../applicative/torrentClient";
-import * as fs from "fs";
-import * as path from "path";
 import { TorrentClientEntry } from "../domain/torrentClientEntry";
 
 export class MockTorrentClient extends TorrentClient {

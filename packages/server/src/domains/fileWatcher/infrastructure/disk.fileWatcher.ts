@@ -1,14 +1,14 @@
-import { File } from "../../../framework/valueObjects/file";
-import { FileWatcher } from "../applicative/fileWatcher";
 import * as fs from "fs";
 import { join, extname } from "path";
-import { HierarchyStore } from "../applicative/hierarchy.store";
-import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 import {
   InfrastructureError,
   EventBus,
   useLog,
 } from "@media-center/domain-driven";
+import { File } from "../../../framework/valueObjects/file";
+import { FileWatcher } from "../applicative/fileWatcher";
+import { HierarchyStore } from "../applicative/hierarchy.store";
+import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 import { FileType } from "../applicative/fileWatcher.events";
 
 class CannotWatchSameDirectory extends InfrastructureError {

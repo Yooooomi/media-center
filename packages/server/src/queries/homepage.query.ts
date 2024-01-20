@@ -6,6 +6,7 @@ import {
   QueryHandler,
   Shape,
 } from "@media-center/domain-driven";
+import { keyBy } from "@media-center/algorithm";
 import { TorrentRequest } from "../domains/torrentRequest/domain/torrentRequest";
 import { Movie } from "../domains/tmdb/domain/movie";
 import { Show } from "../domains/tmdb/domain/show";
@@ -17,7 +18,6 @@ import {
   MovieCatalogEntry,
   ShowCatalogEntry,
 } from "../domains/catalog/domain/catalogEntry";
-import { keyBy } from "@media-center/algorithm";
 import {
   CatalogEntryUpdated,
   CatalogEntryDeleted,

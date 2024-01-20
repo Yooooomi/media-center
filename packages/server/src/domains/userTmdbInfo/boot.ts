@@ -3,11 +3,11 @@ import {
   EventBus,
   InMemoryDatabase,
 } from "@media-center/domain-driven";
-import { SetUserTmdbInfoProgressCommandHandler } from "./applicative/setUserTmdbInfoProgress.command";
 import { EnvironmentHelper } from "../environment/applicative/environmentHelper";
+import { TmdbStore } from "../tmdb/applicative/tmdb.store";
+import { SetUserTmdbInfoProgressCommandHandler } from "./applicative/setUserTmdbInfoProgress.command";
 import { InMemoryUserTmdbInfoStore } from "./infrastructure/inMemory.userTmdbInfo.store";
 import { FilesystemUserTmdbInfoStore } from "./infrastructure/filesystem.userTmdbInfo.store";
-import { TmdbStore } from "../tmdb/applicative/tmdb.store";
 
 export function bootUserTmdbInfo(
   database: InMemoryDatabase,

@@ -9,7 +9,8 @@
     "start": "node lib/index.js",
     "build": "tsc",
     "build:production": "ncc build src/index.ts -o lib",
-    "freeze": "yarn domain-driven freeze --relative ../infrastructure"
+    "freeze": "yarn domain-driven freeze --relative ../infrastructure",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@ctrl/video-filename-parser": "Yooooomi/video-filename-parser",

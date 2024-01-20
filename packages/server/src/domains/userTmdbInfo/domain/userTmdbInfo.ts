@@ -1,6 +1,6 @@
 import { Shape } from "@media-center/domain-driven";
-import { UserTmdbInfoId } from "./userTmdbInfoId";
 import { maxBy } from "@media-center/algorithm";
+import { UserTmdbInfoId } from "./userTmdbInfoId";
 
 export class UserTmdbMovieInfo extends Shape({
   id: UserTmdbInfoId,

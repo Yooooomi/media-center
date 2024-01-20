@@ -1,16 +1,16 @@
 import { compact } from "@media-center/algorithm";
-import { TmdbAPI } from "../applicative/tmdb.api";
-import { TmdbStore } from "../applicative/tmdb.store";
-import { AnyTmdb } from "../domain/anyTmdb";
-import { Movie } from "../domain/movie";
-import { Show } from "../domain/show";
-import { TmdbId } from "../domain/tmdbId";
 import {
   Either,
   InMemoryDatabase,
   InMemoryStore,
   SerializableSerializer,
 } from "@media-center/domain-driven";
+import { TmdbAPI } from "../applicative/tmdb.api";
+import { TmdbStore } from "../applicative/tmdb.store";
+import { AnyTmdb } from "../domain/anyTmdb";
+import { Movie } from "../domain/movie";
+import { Show } from "../domain/show";
+import { TmdbId } from "../domain/tmdbId";
 
 export class InMemoryTmdbStore
   extends InMemoryStore<AnyTmdb>

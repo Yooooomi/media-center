@@ -1,6 +1,6 @@
+import { JSDOM, DOMWindow } from "jsdom";
 import { SafeRequest } from "../../../framework/safeRequest/safeRequest";
 import { TorrentIndexer } from "../applicative/torrentIndexer";
-import { JSDOM, DOMWindow } from "jsdom";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
 import { TorrentIndexerResultId } from "../domain/torrentIndexerResultId";
 

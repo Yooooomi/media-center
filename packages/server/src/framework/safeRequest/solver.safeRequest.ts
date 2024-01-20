@@ -1,6 +1,6 @@
 import Axios from "axios";
-import { SafeRequest } from "./safeRequest";
 import { EnvironmentHelper } from "../../domains/environment/applicative/environmentHelper";
+import { SafeRequest } from "./safeRequest";
 
 export interface FlareSolverResponse {
   status: string;

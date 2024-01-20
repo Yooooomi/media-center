@@ -16,10 +16,10 @@ import {
   MovieCatalogEntryDataset,
   ShowCatalogEntry,
 } from "../domain/catalogEntry";
-import { CatalogEntryStore } from "./catalogEntry.store";
-import { CatalogEntryUpdated, CatalogEntryDeleted } from "./catalog.events";
 import { AnyTmdb } from "../../tmdb/domain/anyTmdb";
 import { TmdbStore } from "../../tmdb/applicative/tmdb.store";
+import { CatalogEntryStore } from "./catalogEntry.store";
+import { CatalogEntryUpdated, CatalogEntryDeleted } from "./catalog.events";
 
 export class CatalogSaga extends Saga {
   constructor(
@@ -176,19 +176,19 @@ export class CatalogSaga extends Saga {
           e.deleteHierarchyItemId(event.item.id);
           e.markUpdated(new Date());
         });
-        const deleted: AnyCatalogEntry[] = [];
-        const updated: AnyCatalogEntry[] = [];
+        const _deleted: AnyCatalogEntry[] = [];
+        const _updated: AnyCatalogEntry[] = [];
         await Promise.all(
           existing.map(async (e) => {
             if (!e.hasHierarchyItems()) {
-              deleted.push(e);
+              _deleted.push(e);
               return this.catalogEntryStore.delete(e.id, transaction);
             }
-            updated.push(e);
+            _updated.push(e);
             return this.catalogEntryStore.save(e, transaction);
           })
         );
-        return { updated, deleted };
+        return { updated: _updated, deleted: _deleted };
       });
     deleted.forEach((d) =>
       this.eventBus.publish(new CatalogEntryDeleted({ catalogEntry: d }))

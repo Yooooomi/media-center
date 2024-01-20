@@ -1,6 +1,6 @@
-import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
 import * as fs from "fs";
 import * as path from "path";
+import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
 
 abstract class EndpointCaching {
   abstract get(key: string): Promise<fs.ReadStream | undefined>;

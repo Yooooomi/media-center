@@ -4,8 +4,8 @@ import {
   EventBus,
   TransactionPerformer,
 } from "@media-center/domain-driven";
-import { CatalogEntryStore } from "./catalogEntry.store";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
+import { CatalogEntryStore } from "./catalogEntry.store";
 import { CatalogDeleted } from "./catalog.events";
 
 export class ReinitCatalogCommand extends Command() {}

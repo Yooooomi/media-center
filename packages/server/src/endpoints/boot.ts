@@ -4,15 +4,15 @@ import {
   CommandBus,
   EventBus,
 } from "@media-center/domain-driven";
-import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import Express, { urlencoded, json } from "express";
+import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
+import { TimeMeasurer } from "@media-center/algorithm";
+import { HierarchyStore } from "../domains/fileWatcher/applicative/hierarchy.store";
 import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "../domains/fileWatcher/domain/hierarchyItemId";
-import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
-import { streamVideo } from "./videoStreaming/streamVideo";
-import { TimeMeasurer } from "@media-center/algorithm";
-import { FilesystemEndpointCaching } from "./caching";
 import { TmdbAPI } from "../domains/tmdb/applicative/tmdb.api";
+import { streamVideo } from "./videoStreaming/streamVideo";
+import { FilesystemEndpointCaching } from "./caching";
 
 export function bootApi(
   queryBus: QueryBus,
@@ -41,8 +41,8 @@ export function bootApi(
       logger.warn(`< ${req.path} 403`);
       return res.status(403).end();
     }
-    const password = authorization.split("Bearer ")[1];
-    if (password !== base64Password) {
+    const providedPassword = authorization.split("Bearer ")[1];
+    if (providedPassword !== base64Password) {
       logger.warn(`< ${req.path} 403`);
       return res.status(403).end();
     }

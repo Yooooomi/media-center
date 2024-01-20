@@ -1,3 +1,5 @@
+import * as path from "path";
+import * as fs from "fs";
 import {
   AtLeastId,
   FilesystemStore as DDFilesystemStore,
@@ -5,8 +7,6 @@ import {
   Serializer,
 } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../domains/environment/applicative/environmentHelper";
-import * as path from "path";
-import * as fs from "fs";
 
 export class FilesystemStore<M extends AtLeastId> extends DDFilesystemStore<M> {
   constructor(

@@ -1,8 +1,8 @@
 import { Query, QueryHandler } from "@media-center/domain-driven";
-import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
-import { TorrentIndexer } from "./torrentIndexer";
-import { SearchQuery } from "../../../tools/searchQuery";
 import { uniqBy } from "@media-center/algorithm";
+import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
+import { SearchQuery } from "../../../tools/searchQuery";
+import { TorrentIndexer } from "./torrentIndexer";
 
 export class SearchTorrentsQuery extends Query(
   {

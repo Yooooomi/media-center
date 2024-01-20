@@ -4,9 +4,9 @@ import { TorrentClient } from "../../torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "../../torrentIndexer/applicative/torrentIndexer";
 import { TorrentRequest } from "../domain/torrentRequest";
 import { TorrentRequestId } from "../domain/torrentRequestId";
+import { TorrentRequestAdded } from "../domain/torrentRequest.events";
 import { AddTorrentRequestCommand } from "./addTorrentRequest.command";
 import { TorrentRequestStore } from "./torrentRequest.store";
-import { TorrentRequestAdded } from "../domain/torrentRequest.events";
 
 export class AddTorrentRequestCommandHandler extends CommandHandler(
   AddTorrentRequestCommand

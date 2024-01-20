@@ -3,6 +3,7 @@ import {
   Query,
   QueryHandler,
 } from "@media-center/domain-driven";
+import { keyBy } from "@media-center/algorithm";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { CatalogEntryStore } from "./catalogEntry.store";
@@ -10,7 +11,6 @@ import {
   MovieCatalogEntryDatasetFulfilled,
   MovieCatalogEntryFulfilled,
 } from "./catalogEntryFulfilled.front";
-import { keyBy } from "@media-center/algorithm";
 
 class NotMatchingHierarchyItem extends ApplicativeError {
   constructor(id: HierarchyItemId) {

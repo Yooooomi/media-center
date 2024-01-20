@@ -1,5 +1,5 @@
-import { Shape } from "@media-center/domain-driven";
 import * as path from "path";
+import { Shape } from "@media-center/domain-driven";
 
 export class File extends Shape({
   path: String,

@@ -137,6 +137,14 @@ export function LocalUserContextProvider({
         <Text size="small">{error.message}</Text>
         <Box mt="S8">
           <TextButton text="Réessayer" onPress={init} focusOnMount />
+          <TextButton
+            text="Changer de serveur"
+            variant="delete"
+            onPress={() => {
+              reactive.updateInstance(new LocalUserProfile({}));
+              setError(undefined);
+            }}
+          />
         </Box>
       </Box>
     );

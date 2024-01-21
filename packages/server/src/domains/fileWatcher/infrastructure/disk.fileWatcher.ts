@@ -113,7 +113,7 @@ export class DiskFileWatcher extends FileWatcher {
     await Promise.all([this.initializeMovie(), this.initializeShow()]);
   }
 
-  private static validVideoExtensions = ["avi", "mkv", "mp4"];
+  private static validVideoExtensions = ["avi", "mkv", "mp4", "webm", "ts"];
 
   private static isValidVideoFile(filepath: string) {
     const extension = extname(filepath).slice(1);

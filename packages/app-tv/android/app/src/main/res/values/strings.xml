@@ -1,5 +1,5 @@
 <resources>
   <string name="app_name">Timotex</string>
   <string name="expo_runtime_version">1.0.0</string>
-  <color name="background">#181A27</color>
+  <color name="background">#222222</color>
 </resources>

@@ -4,7 +4,7 @@ import {Box} from '../../display/box';
 import {color} from '../../../../services/constants';
 import {Pressable} from './pressable';
 
-type Variants = 'default';
+type Variants = 'default' | 'delete';
 
 interface TextButtonProps {
   text: string;
@@ -25,6 +25,10 @@ const variants: Record<
     ['buttonBackgroundFocused', 'buttonBackground'],
     ['buttonTextFocused', 'buttonText'],
   ],
+  delete: [
+    ['error', 'buttonBackground'],
+    ['whiteText', 'error'],
+  ],
 };
 
 export function TextButton({
@@ -42,6 +46,7 @@ export function TextButton({
           p="S8"
           r="default">
           <Text
+            align="center"
             color={focused ? variants[variant][1][0] : variants[variant][1][1]}>
             {text}
           </Text>

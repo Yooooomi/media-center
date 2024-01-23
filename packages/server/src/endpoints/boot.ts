@@ -52,6 +52,7 @@ export function bootApi(
   app.get("/health", (_, res) => res.status(204).end());
 
   app.get("/video/:hierarchyItemId", async (req, res) => {
+    console.log("YOWW");
     const hierarchyItemId = req.params.hierarchyItemId;
     const item = await hierarchyItemStore.load(
       HierarchyItemId.from(hierarchyItemId)

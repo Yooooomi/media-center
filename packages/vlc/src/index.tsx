@@ -15,7 +15,7 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 export interface VLCTrack {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -39,8 +39,8 @@ type VlcProps = {
   autoplay?: boolean;
   volume: number;
 
-  audioTrack?: number;
-  textTrack?: number;
+  audioTrack?: string;
+  textTrack?: string;
 
   // Arguments passed to the creation of the libvlc instance
   arguments?: string[];
@@ -58,7 +58,9 @@ const ComponentName = 'VlcView';
 const VlcView =
   UIManager.getViewManagerConfig(ComponentName) != null
     ? requireNativeComponent<
-        VlcProps & { ref: RefObject<{ _nativeTag: number }> }
+        Omit<VlcProps, 'uri'> & { uri?: string } & {
+          ref: RefObject<{ _nativeTag: number }>;
+        }
       >(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
@@ -69,7 +71,6 @@ function createListener<T>(path: string) {
   const listeners: Record<string, ((args: T) => void)[]> = {};
 
   VlcEventEmitter.addListener(path, (a) => {
-    console.log('Triggered!!', path, a);
     listeners[a.id]?.forEach((fn) => fn(a));
   });
 
@@ -94,8 +95,23 @@ const videoInfoListener = createListener<VLCTrackInfoEvent>('onVideoInfos');
 const onProgressListener = createListener<VLCBaseEvent>('onProgress');
 const onErrorListener = createListener<VLCBaseEvent>('onError');
 
-export function Vlc(props: VlcProps) {
-  const ref = useRef<{ _nativeTag: number }>(null);
+function Vlc_(props: VlcProps) {
+  const ref = useRef<any>(null);
+
+  useEffect(() => {
+    ref.current?.setNativeProps({
+      uri: props.uri,
+    });
+  }, [props.uri]);
+
+  useEffect(() => {
+    if (props.seek === undefined) {
+      return;
+    }
+    ref.current.setNativeProps({
+      seek: props.seek,
+    });
+  }, [props.seek]);
 
   useEffect(() => {
     if (!ref.current || !props.onVideoInfos) {
@@ -124,5 +140,20 @@ export function Vlc(props: VlcProps) {
     return onErrorListener.register(ref.current._nativeTag, props.onError);
   }, [props.onError]);
 
-  return <VlcView ref={ref} {...props} />;
+  return (
+    <VlcView
+      ref={ref}
+      style={props.style}
+      volume={props.volume}
+      arguments={props.arguments}
+      audioTrack={props.audioTrack}
+      autoplay={props.autoplay}
+      forceHwDecode={props.forceHwDecode}
+      hwDecode={props.hwDecode}
+      play={props.play}
+      textTrack={props.textTrack}
+    />
+  );
 }
+
+export const Vlc = React.memo(Vlc_);

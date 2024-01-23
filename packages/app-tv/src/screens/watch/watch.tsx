@@ -1,5 +1,11 @@
-import {Alert, Dimensions, StyleSheet, View} from 'react-native';
-import {Vlc, VLCTrackInfoEvent, VLCBaseEvent} from '@media-center/vlc';
+import {
+  Alert,
+  Dimensions,
+  StyleSheet,
+  NativeSyntheticEvent,
+  View,
+} from 'react-native';
+import {TurboVlc, ProgressEvent, VideoInfoEvent} from '@media-center/turbo-vlc';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
 import {ShowCatalogEntryDatasetFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
@@ -9,23 +15,49 @@ import {useNavigate, useParams} from '../params';
 import {rawColor} from '../../services/constants';
 import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading';
 import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
-import {Controls} from './controls/controls';
 import {usePreviousNext} from './usePreviousNext';
+import {Controls} from './controls';
 
 const {width, height} = Dimensions.get('screen');
+
+const vlcArguments = [
+  '--vout=android-display',
+  // '--sout-mux-caching=200',
+  // '--file-caching=200',
+  // '--cdda-caching=200',
+  // '--http-caching=200',
+  // '--avcodec-threads=0',
+  // '--sout-x264-nf',
+  // '--no-avcodec-fast',
+  // '--http-reconnect',
+  // '--avcodec-skiploopfilter=0',
+  // '--avcodec-dr',
+  // '--avcodec-skip-frame=0',
+  // '--avcodec-skip-idct=0',
+  // '--no-audio-time-stretch',
+  // '--skip-frames',
+  // '--no-drop-late-frames',
+  // '--preferred-resolution=-1',
+  // '--clock-synchro=-1',
+  // '--clock-jitter=0',
+  // '--hdtv-fix',
+  // '--android-display-chroma=RV32',
+  // '--subsdec-encoding',
+  // '--stats',
+];
 
 export function Watch() {
   const {playlist, startingPlaylistIndex} = useParams<'Watch'>();
   const {dataset, progress, name} = playlist.items[startingPlaylistIndex]!;
   const hierarchyItem = dataset.getLatestItem()!;
   const videoUri = useVideoUri(hierarchyItem.id);
-  const [videoInfo, setVideoInfo] = useState<VLCTrackInfoEvent | undefined>(
+  const [videoInfo, setVideoInfo] = useState<VideoInfoEvent | undefined>(
     undefined,
   );
-  const currentProgress = useRef<VLCBaseEvent | undefined>(undefined);
+  const currentProgress = useRef<ProgressEvent | undefined>(undefined);
   const currentProgressMs = useSharedValue(0);
-  const [audioTrack, setAudioTrack] = useState<number | undefined>(undefined);
-  const [textTrack, setTextTrack] = useState<number | undefined>(undefined);
+  const [audioTrack, setAudioTrack] = useState<string | undefined>(undefined);
+  const [textTrack, setTextTrack] = useState<string | undefined>(undefined);
   const {goBack} = useNavigate();
 
   const season =
@@ -58,11 +90,18 @@ export function Watch() {
   const [seek, setSeek] = useState(0);
 
   const onProgress = useCallback(
-    (event: VLCBaseEvent) => {
-      currentProgress.current = event;
-      currentProgressMs.value = event.progress;
+    (event: NativeSyntheticEvent<ProgressEvent>) => {
+      currentProgress.current = event.nativeEvent;
+      currentProgressMs.value = event.nativeEvent.progress;
     },
     [currentProgressMs],
+  );
+
+  const onVideoInfo = useCallback(
+    (event: NativeSyntheticEvent<VideoInfoEvent>) => {
+      setVideoInfo(event.nativeEvent);
+    },
+    [],
   );
 
   const doSeek = useCallback(
@@ -96,7 +135,7 @@ export function Watch() {
       <View style={styles.background}>
         {!videoInfo && <FullScreenLoading />}
       </View>
-      <Vlc
+      <TurboVlc
         audioTrack={audioTrack}
         textTrack={textTrack}
         seek={seek}
@@ -105,23 +144,9 @@ export function Watch() {
         volume={100}
         hwDecode={!hierarchyItem.file.path.endsWith('.avi')}
         forceHwDecode={false}
-        arguments={[
-          // '--sout-mux-caching=200',
-          // '--file-caching=200',
-          // '--cdda-caching=200',
-          // '--http-caching=200',
-          '--network-caching=3000',
-          '--file-caching=3000',
-          '--live-caching=3000',
-          '--disc-caching=3000',
-          '--sout-mux-caching=3000',
-          // '--prefetch-buffer-size=10000',
-          // '--prefetch-read-size=10000000',
-          // '--network-caching=2000',
-          // '--sout-mux-caching=2000',
-        ]}
+        arguments={vlcArguments}
         onProgress={onProgress}
-        onVideoInfos={setVideoInfo}
+        onVideoInfo={onVideoInfo}
         uri={videoUri}
         onError={onError}
       />
@@ -153,9 +178,11 @@ const styles = StyleSheet.create({
   },
   controls: {
     position: 'absolute',
-    left: 0,
+    width: '100%',
+    height: 140,
     bottom: 0,
-    right: 0,
+    borderBottomColor: '#00000001',
+    borderBottomWidth: 1,
   },
   background: {
     ...StyleSheet.absoluteFillObject,

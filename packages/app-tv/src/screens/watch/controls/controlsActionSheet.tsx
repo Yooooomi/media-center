@@ -1,15 +1,15 @@
 import {FlatList} from 'react-native';
-import {VLCTrack} from '@media-center/vlc';
+import {Track} from '@media-center/turbo-vlc';
 import {Modal} from '../../../components/ui/tools/modal/modal';
 import {LineButton} from '../../../components/ui/input/pressable/lineButton';
 
 interface ControlsActionSheetProps {
   open: 'text' | 'audio' | undefined;
   onClose: () => void;
-  textTracks: VLCTrack[];
-  audioTracks: VLCTrack[];
-  onAudioTrack: (id: number) => void;
-  onTextTrack: (id: number) => void;
+  textTracks: Track[];
+  audioTracks: Track[];
+  onAudioTrack: (id: string) => void;
+  onTextTrack: (id: string) => void;
 }
 
 export function ControlsActionSheet({

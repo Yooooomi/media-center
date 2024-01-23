@@ -1,13 +1,13 @@
 import {TmdbId} from '@media-center/server/src/domains/tmdb/domain/tmdbId';
 import {SetUserTmdbInfoProgressCommand} from '@media-center/server/src/domains/userTmdbInfo/applicative/setUserTmdbInfoProgress.command';
 import {RefObject, useCallback, useEffect, useRef} from 'react';
-import {VLCBaseEvent} from '@media-center/vlc';
+import {ProgressEvent} from '@media-center/turbo-vlc';
 import {Beta} from '../../services/api';
 import {useAppState} from '../../services/hooks/useAppState';
 
 export function useSaveCatalogEntryProgress(
   isPlaying: boolean,
-  progress: RefObject<VLCBaseEvent | undefined>,
+  progress: RefObject<ProgressEvent | undefined>,
   tmdbId: TmdbId,
   season?: number,
   episode?: number,

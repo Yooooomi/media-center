@@ -16,13 +16,13 @@
     "clean": "rm -rf android/build example/android/build example/android/app/build example/ios/build"
   },
   "devDependencies": {
+    "@media-center/dev": "*",
     "@react-native-community/eslint-config": "^3.0.2",
     "@types/jest": "^28.1.2",
     "@types/react": "~18",
     "@types/react-native": "0.72.2",
     "prettier": "^2.0.5",
-    "react-native-builder-bob": "^0.20.0",
-    "@media-center/dev": "*"
+    "react-native-builder-bob": "^0.20.0"
   },
   "peerDependencies": {
     "react": "*",

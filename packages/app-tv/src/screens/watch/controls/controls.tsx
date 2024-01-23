@@ -6,7 +6,7 @@ import Animated, {
   SharedValue,
   useDerivedValue,
 } from 'react-native-reanimated';
-import {VLCTrackInfoEvent} from '@media-center/vlc';
+import {VideoInfoEvent} from '@media-center/turbo-vlc';
 import {color, fontSize, spacing} from '../../../services/constants';
 import {useRemote} from '../../../services/hooks/useRemote';
 import {useBooleanState} from '../../../services/hooks/useBooleanState';
@@ -29,9 +29,9 @@ interface ControlsProps {
   nextAllowed: boolean;
   onNext: () => void;
   seek: (diff: number) => void;
-  videoInfo: VLCTrackInfoEvent;
-  setTextTrack: (id: number) => void;
-  setAudioTrack: (id: number) => void;
+  videoInfo: VideoInfoEvent;
+  setTextTrack: (id: string) => void;
+  setAudioTrack: (id: string) => void;
   style?: ViewStyle;
 }
 
@@ -149,13 +149,13 @@ export const Controls = ({
             <Box row gap="S16" flex={1}>
               <IconButton
                 size={24}
-                disabled={videoInfo.availableTextTracks.length === 0}
+                disabled={videoInfo.textTracks.length === 0}
                 onPress={() => setActionSheet('text')}
                 icon="subtitles-outline"
               />
               <IconButton
                 size={24}
-                disabled={videoInfo.availableAudioTracks.length === 0}
+                disabled={videoInfo.textTracks.length === 0}
                 onPress={() => setActionSheet('audio')}
                 icon="music"
               />
@@ -199,8 +199,8 @@ export const Controls = ({
       <ControlsActionSheet
         open={actionSheet}
         onClose={() => setActionSheet(undefined)}
-        audioTracks={videoInfo.availableAudioTracks}
-        textTracks={videoInfo.availableTextTracks}
+        audioTracks={videoInfo.textTracks}
+        textTracks={videoInfo.textTracks}
         onAudioTrack={setAudioTrack}
         onTextTrack={setTextTrack}
       />

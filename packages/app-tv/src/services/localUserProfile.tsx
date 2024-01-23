@@ -69,6 +69,7 @@ export function LocalUserContextProvider({
   );
 
   const init = useCallback(async () => {
+    setError(undefined);
     try {
       const storedUser =
         (await localStore.get('user', LocalUserProfile)) ??
@@ -101,8 +102,20 @@ export function LocalUserContextProvider({
   }, [hide, reactive]);
 
   useEffect(() => {
-    init().catch(console.error);
-  }, [init]);
+    async function callInit() {
+      await init();
+      if (__DEV__) {
+        reactive.call('setServerAddress', 'http://192.168.1.153:8080');
+        reactive.call('setServerPassword', 'somerandompassword');
+        if (!reactive.instance) {
+          return;
+        }
+        await localStore.set('user', reactive.instance);
+        await init();
+      }
+    }
+    callInit().catch(console.error);
+  }, [init, reactive]);
 
   const value = useMemo(
     () => ({
@@ -133,7 +146,7 @@ export function LocalUserContextProvider({
   if (error) {
     return (
       <Box grow items="center" content="center">
-        <Text>Erreur d'accès au server</Text>
+        <Text>Erreur d'accès au server {reactive.instance?.serverAddress}</Text>
         <Text size="small">{error.message}</Text>
         <Box mt="S8">
           <TextButton text="Réessayer" onPress={init} focusOnMount />

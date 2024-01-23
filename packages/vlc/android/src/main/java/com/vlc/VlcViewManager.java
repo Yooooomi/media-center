@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class VlcViewManager extends SimpleViewManager<VlcView> {
   public static final String REACT_CLASS = "VlcView";
   public static final String TAG = "VlcViewManager";
-  public final double id = Math.random();
 
   @Override
   @NonNull
@@ -32,21 +31,17 @@ public class VlcViewManager extends SimpleViewManager<VlcView> {
   @Override
   public void onDropViewInstance(@NonNull VlcView view) {
     super.onDropViewInstance(view);
-    view.clear();
+    view.release();
   }
 
   @ReactProp(name = "arguments")
   public void setArguments(final VlcView view, final ReadableArray arguments) {
+    Log.i(TAG, "arguments");
     ArrayList<String> strArguments = new ArrayList<>();
     for (int i = 0; i < arguments.size(); i++) {
       strArguments.add(arguments.getString(i));
     }
     view.setArguments(strArguments);
-  }
-
-  @ReactProp(name = "autoplay", defaultBoolean = true)
-  public void setAutoplay(final VlcView view, final boolean autoplay) {
-    view.setAutoplay(autoplay);
   }
 
   @ReactProp(name = "play")
@@ -61,7 +56,7 @@ public class VlcViewManager extends SimpleViewManager<VlcView> {
 
   @ReactProp(name = "seek")
   public void setSeek(final VlcView view, final int position) {
-    view.seek(position);
+    view.setSeek(position);
   }
 
   @ReactProp(name = "volume")
@@ -70,17 +65,17 @@ public class VlcViewManager extends SimpleViewManager<VlcView> {
   }
 
   @ReactProp(name = "audioTrack")
-  public void setAudioTrack(final VlcView view, final int audioTrackId) {
+  public void setAudioTrack(final VlcView view, final String audioTrackId) {
     view.setAudioTrack(audioTrackId);
   }
 
   @ReactProp(name = "textTrack")
-  public void setTextTrack(final VlcView view, final int textTrackId) {
+  public void setTextTrack(final VlcView view, final String textTrackId) {
     view.setTextTrack(textTrackId);
   }
 
   @ReactProp(name = "hwDecode")
-  public void setDecode(final VlcView view, final boolean decode) {
+  public void setHwDecode(final VlcView view, final boolean decode) {
     view.setHwDecode(decode);
   }
 

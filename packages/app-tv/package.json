@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --no-packager",
+    "android": "react-native run-android --no-packager --appIdSuffix .debug",
     "android:clean": "cd android && ./gradlew clean ; cd -",
     "android:release": "react-native run-android --mode Release --no-packager",
     "android:bundle": "react-native bundle --platform android --dev true --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug ; cd -",
@@ -35,7 +35,7 @@
     "react-native": "npm:react-native-tvos@0.72.6-1",
     "react-native-bootsplash": "^5.2.2",
     "react-native-linear-gradient": "^2.8.2",
-    "react-native-reanimated": "^3.4.2",
+    "react-native-reanimated": "^3.6.1",
     "react-native-sse": "^1.2.0",
     "react-native-svg": "^13.13.0",
     "react-native-vector-icons": "^10.0.0",

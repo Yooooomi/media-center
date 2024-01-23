@@ -13,8 +13,8 @@
       "path": "packages/app-tv"
     },
     {
-      "name": "VLC",
-      "path": "packages/vlc"
+      "name": "Turbo VLC",
+      "path": "packages/turbo-vlc"
     },
     {
       "name": "Algorithm",

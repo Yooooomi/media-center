@@ -1,5 +1,6 @@
 package com.turbovlc
 
+import android.os.Handler
 import android.util.Log
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.module.annotations.ReactModule
@@ -47,7 +48,7 @@ class TurboVlcViewManager : SimpleViewManager<TurboVlcView>(),
     return TurboVlcView(context)
   }
 
-  public override fun onDropViewInstance(view: TurboVlcView) {
+  override fun onDropViewInstance(view: TurboVlcView) {
     super.onDropViewInstance(view)
     view.release()
   }
@@ -58,34 +59,38 @@ class TurboVlcViewManager : SimpleViewManager<TurboVlcView>(),
 
   @ReactProp(name = "uri")
   override fun setUri(view: TurboVlcView?, uri: String?) {
-    Log.i("Prop", "setUri $view $uri")
-    if (uri == null) {
-      return
-    }
-    view?.setUri(uri)
+    Log.i("yey", "setUri $view $uri")
+    var handler = Handler()
+    handler.postDelayed(Runnable {
+      Log.i("yey", "setUri delayed $view $uri")
+      if (uri == null) {
+        return@Runnable
+      }
+      view?.setUri(uri)
+    }, 0)
   }
 
   @ReactProp(name = "play")
   override fun setPlay(view: TurboVlcView?, value: Boolean) {
-    Log.i("Prop", "setPlay")
+    Log.i("yey", "setPlay")
     view?.setPlay(value)
   }
 
   @ReactProp(name = "seek")
   override fun setSeek(view: TurboVlcView?, value: Double) {
-    Log.i("Prop", "setSeek")
+    Log.i("yey", "setSeek")
     view?.setSeek(value)
   }
 
   @ReactProp(name = "volume")
   override fun setVolume(view: TurboVlcView?, value: Int) {
-    Log.i("Prop", "setVolume")
+    Log.i("yey", "setVolume")
     view?.setVolume(value)
   }
 
   @ReactProp(name = "audioTrack")
   override fun setAudioTrack(view: TurboVlcView?, value: String?) {
-    Log.i("Prop", "setAudioTrack")
+    Log.i("yey", "setAudioTrack")
     if (value == null) {
       return
     }
@@ -94,7 +99,7 @@ class TurboVlcViewManager : SimpleViewManager<TurboVlcView>(),
 
   @ReactProp(name = "textTrack")
   override fun setTextTrack(view: TurboVlcView?, value: String?) {
-    Log.i("Prop", "setTextTrack")
+    Log.i("yey", "setTextTrack")
     if (value == null) {
       return
     }
@@ -103,7 +108,7 @@ class TurboVlcViewManager : SimpleViewManager<TurboVlcView>(),
 
   @ReactProp(name = "arguments")
   override fun setArguments(view: TurboVlcView?, value: ReadableArray?) {
-    Log.i("Prop", "setArguments")
+    Log.i("yey", "setArguments")
     if (value == null) {
       return
     }
@@ -118,13 +123,13 @@ class TurboVlcViewManager : SimpleViewManager<TurboVlcView>(),
 
   @ReactProp(name = "hwDecode")
   override fun setHwDecode(view: TurboVlcView?, value: Boolean) {
-    Log.i("Prop", "setHwDecode")
+    Log.i("yey", "setHwDecode")
     view?.setHwDecode(value)
   }
 
   @ReactProp(name = "forceHwDecode")
   override fun setForceHwDecode(view: TurboVlcView?, value: Boolean) {
-    Log.i("Prop", "setForceHwDecode")
+    Log.i("yey", "setForceHwDecode")
     view?.setForceHwDecode(value)
   }
 }

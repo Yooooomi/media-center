@@ -10,7 +10,7 @@ import TurboVlcViewNativeComponent, {
 
 export type { BufferingEvent, ProgressEvent, VideoInfoEvent, Track };
 
-export function TurboVlc({
+function TurboVlc_({
   uri,
   play,
   seek,
@@ -30,13 +30,16 @@ export function TurboVlc({
     React.Component<NativeProps, {}, any> & Readonly<NativeMethods>
   >(null);
 
-  useEffect(() => {
-    ref.current?.setNativeProps({ uri });
-  }, [uri]);
+  console.log("Rendered vlc js");
+
+  // useEffect(() => {
+  //   ref.current?.setNativeProps({ uri });
+  // }, [uri]);
 
   return (
     <TurboVlcViewNativeComponent
       style={style}
+      uri={uri}
       ref={ref}
       play={play}
       seek={seek}
@@ -53,3 +56,26 @@ export function TurboVlc({
     />
   );
 }
+
+function debugIsEqual(a: any, b: any) {
+  const notMatchingKeys = new Set<string>();
+
+  for (const akey of Object.keys(a)) {
+    if (a[akey] !== b[akey]) {
+      notMatchingKeys.add(akey);
+    }
+  }
+  for (const bkey of Object.keys(b)) {
+    if (a[bkey] !== b[bkey]) {
+      notMatchingKeys.add(bkey);
+    }
+  }
+
+  if (notMatchingKeys.size > 0) {
+    console.log(`Not equal: ${[...notMatchingKeys.keys()].join(", ")}`);
+  }
+
+  return notMatchingKeys.size === 0;
+}
+
+export const TurboVlc = React.memo(TurboVlc_, debugIsEqual);

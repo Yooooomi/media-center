@@ -59,6 +59,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   }
 
   private fun playMediaFromUri(uri: Uri) {
+    Log.i("yey", "Requested to play media from uri $uri")
     val media = Media(vlc, uri)
     media.setHWDecoderEnabled(this.hwDecode, this.forceHwDecode)
 
@@ -121,6 +122,9 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   }
 
   fun setPlay(playing: Boolean) {
+    if (!mediaPlayer.hasMedia() || mediaPlayer.isPlaying == playing) {
+      return
+    }
     if (playing) {
       mediaPlayer.play()
     } else {
@@ -144,6 +148,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     if (this.seek == 0.0 || !mediaPlayer.hasMedia()) {
       return
     }
+    Log.i("yey", "Seeking to ${this.seek.toLong()}")
     mediaPlayer.time = this.seek.toLong()
     this.seek = 0.0
   }
@@ -154,6 +159,11 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   }
 
   fun setUri(uri: String) {
+    val media = mediaPlayer.media
+    Log.i("yey", "${media?.uri.toString()} $uri")
+    if (media != null && media.uri.toString() == uri) {
+      return
+    }
     playMediaFromUri(Uri.parse(uri))
   }
 

@@ -28,15 +28,8 @@ target 'timotex' do
   config = use_native_modules!
   platform :ios, min_ios_version_supported
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    # Dependency: expo-update
-    :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
-    :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/../../.."
   )
@@ -61,14 +54,8 @@ target 'timotex-tvOS' do
   config = use_native_modules!
   platform :tvos, min_ios_version_supported
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    :hermes_enabled => flags[:hermes_enabled],
-    :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -88,5 +75,4 @@ post_install do |installer|
     config[:reactNativePath],
     :mac_catalyst_enabled => false
   )
-  __apply_Xcode_12_5_M1_post_install_workaround(installer)
 end

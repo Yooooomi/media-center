@@ -20,32 +20,6 @@ import {Controls} from './controls';
 
 const {width, height} = Dimensions.get('screen');
 
-const vlcArguments = [
-  '--vout=android-display',
-  // '--sout-mux-caching=200',
-  // '--file-caching=200',
-  // '--cdda-caching=200',
-  // '--http-caching=200',
-  // '--avcodec-threads=0',
-  // '--sout-x264-nf',
-  // '--no-avcodec-fast',
-  // '--http-reconnect',
-  // '--avcodec-skiploopfilter=0',
-  // '--avcodec-dr',
-  // '--avcodec-skip-frame=0',
-  // '--avcodec-skip-idct=0',
-  // '--no-audio-time-stretch',
-  // '--skip-frames',
-  // '--no-drop-late-frames',
-  // '--preferred-resolution=-1',
-  // '--clock-synchro=-1',
-  // '--clock-jitter=0',
-  // '--hdtv-fix',
-  // '--android-display-chroma=RV32',
-  // '--subsdec-encoding',
-  // '--stats',
-];
-
 export function Watch() {
   const {playlist, startingPlaylistIndex} = useParams<'Watch'>();
   const {dataset, progress, name} = playlist.items[startingPlaylistIndex]!;
@@ -99,6 +73,7 @@ export function Watch() {
 
   const onVideoInfo = useCallback(
     (event: NativeSyntheticEvent<VideoInfoEvent>) => {
+      console.log('Info');
       setVideoInfo(event.nativeEvent);
     },
     [],
@@ -130,6 +105,8 @@ export function Watch() {
     startingPlaylistIndex,
   );
 
+  console.log('Watch rendered');
+
   return (
     <>
       <View style={styles.background}>
@@ -144,7 +121,6 @@ export function Watch() {
         volume={100}
         hwDecode={!hierarchyItem.file.path.endsWith('.avi')}
         forceHwDecode={false}
-        arguments={vlcArguments}
         onProgress={onProgress}
         onVideoInfo={onVideoInfo}
         uri={videoUri}

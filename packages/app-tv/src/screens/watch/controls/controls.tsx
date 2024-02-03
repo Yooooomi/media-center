@@ -1,4 +1,4 @@
-import {StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
+import {Pressable, StyleSheet, View, ViewStyle} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Animated, {
   FadeIn,
@@ -35,9 +35,9 @@ interface ControlsProps {
   style?: ViewStyle;
 }
 
-const SHOW_DURATION_MS = 3000;
-const REWIND_MS = 10000;
-const FORWARD_MS = 30000;
+const SHOW_DURATION_MS = 3_000;
+const REWIND_MS = 10_000;
+const FORWARD_MS = 30_000;
 
 export const Controls = ({
   name,
@@ -54,7 +54,7 @@ export const Controls = ({
   videoInfo,
   progress,
 }: ControlsProps) => {
-  const showTimeout = useRef(0);
+  const showTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
   const currentCallback = useRef<(() => void) | undefined>(undefined);
   const [isShowing, show, hide] = useBooleanState(true);
   const [actionSheet, setActionSheet] = useState<'text' | 'audio' | undefined>(
@@ -93,7 +93,7 @@ export const Controls = ({
 
   useRemote({
     pan: () => console.log('PAN!'),
-    playPause: resetShow,
+    playPause: rollPlay,
     select: () => {
       resetShow();
       if (shouldShow) {
@@ -139,7 +139,12 @@ export const Controls = ({
             <Text>{name}</Text>
           </Box>
           <Box w="100%" ph="S32" row items="center" gap="S16">
-            <RealtimeText style={styles.progressText} value={progressString} />
+            <Box w={200}>
+              <RealtimeText
+                style={styles.progressText}
+                value={progressString}
+              />
+            </Box>
             <Box grow>
               <ProgressBar progress={progressValue} />
             </Box>
@@ -189,17 +194,17 @@ export const Controls = ({
         </Animated.View>
       )}
       {!shouldShow && (
-        <TouchableOpacity
+        <Pressable
           hasTVPreferredFocus
           style={styles.unusedTouchable}
           onPress={resetShow}>
           <Text>a</Text>
-        </TouchableOpacity>
+        </Pressable>
       )}
       <ControlsActionSheet
         open={actionSheet}
         onClose={() => setActionSheet(undefined)}
-        audioTracks={videoInfo.textTracks}
+        audioTracks={videoInfo.audioTracks}
         textTracks={videoInfo.textTracks}
         onAudioTrack={setAudioTrack}
         onTextTrack={setTextTrack}
@@ -216,7 +221,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -234,7 +238,9 @@ const styles = StyleSheet.create({
   },
   unusedTouchable: {
     position: 'absolute',
-    display: 'none',
+    backgroundColor: 'red',
+    top: -50,
+    left: -50,
   },
   progressText: {
     color: 'white',

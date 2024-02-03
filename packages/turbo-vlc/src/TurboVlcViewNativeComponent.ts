@@ -7,7 +7,10 @@ import type {
 } from "react-native/Libraries/Types/CodegenTypes";
 
 export interface VideoInfoEvent {
-  duration: Double;
+  currentVideoTrackId?: string;
+  currentAudioTrackId?: string;
+  currentTextTrackId?: string;
+
   audioTracks: {
     id: string;
     name: string;
@@ -19,7 +22,9 @@ export interface VideoInfoEvent {
   videoTracks: {
     id: string;
     name: string;
-  };
+  }[];
+
+  duration: Int32;
 }
 
 export interface Track {
@@ -28,8 +33,8 @@ export interface Track {
 }
 
 export interface ProgressEvent {
-  progress: Double;
-  duration: Double;
+  progress: Int32;
+  duration: Int32;
 }
 
 export interface BufferingEvent {
@@ -57,4 +62,4 @@ export interface NativeProps extends ViewProps {
   onBuffer?: DirectEventHandler<BufferingEvent>;
 }
 
-export default codegenNativeComponent<NativeProps>("TurboVlcView") as any;
+export default codegenNativeComponent<NativeProps>("TurboVlcView");

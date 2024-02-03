@@ -1,3 +1,6 @@
+ENV['RCT_NEW_ARCH_ENABLED'] = '1'
+ENV['NO_FLIPPER'] == "1"
+
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
 
@@ -22,26 +25,28 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-min_ios_version_supported = "13.0"
+min_ios_version_supported = "13.4"
 
-target 'timotex' do
-  config = use_native_modules!
-  platform :ios, min_ios_version_supported
+# target 'timotextv' do
+#   config = use_native_modules!
+#   platform :ios, min_ios_version_supported
 
-  use_react_native!(
-    :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/../../.."
-  )
+#   use_react_native!(
+#     :path => config[:reactNativePath],
+#     # An absolute path to your application root.
+#     :app_path => "#{Pod::Config.instance.installation_root}/../../.."
+#   )
 
-  target 'timotexTests' do
-    inherit! :complete
-    # Pods for testing
-  end
+#   target 'timotextvTests' do
+#     inherit! :complete
+#     # Pods for testing
+#   end
 
-end
+# end
 
-target 'timotex-tvOS' do
+target 'timotextv-tvOS' do
+  platform :tvos, min_ios_version_supported
+
   use_expo_modules!
   post_integrate do |installer|
     begin
@@ -52,7 +57,6 @@ target 'timotex-tvOS' do
   end
 
   config = use_native_modules!
-  platform :tvos, min_ios_version_supported
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -60,7 +64,7 @@ target 'timotex-tvOS' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'timotex-tvOSTests' do
+  target 'timotextv-tvOSTests' do
     inherit! :complete
     # Pods for testing
   end

@@ -45,6 +45,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   init {
     setBackgroundColor(Color.parseColor("#000000"))
     surfaceView = SurfaceView(context)
+    surfaceView.setSecure(false)
     this.addView(surfaceView)
 
     vlc = LibVLC(context)
@@ -77,12 +78,25 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
         return@setEventListener
       }
 
-      val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
+      val eventDispatcher =
+        UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
       val surfaceId = UIManagerHelper.getSurfaceId(context as ReactContext)
 
       val media = mediaPlayer.media
       if (media != null) {
-        eventDispatcher?.dispatchEvent(VideoInfoEvent(surfaceId, id, media.duration.toDouble(), media.getTracks(Track.Type.Video), media.getTracks(Track.Type.Audio), media.getTracks(Track.Type.Text)))
+        eventDispatcher?.dispatchEvent(
+          VideoInfoEvent(
+            surfaceId,
+            id,
+            media.duration.toDouble(),
+            mediaPlayer.getSelectedTrack(Track.Type.Video)?.id ?: null,
+            mediaPlayer.getSelectedTrack(Track.Type.Audio)?.id ?: null,
+            mediaPlayer.getSelectedTrack(Track.Type.Text)?.id ?: null,
+            media.getTracks(Track.Type.Video) ?: arrayOf(),
+            media.getTracks(Track.Type.Audio) ?: arrayOf(),
+            media.getTracks(Track.Type.Text) ?: arrayOf(),
+          )
+        )
       }
 
       val ratio = track.width.toFloat() / track.height.toFloat()
@@ -220,6 +234,9 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     surfaceId: Int,
     viewId: Int,
     private val duration: Double,
+    private val currentVideoTrackId: String?,
+    private val currentAudioTrackId: String?,
+    private val currentTextTrackId: String?,
     private val videoTracks: Array<Track>,
     private val audioTracks: Array<Track>,
     private val textTracks: Array<Track>
@@ -240,7 +257,8 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
           this.pushMap(Arguments.createMap().apply {
             this.putString("id", it.id)
             this.putString("name", it.description)
-          }) }
+          })
+        }
       }
     }
 
@@ -251,6 +269,10 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
       map.putArray("audioTracks", this.getTrackArray(this.audioTracks))
       map.putArray("videoTracks", this.getTrackArray(this.videoTracks))
       map.putArray("textTracks", this.getTrackArray(this.textTracks))
+
+      map.putString("currentVideoTrackId", this.currentVideoTrackId)
+      map.putString("currentAudioTrackId", this.currentAudioTrackId)
+      map.putString("currentTextTrackId", this.currentTextTrackId)
 
       return map
     }
@@ -280,19 +302,35 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   private fun initEvents() {
     mediaPlayer.setEventListener { event ->
       if (event.type == MediaPlayer.Event.TimeChanged) {
-        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
+        val eventDispatcher =
+          UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
         val surfaceId = UIManagerHelper.getSurfaceId(context as ReactContext)
-        eventDispatcher?.dispatchEvent(ProgressEvent(surfaceId, id, mediaPlayer.time.toDouble(), mediaPlayer.length.toDouble()))
+        eventDispatcher?.dispatchEvent(
+          ProgressEvent(
+            surfaceId,
+            id,
+            mediaPlayer.time.toDouble(),
+            mediaPlayer.length.toDouble()
+          )
+        )
       }
       if (event.type == MediaPlayer.Event.EncounteredError) {
-        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
+        val eventDispatcher =
+          UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
         val surfaceId = UIManagerHelper.getSurfaceId(context as ReactContext)
         eventDispatcher?.dispatchEvent(ErrorEvent(surfaceId, id))
       }
       if (event.type == MediaPlayer.Event.Buffering) {
-        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
+        val eventDispatcher =
+          UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
         val surfaceId = UIManagerHelper.getSurfaceId(context as ReactContext)
-        eventDispatcher?.dispatchEvent(BufferingEvent(surfaceId, id, event.buffering.toDouble()))
+        eventDispatcher?.dispatchEvent(
+          BufferingEvent(
+            surfaceId,
+            id,
+            event.buffering.toDouble()
+          )
+        )
       }
     }
   }
@@ -301,13 +339,23 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     super.requestLayout()
 
     post {
-      measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
+      measure(
+        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+      )
       layout(left, top, right, bottom)
     }
   }
 
-  override fun onNewVideoLayout(vlcVout: IVLCVout, width: Int, height: Int, visibleWidth: Int, visibleHeight: Int, sarNum: Int, sarDen: Int) {
+  override fun onNewVideoLayout(
+    vlcVout: IVLCVout,
+    width: Int,
+    height: Int,
+    visibleWidth: Int,
+    visibleHeight: Int,
+    sarNum: Int,
+    sarDen: Int
+  ) {
   }
 }
 

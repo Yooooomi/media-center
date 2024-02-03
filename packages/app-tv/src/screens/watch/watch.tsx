@@ -73,7 +73,6 @@ export function Watch() {
 
   const onVideoInfo = useCallback(
     (event: NativeSyntheticEvent<VideoInfoEvent>) => {
-      console.log('Info');
       setVideoInfo(event.nativeEvent);
     },
     [],
@@ -105,14 +104,13 @@ export function Watch() {
     startingPlaylistIndex,
   );
 
-  console.log('Watch rendered');
-
   return (
     <>
       <View style={styles.background}>
         {!videoInfo && <FullScreenLoading />}
       </View>
       <TurboVlc
+        uri={videoUri}
         audioTrack={audioTrack}
         textTrack={textTrack}
         seek={seek}
@@ -123,7 +121,6 @@ export function Watch() {
         forceHwDecode={false}
         onProgress={onProgress}
         onVideoInfo={onVideoInfo}
-        uri={videoUri}
         onError={onError}
       />
       {videoInfo && (
@@ -157,6 +154,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 140,
     bottom: 0,
+    zIndex: 1,
     borderBottomColor: '#00000001',
     borderBottomWidth: 1,
   },

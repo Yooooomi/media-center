@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-turbo-vlc": ["./src/index"]
+      "@media-center/turbo-vlc": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

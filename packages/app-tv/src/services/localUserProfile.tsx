@@ -96,6 +96,7 @@ export function LocalUserContextProvider({
       const declaredStoredUser = serverUsers.find(u => u === storedUser?.user);
       storedUser.setUser(declaredStoredUser);
     } catch (e) {
+      console.log(e);
       hide();
       setError(e as Error);
     }

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import type { NativeMethods } from "react-native";
+import React, { type FC, type ReactNode } from "react";
+import type { StyleProp, ViewProps, ViewStyle } from "react-native";
 import TurboVlcViewNativeComponent, {
   type NativeProps,
   type BufferingEvent,
@@ -9,6 +9,10 @@ import TurboVlcViewNativeComponent, {
 } from "./TurboVlcViewNativeComponent";
 
 export type { BufferingEvent, ProgressEvent, VideoInfoEvent, Track };
+
+type VisibleProps = Omit<NativeProps, keyof ViewProps> & {
+  style?: StyleProp<ViewStyle>;
+};
 
 function TurboVlc_({
   uri,
@@ -25,22 +29,11 @@ function TurboVlc_({
   onVideoInfo,
   onError,
   onBuffer,
-}: NativeProps) {
-  const ref = React.useRef<
-    React.Component<NativeProps, {}, any> & Readonly<NativeMethods>
-  >(null);
-
-  console.log("Rendered vlc js");
-
-  // useEffect(() => {
-  //   ref.current?.setNativeProps({ uri });
-  // }, [uri]);
-
+}: VisibleProps): ReactNode {
   return (
     <TurboVlcViewNativeComponent
       style={style}
       uri={uri}
-      ref={ref}
       play={play}
       seek={seek}
       volume={volume}
@@ -57,25 +50,4 @@ function TurboVlc_({
   );
 }
 
-function debugIsEqual(a: any, b: any) {
-  const notMatchingKeys = new Set<string>();
-
-  for (const akey of Object.keys(a)) {
-    if (a[akey] !== b[akey]) {
-      notMatchingKeys.add(akey);
-    }
-  }
-  for (const bkey of Object.keys(b)) {
-    if (a[bkey] !== b[bkey]) {
-      notMatchingKeys.add(bkey);
-    }
-  }
-
-  if (notMatchingKeys.size > 0) {
-    console.log(`Not equal: ${[...notMatchingKeys.keys()].join(", ")}`);
-  }
-
-  return notMatchingKeys.size === 0;
-}
-
-export const TurboVlc = React.memo(TurboVlc_, debugIsEqual);
+export const TurboVlc = React.memo(TurboVlc_ as any) as FC<VisibleProps>;

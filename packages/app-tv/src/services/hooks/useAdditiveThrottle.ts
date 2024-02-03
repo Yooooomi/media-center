@@ -6,7 +6,7 @@ export function useAdditiveThrottle<T>(
   onThrottled: (value: T) => void,
   dontResetValue?: boolean,
 ) {
-  const timeoutRef = useRef<number | undefined>(undefined);
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const [value, setValue] = useState<T>(defaultValue);
   const valueRef = useRef(value);
   valueRef.current = value;

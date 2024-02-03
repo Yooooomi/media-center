@@ -20,8 +20,6 @@ export function streamVideo(
   const total = fs.statSync(filepath).size;
   const { range } = request.headers;
 
-  console.log("Asking for range", range);
-
   if (!range) {
     console.log("Didnt find range");
     return response.status(400).end();

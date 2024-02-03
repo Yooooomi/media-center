@@ -1,7 +1,6 @@
 {
   "settings": {
-    "search.useParentIgnoreFiles": true,
-    "explorer.excludeGitIgnore": true,
+    "search.useParentIgnoreFiles": true
   },
   "folders": [
     {

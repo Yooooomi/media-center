@@ -52,7 +52,6 @@ export function bootApi(
   app.get("/health", (_, res) => res.status(204).end());
 
   app.get("/video/:hierarchyItemId", async (req, res) => {
-    console.log("YOWW");
     const hierarchyItemId = req.params.hierarchyItemId;
     const item = await hierarchyItemStore.load(
       HierarchyItemId.from(hierarchyItemId)
@@ -61,12 +60,6 @@ export function bootApi(
       console.log("Didnt find item", hierarchyItemId);
       return res.status(404).end();
     }
-
-    // const paths = {
-    //   mp4: "/Users/timothee/perso/media-center/aaa/films/Avatar (2009) Hybrid MULTi VFI 2160p 10bit 4KLight DV HDR10Plus BluRay DDP 5.1 Atmos x265-QTZ.mp4",
-    //   avi: "/Users/timothee/perso/media-center/aaa/films/Sorry.to.Bother.You.2018.FRENCH.BDRip.XviD-EXTREME.avi",
-    //   mkv: "/Users/timothee/perso/media-center/aaa/films/Skyfall (2012) MULTI VFF 2160p 10bit 4KLight HDR BluRay x265 AAC 5.1-QTZ .mkv",
-    // };
     return streamVideo(req, res, item.file.path, logger);
   });
 

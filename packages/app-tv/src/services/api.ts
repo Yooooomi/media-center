@@ -57,12 +57,18 @@ export class Bridge {
     const {data} = await this.axios.request({
       url: path,
       method,
-      params: {
-        needing: JSON.stringify(serialized),
-      },
-      data: {
-        needing: serialized,
-      },
+      params:
+        method === 'GET'
+          ? {
+              needing: JSON.stringify(serialized),
+            }
+          : undefined,
+      data:
+        method === 'POST'
+          ? {
+              needing: serialized,
+            }
+          : undefined,
     });
     const deserialized = (
       query.constructor as BaseIntentConstructor<any>

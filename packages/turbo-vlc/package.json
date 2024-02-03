@@ -7,6 +7,9 @@
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
+  "author": "Timothee Boussus",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/Yooooomi",
   "files": [
     "src",
     "lib",

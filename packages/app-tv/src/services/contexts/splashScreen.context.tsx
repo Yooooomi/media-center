@@ -8,8 +8,8 @@ import React, {
   useState,
 } from 'react';
 import {StyleSheet} from 'react-native';
-import Bootsplash from 'react-native-bootsplash';
 import Animated, {FadeOut} from 'react-native-reanimated';
+import * as SplashScreen from 'expo-splash-screen';
 import animation from '../../assets/timotex.lottie.json';
 import {color} from '../constants';
 
@@ -29,7 +29,7 @@ export function SplashScreenContextProvider({
   const requestedHide = useRef(false);
 
   useEffect(() => {
-    Bootsplash.hide({fade: false});
+    SplashScreen.hideAsync();
   }, []);
 
   const context = useMemo(

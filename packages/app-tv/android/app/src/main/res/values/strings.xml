@@ -1,5 +1,4 @@
 <resources>
-  <string name="app_name">Timotex</string>
+  <string name="app_name">\@media-center/app-tv</string>
   <string name="expo_runtime_version">1.0.0</string>
-  <color name="background">#222222</color>
 </resources>

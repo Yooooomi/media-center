@@ -1,5 +1,16 @@
 {
+  "name": "Timotex",
+  "displayName": "Timotex",
   "expo": {
+    "plugins": [
+      [
+        "@react-native-tvos/config-tv",
+        {
+          "showVerboseWarnings": true,
+          "isTV": true
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d"
@@ -15,7 +26,11 @@
         "expo-channel-name": "master"
       }
     },
-    "android": {},
-    "ios": {}
+    "android": {
+      "package": "com.yooooomi.timotextv"
+    },
+    "ios": {
+      "bundleIdentifier": "com.yooooomi.timotextv"
+    }
   }
 }

@@ -1,5 +1,5 @@
 const path = require('path');
-const {mergeConfig, getDefaultConfig} = require('@react-native/metro-config');
+const {getDefaultConfig} = require('expo/metro-config');
 
 // Find the project and workspace directories
 const projectRoot = __dirname;
@@ -7,34 +7,30 @@ const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
 
 /** @type {import('expo/metro-config').MetroConfig} */
-const config = {
-  // 1. Watch all files within the monorepo
-  watchFolders: [workspaceRoot],
+const config = getDefaultConfig(projectRoot);
 
-  // 2. Let Metro know where to resolve packages and in what order
-  resolver: {
-    nodeModulesPaths: [
-      path.resolve(projectRoot, 'node_modules'),
-      path.resolve(workspaceRoot, 'node_modules'),
-    ],
-    disableHierarchicalLookup: true,
-    resolveRequest: (context, moduleName, platform) => {
-      if (moduleName === 'path' || moduleName === 'fs') {
-        return {type: 'empty'};
-      }
-      return context.resolveRequest(context, moduleName, platform);
-    },
-  },
-
-  // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: true,
-        inlineRequires: true,
-      },
-    }),
-  },
+// 1. Watch all files within the monorepo
+config.watchFolders = [workspaceRoot];
+// 2. Let Metro know where to resolve packages and in what order
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
+];
+const oldResolver = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // if (moduleName === './.expo/.virtual-metro-entry') {
+  //   return {
+  //     filePath: path.join(projectRoot, 'index.js'),
+  //     type: 'sourceFile',
+  //   };
+  // }
+  if (moduleName === 'path' || moduleName === 'fs') {
+    return {type: 'empty'};
+  }
+  if (oldResolver) {
+    return oldResolver(context, moduleName, platform);
+  }
+  return context.resolveRequest(context, moduleName, platform);
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = config;

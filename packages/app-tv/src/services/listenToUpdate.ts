@@ -48,14 +48,14 @@ export function useListenToUpdate() {
       onFetchUpdateAsync().catch(console.error);
     }
     setupUpdates().catch(console.log);
-    // const subscription = AppState.addEventListener('focus', state => {
-    //   console.log('State', state);
-    //   if (ignoreNext) {
-    //     ignoreNext = false;
-    //     return;
-    //   }
-    //   onFetchUpdateAsync().catch(console.error);
-    // });
-    // return subscription.remove;
+    const subscription = AppState.addEventListener('focus', state => {
+      console.log('State', state);
+      if (ignoreNext) {
+        ignoreNext = false;
+        return;
+      }
+      onFetchUpdateAsync().catch(console.error);
+    });
+    return subscription.remove;
   }, []);
 }

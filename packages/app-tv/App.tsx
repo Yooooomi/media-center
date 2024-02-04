@@ -1,9 +1,12 @@
 import {Platform, StyleSheet, View} from 'react-native';
 import {useMemo} from 'react';
+import * as SplashScreen from 'expo-splash-screen';
 import {Navigation} from './src/screens';
 import {color} from './src/services/constants';
 import {useListenToUpdate} from './src/services/listenToUpdate';
 import {SplashScreenContextProvider} from './src/services/contexts/splashScreen.context';
+
+SplashScreen.preventAutoHideAsync();
 
 const fonts = Platform.select<Record<string, string>>({
   default: {

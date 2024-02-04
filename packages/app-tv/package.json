@@ -2,15 +2,15 @@
   "name": "@media-center/app-tv",
   "version": "0.0.1",
   "private": true,
+  "main": "index.js",
   "scripts": {
-    "android": "react-native run-android --no-packager --appIdSuffix .debug",
-    "android:clean": "cd android && ./gradlew clean ; cd -",
-    "android:release": "react-native run-android --mode Release --no-packager",
-    "android:bundle": "react-native bundle --platform android --dev true --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug ; cd -",
-    "ios": "react-native run-ios --no-packager",
-    "tvos": "react-native run-ios --scheme timotextv-tvOS --no-packager --simulator \"Apple TV\"",
+    "android": "EXPO_TV=1 expo run:android --no-bundler",
+    "android:clean": "EXPO_TV=1 cd android && ./gradlew clean ; cd -",
+    "android:release": "EXPO_TV=1 expo run:android --variant release",
+    "ios": "expo run:ios",
+    "start": "expo start -d --lan",
+    "tvos": "expo run:ios --scheme PristineExpoTV-tvOS --device \"Apple TV\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "start": "react-native start",
     "test": "jest",
     "update": "eas update",
     "typecheck": "tsc --build",
@@ -25,15 +25,17 @@
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-masked-view/masked-view": "0.3.0",
+    "@react-native-tvos/config-tv": "^0.0.4",
     "axios": "^1.5.0",
     "eas-cli": "^5.9.1",
     "expo": "^50.0.4",
+    "expo-asset": "~9.0.2",
+    "expo-splash-screen": "~0.26.4",
     "expo-updates": "~0.24.8",
     "lottie-react-native": "^6.5.1",
     "pretty-format": "^26.5.2",
     "react": "18.2.0",
     "react-native": "npm:react-native-tvos@0.73.2-0",
-    "react-native-bootsplash": "^5.2.2",
     "react-native-linear-gradient": "^2.8.2",
     "react-native-reanimated": "^3.6.1",
     "react-native-sse": "^1.2.0",
@@ -60,5 +62,12 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native"
+      ]
+    }
   }
 }

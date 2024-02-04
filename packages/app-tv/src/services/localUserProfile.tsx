@@ -106,8 +106,8 @@ export function LocalUserContextProvider({
     async function callInit() {
       await init();
       if (__DEV__) {
-        reactive.call('setServerAddress', 'http://192.168.1.153:8080');
-        reactive.call('setServerPassword', 'somerandompassword');
+        // reactive.call('setServerAddress', 'http://192.168.1.153:8080');
+        // reactive.call('setServerPassword', 'somerandompassword');
         if (!reactive.instance) {
           return;
         }

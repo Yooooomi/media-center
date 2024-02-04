@@ -76,10 +76,9 @@ class TurboVlcViewManager : SimpleViewManager<TurboVlcView>(),
     view?.setPlay(value)
   }
 
-  @ReactProp(name = "seek")
-  override fun setSeek(view: TurboVlcView?, value: Double) {
+  override fun seek(view: TurboVlcView?, ms: Double) {
     Log.i("yey", "setSeek")
-    view?.setSeek(value)
+    view?.setSeek(ms);
   }
 
   @ReactProp(name = "volume")

@@ -5,7 +5,12 @@ import {
   NativeSyntheticEvent,
   View,
 } from 'react-native';
-import {TurboVlc, ProgressEvent, VideoInfoEvent} from '@media-center/turbo-vlc';
+import {
+  TurboVlc,
+  ProgressEvent,
+  VideoInfoEvent,
+  TurboVlcHandle,
+} from '@media-center/turbo-vlc';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
 import {ShowCatalogEntryDatasetFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
@@ -33,6 +38,7 @@ export function Watch() {
   const [audioTrack, setAudioTrack] = useState<string | undefined>(undefined);
   const [textTrack, setTextTrack] = useState<string | undefined>(undefined);
   const {goBack} = useNavigate();
+  const vlcRef = useRef<TurboVlcHandle>(null);
 
   const season =
     dataset instanceof ShowCatalogEntryDatasetFulfilled
@@ -46,10 +52,10 @@ export function Watch() {
   const [playing, rollPlaying] = useToggle(true);
 
   useEffect(() => {
-    if (!videoInfo) {
+    if (!videoInfo || progress === 0) {
       return;
     }
-    setSeek(videoInfo.duration * progress);
+    vlcRef.current?.seek(videoInfo.duration * progress);
   }, [progress, videoInfo]);
 
   const onError = useCallback(() => {
@@ -60,8 +66,6 @@ export function Watch() {
       {cancelable: false},
     );
   }, [goBack]);
-
-  const [seek, setSeek] = useState(0);
 
   const onProgress = useCallback(
     (event: NativeSyntheticEvent<ProgressEvent>) => {
@@ -86,7 +90,7 @@ export function Watch() {
 
       let nextPosition = currentProgress.current.progress + added;
       currentProgressMs.value = nextPosition;
-      setSeek(nextPosition);
+      vlcRef.current?.seek(nextPosition);
     },
     [currentProgressMs],
   );
@@ -110,10 +114,10 @@ export function Watch() {
         {!videoInfo && <FullScreenLoading />}
       </View>
       <TurboVlc
+        ref={vlcRef}
         uri={videoUri}
         audioTrack={audioTrack}
         textTrack={textTrack}
-        seek={seek}
         play={playing}
         style={styles.video}
         volume={100}
@@ -155,8 +159,6 @@ const styles = StyleSheet.create({
     height: 140,
     bottom: 0,
     zIndex: 1,
-    borderBottomColor: '#00000001',
-    borderBottomWidth: 1,
   },
   background: {
     ...StyleSheet.absoluteFillObject,

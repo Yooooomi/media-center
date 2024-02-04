@@ -139,7 +139,7 @@ export const Controls = ({
             <Text>{name}</Text>
           </Box>
           <Box w="100%" ph="S32" row items="center" gap="S16">
-            <Box w={200}>
+            <Box>
               <RealtimeText
                 style={styles.progressText}
                 value={progressString}
@@ -172,14 +172,24 @@ export const Controls = ({
                 onPress={onPrevious}
                 icon="skip-backward"
               />
-              <IconButton size={24} onPress={rewind} icon="rewind" />
+              <IconButton
+                size={24}
+                onPress={rewind}
+                onLongPress={rewind}
+                icon="rewind"
+              />
               <IconButton
                 size={24}
                 focusOnMount
                 onPress={rollPlay}
                 icon={isPlaying ? 'pause' : 'play'}
               />
-              <IconButton size={24} onPress={fastForward} icon="fast-forward" />
+              <IconButton
+                size={24}
+                onPress={fastForward}
+                onLongPress={fastForward}
+                icon="fast-forward"
+              />
               <IconButton
                 size={24}
                 disabled={!nextAllowed}

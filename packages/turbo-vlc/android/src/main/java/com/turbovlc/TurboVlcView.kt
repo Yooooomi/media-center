@@ -40,7 +40,6 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   private var arguments = ArrayList<String>()
   private var hwDecode = true
   private var forceHwDecode = false
-  private var seek = 0.0
 
   init {
     setBackgroundColor(Color.parseColor("#000000"))
@@ -60,7 +59,6 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
   }
 
   private fun playMediaFromUri(uri: Uri) {
-    Log.i("yey", "Requested to play media from uri $uri")
     val media = Media(vlc, uri)
     media.setHWDecoderEnabled(this.hwDecode, this.forceHwDecode)
 
@@ -119,8 +117,6 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
       requestLayout()
     }
     mediaPlayer.play()
-
-    this.seekIfNeeded()
   }
 
   fun setAudioTrack(id: String) {
@@ -158,23 +154,16 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     mediaPlayer.volume = volume
   }
 
-  private fun seekIfNeeded() {
-    if (this.seek == 0.0 || !mediaPlayer.hasMedia()) {
+  fun setSeek(position: Double) {
+    Log.i("yey", "Seeking to $position")
+    if (!mediaPlayer.hasMedia()) {
       return
     }
-    Log.i("yey", "Seeking to ${this.seek.toLong()}")
-    mediaPlayer.time = this.seek.toLong()
-    this.seek = 0.0
-  }
-
-  fun setSeek(position: Double) {
-    this.seek = position
-    this.seekIfNeeded()
+    mediaPlayer.time = position.toLong()
   }
 
   fun setUri(uri: String) {
     val media = mediaPlayer.media
-    Log.i("yey", "${media?.uri.toString()} $uri")
     if (media != null && media.uri.toString() == uri) {
       return
     }
@@ -355,7 +344,6 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     visibleHeight: Int,
     sarNum: Int,
     sarDen: Int
-  ) {
-  }
+  ) {}
 }
 

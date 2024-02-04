@@ -1,10 +1,12 @@
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
-import type { ViewProps } from "react-native";
+import type { HostComponent, ViewProps } from "react-native";
 import type {
   Int32,
   Double,
   DirectEventHandler,
 } from "react-native/Libraries/Types/CodegenTypes";
+import codegenNativeCommands from "react-native/Libraries/Utilities/codegenNativeCommands";
+import type React from "react";
 
 export interface VideoInfoEvent {
   currentVideoTrackId?: string;
@@ -44,7 +46,6 @@ export interface BufferingEvent {
 export interface NativeProps extends ViewProps {
   uri: string;
   play?: boolean;
-  seek?: Double;
   volume: Int32;
 
   audioTrack?: string;
@@ -61,5 +62,15 @@ export interface NativeProps extends ViewProps {
   onError?: DirectEventHandler<{}>;
   onBuffer?: DirectEventHandler<BufferingEvent>;
 }
+
+export type NativeViewType = HostComponent<NativeProps>;
+
+interface NativeCommands {
+  seek: (ref: React.ElementRef<NativeViewType>, ms: Double) => void;
+}
+
+export const Commands = codegenNativeCommands<NativeCommands>({
+  supportedCommands: ["seek"],
+});
 
 export default codegenNativeComponent<NativeProps>("TurboVlcView");

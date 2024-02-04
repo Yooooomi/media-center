@@ -1,16 +1,18 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { TurboVlc } from "@media-center/turbo-vlc";
+import React, { useRef } from "react";
+import { View } from "react-native";
+import { TurboVlc, type TurboVlcHandle } from "@media-center/turbo-vlc";
 
 export default function App() {
+  const ref = useRef<TurboVlcHandle>(null);
+
   return (
     <View style={{ flexGrow: 1, borderWidth: 2, borderColor: "red" }}>
       <TurboVlc
+        ref={ref}
         play
         arguments={[]}
         hwDecode
         forceHwDecode={false}
-        seek={60_000}
         style={{ flexGrow: 1, backgroundColor: "red" }}
         uri="http://192.168.1.153:8080/video/d1f44733-ade9-4076-ab06-42512d4ddcf4"
         volume={100}
@@ -28,9 +30,3 @@ export default function App() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-  },
-});

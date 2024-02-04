@@ -1,11 +1,23 @@
-import React, {MutableRefObject, ReactNode, useCallback, useState} from 'react';
-import {Pressable as RNPressable, View, ViewStyle} from 'react-native';
+import React, {
+  MutableRefObject,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
+import {
+  Pressable as RNPressable,
+  View,
+  ViewStyle,
+  useTVEventHandler,
+} from 'react-native';
 
 interface PressableProps {
   style?: ViewStyle;
   disabled?: boolean;
   children: ReactNode | ((infos: {focused: boolean}) => ReactNode);
   onPress: () => void;
+  onLongPress?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
   focusOnMount?: boolean;
@@ -51,6 +63,7 @@ export const Pressable = React.forwardRef<View, PressableProps>(
       right,
       up,
       disabled,
+      onLongPress,
     },
     ref,
   ) => {
@@ -77,6 +90,22 @@ export const Pressable = React.forwardRef<View, PressableProps>(
       return focuses[n];
     }, []);
 
+    const calledOnLongPress = useRef(false);
+    useTVEventHandler(event => {
+      if (focused && event.eventType === 'longSelect' && onLongPress) {
+        console.log('On long press', event);
+        calledOnLongPress.current = true;
+        onLongPress();
+      }
+    });
+
+    const handleOnPress = useCallback(() => {
+      if (!calledOnLongPress.current) {
+        onPress();
+      }
+      calledOnLongPress.current = false;
+    }, [onPress]);
+
     return (
       <RNPressable
         accessible={!disabled}
@@ -94,7 +123,7 @@ export const Pressable = React.forwardRef<View, PressableProps>(
           setFocused(false);
           onBlur?.();
         }}
-        onPress={onPress}
+        onPress={handleOnPress}
         nextFocusDown={name && down ? getHandleFromName(down(name)) : undefined}
         nextFocusUp={name && up ? getHandleFromName(up(name)) : undefined}
         nextFocusLeft={name && left ? getHandleFromName(left(name)) : undefined}

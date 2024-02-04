@@ -114,8 +114,8 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   }
   
   @objc
-  public func setSeek(seek: Int32) {
-    self.mediaPlayer.time = VLCTime(int: seek)
+  public func setSeek(seek: Double) {
+    self.mediaPlayer.time = VLCTime(int: Int32(seek))
   }
   
   @objc

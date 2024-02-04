@@ -7,6 +7,7 @@ import {Pressable} from './pressable';
 interface IconButtonProps {
   icon: IconName;
   onPress: () => void;
+  onLongPress?: () => void;
   focusOnMount?: boolean;
   disabled?: boolean;
   loading?: boolean;
@@ -16,6 +17,7 @@ interface IconButtonProps {
 export function IconButton({
   icon,
   onPress,
+  onLongPress,
   focusOnMount,
   disabled,
   loading,
@@ -25,6 +27,7 @@ export function IconButton({
     <Pressable
       disabled={disabled}
       onPress={onPress}
+      onLongPress={onLongPress}
       focusOnMount={focusOnMount}>
       {({focused}) => (
         <Box

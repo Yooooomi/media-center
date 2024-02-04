@@ -109,6 +109,11 @@ using namespace facebook::react;
   [super updateProps:props oldProps:oldProps];
 }
 
+- (void)seek:(const double)ms
+{
+  [_view setSeekWithSeek:ms];
+}
+
 Class<RCTComponentViewProtocol> TurboVlcViewCls(void)
 {
   return TurboVlcView.class;

@@ -51,7 +51,7 @@ public class VlcView extends FrameLayout implements IVLCVout.OnNewVideoLayoutLis
   }
 
   private void playMediaFromUri(Uri uri) {
-    Media media = new Media(vlc, Uri.parse("http://192.168.1.153:8080/video/d1f44733-ade9-4076-ab06-42512d4ddcf4"));
+    Media media = new Media(vlc, uri);
     media.setHWDecoderEnabled(true, false);
 
     mediaPlayer.setMedia(media);

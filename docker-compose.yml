@@ -28,6 +28,8 @@ services:
       DELUGE_SHOW_LOCATION: /disk/series
 
       FLARESOLVERR_ENDPOINT: http://flaresolverr:8191
+      FLARESOLVERR_SESSION_TIMEOUT_S: 600
+
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr

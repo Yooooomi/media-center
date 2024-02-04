@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { DomainError } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "../../domains/environment/applicative/environmentHelper";
 import { SafeRequest } from "./safeRequest";
 
@@ -27,19 +28,43 @@ export interface FlareSolverResponse {
   version: string;
 }
 
+class InvalidSessionTimeoutError extends DomainError {
+  constructor(providedString: string) {
+    super(
+      `Invalid session timeout provided for flaresolverr: ${providedString} (minimum: ${SolverSafeRequest.MINIMUM_SESSION_DURATION_S})`
+    );
+  }
+}
+
 export class SolverSafeRequest extends SafeRequest {
   private endpoint: string;
 
   constructor(environmentHelper: EnvironmentHelper) {
     super();
     this.endpoint = `${environmentHelper.get("FLARESOLVERR_ENDPOINT")}/v1`;
+    const sessionTimeoutString = environmentHelper.get(
+      "FLARESOLVERR_SESSION_TIMEOUT_S"
+    );
+    this.sessionTimeoutS = Number.parseInt(sessionTimeoutString);
+    if (
+      Number.isNaN(this.sessionTimeoutS) ||
+      this.sessionTimeoutS <= SolverSafeRequest.MINIMUM_SESSION_DURATION_S
+    ) {
+      throw new InvalidSessionTimeoutError(sessionTimeoutString);
+    }
   }
 
   private inited = false;
+  private timeout: NodeJS.Timeout | null = null;
+  private sessionTimeoutS: number;
 
+  static MINIMUM_SESSION_DURATION_S = 30;
   static SESSION_NAME = "media-center";
 
   async init() {
+    if (this.timeout !== null) {
+      clearTimeout(this.timeout);
+    }
     if (!this.inited) {
       await Axios.post(this.endpoint, {
         cmd: "sessions.create",
@@ -47,6 +72,18 @@ export class SolverSafeRequest extends SafeRequest {
       });
       this.inited = true;
     }
+    this.timeout = setTimeout(
+      this.destroySession.bind(this),
+      this.sessionTimeoutS * 1000
+    );
+  }
+
+  private async destroySession() {
+    this.inited = false;
+    await Axios.post(this.endpoint, {
+      cmd: "sessions.destroy",
+      session: SolverSafeRequest.SESSION_NAME,
+    });
   }
 
   async get(url: string) {

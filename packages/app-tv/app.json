@@ -2,6 +2,30 @@
   "name": "Timotex",
   "displayName": "Timotex",
   "expo": {
+    "owner": "yooooomi",
+    "slug": "timotex-tv",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/icons/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#222222"
+    },
+    "android": {
+      "package": "com.yooooomi.timotextv",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#222222"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.yooooomi.timotextv",
+      "supportsTablet": true,
+      "splash": {
+        "image": "./assets/icons/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#222222"
+      }
+    },
     "plugins": [
       [
         "@react-native-tvos/config-tv",
@@ -16,8 +40,6 @@
         "projectId": "ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d"
       }
     },
-    "owner": "yooooomi",
-    "slug": "timotex-tv",
     "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d",
@@ -25,12 +47,6 @@
         "expo-runtime-version": "1.0.0",
         "expo-channel-name": "master"
       }
-    },
-    "android": {
-      "package": "com.yooooomi.timotextv"
-    },
-    "ios": {
-      "bundleIdentifier": "com.yooooomi.timotextv"
     }
   }
 }

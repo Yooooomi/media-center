@@ -29,8 +29,9 @@ export function ControlsActionSheet({
         <FlatList
           keyExtractor={item => item.id.toString()}
           data={textTracks}
-          renderItem={({item}) => (
+          renderItem={({item, index}) => (
             <LineButton
+              focusOnMount={index === 0}
               onPress={() => {
                 onTextTrack(item.id);
                 onClose();
@@ -47,8 +48,9 @@ export function ControlsActionSheet({
         <FlatList
           keyExtractor={item => item.id.toString()}
           data={audioTracks}
-          renderItem={({item}) => (
+          renderItem={({item, index}) => (
             <LineButton
+              focusOnMount={index === 0}
               onPress={() => {
                 onAudioTrack(item.id);
                 onClose();

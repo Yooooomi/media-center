@@ -1,7 +1,7 @@
-import MaskedView from '@react-native-masked-view/masked-view';
 import {View, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {RateLimitedImage} from '../ui/display/rateLimitedImage';
+import {color} from '../../services/constants';
 
 interface PageBackgroundProps {
   imageUri: string | undefined;
@@ -10,24 +10,19 @@ interface PageBackgroundProps {
 export function PageBackground({imageUri}: PageBackgroundProps) {
   return (
     <View style={StyleSheet.absoluteFill}>
-      <MaskedView
-        style={styles.cover}
-        maskElement={
-          <LinearGradient
-            colors={['white', 'white', 'transparent']}
-            style={StyleSheet.absoluteFill}
-            locations={[0, 0.7, 0.95]}
-          />
-        }>
-        <>
-          <RateLimitedImage
-            uri={imageUri}
-            style={styles.cover}
-            resizeMode="cover"
-          />
-          <View style={styles.blackOverlay} />
-        </>
-      </MaskedView>
+      <View style={styles.cover}>
+        <RateLimitedImage
+          uri={imageUri}
+          style={styles.cover}
+          resizeMode="cover"
+        />
+        <View style={styles.blackOverlay} />
+        <LinearGradient
+          colors={['transparent', 'transparent', color.background]}
+          style={StyleSheet.absoluteFill}
+          locations={[0, 0.7, 0.95]}
+        />
+      </View>
     </View>
   );
 }

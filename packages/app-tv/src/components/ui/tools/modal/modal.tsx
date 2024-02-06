@@ -1,9 +1,11 @@
 import {ReactNode, useCallback} from 'react';
-import {View, StyleSheet, Modal as RNModal} from 'react-native';
+import {View, StyleSheet, TVFocusGuideView} from 'react-native';
 import {color, opacify, radius, spacing} from '../../../../services/constants';
 import {useBack} from '../../../../services/hooks/useBack';
 import {Box} from '../../display/box';
 import {Text} from '../../input/text/text';
+import {Portal} from '../portal';
+import {DEFAULT_HOSTNAME} from '../portal/portal';
 
 interface ModalProps {
   title: string;
@@ -23,27 +25,40 @@ export function Modal({children, open, title, onClose}: ModalProps) {
     }, [onClose, open]),
   );
 
+  if (!open) {
+    return null;
+  }
+
   return (
-    <RNModal
-      visible={open}
-      onRequestClose={onClose}
-      transparent
-      animationType="fade">
-      <Box items="center" content="center" grow style={styles.back}>
-        <Box mb="S16" row content="center">
+    <Portal name={DEFAULT_HOSTNAME}>
+      <View style={styles.back} />
+      <TVFocusGuideView
+        style={styles.wrapper}
+        trapFocusUp
+        trapFocusDown
+        trapFocusLeft
+        trapFocusRight>
+        <Box mb="S16">
           <Text bold color="whiteText">
             {title}
           </Text>
         </Box>
         <View style={styles.content}>{children}</View>
-      </Box>
-    </RNModal>
+      </TVFocusGuideView>
+    </Portal>
   );
 }
 
 const styles = StyleSheet.create({
   back: {
+    ...StyleSheet.absoluteFillObject,
+    flexGrow: 1,
     backgroundColor: opacify('background', 0.5),
+  },
+  wrapper: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   content: {
     maxHeight: 400,

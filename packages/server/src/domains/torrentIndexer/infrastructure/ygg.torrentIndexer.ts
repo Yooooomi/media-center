@@ -3,6 +3,7 @@ import { SafeRequest } from "../../../framework/safeRequest/safeRequest";
 import { TorrentIndexer } from "../applicative/torrentIndexer";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
 import { TorrentIndexerResultId } from "../domain/torrentIndexerResultId";
+import { EnvironmentHelper } from "../../environment/applicative/environmentHelper";
 
 const getters = (window: DOMWindow, document: DOMWindow["document"]) => ({
   category: [...document.querySelectorAll("[id=torrent_name]")].map((e) =>
@@ -51,20 +52,27 @@ const getters = (window: DOMWindow, document: DOMWindow["document"]) => ({
 });
 
 export class YggTorrentIndexer extends TorrentIndexer {
-  constructor(private readonly safeRequest: SafeRequest) {
+  constructor(
+    environmentHelper: EnvironmentHelper,
+    private readonly safeRequest: SafeRequest
+  ) {
     super();
+    this.username = environmentHelper.get("YGG_TORRENT_USERNAME");
+    this.password = environmentHelper.get("YGG_TORRENT_PASSWORD");
   }
 
   private static EXTENSION = "qa";
   private static URL = `https://www3.yggtorrent.${YggTorrentIndexer.EXTENSION}`;
 
+  private username: string;
+  private password: string;
   private logged = false;
 
   public async ensureAccessToDownload() {
     if (!this.logged) {
       await this.safeRequest.post(`${YggTorrentIndexer.URL}/user/login`, {
-        id: "",
-        pass: "",
+        id: this.username,
+        pass: this.password,
         ci_csrf_token: "",
       });
       this.logged = true;

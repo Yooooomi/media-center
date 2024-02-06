@@ -1,4 +1,4 @@
-package com.yooooomi.timotextv
+package com.yooooomi.pompeluptv
 
 import android.app.Application
 import android.content.res.Configuration

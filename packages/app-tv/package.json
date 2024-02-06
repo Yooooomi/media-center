@@ -4,6 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "prebuild": "EXPO_TV=1 expo prebuild --clean",
     "android": "EXPO_TV=1 expo run:android --no-bundler",
     "android:clean": "EXPO_TV=1 cd android && ./gradlew clean ; cd -",
     "android:release": "EXPO_TV=1 expo run:android --variant release",

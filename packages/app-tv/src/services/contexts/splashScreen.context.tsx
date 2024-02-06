@@ -10,7 +10,7 @@ import React, {
 import {StyleSheet} from 'react-native';
 import Animated, {FadeOut} from 'react-native-reanimated';
 import * as SplashScreen from 'expo-splash-screen';
-import animation from '../../assets/timotex.lottie.json';
+import animation from '../../assets/splash.lottie.json';
 import {color} from '../constants';
 
 export const SplashScreenContext = React.createContext({

@@ -1,9 +1,9 @@
 {
-  "name": "Timotex",
-  "displayName": "Timotex",
+  "name": "Pompelup",
+  "displayName": "Pompelup",
   "expo": {
     "owner": "yooooomi",
-    "slug": "timotex-tv",
+    "slug": "pompelup-tv",
     "icon": "./assets/icons/icon.png",
     "splash": {
       "image": "./assets/icons/splash.png",
@@ -11,14 +11,14 @@
       "backgroundColor": "#222222"
     },
     "android": {
-      "package": "com.yooooomi.timotextv",
+      "package": "com.yooooomi.pompeluptv",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#222222"
       }
     },
     "ios": {
-      "bundleIdentifier": "com.yooooomi.timotextv",
+      "bundleIdentifier": "com.yooooomi.pompeluptv",
       "supportsTablet": true,
       "splash": {
         "image": "./assets/icons/splash.png",
@@ -47,6 +47,8 @@
         "expo-runtime-version": "1.0.0",
         "expo-channel-name": "master"
       }
-    }
+    },
+    "jsEngine": "hermes",
+    "turboModules": true
   }
 }

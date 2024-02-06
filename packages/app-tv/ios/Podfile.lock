@@ -1,7 +1,5 @@
 PODS:
   - boost (1.83.0)
-  - BVLinearGradient (2.8.3):
-    - React-Core
   - DoubleConversion (1.1.6)
   - EASClient (0.11.2):
     - ExpoModulesCore
@@ -920,10 +918,6 @@ PODS:
   - React-Mapbuffer (0.73.2-0):
     - glog
     - React-debug
-  - react-native-blur (4.4.0):
-    - glog
-    - RCT-Folly (= 2022.05.16.00)
-    - React-Core
   - react-native-turbo-vlc (0.1.0):
     - glog
     - MobileVLCKit (= 4.0.0a2)
@@ -1092,7 +1086,9 @@ PODS:
     - React-perflogger (= 0.73.2-0)
   - RNCAsyncStorage (1.21.0):
     - React-Core
-  - RNCMaskedView (0.3.0):
+  - RNLinearGradient (3.0.0-alpha.1):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - RNReanimated (3.6.2):
     - glog
@@ -1110,7 +1106,6 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../../../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - BVLinearGradient (from `../../../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EASClient (from `../../../node_modules/expo-eas-client/ios`)
   - EXConstants (from `../../../node_modules/expo-constants/ios`)
@@ -1155,7 +1150,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../../../node_modules/react-native/ReactCommon/jsinspector-modern`)
   - React-logger (from `../../../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../../../node_modules/react-native/ReactCommon`)
-  - "react-native-blur (from `../../../node_modules/@react-native-community/blur`)"
   - "react-native-turbo-vlc (from `../../../node_modules/@media-center/turbo-vlc`)"
   - React-nativeconfig (from `../../../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../../../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1177,7 +1171,7 @@ DEPENDENCIES:
   - React-utils (from `../../../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../../../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../../../node_modules/@react-native-async-storage/async-storage`)"
-  - "RNCMaskedView (from `../../../node_modules/@react-native-masked-view/masked-view`)"
+  - RNLinearGradient (from `../../../node_modules/react-native-linear-gradient`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNSVG (from `../../../node_modules/react-native-svg`)
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
@@ -1195,8 +1189,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   boost:
     :podspec: "../../../node_modules/react-native/third-party-podspecs/boost.podspec"
-  BVLinearGradient:
-    :path: "../../../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EASClient:
@@ -1280,8 +1272,6 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../../../node_modules/react-native/ReactCommon"
-  react-native-blur:
-    :path: "../../../node_modules/@react-native-community/blur"
   react-native-turbo-vlc:
     :path: "../../../node_modules/@media-center/turbo-vlc"
   React-nativeconfig:
@@ -1324,8 +1314,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../../../node_modules/@react-native-async-storage/async-storage"
-  RNCMaskedView:
-    :path: "../../../node_modules/@react-native-masked-view/masked-view"
+  RNLinearGradient:
+    :path: "../../../node_modules/react-native-linear-gradient"
   RNReanimated:
     :path: "../../../node_modules/react-native-reanimated"
   RNSVG:
@@ -1335,7 +1325,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: 88202336c3ba1e7a264a83c0c888784b0f360c28
-  BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   DoubleConversion: 74cb0ce4de271b23e772567504735c87134edf0a
   EASClient: a42ee8bf36c93b3128352faf2ae49405ab4f80bd
   EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc
@@ -1380,7 +1369,6 @@ SPEC CHECKSUMS:
   React-jsinspector: 4e379431c5175ffaccf2108e4de18887ad44ca98
   React-logger: 0631dfa1c51a2c9c5fd8c4aec19ddc0c8ea3721b
   React-Mapbuffer: 91bb3b7358069eb72a961babdd0298a3f1143153
-  react-native-blur: 27113acc008facbc8accae5fb3a78b8424f64cfd
   react-native-turbo-vlc: ad7a19aa49bba87d62c1f2fee8559a43b16f4518
   React-nativeconfig: 42117ed80599c0a718389f68d6a3787e3d05f1dc
   React-NativeModulesApple: 349818ab2f2cb2a87832569100cdf510ea7fb7bf
@@ -1402,7 +1390,7 @@ SPEC CHECKSUMS:
   React-utils: 761cab5e6ea0177b9027f63175656ff7381d3d4f
   ReactCommon: 77d77b33653d8538130d5c7dd1975e90da3fc74c
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
-  RNCMaskedView: f7c74478c83c4fdfc5cf4df51f80c0dd5cf125c6
+  RNLinearGradient: 0a09909c12afc1caa4fcd541f80df5b236706359
   RNReanimated: f3fba771d22558875411f702aaf520de2268d24b
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

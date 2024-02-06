@@ -44,6 +44,8 @@ export function LineList<T>({
         horizontal={isHorizontal}
         showsHorizontalScrollIndicator={false}
         windowSize={3}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
       />
     </TVFocusGuideView>
   );

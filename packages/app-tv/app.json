@@ -4,7 +4,7 @@
   "expo": {
     "owner": "yooooomi",
     "slug": "timotex-tv",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icons/icon.png",
     "splash": {
       "image": "./assets/icons/splash.png",
       "resizeMode": "contain",
@@ -13,7 +13,7 @@
     "android": {
       "package": "com.yooooomi.timotextv",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#222222"
       }
     },

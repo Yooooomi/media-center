@@ -5,5 +5,5 @@ export function useToggle(defaultValue?: boolean) {
 
   const roll = useCallback(() => setValue(o => !o), []);
 
-  return [value, roll] as const;
+  return [value, roll, setValue] as const;
 }

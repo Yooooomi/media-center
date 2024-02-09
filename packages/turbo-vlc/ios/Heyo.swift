@@ -1,5 +1,10 @@
 import Foundation
+
+#if os(iOS)
 import MobileVLCKit
+#else
+import TVVLCKit
+#endif
 
 public typealias EventCallback = (_ event: NSDictionary) -> Void
 
@@ -64,7 +69,7 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     tracks.forEach({ track in
       a.add([
         "id": track.trackId,
-        "name": track.trackName,
+        "name": "\(track.trackName) \(track.trackDescription ?? "")",
       ])
     })
     return a

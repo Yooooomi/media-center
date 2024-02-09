@@ -23,12 +23,11 @@ export function SearchTmdb() {
   }, []);
   const {add, value} = useAdditiveThrottle('', 500, v => updateSearch(v), true);
 
-  const getItem = (item: Movie | Show, index: number) => {
-    const isFirst = index === 0;
+  const getItem = (item: Movie | Show) => {
     if (item instanceof Movie) {
-      return <MovieCard focusOnMount={!isFocused && isFirst} movie={item} />;
+      return <MovieCard movie={item} />;
     } else if (item instanceof Show) {
-      return <ShowCard focusOnMount={!isFocused && isFirst} show={item} />;
+      return <ShowCard show={item} />;
     }
     return null;
   };
@@ -53,7 +52,7 @@ export function SearchTmdb() {
           numColumns={8}
           data={results}
           keyExtractor={r => r.id.toString()}
-          renderItem={({item, index}) => getItem(item, index)}
+          renderItem={({item}) => getItem(item)}
         />
       </Section>
     </Box>

@@ -12,7 +12,7 @@ export function bootTorrentIndexer(
 ) {
   const torrentIndexer = environmentHelper.match("DI_TORRENT_INDEXER", {
     mock: () => new MockTorrentIndexer(),
-    yggTorrent: () => new YggTorrentIndexer(safeRequest),
+    yggTorrent: () => new YggTorrentIndexer(environmentHelper, safeRequest),
   });
 
   queryBus.register(new SearchTorrentsQueryHandler(torrentIndexer));

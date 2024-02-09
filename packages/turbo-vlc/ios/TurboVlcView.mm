@@ -1,4 +1,8 @@
-#import "MobileVLCKit/MobileVLCKit.h"
+#if TARGET_OS_TV
+#import <TVVLCKit/TVVLCKit.h>
+#else
+#import <MobileVLCKit/MobileVLCKit.h>
+#endif
 #import "react_native_turbo_vlc-Swift.h"
 #import "TurboVlcView.h"
 

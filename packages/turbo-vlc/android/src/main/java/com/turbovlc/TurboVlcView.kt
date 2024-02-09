@@ -9,9 +9,12 @@ import android.view.Gravity
 import android.view.SurfaceView
 import android.widget.FrameLayout
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.LifecycleEventListener
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.Event
 import org.videolan.libvlc.LibVLC
@@ -21,10 +24,12 @@ import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IMedia.Track
 import org.videolan.libvlc.interfaces.IVLCVout
 import org.videolan.libvlc.interfaces.IVLCVout.OnNewVideoLayoutListener
+import org.videolan.libvlc.util.DisplayManager
+import org.videolan.libvlc.util.VLCVideoLayout
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
-class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
+class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListener {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -35,7 +40,6 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
 
   private val vlc: LibVLC
   private val mediaPlayer: MediaPlayer
-  private val surfaceView: SurfaceView
 
   private var arguments = ArrayList<String>()
   private var hwDecode = true
@@ -43,17 +47,18 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
 
   init {
     setBackgroundColor(Color.parseColor("#000000"))
-    surfaceView = SurfaceView(context)
-    surfaceView.setSecure(false)
-    this.addView(surfaceView)
 
     vlc = LibVLC(context)
 
+    var layout = VLCVideoLayout(context)
+    addView(layout)
+
     mediaPlayer = MediaPlayer(vlc)
     mediaPlayer.volume = 100
+    mediaPlayer.attachViews(layout, null, true, false)
     mediaPlayer.vlcVout.setWindowSize(width, height)
-    mediaPlayer.vlcVout.setVideoView(surfaceView)
-    mediaPlayer.vlcVout.attachViews(this)
+
+    (context as ThemedReactContext).addLifecycleEventListener(this)
 
     this.initEvents()
   }
@@ -81,6 +86,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
       val surfaceId = UIManagerHelper.getSurfaceId(context as ReactContext)
 
       val media = mediaPlayer.media
+      
       if (media != null) {
         eventDispatcher?.dispatchEvent(
           VideoInfoEvent(
@@ -96,35 +102,24 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
           )
         )
       }
-
-      val ratio = track.width.toFloat() / track.height.toFloat()
-      var width = measuredWidth
-      var height = measuredHeight
-      val viewAspectRatio = measuredWidth.toFloat() / measuredHeight.toFloat()
-      val aspectDeformation = ratio / viewAspectRatio - 1
-
-      if (abs(aspectDeformation) <= 0.01f) {
-        return@setEventListener
-      }
-      if (aspectDeformation > 0) {
-        height = (measuredWidth.toFloat() / ratio).toInt()
-      } else {
-        width = (measuredHeight.toFloat() * ratio).toInt()
-      }
-      val params = LayoutParams(width, height)
-      params.gravity = Gravity.CENTER
-      surfaceView.layoutParams = params
-      requestLayout()
     }
     mediaPlayer.play()
   }
 
   fun setAudioTrack(id: String) {
-    mediaPlayer.selectTrack(id)
+    if (id == "none") {
+      mediaPlayer.unselectTrackType(Track.Type.Audio)
+    } else {
+      mediaPlayer.selectTrack(id)
+    }
   }
 
   fun setTextTrack(id: String) {
-    mediaPlayer.selectTrack(id)
+    if (id == "none") {
+      mediaPlayer.unselectTrackType(Track.Type.Text)
+    } else {
+      mediaPlayer.selectTrack(id)
+    }
   }
 
   fun setArguments(arguments: ArrayList<String>) {
@@ -175,6 +170,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     mediaPlayer.detachViews()
     mediaPlayer.release()
     vlc.release()
+    (context as ThemedReactContext).removeLifecycleEventListener(this)
   }
 
   class ErrorEvent(
@@ -245,7 +241,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
         tracks.forEach {
           this.pushMap(Arguments.createMap().apply {
             this.putString("id", it.id)
-            this.putString("name", it.description)
+            this.putString("name", "${it.language} ${it.description}")
           })
         }
       }
@@ -345,5 +341,13 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener {
     sarNum: Int,
     sarDen: Int
   ) {}
+
+  override fun onHostResume() {}
+
+  override fun onHostPause() {
+    this.setPlay(false)
+  }
+
+  override fun onHostDestroy() {}
 }
 

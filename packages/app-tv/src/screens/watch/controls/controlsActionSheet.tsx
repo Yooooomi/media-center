@@ -2,6 +2,7 @@ import {FlatList} from 'react-native';
 import {Track} from '@media-center/turbo-vlc';
 import {Modal} from '../../../components/ui/tools/modal/modal';
 import {LineButton} from '../../../components/ui/input/pressable/lineButton';
+import {useMemo} from 'react';
 
 interface ControlsActionSheetProps {
   open: 'text' | 'audio' | undefined;
@@ -20,6 +21,15 @@ export function ControlsActionSheet({
   onAudioTrack,
   onTextTrack,
 }: ControlsActionSheetProps) {
+  const withNoneAudioTracks = useMemo(
+    () => [{id: 'none', name: 'Aucun'}, ...audioTracks],
+    [],
+  );
+  const withNoneTextTracks = useMemo(
+    () => [{id: 'none', name: 'Aucun'}, ...textTracks],
+    [],
+  );
+
   return (
     <>
       <Modal
@@ -28,7 +38,7 @@ export function ControlsActionSheet({
         title="Selectionner des sous-titres">
         <FlatList
           keyExtractor={item => item.id.toString()}
-          data={textTracks}
+          data={withNoneTextTracks}
           renderItem={({item, index}) => (
             <LineButton
               focusOnMount={index === 0}
@@ -47,7 +57,7 @@ export function ControlsActionSheet({
         title="Selectionner une piste audio">
         <FlatList
           keyExtractor={item => item.id.toString()}
-          data={audioTracks}
+          data={withNoneAudioTracks}
           renderItem={({item, index}) => (
             <LineButton
               focusOnMount={index === 0}

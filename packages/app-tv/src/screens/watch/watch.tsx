@@ -1,29 +1,22 @@
-import {
-  Alert,
-  Dimensions,
-  StyleSheet,
-  NativeSyntheticEvent,
-  View,
-} from 'react-native';
+import {Alert, StyleSheet, NativeSyntheticEvent, View} from 'react-native';
 import {
   TurboVlc,
   ProgressEvent,
   VideoInfoEvent,
   TurboVlcHandle,
 } from '@media-center/turbo-vlc';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {createContext, useCallback, useEffect, useRef, useState} from 'react';
 import {useSharedValue} from 'react-native-reanimated';
 import {ShowCatalogEntryDatasetFulfilled} from '@media-center/server/src/domains/catalog/applicative/catalogEntryFulfilled.front';
 import {useToggle} from '../../services/hooks/useToggle';
 import {useVideoUri} from '../../services/api';
 import {useNavigate, useParams} from '../params';
-import {rawColor} from '../../services/constants';
+import {debugBorder, rawColor} from '../../services/constants';
 import {FullScreenLoading} from '../../components/ui/display/fullScreenLoading';
 import {useSaveCatalogEntryProgress} from './useSaveCatalogEntryProgress';
 import {usePreviousNext} from './usePreviousNext';
 import {Controls} from './controls';
-
-const {width, height} = Dimensions.get('screen');
+import {useAppStateEvent} from '../../services/hooks/useOnBlur';
 
 export function Watch() {
   const {playlist, startingPlaylistIndex} = useParams<'Watch'>();
@@ -36,7 +29,7 @@ export function Watch() {
   const currentProgress = useRef<ProgressEvent | undefined>(undefined);
   const currentProgressMs = useSharedValue(0);
   const [audioTrack, setAudioTrack] = useState<string | undefined>(undefined);
-  const [textTrack, setTextTrack] = useState<string | undefined>(undefined);
+  const [textTrack, setTextTrack] = useState('none');
   const {goBack} = useNavigate();
   const vlcRef = useRef<TurboVlcHandle>(null);
 
@@ -49,7 +42,7 @@ export function Watch() {
       ? dataset.episode
       : undefined;
 
-  const [playing, rollPlaying] = useToggle(true);
+  const [playing, rollPlaying, setPlaying] = useToggle(true);
 
   useEffect(() => {
     if (!videoInfo || progress === 0) {
@@ -78,6 +71,7 @@ export function Watch() {
   const onVideoInfo = useCallback(
     (event: NativeSyntheticEvent<VideoInfoEvent>) => {
       setVideoInfo(event.nativeEvent);
+      setAudioTrack(event.nativeEvent.audioTracks[0]?.id);
     },
     [],
   );
@@ -101,6 +95,13 @@ export function Watch() {
     playlist.tmdbId,
     season,
     episode,
+  );
+
+  useAppStateEvent(
+    'blur',
+    useCallback(() => {
+      setPlaying(false);
+    }, []),
   );
 
   const {previousAllowed, previous, nextAllowed, next} = usePreviousNext(
@@ -150,8 +151,10 @@ export function Watch() {
 
 const styles = StyleSheet.create({
   video: {
-    width,
-    height,
+    flexGrow: 1,
+    // width: 300,
+    // height: 300,
+    ...debugBorder('green'),
   },
   controls: {
     position: 'absolute',

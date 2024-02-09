@@ -29,6 +29,8 @@ target 'TurboVlcExample' do
   platform :ios, min_ios_version_supported
   config = use_native_modules!
 
+  use_frameworks!
+
   use_react_native!(
     :path => config[:reactNativePath],
     # Enables Flipper.

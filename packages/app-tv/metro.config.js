@@ -18,12 +18,6 @@ config.resolver.nodeModulesPaths = [
 ];
 const oldResolver = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  // if (moduleName === './.expo/.virtual-metro-entry') {
-  //   return {
-  //     filePath: path.join(projectRoot, 'index.js'),
-  //     type: 'sourceFile',
-  //   };
-  // }
   if (moduleName === 'path' || moduleName === 'fs') {
     return {type: 'empty'};
   }
@@ -32,5 +26,11 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   }
   return context.resolveRequest(context, moduleName, platform);
 };
+config.transformer.getTransformOptions = () => ({
+  transform: {
+    experimentalImportSupport: false,
+    inlineRequires: true,
+  },
+});
 
 module.exports = config;

@@ -23,6 +23,11 @@ using namespace facebook::react;
   Heyo * _view;
 }
 
++ (void)load
+{
+  [super load];
+}
+
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
   return concreteComponentDescriptorProvider<TurboVlcViewComponentDescriptor>();
@@ -46,8 +51,8 @@ using namespace facebook::react;
       auto eventEmitter = std::static_pointer_cast<const TurboVlcViewEventEmitter>(self->_eventEmitter);
 
       eventEmitter->onProgress({
-        .progress = std::int32_t([dictionary[@"progress"] integerValue]),
-        .duration = std::int32_t([dictionary[@"duration"] integerValue]),
+        .progress = std::int32_t([[dictionary objectForKey:@"progress"] integerValue]),
+        .duration = std::int32_t([[dictionary objectForKey:@"duration"] integerValue]),
       });
     }
              onVideoInfo:^(NSDictionary *dictionary) {
@@ -55,16 +60,16 @@ using namespace facebook::react;
 
       std::vector<TurboVlcViewEventEmitter::OnVideoInfoAudioTracks> audioTracks = {};
       
-      for (NSDictionary* track in [dictionary mutableArrayValueForKey:@"audioTracks"]) {
+      for (NSDictionary* track in [dictionary objectForKey:@"audioTracks"]) {
         audioTracks.push_back({
-          .id = [track[@"id"] UTF8String],
-          .name = [track[@"name"] UTF8String],
+          .id = [[track objectForKey:@"id"] UTF8String],
+          .name = [[track objectForKey:@"name"] UTF8String],
         });
       }     
       
       std::vector<TurboVlcViewEventEmitter::OnVideoInfoTextTracks> textTracks = {};
       
-      for (NSDictionary* track in [dictionary mutableArrayValueForKey:@"textTracks"]) {
+      for (NSDictionary* track in [dictionary objectForKey:@"textTracks"]) {
         textTracks.push_back({
           .id = [track[@"id"] UTF8String],
           .name = [track[@"name"] UTF8String],
@@ -73,18 +78,18 @@ using namespace facebook::react;
       
       std::vector<TurboVlcViewEventEmitter::OnVideoInfoVideoTracks> videoTracks = {};
       
-      for (NSDictionary* track in [dictionary mutableArrayValueForKey:@"videoTracks"]) {
+      for (NSDictionary* track in [dictionary objectForKey:@"videoTracks"]) {
         videoTracks.push_back({
-          .id = [track[@"id"] UTF8String],
-          .name = [track[@"name"] UTF8String],
+          .id = [[track objectForKey:@"id"] UTF8String],
+          .name = [[track objectForKey:@"name"] UTF8String],
         });
       }
       
       eventEmitter->onVideoInfo({
-        .duration = std::int32_t([dictionary[@"duration"] integerValue]),
-        .currentVideoTrackId = std::string([[dictionary[@"currentVideoTrackId"] stringValue] UTF8String]),
-        .currentAudioTrackId = std::string([[dictionary[@"currentAudioTrackId"] stringValue] UTF8String]),
-        .currentTextTrackId = std::string([[dictionary[@"currentTextTrackId"] stringValue] UTF8String]),
+        .duration = std::int32_t([[dictionary objectForKey:@"duration"] integerValue]),
+        .currentVideoTrackId = std::string([[dictionary objectForKey:@"currentVideoTrackId"] UTF8String]),
+        .currentAudioTrackId = std::string([[dictionary objectForKey:@"currentAudioTrackId"] UTF8String]),
+        .currentTextTrackId = std::string([[dictionary objectForKey:@"currentTextTrackId"] UTF8String]),
         .audioTracks = audioTracks,
         .textTracks = textTracks,
         .videoTracks = videoTracks,
@@ -110,13 +115,31 @@ using namespace facebook::react;
   if (oldViewProps.uri != newViewProps.uri) {
     [_view setUriWithUri:[NSString stringWithUTF8String:newViewProps.uri.c_str()]];
   }
+  if (oldViewProps.play != newViewProps.play) {
+    [_view setPlayWithPlay:newViewProps.play];
+  }
+  if (oldViewProps.volume != newViewProps.volume) {
+    [_view setVolumeWithVolume:newViewProps.volume];
+  }
+  if (oldViewProps.audioTrack != newViewProps.audioTrack) {
+    [_view setAudioTrackWithId:[NSString stringWithUTF8String:newViewProps.audioTrack.c_str()]];
+  }
+  if (oldViewProps.textTrack != newViewProps.textTrack) {
+    [_view setTextTrackWithId:[NSString stringWithUTF8String:newViewProps.textTrack.c_str()]];
+  }
   [super updateProps:props oldProps:oldProps];
 }
 
-- (void)seek:(const double)ms
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
+{
+  RCTTurboVlcViewHandleCommand(self, commandName, args);
+}
+
+- (void)seek:(double)ms
 {
   [_view setSeekWithSeek:ms];
 }
+
 
 Class<RCTComponentViewProtocol> TurboVlcViewCls(void)
 {

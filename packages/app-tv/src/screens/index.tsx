@@ -24,13 +24,9 @@ import {Settings} from './settings';
 export function Navigation() {
   const {value, currentRoute} = useNavigationContext();
 
-  const routes = useMemo(
+  const allRoutes = useMemo(
     () => (
-      <Routes
-        location={{
-          pathname: currentRoute.pathname,
-          state: currentRoute.params,
-        }}>
+      <>
         <Route path={paths.Library} Component={withSider(AddedRecently)} />
         <Route path={paths.Discover} Component={withSider(Discover)} />
         <Route path={paths.Movie} Component={withSider(Movie)} />
@@ -45,6 +41,19 @@ export function Navigation() {
         <Route path={paths.Movies} Component={withSider(Movies)} />
         <Route path={paths.Shows} Component={withSider(Shows)} />
         <Route path={paths.Settings} Component={withSider(Settings)} />
+      </>
+    ),
+    [],
+  );
+
+  const routes = useMemo(
+    () => (
+      <Routes
+        location={{
+          pathname: currentRoute.pathname,
+          state: currentRoute.params,
+        }}>
+        {allRoutes}
       </Routes>
     ),
     [currentRoute.params, currentRoute.pathname],

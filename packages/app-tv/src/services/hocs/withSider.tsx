@@ -8,9 +8,12 @@ export function withSider<C extends (args: any) => ReactNode>(
 ): FC {
   return (a: Parameters<C>['0']) => (
     <Box row grow>
-      <Box h="100%">
+      <TVFocusGuideView
+        trapFocusDown
+        trapFocusUp
+        style={{height: '100%', zIndex: 10}}>
         <Sider />
-      </Box>
+      </TVFocusGuideView>
       <TVFocusGuideView
         style={styles.content}
         trapFocusDown
@@ -28,5 +31,6 @@ const styles = StyleSheet.create({
   content: {
     flexBasis: 0,
     flexGrow: 1,
+    zIndex: 0,
   },
 });

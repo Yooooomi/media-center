@@ -24,7 +24,6 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     
     self.vlc = VLCLibrary()
     self.mediaPlayer = VLCMediaPlayer(library: self.vlc)
-    self.mediaPlayer.drawable = view
     
     self.onError = onError
     self.onProgress = onProgress
@@ -34,6 +33,7 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     super.init(frame: frame)
     
     self.mediaPlayer.delegate = self
+    self.mediaPlayer.drawable = self
   }
   
   required init?(coder: NSCoder) {
@@ -57,7 +57,6 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   }
   
   public func mediaPlayerTimeChanged(_ aNotification: Notification) {
-    
     self.onProgress([
       "progress": self.mediaPlayer.time.intValue,
       "duration": self.mediaPlayer.media?.length.intValue ?? 0,
@@ -102,15 +101,19 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   public func setUri(uri: String) {
     guard let parsedUri = URL.init(string: uri) else { return }
     guard let media = VLCMedia(url: parsedUri) else { return }
+
     self.media = media
     self.mediaPlayer.media = self.media
     self.mediaPlayer.media?.delegate = self
+
     self.mediaPlayer.play()
   }
   
   @objc
   public func setPlay(play: Bool) {
+    print("Updating play \(play)")
     guard (self.mediaPlayer.media != nil) else { return }
+    print("Updating play after \(play)")
     if play {
       self.mediaPlayer.play()
     } else {

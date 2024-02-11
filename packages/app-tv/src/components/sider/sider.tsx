@@ -133,7 +133,7 @@ export function Sider() {
 
 const styles = StyleSheet.create({
   root: {
-    zIndex: 1,
+    zIndex: 100,
     width: 24 + 2 * spacing.S16,
     height: '100%',
   },

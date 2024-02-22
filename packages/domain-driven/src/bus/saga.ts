@@ -3,10 +3,25 @@ import { BaseEvent } from "./eventBus/event";
 import { EventBus } from "./eventBus/eventBus";
 
 export class Saga {
-  static registry = new Map<
+  static registry: Map<
     Constructor<BaseEvent<any>>,
     ((event: BaseEvent<any>) => void)[]
-  >();
+  >;
+
+  static registerHandler(
+    event: Constructor<BaseEvent<any>>,
+    handler: (event: BaseEvent<any>) => void
+  ) {
+    if (!this.registry) {
+      this.registry = new Map<
+        Constructor<BaseEvent<any>>,
+        ((event: BaseEvent<any>) => void)[]
+      >();
+    }
+    const exists = this.registry.get(event) ?? [];
+    exists.push(handler);
+    this.registry.set(event, exists);
+  }
 
   static on<T extends Saga>(event: Constructor<BaseEvent<any>>) {
     return (
@@ -15,9 +30,7 @@ export class Saga {
       descriptor: PropertyDescriptor
     ) => {
       const ctor = target.constructor as typeof Saga;
-      const exists = ctor.registry.get(event) ?? [];
-      exists.push(descriptor.value);
-      ctor.registry.set(event, exists);
+      ctor.registerHandler(event, descriptor.value);
     };
   }
 

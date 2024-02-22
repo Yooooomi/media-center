@@ -1,0 +1,35 @@
+import { InMemoryDatabase, QueryBus } from "@media-center/domain-driven";
+import { FilesystemTmdbStore } from "./infrastructure/filesystem.tmdb.store";
+import { InMemoryTmdbStore } from "./infrastructure/inMemory.tmdb.store";
+import { MockTmdbAPI } from "./infrastructure/mock.tmdb.api";
+import { RealTmdbAPI } from "./infrastructure/real.tmdb.api";
+import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
+import { GetEpisodesQueryHandler } from "@media-center/domains/src/tmdb/applicative/getEpisodes.query";
+import { GetMovieDetailsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getMovieDetails.query";
+import { GetSeasonsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getSeasons.query";
+import { GetTmdbsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getTmdbs.query";
+import { SearchQueryHandler } from "@media-center/domains/src/tmdb/applicative/search.query";
+
+export function bootTmdb(
+  database: InMemoryDatabase,
+  queryBus: QueryBus,
+  environmentHelper: EnvironmentHelper
+) {
+  const tmdbApi = environmentHelper.match("DI_TMDB_API", {
+    mock: () => new MockTmdbAPI(),
+    real: () => new RealTmdbAPI(environmentHelper),
+  });
+
+  const tmdbStore = environmentHelper.match("DI_DATABASE", {
+    memory: () => new InMemoryTmdbStore(database, tmdbApi),
+    filesystem: () =>
+      new FilesystemTmdbStore(environmentHelper, database, tmdbApi),
+  });
+  queryBus.register(new GetTmdbsQueryHandler(tmdbStore));
+  queryBus.register(new GetSeasonsQueryHandler(tmdbApi));
+  queryBus.register(new GetEpisodesQueryHandler(tmdbApi));
+  queryBus.register(new SearchQueryHandler(tmdbApi));
+  queryBus.register(new GetMovieDetailsQueryHandler(tmdbApi));
+
+  return { tmdbApi, tmdbStore };
+}

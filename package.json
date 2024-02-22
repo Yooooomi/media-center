@@ -1,10 +1,11 @@
 {
-  "name": "@media-center/root",
+  "name": "@media-center/app-tv",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "private": true,
   "workspaces": [
+    "apps/*",
     "packages/*"
   ],
   "scripts": {

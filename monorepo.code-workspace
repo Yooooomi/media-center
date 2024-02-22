@@ -4,36 +4,12 @@
   },
   "folders": [
     {
-      "name": "Server",
-      "path": "packages/server"
+      "name": "Apps",
+      "path": "apps/"
     },
     {
-      "name": "TV App",
-      "path": "packages/app-tv"
-    },
-    {
-      "name": "Turbo VLC",
-      "path": "packages/turbo-vlc"
-    },
-    {
-      "name": "Algorithm",
-      "path": "packages/algorithm"
-    },
-    {
-      "name": "Dev",
-      "path": "packages/dev"
-    },
-    {
-      "name": "Domain driven",
-      "path": "packages/domain-driven"
-    },
-    {
-      "name": "External",
-      "path": "packages/external"
-    },
-    {
-      "name": "Database",
-      "path": "aaa"
+      "name": "Packages",
+      "path": "packages/"
     },
     {
       "name": "root",

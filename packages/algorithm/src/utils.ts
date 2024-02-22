@@ -106,3 +106,12 @@ export function debounceOverflow<F extends (...args: any[]) => void>(
 export function wait(ms: number) {
   return new Promise((res) => setTimeout(res, ms));
 }
+
+export function fromPairs<K extends string | number, V>(
+  arrayOfTuple: [K, V][]
+) {
+  return arrayOfTuple.reduce((acc, curr) => {
+    acc[curr[0]] = curr[1];
+    return acc;
+  }, {} as Record<K, V>);
+}

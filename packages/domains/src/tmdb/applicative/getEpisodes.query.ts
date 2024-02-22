@@ -8,7 +8,7 @@ export class GetEpisodesQuery extends Query(
     tmdbId: TmdbId,
     seasonNumber: Number,
   },
-  [ShowEpisode]
+  [ShowEpisode],
 ) {}
 
 export class GetEpisodesQueryHandler extends QueryHandler(GetEpisodesQuery) {
@@ -19,7 +19,7 @@ export class GetEpisodesQueryHandler extends QueryHandler(GetEpisodesQuery) {
   public async execute(query: GetEpisodesQuery) {
     const episodes = await this.tmdbApi.getEpisodes(
       query.tmdbId,
-      query.seasonNumber
+      query.seasonNumber,
     );
 
     return episodes;

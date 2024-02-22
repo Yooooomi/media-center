@@ -1,18 +1,18 @@
 import { EventBus } from "@media-center/domain-driven";
 import { HierarchyItem } from "../domain/hierarchyItem";
 import { HierarchyItemId } from "../domain/hierarchyItemId";
+import { File } from "../../miscellaneous/valueObjects/file";
 import {
   HierarchyItemAdded,
   HierarchyItemDeleted,
   FileType,
 } from "./fileWatcher.events";
 import { HierarchyStore } from "./hierarchy.store";
-import { File } from "../../valueObjects/file";
 
 export abstract class FileWatcher {
   constructor(
     private readonly eventBus: EventBus,
-    private readonly hierarchyStore: HierarchyStore
+    private readonly hierarchyStore: HierarchyStore,
   ) {}
 
   protected abstract initialize(): Promise<void>;
@@ -33,7 +33,7 @@ export abstract class FileWatcher {
 
   protected async triggerAdded(file: File, type: FileType) {
     const alreadyExisting = await this.hierarchyStore.loadByExactPath(
-      file.path
+      file.path,
     );
     if (alreadyExisting.length > 0) {
       return;
@@ -51,7 +51,7 @@ export abstract class FileWatcher {
     const existing = await this.hierarchyStore.loadByPath(file.path);
     await Promise.all(existing.map((e) => this.hierarchyStore.delete(e.id)));
     existing.forEach((e) =>
-      this.eventBus.publish(new HierarchyItemDeleted({ type, item: e }))
+      this.eventBus.publish(new HierarchyItemDeleted({ type, item: e })),
     );
   }
 }

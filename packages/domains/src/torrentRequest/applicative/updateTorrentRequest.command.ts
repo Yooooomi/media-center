@@ -10,18 +10,18 @@ export class UpdateTorrentRequestCommand extends Command({
 }) {}
 
 export class UpdateTorrentRequestCommandHandler extends CommandHandler(
-  UpdateTorrentRequestCommand
+  UpdateTorrentRequestCommand,
 ) {
   constructor(
     private readonly eventBus: EventBus,
-    private readonly torrentRequestStore: TorrentRequestStore
+    private readonly torrentRequestStore: TorrentRequestStore,
   ) {
     super();
   }
 
   async execute(command: UpdateTorrentRequestCommand) {
     let existing = await this.torrentRequestStore.load(
-      command.torrentRequestId
+      command.torrentRequestId,
     );
 
     if (!existing) {
@@ -39,7 +39,7 @@ export class UpdateTorrentRequestCommandHandler extends CommandHandler(
 
     if (updated) {
       this.eventBus.publish(
-        new TorrentRequestUpdated({ tmdbId: existing.tmdbId })
+        new TorrentRequestUpdated({ tmdbId: existing.tmdbId }),
       );
     }
   }

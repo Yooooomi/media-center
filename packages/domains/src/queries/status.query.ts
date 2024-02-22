@@ -11,7 +11,7 @@ export class StatusQuery extends Query(undefined, {
 export class StatusQueryHandler extends QueryHandler(StatusQuery) {
   constructor(
     private readonly torrentClient: TorrentClient,
-    private readonly torrentIndexer: TorrentIndexer
+    private readonly torrentIndexer: TorrentIndexer,
   ) {
     super();
   }

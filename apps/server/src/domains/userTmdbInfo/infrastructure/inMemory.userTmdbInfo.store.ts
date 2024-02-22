@@ -20,7 +20,7 @@ export class InMemoryUserTmdbInfoStore
     super(
       database,
       "userTmdbInfo",
-      new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo))
+      new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo)),
     );
   }
 

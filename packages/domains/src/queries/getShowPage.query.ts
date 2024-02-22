@@ -1,5 +1,4 @@
 import { Query, QueryHandler, Shape } from "@media-center/domain-driven";
-import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 import {
   CatalogDeleted,
   CatalogEntryUpdated,
@@ -24,6 +23,7 @@ import { UserTmdbInfoStore } from "../userTmdbInfo/applicative/userTmdbInfo.stor
 import { UserTmdbShowInfo } from "../userTmdbInfo/domain/userTmdbInfo";
 import { UserTmdbInfoUpdated } from "../userTmdbInfo/domain/userTmdbInfo.events";
 import { UserId, UserTmdbInfoId } from "../userTmdbInfo/domain/userTmdbInfoId";
+import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 
 class ShowPageSummary extends Shape({
   tmdb: Show,
@@ -36,7 +36,7 @@ class ShowPageSummary extends Shape({
 
 export class GetShowPageQuery extends Query(
   { actorId: UserId, tmdbId: TmdbId },
-  ShowPageSummary
+  ShowPageSummary,
 ) {}
 
 export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
@@ -53,7 +53,7 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly hierarchyStore: HierarchyStore,
-    private readonly userTmdbInfoStore: UserTmdbInfoStore
+    private readonly userTmdbInfoStore: UserTmdbInfoStore,
   ) {
     super();
   }
@@ -66,7 +66,7 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       | TorrentRequestAdded
       | TorrentRequestUpdated
       | UserTmdbInfoUpdated,
-    intent: GetShowPageQuery
+    intent: GetShowPageQuery,
   ): boolean {
     if (event instanceof UserTmdbInfoUpdated) {
       return event.userTmdbInfoId.equals(event.userTmdbInfoId);
@@ -95,19 +95,19 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
     const catalogEntryFulfilled = await getShowCatalogEntryFulfilled(
       intent.tmdbId,
       this.hierarchyStore,
-      this.catalogEntryStore
+      this.catalogEntryStore,
     );
 
     const seasons = await this.tmdbApi.getSeasons(intent.tmdbId);
     const neededSeasonNumbers = catalogEntryFulfilled.availableSeasons();
     const neededSeasons = seasons.filter((season) =>
-      neededSeasonNumbers.includes(season.season_number)
+      neededSeasonNumbers.includes(season.season_number),
     );
     const episodes = await Promise.all(
       neededSeasonNumbers.map(async (seasonNumber) => ({
         season: seasonNumber,
         episodes: await this.tmdbApi.getEpisodes(intent.tmdbId, seasonNumber),
-      }))
+      })),
     );
 
     const userInfoId = new UserTmdbInfoId(intent.actorId, intent.tmdbId);

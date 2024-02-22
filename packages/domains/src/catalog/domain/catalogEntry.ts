@@ -7,7 +7,7 @@ export class MovieCatalogEntryDataset extends Shape({
 }) {
   has(hierarchyItemId: HierarchyItemId) {
     return Boolean(
-      this.hierarchyItemIds.find((e) => e.equals(hierarchyItemId))
+      this.hierarchyItemIds.find((e) => e.equals(hierarchyItemId)),
     );
   }
 
@@ -20,7 +20,7 @@ export class MovieCatalogEntryDataset extends Shape({
 
   delete(hierarchyItemId: HierarchyItemId) {
     const index = this.hierarchyItemIds.findIndex((e) =>
-      e.equals(hierarchyItemId)
+      e.equals(hierarchyItemId),
     );
     if (index >= 0) {
       this.hierarchyItemIds.splice(index, 1);
@@ -58,7 +58,7 @@ export class ShowCatalogEntryDataset extends Shape({
 }) {
   has(hierarchyItemId: HierarchyItemId) {
     return Boolean(
-      this.hierarchyItemIds.find((e) => e.equals(hierarchyItemId))
+      this.hierarchyItemIds.find((e) => e.equals(hierarchyItemId)),
     );
   }
 
@@ -71,7 +71,7 @@ export class ShowCatalogEntryDataset extends Shape({
 
   delete(hierarchyItemId: HierarchyItemId) {
     const index = this.hierarchyItemIds.findIndex((e) =>
-      e.equals(hierarchyItemId)
+      e.equals(hierarchyItemId),
     );
     if (index >= 0) {
       this.hierarchyItemIds.splice(index, 1);
@@ -88,10 +88,10 @@ export class ShowCatalogEntry extends Shape({
   public addHierarchyItemIdForEpisode(
     season: number,
     episode: number,
-    hierarchyItemId: HierarchyItemId
+    hierarchyItemId: HierarchyItemId,
   ) {
     const exists = this.dataset.find(
-      (e) => e.season === season && e.episode === episode
+      (e) => e.season === season && e.episode === episode,
     );
     if (exists) {
       exists.add(hierarchyItemId);
@@ -101,7 +101,7 @@ export class ShowCatalogEntry extends Shape({
           season,
           episode,
           hierarchyItemIds: [hierarchyItemId],
-        })
+        }),
       );
     }
   }

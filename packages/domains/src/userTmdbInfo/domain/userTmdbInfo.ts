@@ -42,7 +42,7 @@ export class UserTmdbShowInfo extends Shape({
 }) {
   public setEpisodeProgress(season: number, episode: number, progress: number) {
     const info = this.progress.find(
-      (e) => e.season === season && e.episode === episode
+      (e) => e.season === season && e.episode === episode,
     );
     if (!info) {
       const newInfo = new UserTmdbShowEpisodeInfo({
@@ -79,7 +79,7 @@ export class UserTmdbShowInfo extends Shape({
   getShowProgress() {
     const latest = maxBy(
       this.progress,
-      (progress) => progress.season * 10e9 + progress.episode
+      (progress) => progress.season * 10e9 + progress.episode,
     );
     return latest?.progress ?? 0;
   }

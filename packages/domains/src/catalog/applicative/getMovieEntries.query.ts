@@ -23,11 +23,11 @@ export class GetMovieEntriesQuery extends Query(undefined, [
 ]) {}
 
 export class GetMovieEntriesQueryHandler extends QueryHandler(
-  GetMovieEntriesQuery
+  GetMovieEntriesQuery,
 ) {
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly hierarchyItemStore: HierarchyStore
+    private readonly hierarchyItemStore: HierarchyStore,
   ) {
     super();
   }
@@ -38,14 +38,14 @@ export class GetMovieEntriesQueryHandler extends QueryHandler(
     const neededHierarchyItemIds = new Set<string>();
     entries.forEach((entry) => {
       entry.dataset.hierarchyItemIds.forEach((i) =>
-        neededHierarchyItemIds.add(i.toString())
+        neededHierarchyItemIds.add(i.toString()),
       );
     });
     const items = keyBy(
       await this.hierarchyItemStore.loadMany(
-        [...neededHierarchyItemIds.values()].map((i) => new HierarchyItemId(i))
+        [...neededHierarchyItemIds.values()].map((i) => new HierarchyItemId(i)),
       ),
-      (e) => e.id.toString()
+      (e) => e.id.toString(),
     );
 
     return entries.map((entry) => {
@@ -56,7 +56,7 @@ export class GetMovieEntriesQueryHandler extends QueryHandler(
             throw new NotMatchingHierarchyItem(hierarchyItemId);
           }
           return item;
-        }
+        },
       );
 
       return new MovieCatalogEntryFulfilled({

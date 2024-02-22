@@ -7,7 +7,7 @@ export class GetAllTorrentRequestsQuery extends Query(undefined, [
 ]) {}
 
 export class GetAllTorrentRequestsQueryHandler extends QueryHandler(
-  GetAllTorrentRequestsQuery
+  GetAllTorrentRequestsQuery,
 ) {
   constructor(private readonly torrentRequestStore: TorrentRequestStore) {
     super();

@@ -1,9 +1,9 @@
 {
-  "name": "@media-center/app-tv",
-  "version": "1.0.0",
+  "name": "@media-center/root",
+  "version": "0.0.1",
+  "private": true,
   "main": "index.js",
   "license": "MIT",
-  "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -12,6 +12,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "resolutions": {
-    "pretty-format": "26.5.2"
+    "pretty-format": "26.5.2",
+    "eslint-plugin-prettier": "5.1.2"
   }
 }

@@ -25,10 +25,10 @@ class DefaultPrimitiveBaseClass {}
 
 export const Primitive = <
   const D extends AnyShorthand | Definition,
-  B extends Class<{}>
+  B extends Class<{}>,
 >(
   definition: D,
-  base: B = DefaultPrimitiveBaseClass as B
+  base: B = DefaultPrimitiveBaseClass as B,
 ) => {
   const longhand = shorthandToLonghand(definition);
 
@@ -44,14 +44,14 @@ export const Primitive = <
 
     static deserialize<T extends IsPrimitiveConstructor<D>>(
       this: T,
-      serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>
+      serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>,
     ) {
       return new this(longhand.deserialize(serialized as any)) as any;
     }
 
     static serialize<T extends IsPrimitiveConstructor<D>>(
       this: T,
-      runtime: InstanceType<T>
+      runtime: InstanceType<T>,
     ) {
       return runtime.serialize();
     }
@@ -61,9 +61,10 @@ export const Primitive = <
     }
   }
 
-  type Params = ShorthandToLonghand<D> extends NothingDefinition
-    ? []
-    : [data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>];
+  type Params =
+    ShorthandToLonghand<D> extends NothingDefinition
+      ? []
+      : [data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>];
 
   return Intermediate as unknown as {
     isPrimitive: true;
@@ -73,11 +74,11 @@ export const Primitive = <
       InstanceType<B>;
     deserialize<T extends Class<{}>>(
       this: T,
-      serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>
+      serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>,
     ): InstanceType<T>;
     serialize<T extends Constructor<any>>(
       this: T,
-      runtime: InstanceType<T>
+      runtime: InstanceType<T>,
     ): DefinitionSerialized<ShorthandToLonghand<D>>;
   } & Omit<B, "">;
 };

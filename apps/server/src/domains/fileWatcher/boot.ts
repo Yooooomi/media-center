@@ -3,17 +3,17 @@ import {
   EventBus,
   InMemoryDatabase,
 } from "@media-center/domain-driven";
+import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
+import { ScanExistingCommandHandler } from "@media-center/domains/src/fileWatcher/applicative/scanExisting.command";
 import { DiskFileWatcher } from "./infrastructure/disk.fileWatcher";
 import { FilesystemHierarchyStore } from "./infrastructure/filesystem.hierarchy.store";
 import { InMemoryHierarchyStore } from "./infrastructure/inMemory.hierarchy.store";
-import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
-import { ScanExistingCommandHandler } from "@media-center/domains/src/fileWatcher/applicative/scanExisting.command";
 
 export async function bootFileWatcher(
   database: InMemoryDatabase,
   commandBus: CommandBus,
   eventBus: EventBus,
-  environmentHelper: EnvironmentHelper
+  environmentHelper: EnvironmentHelper,
 ) {
   const hierarchyStore = environmentHelper.match("DI_DATABASE", {
     memory: () => new InMemoryHierarchyStore(database),
@@ -22,7 +22,7 @@ export async function bootFileWatcher(
   const watcher = new DiskFileWatcher(
     eventBus,
     hierarchyStore,
-    environmentHelper
+    environmentHelper,
   );
 
   commandBus.register(new ScanExistingCommandHandler(watcher));

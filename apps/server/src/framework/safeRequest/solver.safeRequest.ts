@@ -31,7 +31,7 @@ export interface FlareSolverResponse {
 class InvalidSessionTimeoutError extends DomainError {
   constructor(providedString: string) {
     super(
-      `Invalid session timeout provided for flaresolverr: ${providedString} (minimum: ${SolverSafeRequest.MINIMUM_SESSION_DURATION_S})`
+      `Invalid session timeout provided for flaresolverr: ${providedString} (minimum: ${SolverSafeRequest.MINIMUM_SESSION_DURATION_S})`,
     );
   }
 }
@@ -43,7 +43,7 @@ export class SolverSafeRequest extends SafeRequest {
     super();
     this.endpoint = `${environmentHelper.get("FLARESOLVERR_ENDPOINT")}/v1`;
     const sessionTimeoutString = environmentHelper.get(
-      "FLARESOLVERR_SESSION_TIMEOUT_S"
+      "FLARESOLVERR_SESSION_TIMEOUT_S",
     );
     this.sessionTimeoutS = Number.parseInt(sessionTimeoutString);
     if (
@@ -74,7 +74,7 @@ export class SolverSafeRequest extends SafeRequest {
     }
     this.timeout = setTimeout(
       this.destroySession.bind(this),
-      this.sessionTimeoutS * 1000
+      this.sessionTimeoutS * 1000,
     );
   }
 

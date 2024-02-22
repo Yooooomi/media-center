@@ -4,7 +4,10 @@ import { TmdbId } from "../../tmdb/domain/tmdbId";
 export class UserId extends Id {}
 
 export class UserTmdbInfoId {
-  constructor(public readonly userId: UserId, public readonly tmdbId: TmdbId) {}
+  constructor(
+    public readonly userId: UserId,
+    public readonly tmdbId: TmdbId,
+  ) {}
 
   serialize() {
     return this.toString();

@@ -10,7 +10,7 @@ export class InMemoryHierarchyEntryInformationStore extends InMemoryStore<Hierar
     super(
       database,
       "hierarchyEntryInformation",
-      new SerializableSerializer(HierarchyEntryInformation)
+      new SerializableSerializer(HierarchyEntryInformation),
     );
   }
 }

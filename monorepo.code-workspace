@@ -1,6 +1,15 @@
 {
   "settings": {
-    "search.useParentIgnoreFiles": true
+    "search.useParentIgnoreFiles": true,
+    "eslint.enable": true,
+    "eslint.format.enable": true,
+    "eslint.workingDirectories": ["."],
+    "[typescript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
   },
   "folders": [
     {

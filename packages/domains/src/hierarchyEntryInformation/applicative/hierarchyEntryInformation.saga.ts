@@ -1,7 +1,7 @@
-import { Saga } from "@media-center/domain-driven";
-import { HierarchyItemAdded } from "../../fileWatcher/applicative/fileWatcher.events";
 import { exec } from "child_process";
+import { Saga } from "@media-center/domain-driven";
 import { fromPairs } from "@media-center/algorithm";
+import { HierarchyItemAdded } from "../../fileWatcher/applicative/fileWatcher.events";
 
 export class HierarchyEntryInformationSaga extends Saga {
   @Saga.on(HierarchyItemAdded)
@@ -44,12 +44,12 @@ async function main() {
               const lineValue = lineParts.slice(1).join("").trim();
               return [lineName, lineValue];
             })
-            .filter(([lineName]) => lineName) ?? []
+            .filter(([lineName]) => lineName) ?? [],
         );
         return { id, metadata, type, typeIndex };
       });
       console.log(JSON.stringify(streams, null, " "));
-    }
+    },
   );
 }
 

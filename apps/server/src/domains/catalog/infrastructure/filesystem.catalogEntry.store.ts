@@ -4,7 +4,6 @@ import {
   InMemoryTransaction,
   SerializableSerializer,
 } from "@media-center/domain-driven";
-import { FilesystemStore } from "../../../framework/store";
 import { CatalogEntryStore } from "@media-center/domains/src/catalog/applicative/catalogEntry.store";
 import {
   AnyCatalogEntry,
@@ -13,6 +12,7 @@ import {
 } from "@media-center/domains/src/catalog/domain/catalogEntry";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
+import { FilesystemStore } from "../../../framework/store";
 
 export class FilesystemCatalogEntryStore
   extends FilesystemStore<AnyCatalogEntry>
@@ -20,19 +20,19 @@ export class FilesystemCatalogEntryStore
 {
   constructor(
     environmentHelper: EnvironmentHelper,
-    database: InMemoryDatabase
+    database: InMemoryDatabase,
   ) {
     super(
       environmentHelper,
       database,
       "catalogEntry",
-      new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
+      new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry)),
     );
   }
 
   loadByHierarchyItemId(
     hierarchyItemId: HierarchyItemId,
-    transaction?: InMemoryTransaction
+    transaction?: InMemoryTransaction,
   ) {
     return this.filter((f) => {
       if (f instanceof MovieCatalogEntry) {
@@ -47,14 +47,14 @@ export class FilesystemCatalogEntryStore
   loadMovies(transaction?: InMemoryTransaction) {
     return this.filter(
       (f) => f instanceof MovieCatalogEntry,
-      transaction
+      transaction,
     ) as Promise<MovieCatalogEntry[]>;
   }
 
   loadShows(transaction?: InMemoryTransaction) {
     return this.filter(
       (f) => f instanceof ShowCatalogEntry,
-      transaction
+      transaction,
     ) as Promise<ShowCatalogEntry[]>;
   }
 

@@ -25,15 +25,15 @@ export function bootQueries(
   hierarchyStore: HierarchyStore,
   userTmdbInfoStore: UserTmdbInfoStore,
   torrentClient: TorrentClient,
-  torrentIndexer: TorrentIndexer
+  torrentIndexer: TorrentIndexer,
 ) {
   queryBus.register(
     new HomepageQueryHandler(
       catalogEntryStore,
       torrentRequestStore,
       userTmdbInfoStore,
-      tmdbStore
-    )
+      tmdbStore,
+    ),
   );
 
   queryBus.register(
@@ -43,8 +43,8 @@ export function bootQueries(
       torrentRequestStore,
       catalogEntryStore,
       hierarchyStore,
-      userTmdbInfoStore
-    )
+      userTmdbInfoStore,
+    ),
   );
 
   queryBus.register(
@@ -54,16 +54,16 @@ export function bootQueries(
       torrentRequestStore,
       catalogEntryStore,
       hierarchyStore,
-      userTmdbInfoStore
-    )
+      userTmdbInfoStore,
+    ),
   );
 
   queryBus.register(
-    new SettingsPageQueryHandler(hierarchyStore, catalogEntryStore)
+    new SettingsPageQueryHandler(hierarchyStore, catalogEntryStore),
   );
 
   queryBus.register(
-    new GetMoviesPageQueryHandler(catalogEntryStore, tmdbStore)
+    new GetMoviesPageQueryHandler(catalogEntryStore, tmdbStore),
   );
 
   queryBus.register(new GetShowsPageQueryHandler(catalogEntryStore, tmdbStore));

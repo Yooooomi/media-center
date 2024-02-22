@@ -4,7 +4,7 @@ import { GetDeclaredUsersQueryHandler } from "@media-center/domains/src/user/app
 
 export function bootUser(
   queryBus: QueryBus,
-  environmentHelper: EnvironmentHelper
+  environmentHelper: EnvironmentHelper,
 ) {
   queryBus.register(new GetDeclaredUsersQueryHandler(environmentHelper));
 }

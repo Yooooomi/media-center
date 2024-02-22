@@ -1,0 +1,29 @@
+{
+  "name": "@media-center/frontend",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "src/"
+  ],
+  "dependencies": {
+    "@media-center/domain-driven": "*",
+    "@media-center/domains": "*",
+    "@media-center/ui": "*",
+    "@media-center/algorithm": "*",
+    "axios": "^1.6.7"
+  },
+  "peerDependencies": {
+    "@types/event-source-polyfill": "*",
+    "event-source-polyfill": "*",
+    "react": "*",
+    "react-dom": "*",
+    "react-native": "*",
+    "react-native-sse": "*",
+    "react-native-reanimated": "*"
+  },
+  "devDependencies": {
+    "@types/event-source-polyfill": "^1.0.5"
+  }
+}

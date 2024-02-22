@@ -4,7 +4,7 @@ import { globalBoot } from "./boot";
 async function main() {
   const { environmentHelper, commandBus } = await globalBoot();
   const shouldReconcileDatabaseAndDisk = environmentHelper.getSafe(
-    "RECONCILE_DATABASE_ON_START"
+    "RECONCILE_DATABASE_ON_START",
   );
   if (shouldReconcileDatabaseAndDisk?.toLowerCase().trim() !== "no") {
     commandBus.execute(new ScanExistingCommand());

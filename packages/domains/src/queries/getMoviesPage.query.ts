@@ -7,11 +7,11 @@ import { Movie } from "../tmdb/domain/movie";
 export class GetMoviesPageQuery extends Query(undefined, [Movie]) {}
 
 export class GetMoviesPageQueryHandler extends QueryHandler(
-  GetMoviesPageQuery
+  GetMoviesPageQuery,
 ) {
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly tmdbStore: TmdbStore
+    private readonly tmdbStore: TmdbStore,
   ) {
     super();
   }
@@ -20,7 +20,7 @@ export class GetMoviesPageQueryHandler extends QueryHandler(
     const allCatalogEntries = await this.catalogEntryStore.loadMovies();
     const neededTmdbIds = uniqBy(
       allCatalogEntries.map((e) => e.id),
-      (e) => e.toString()
+      (e) => e.toString(),
     );
     const allTmdbs = await this.tmdbStore.loadMany(neededTmdbIds);
     return allTmdbs
@@ -28,7 +28,7 @@ export class GetMoviesPageQueryHandler extends QueryHandler(
       .sort((a, b) =>
         a.title.localeCompare(b.title, undefined, {
           sensitivity: "base",
-        })
+        }),
       );
   }
 }

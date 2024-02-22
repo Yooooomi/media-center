@@ -6,11 +6,11 @@ import { TorrentClient } from "../torrentClient/applicative/torrentClient";
 export class DeleteCatalogEntryCommand extends Command(TmdbId) {}
 
 export class DeleteCatalogEntryCommandHandler extends CommandHandler(
-  DeleteCatalogEntryCommand
+  DeleteCatalogEntryCommand,
 ) {
   constructor(
     private readonly torrentClient: TorrentClient,
-    private readonly torrentRequestStore: TorrentRequestStore
+    private readonly torrentRequestStore: TorrentRequestStore,
   ) {
     super();
   }
@@ -25,7 +25,7 @@ export class DeleteCatalogEntryCommandHandler extends CommandHandler(
     await Promise.all(
       requests.map(async (request) => {
         await this.torrentClient.delete(request.id.toString());
-      })
+      }),
     );
   }
 }

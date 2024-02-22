@@ -3,7 +3,6 @@ import {
   InMemoryDatabase,
   SerializableSerializer,
 } from "@media-center/domain-driven";
-import { FilesystemStore } from "../../../framework/store";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { UserTmdbInfoStore } from "@media-center/domains/src/userTmdbInfo/applicative/userTmdbInfo.store";
 import {
@@ -12,6 +11,7 @@ import {
   UserTmdbShowInfo,
 } from "@media-center/domains/src/userTmdbInfo/domain/userTmdbInfo";
 import { UserId } from "@media-center/domains/src/userTmdbInfo/domain/userTmdbInfoId";
+import { FilesystemStore } from "../../../framework/store";
 
 export class FilesystemUserTmdbInfoStore
   extends FilesystemStore<AnyUserTmdbInfo>
@@ -19,13 +19,13 @@ export class FilesystemUserTmdbInfoStore
 {
   constructor(
     environmentHelper: EnvironmentHelper,
-    database: InMemoryDatabase
+    database: InMemoryDatabase,
   ) {
     super(
       environmentHelper,
       database,
       "userTmdbInfo",
-      new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo))
+      new SerializableSerializer(Either(UserTmdbMovieInfo, UserTmdbShowInfo)),
     );
   }
 

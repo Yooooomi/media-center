@@ -1,5 +1,5 @@
 import { CommandHandler, EventBus } from "@media-center/domain-driven";
-import { TorrentService } from "../../../../../../packages/domains/src/tools/torrentService";
+import { TorrentService } from "@media-center/domains/src/miscellaneous/tools/torrentService";
 import { TorrentClient } from "@media-center/domains/src/torrentClient/applicative/torrentClient";
 import { TorrentIndexer } from "@media-center/domains/src/torrentIndexer/applicative/torrentIndexer";
 import { AddTorrentRequestCommand } from "@media-center/domains/src/torrentRequest/applicative/addTorrentRequest.command";
@@ -9,13 +9,13 @@ import { TorrentRequestAdded } from "@media-center/domains/src/torrentRequest/do
 import { TorrentRequestId } from "@media-center/domains/src/torrentRequest/domain/torrentRequestId";
 
 export class AddTorrentRequestCommandHandler extends CommandHandler(
-  AddTorrentRequestCommand
+  AddTorrentRequestCommand,
 ) {
   constructor(
     private readonly eventBus: EventBus,
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly torrentClient: TorrentClient,
-    private readonly torrentIndexer: TorrentIndexer
+    private readonly torrentIndexer: TorrentIndexer,
   ) {
     super();
   }
@@ -35,7 +35,7 @@ export class AddTorrentRequestCommandHandler extends CommandHandler(
     await this.torrentRequestStore.save(request);
     await this.torrentClient.download(
       torrentBuffer,
-      command.tmdbId.getType() === "show"
+      command.tmdbId.getType() === "show",
     );
     this.eventBus.publish(new TorrentRequestAdded({ tmdbId: command.tmdbId }));
   }

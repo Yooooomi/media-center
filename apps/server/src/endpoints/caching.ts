@@ -14,7 +14,7 @@ export class FilesystemEndpointCaching extends EndpointCaching {
     super();
     this.dirpath = path.join(
       environmentHelper.get("FILESYSTEM_STORE_DIR"),
-      "endpoints"
+      "endpoints",
     );
     if (!fs.existsSync(this.dirpath)) {
       fs.mkdirSync(this.dirpath);

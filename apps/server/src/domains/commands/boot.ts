@@ -6,9 +6,9 @@ import { TorrentRequestStore } from "@media-center/domains/src/torrentRequest/ap
 export function bootCommands(
   commandBus: CommandBus,
   torrentClient: TorrentClient,
-  torrentRequestStore: TorrentRequestStore
+  torrentRequestStore: TorrentRequestStore,
 ) {
   commandBus.register(
-    new DeleteCatalogEntryCommandHandler(torrentClient, torrentRequestStore)
+    new DeleteCatalogEntryCommandHandler(torrentClient, torrentRequestStore),
   );
 }

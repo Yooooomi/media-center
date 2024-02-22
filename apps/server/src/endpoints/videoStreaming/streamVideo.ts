@@ -13,7 +13,7 @@ export function streamVideo(
   request: Request,
   response: Response,
   filepath: string,
-  logger: Logger
+  logger: Logger,
 ) {
   logger.info(" > stream");
   const extension = path.extname(filepath).slice(1);

@@ -5,7 +5,7 @@ import {
   EventBus,
 } from "@media-center/domain-driven";
 import Express, { urlencoded, json } from "express";
-import { IntentBus } from "@media-center/domain-driven/lib/bus/intention/intentBus";
+import { IntentBus } from "@media-center/domain-driven/src/bus/intention/intentBus";
 import { TimeMeasurer } from "@media-center/algorithm";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
@@ -20,7 +20,7 @@ export function bootApi(
   hierarchyItemStore: HierarchyStore,
   environmentHelper: EnvironmentHelper,
   eventBus: EventBus,
-  tmdbApi: TmdbAPI
+  tmdbApi: TmdbAPI,
 ) {
   const logger = useLog("Express");
 
@@ -34,7 +34,7 @@ export function bootApi(
   const logMiddleware = (
     req: Express.Request,
     res: Express.Response,
-    next: Express.NextFunction
+    next: Express.NextFunction,
   ) => {
     const authorization = req.get("Authorization");
     if (!authorization) {
@@ -49,12 +49,26 @@ export function bootApi(
     return next();
   };
 
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", req.header("origin")); // Allow requests from any origin
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS",
+    ); // Allow the specified HTTP methods
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Authorization, Origin, X-Requested-With, Content-Type, Accept",
+    ); // Allow the specified headers
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+  });
+
   app.get("/health", (_, res) => res.status(204).end());
 
   app.get("/video/:hierarchyItemId", async (req, res) => {
     const hierarchyItemId = req.params.hierarchyItemId;
     const item = await hierarchyItemStore.load(
-      HierarchyItemId.from(hierarchyItemId)
+      HierarchyItemId.from(hierarchyItemId),
     );
     if (!item) {
       console.log("Didnt find item", hierarchyItemId);
@@ -89,6 +103,7 @@ export function bootApi(
   });
 
   app.get("/reactive/query/:name", logMiddleware, async (req, res) => {
+    console.log("IN");
     const { name } = req.params;
     const { needing: stringifiedNeeding } = req.query;
 
@@ -116,7 +131,7 @@ export function bootApi(
         const data = JSON.stringify(serialized);
         logger.info(`  react ${req.path} ${timeMs}ms`);
         res.write(`data: ${data}\n\n`);
-      }
+      },
     );
 
     res.on("close", () => {

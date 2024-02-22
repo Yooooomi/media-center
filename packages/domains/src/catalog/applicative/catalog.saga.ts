@@ -17,9 +17,9 @@ import {
 } from "../domain/catalogEntry";
 import { AnyTmdb } from "../../tmdb/domain/anyTmdb";
 import { TmdbStore } from "../../tmdb/applicative/tmdb.store";
+import { FilenameParse } from "../../miscellaneous/tools/filename";
 import { CatalogEntryStore } from "./catalogEntry.store";
 import { CatalogEntryUpdated, CatalogEntryDeleted } from "./catalog.events";
-import { FilenameParse } from "../../tools/filename";
 
 export class CatalogSaga extends Saga {
   constructor(
@@ -27,7 +27,7 @@ export class CatalogSaga extends Saga {
     private readonly tmdbApi: TmdbAPI,
     private readonly tmdbStore: TmdbStore,
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly eventBus: EventBus
+    private readonly eventBus: EventBus,
   ) {
     super();
   }
@@ -46,7 +46,7 @@ export class CatalogSaga extends Saga {
   private async searchWithFallback(
     name: string,
     isShow: boolean,
-    year: number | undefined
+    year: number | undefined,
   ) {
     let tmdbEntry: AnyTmdb | undefined;
     const replacements = isShow
@@ -76,11 +76,11 @@ export class CatalogSaga extends Saga {
         const fileAlreadyAdded =
           await this.catalogEntryStore.loadByHierarchyItemId(
             event.item.id,
-            transaction
+            transaction,
           );
         if (fileAlreadyAdded.length > 0) {
           logger.info(
-            `File ${event.item.file.path} already existing in catalog`
+            `File ${event.item.file.path} already existing in catalog`,
           );
           return undefined;
         }
@@ -88,16 +88,16 @@ export class CatalogSaga extends Saga {
         const isShow = event.type.value === "show";
         const infosFromFilename = await FilenameParse(
           event.item.file.getFilename(),
-          isShow
+          isShow,
         );
         const tmdbEntry = await this.searchWithFallback(
           infosFromFilename.title,
           isShow,
-          infosFromFilename.year ? +infosFromFilename.year : undefined
+          infosFromFilename.year ? +infosFromFilename.year : undefined,
         );
         if (!tmdbEntry) {
           logger.warn(
-            `Could not find tmdb entry for filename ${event.item.file.getFilename()} (isShow: ${isShow})`
+            `Could not find tmdb entry for filename ${event.item.file.getFilename()} (isShow: ${isShow})`,
           );
           return undefined;
         }
@@ -127,39 +127,39 @@ export class CatalogSaga extends Saga {
           if (episode === undefined) {
             console.warn(
               "Could not find episode from filename",
-              event.item.file.getFilename()
+              event.item.file.getFilename(),
             );
             return undefined;
           }
           alreadyExisting.addHierarchyItemIdForEpisode(
             season ?? 1,
             episode,
-            event.item.id
+            event.item.id,
           );
           logger.info(
             `Found tmdb entry for filename ${event.item.file.getFilename()}: ${
               tmdbEntry.title
             } (show, id: ${tmdbEntry.id.toRealId()}, S${
               season === undefined ? "1 (defaulted)" : season
-            }E${episode})`
+            }E${episode})`,
           );
         } else if (alreadyExisting instanceof MovieCatalogEntry) {
           alreadyExisting.addHierarchyItemId(event.item.id);
           logger.info(
             `Found tmdb entry for filename ${event.item.file.getFilename()}: ${
               tmdbEntry.title
-            } (movie, id: ${tmdbEntry.id.toRealId()})`
+            } (movie, id: ${tmdbEntry.id.toRealId()})`,
           );
         }
         await this.catalogEntryStore.save(alreadyExisting, transaction);
         return alreadyExisting;
-      }
+      },
     );
     if (catalogEntry) {
       this.eventBus.publish(
         new CatalogEntryUpdated({
           catalogEntry,
-        })
+        }),
       );
     }
   }
@@ -170,7 +170,7 @@ export class CatalogSaga extends Saga {
       await this.transactionPerformer.transactionnally(async (transaction) => {
         const existing = await this.catalogEntryStore.loadByHierarchyItemId(
           event.item.id,
-          transaction
+          transaction,
         );
         existing.forEach((e) => {
           e.deleteHierarchyItemId(event.item.id);
@@ -186,15 +186,15 @@ export class CatalogSaga extends Saga {
             }
             _updated.push(e);
             return this.catalogEntryStore.save(e, transaction);
-          })
+          }),
         );
         return { updated: _updated, deleted: _deleted };
       });
     deleted.forEach((d) =>
-      this.eventBus.publish(new CatalogEntryDeleted({ catalogEntry: d }))
+      this.eventBus.publish(new CatalogEntryDeleted({ catalogEntry: d })),
     );
     updated.forEach((u) =>
-      this.eventBus.publish(new CatalogEntryUpdated({ catalogEntry: u }))
+      this.eventBus.publish(new CatalogEntryUpdated({ catalogEntry: u })),
     );
   }
 }

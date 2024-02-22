@@ -1,26 +1,27 @@
 {
   "name": "@media-center/server",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "private": true,
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "FORCE_COLOR=1 concurrently \"yarn build:watch\" \"nodemon --delay 500ms\"",
+    "dev": "FORCE_COLOR=1 ts-node-dev src/index.ts",
     "start": "node lib/index.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "tsc",
     "build:watch": "tsc",
-    "yoyo": "@vercel/ncc"
+    "build:production": "ncc src/index.ts"
   },
   "dependencies": {
     "@ctrl/video-filename-parser": "Yooooomi/video-filename-parser",
     "@media-center/algorithm": "*",
     "@media-center/domain-driven": "*",
+    "@media-center/domains": "*",
     "axios": "^1.6.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsdom": "^22.1.0",
     "parse-torrent": "~9",
-    "ts-morph": "^21.0.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -29,7 +30,6 @@
     "@types/jsdom": "^21.1.2",
     "@types/parse-torrent": "^5.8.4",
     "@types/uuid": "^9.0.2",
-    "swc": "^1.0.11",
-    "ts-node": "^10.9.1"
+    "ts-node-dev": "^2.0.0"
   }
 }

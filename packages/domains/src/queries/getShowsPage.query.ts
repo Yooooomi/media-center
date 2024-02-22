@@ -9,7 +9,7 @@ export class GetShowsPageQuery extends Query(undefined, [Show]) {}
 export class GetShowsPageQueryHandler extends QueryHandler(GetShowsPageQuery) {
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly tmdbStore: TmdbStore
+    private readonly tmdbStore: TmdbStore,
   ) {
     super();
   }
@@ -18,7 +18,7 @@ export class GetShowsPageQueryHandler extends QueryHandler(GetShowsPageQuery) {
     const allCatalogEntries = await this.catalogEntryStore.loadShows();
     const neededTmdbIds = uniqBy(
       allCatalogEntries.map((e) => e.id),
-      (e) => e.toString()
+      (e) => e.toString(),
     );
     const allTmdbs = await this.tmdbStore.loadMany(neededTmdbIds);
     return allTmdbs
@@ -26,7 +26,7 @@ export class GetShowsPageQueryHandler extends QueryHandler(GetShowsPageQuery) {
       .sort((a, b) =>
         a.title.localeCompare(b.title, undefined, {
           sensitivity: "base",
-        })
+        }),
       );
   }
 }

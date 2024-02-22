@@ -9,7 +9,7 @@ import {
 export abstract class CatalogEntryStore extends Store<AnyCatalogEntry> {
   abstract loadByHierarchyItemId(
     hierarchyItemId: HierarchyItemId,
-    transaction?: InMemoryTransaction
+    transaction?: InMemoryTransaction,
   ): Promise<AnyCatalogEntry[]>;
 
   abstract loadMovies(): Promise<MovieCatalogEntry[]>;

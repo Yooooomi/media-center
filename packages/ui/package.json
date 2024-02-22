@@ -1,0 +1,8 @@
+{
+  "name": "@media-center/ui",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "files": ["src/"]
+}

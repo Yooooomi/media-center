@@ -1,10 +1,10 @@
 export abstract class SafeRequest {
   abstract get(
-    url: string
+    url: string,
   ): Promise<{ status: false } | { status: true; page: string }>;
   abstract post(
     url: string,
-    postData: Record<string, string | number>
+    postData: Record<string, string | number>,
   ): Promise<{ status: false } | { status: true; page: string }>;
   abstract download(url: string): Promise<Buffer>;
 }

@@ -13,18 +13,18 @@ export function bootTorrentRequest(
   eventBus: EventBus,
   torrentClient: TorrentClient,
   torrentIndexer: TorrentIndexer,
-  torrentRequestStore: TorrentRequestStore
+  torrentRequestStore: TorrentRequestStore,
 ) {
   commandBus.register(
     new AddTorrentRequestCommandHandler(
       eventBus,
       torrentRequestStore,
       torrentClient,
-      torrentIndexer
-    )
+      torrentIndexer,
+    ),
   );
   commandBus.register(
-    new AddRawTorrentRequestCommandHandler(torrentIndexer, torrentClient)
+    new AddRawTorrentRequestCommandHandler(torrentIndexer, torrentClient),
   );
 
   queryBus.register(new GetTorrentRequestsQueryHandler(torrentRequestStore));

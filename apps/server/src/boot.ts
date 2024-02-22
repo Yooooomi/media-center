@@ -43,18 +43,18 @@ export async function globalBoot() {
   const { tmdbStore, tmdbApi } = bootTmdb(
     database,
     queryBus,
-    environmentHelper
+    environmentHelper,
   );
   const { torrentIndexer } = bootTorrentIndexer(
     queryBus,
     environmentHelper,
-    safeRequest
+    safeRequest,
   );
   const { torrentClient, unsubscribeUpdateTorrentPoll } = bootTorrentClient(
     commandBus,
     eventBus,
     environmentHelper,
-    torrentRequestStore
+    torrentRequestStore,
   );
   bootTorrentRequest(
     commandBus,
@@ -62,13 +62,13 @@ export async function globalBoot() {
     eventBus,
     torrentClient,
     torrentIndexer,
-    torrentRequestStore
+    torrentRequestStore,
   );
   const { hierarchyStore } = await bootFileWatcher(
     database,
     commandBus,
     eventBus,
-    environmentHelper
+    environmentHelper,
   );
   bootApi(
     queryBus,
@@ -76,7 +76,7 @@ export async function globalBoot() {
     hierarchyStore,
     environmentHelper,
     eventBus,
-    tmdbApi
+    tmdbApi,
   );
   const { catalogEntryStore } = bootCatalog(
     database,
@@ -87,7 +87,7 @@ export async function globalBoot() {
     environmentHelper,
     tmdbApi,
     tmdbStore,
-    hierarchyStore
+    hierarchyStore,
   );
   bootUser(queryBus, environmentHelper);
   const { userTmdbInfoStore } = bootUserTmdbInfo(
@@ -95,7 +95,7 @@ export async function globalBoot() {
     commandBus,
     eventBus,
     environmentHelper,
-    tmdbStore
+    tmdbStore,
   );
 
   bootCommands(commandBus, torrentClient, torrentRequestStore);
@@ -109,7 +109,7 @@ export async function globalBoot() {
     hierarchyStore,
     userTmdbInfoStore,
     torrentClient,
-    torrentIndexer
+    torrentIndexer,
   );
 
   bootHierarchyEntryInformation(environmentHelper, database, eventBus);

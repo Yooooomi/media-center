@@ -5,8 +5,6 @@ import {
   Database,
   TransactionPerformer,
 } from "@media-center/domain-driven";
-import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
-import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
 import { TmdbStore } from "@media-center/domains/src/tmdb/applicative/tmdb.store";
@@ -15,6 +13,8 @@ import { CatalogSaga } from "@media-center/domains/src/catalog/applicative/catal
 import { GetMovieEntriesQueryHandler } from "@media-center/domains/src/catalog/applicative/getMovieEntries.query";
 import { GetShowEntriesQueryHandler } from "@media-center/domains/src/catalog/applicative/getShowEntries.query";
 import { ReinitCatalogCommandHandler } from "@media-center/domains/src/catalog/applicative/reinit.command";
+import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
+import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
 
 export function bootCatalog(
   database: Database,
@@ -25,7 +25,7 @@ export function bootCatalog(
   environmentHelper: EnvironmentHelper,
   tmdbApi: TmdbAPI,
   tmdbStore: TmdbStore,
-  hierarchyItemStore: HierarchyStore
+  hierarchyItemStore: HierarchyStore,
 ) {
   const catalogEntryStore = environmentHelper.match("DI_DATABASE", {
     memory: () => new InMemoryCatalogEntryStore(database),
@@ -38,15 +38,15 @@ export function bootCatalog(
     tmdbApi,
     tmdbStore,
     catalogEntryStore,
-    eventBus
+    eventBus,
   ).listen(eventBus);
 
   queryBus.register(
-    new GetMovieEntriesQueryHandler(catalogEntryStore, hierarchyItemStore)
+    new GetMovieEntriesQueryHandler(catalogEntryStore, hierarchyItemStore),
   );
 
   queryBus.register(
-    new GetShowEntriesQueryHandler(catalogEntryStore, hierarchyItemStore)
+    new GetShowEntriesQueryHandler(catalogEntryStore, hierarchyItemStore),
   );
 
   commandBus.register(
@@ -54,8 +54,8 @@ export function bootCatalog(
       eventBus,
       transactionPerformer,
       catalogEntryStore,
-      hierarchyItemStore
-    )
+      hierarchyItemStore,
+    ),
   );
 
   return { catalogEntryStore };

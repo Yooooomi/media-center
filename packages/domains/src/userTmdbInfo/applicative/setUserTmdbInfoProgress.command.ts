@@ -27,12 +27,12 @@ export class SetUserTmdbInfoProgressCommand extends Command({
 }) {}
 
 export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
-  SetUserTmdbInfoProgressCommand
+  SetUserTmdbInfoProgressCommand,
 ) {
   constructor(
     private readonly eventBus: EventBus,
     private readonly tmdbStore: TmdbStore,
-    private readonly userTmdbInfoStore: UserTmdbInfoStore
+    private readonly userTmdbInfoStore: UserTmdbInfoStore,
   ) {
     super();
   }
@@ -57,7 +57,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
     } else if (tmdb instanceof Show) {
       if (command.season === undefined || command.episode === undefined) {
         throw new Error(
-          "Must pass season and episode when marking show episode progress"
+          "Must pass season and episode when marking show episode progress",
         );
       }
       userTmdbInfo =
@@ -73,7 +73,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
       userTmdbInfo.setEpisodeProgress(
         command.season,
         command.episode,
-        command.progress
+        command.progress,
       );
     }
 
@@ -86,7 +86,7 @@ export class SetUserTmdbInfoProgressCommandHandler extends CommandHandler(
     this.eventBus.publish(
       new UserTmdbInfoUpdated({
         userTmdbInfoId,
-      })
+      }),
     );
   }
 }

@@ -11,13 +11,13 @@ import { CatalogDeleted } from "./catalog.events";
 export class ReinitCatalogCommand extends Command() {}
 
 export class ReinitCatalogCommandHandler extends CommandHandler(
-  ReinitCatalogCommand
+  ReinitCatalogCommand,
 ) {
   constructor(
     private readonly eventBus: EventBus,
     private readonly transactionPerformer: TransactionPerformer,
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly hierarchyStore: HierarchyStore
+    private readonly hierarchyStore: HierarchyStore,
   ) {
     super();
   }

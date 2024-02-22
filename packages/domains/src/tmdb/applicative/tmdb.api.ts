@@ -11,7 +11,7 @@ export abstract class TmdbAPI {
   abstract getSeasons(tmdbId: TmdbId): Promise<ShowSeason[]>;
   abstract getEpisodes(
     tmdbId: TmdbId,
-    seasonNumber: number
+    seasonNumber: number,
   ): Promise<ShowEpisode[]>;
   abstract searchMovies(query: string, year?: number): Promise<AnyTmdb[]>;
   abstract searchShows(query: string, year?: number): Promise<AnyTmdb[]>;
@@ -25,7 +25,7 @@ export abstract class TmdbAPI {
     options?: {
       year?: number;
       type?: TmdbIdType;
-    }
+    },
   ) {
     if (options?.type === "movie") {
       return this.searchMovies(query, options.year);

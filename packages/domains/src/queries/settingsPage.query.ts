@@ -12,7 +12,7 @@ export class SettingsPageQuery extends Query(undefined, SettingsPageSummary) {}
 export class SettingsPageQueryHandler extends QueryHandler(SettingsPageQuery) {
   constructor(
     private readonly hierarchyStore: HierarchyStore,
-    private readonly catalogEntryStore: CatalogEntryStore
+    private readonly catalogEntryStore: CatalogEntryStore,
   ) {
     super();
   }

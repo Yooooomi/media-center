@@ -11,7 +11,7 @@ export class GetMovieDetailsQuery extends Query(
   {
     tmdbId: TmdbId,
   },
-  MovieDetails
+  MovieDetails,
 ) {}
 
 class DetailsNotFound extends ApplicativeError {
@@ -21,7 +21,7 @@ class DetailsNotFound extends ApplicativeError {
 }
 
 export class GetMovieDetailsQueryHandler extends QueryHandler(
-  GetMovieDetailsQuery
+  GetMovieDetailsQuery,
 ) {
   constructor(private readonly tmdbApi: TmdbAPI) {
     super();

@@ -1,6 +1,6 @@
 import { Freeze, Shape } from "@media-center/domain-driven";
+import { File } from "../../miscellaneous/valueObjects/file";
 import { HierarchyItemId } from "./hierarchyItemId";
-import { File } from "../../valueObjects/file";
 
 @Freeze()
 export class HierarchyItem extends Shape({

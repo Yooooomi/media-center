@@ -1,5 +1,14 @@
 import Axios, { AxiosInstance } from "axios";
-import { PromiseQueue } from "@media-center/domains/src/tools/queue";
+import { PromiseQueue } from "@media-center/domains/src/miscellaneous/tools/queue";
+import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
+import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
+import { AnyTmdb } from "@media-center/domains/src/tmdb/domain/anyTmdb";
+import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
+import { MovieDetails } from "@media-center/domains/src/tmdb/domain/movieDetails";
+import { Show } from "@media-center/domains/src/tmdb/domain/show";
+import { ShowEpisode } from "@media-center/domains/src/tmdb/domain/showEpisode";
+import { ShowSeason } from "@media-center/domains/src/tmdb/domain/showSeason";
+import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import {
   DiscoverMovie,
   DiscoverShow,
@@ -11,15 +20,6 @@ import {
   SearchShow,
   Season,
 } from "./tmdb.api.utils";
-import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
-import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
-import { AnyTmdb } from "@media-center/domains/src/tmdb/domain/anyTmdb";
-import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
-import { MovieDetails } from "@media-center/domains/src/tmdb/domain/movieDetails";
-import { Show } from "@media-center/domains/src/tmdb/domain/show";
-import { ShowEpisode } from "@media-center/domains/src/tmdb/domain/showEpisode";
-import { ShowSeason } from "@media-center/domains/src/tmdb/domain/showSeason";
-import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 
 // Limit is 50 per seconds
 const globalQueue = new PromiseQueue(1000 / 40);
@@ -40,12 +40,12 @@ export class RealTmdbAPI extends TmdbAPI {
 
   async getEpisodes(
     tmdbId: TmdbId,
-    seasonNumber: number
+    seasonNumber: number,
   ): Promise<ShowEpisode[]> {
     const { data } = await globalQueue.queue(() =>
       this.axios.get<{ episodes: Episode[] }>(
-        `/tv/${tmdbId.toRealId()}/season/${seasonNumber}`
-      )
+        `/tv/${tmdbId.toRealId()}/season/${seasonNumber}`,
+      ),
     );
     return data.episodes.map(
       (e) =>
@@ -62,13 +62,13 @@ export class RealTmdbAPI extends TmdbAPI {
           still_path: e.still_path,
           vote_average: e.vote_average,
           vote_count: e.vote_count,
-        })
+        }),
     );
   }
 
   async getSeasons(tmdbId: TmdbId): Promise<ShowSeason[]> {
     const { data } = await globalQueue.queue(() =>
-      this.axios.get<{ seasons: Season[] }>(`/tv/${tmdbId.toRealId()}`)
+      this.axios.get<{ seasons: Season[] }>(`/tv/${tmdbId.toRealId()}`),
     );
     return data.seasons.map(
       (s) =>
@@ -80,7 +80,7 @@ export class RealTmdbAPI extends TmdbAPI {
           poster_path: s.poster_path,
           season_number: s.season_number,
           vote_average: s.vote_average,
-        })
+        }),
     );
   }
 
@@ -94,7 +94,7 @@ export class RealTmdbAPI extends TmdbAPI {
           language: "fr-FR",
           page: 1,
         },
-      })
+      }),
     );
     return data.results.map(
       (e) =>
@@ -112,7 +112,7 @@ export class RealTmdbAPI extends TmdbAPI {
           vote_count: e.vote_count,
           backdrop_path: e.backdrop_path ?? undefined,
           poster_path: e.poster_path ?? undefined,
-        })
+        }),
     );
   }
   async searchShows(query: string, year?: number): Promise<AnyTmdb[]> {
@@ -125,7 +125,7 @@ export class RealTmdbAPI extends TmdbAPI {
           language: "fr-FR",
           page: 1,
         },
-      })
+      }),
     );
     return data.results.map(
       (e) =>
@@ -142,14 +142,14 @@ export class RealTmdbAPI extends TmdbAPI {
           vote_count: e.vote_count,
           backdrop_path: e.backdrop_path,
           poster_path: e.poster_path ?? undefined,
-        })
+        }),
     );
   }
 
   async get(tmdbId: TmdbId): Promise<AnyTmdb | undefined> {
     if (tmdbId.getType() === "movie") {
       const { data } = await globalQueue.queue(() =>
-        this.axios.get<GetMovie>(`/movie/${tmdbId.toRealId()}?language=fr-FR`)
+        this.axios.get<GetMovie>(`/movie/${tmdbId.toRealId()}?language=fr-FR`),
       );
       return new Movie({
         id: TmdbId.fromIdAndType(data.id.toString(), "movie"),
@@ -168,7 +168,7 @@ export class RealTmdbAPI extends TmdbAPI {
       });
     } else {
       const { data } = await globalQueue.queue(() =>
-        this.axios.get<GetShow>(`/tv/${tmdbId.toRealId()}?language=fr-FR`)
+        this.axios.get<GetShow>(`/tv/${tmdbId.toRealId()}?language=fr-FR`),
       );
       return new Show({
         id: TmdbId.fromIdAndType(data.id.toString(), "show"),
@@ -189,7 +189,7 @@ export class RealTmdbAPI extends TmdbAPI {
 
   async discoverShow(): Promise<Show[]> {
     const { data } = await globalQueue.queue(() =>
-      this.axios.get<DiscoverShow>("/trending/tv/week?language=fr-FR")
+      this.axios.get<DiscoverShow>("/trending/tv/week?language=fr-FR"),
     );
     return data.results
       .map(
@@ -207,14 +207,14 @@ export class RealTmdbAPI extends TmdbAPI {
             vote_average: d.vote_average,
             vote_count: d.vote_count,
             season_count: 0,
-          })
+          }),
       )
       .sort((a, b) => b.popularity - a.popularity);
   }
 
   async discoverMovie() {
     const { data } = await globalQueue.queue(() =>
-      this.axios.get<DiscoverMovie>("/trending/movie/week?language=fr-FR")
+      this.axios.get<DiscoverMovie>("/trending/movie/week?language=fr-FR"),
     );
     return data.results
       .map(
@@ -233,7 +233,7 @@ export class RealTmdbAPI extends TmdbAPI {
             video: d.video,
             vote_average: d.vote_average,
             vote_count: d.vote_count,
-          })
+          }),
       )
       .sort((a, b) => b.popularity - a.popularity);
   }
@@ -242,8 +242,8 @@ export class RealTmdbAPI extends TmdbAPI {
     try {
       const { data } = await globalQueue.queue(() =>
         this.axios.get<MovieDetailsQuery>(
-          `/movie/${tmdbId.toRealId()}?language=fr-FR`
-        )
+          `/movie/${tmdbId.toRealId()}?language=fr-FR`,
+        ),
       );
       return new MovieDetails({
         id: tmdbId,
@@ -260,7 +260,7 @@ export class RealTmdbAPI extends TmdbAPI {
     const { data } = await globalQueue.queue(() =>
       Axios.get(path, {
         responseType: "arraybuffer",
-      })
+      }),
     );
     return data;
   }

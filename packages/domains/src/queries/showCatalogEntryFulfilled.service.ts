@@ -11,7 +11,7 @@ import { TmdbId } from "../tmdb/domain/tmdbId";
 export async function getShowCatalogEntryFulfilled(
   tmdbId: TmdbId,
   hierarchyStore: HierarchyStore,
-  catalogEntryStore: CatalogEntryStore
+  catalogEntryStore: CatalogEntryStore,
 ) {
   const catalogEntry = await catalogEntryStore.load(tmdbId);
 
@@ -22,10 +22,10 @@ export async function getShowCatalogEntryFulfilled(
   const hierarchyItems = keyBy(
     catalogEntry
       ? await hierarchyStore.loadMany(
-          showDataset.map((e) => e.hierarchyItemIds).flat()
+          showDataset.map((e) => e.hierarchyItemIds).flat(),
         )
       : [],
-    (e) => e.id.toString()
+    (e) => e.id.toString(),
   );
   const catalogEntryFulfilled = new ShowCatalogEntryFulfilled({
     id: tmdbId,

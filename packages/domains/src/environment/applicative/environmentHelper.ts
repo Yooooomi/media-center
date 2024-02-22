@@ -9,7 +9,7 @@ class ValueNotFound extends ApplicativeError {
 class MatcherNotFound extends ApplicativeError {
   constructor(variable: string, matcher: string) {
     super(
-      `Matcher with value ${matcher} for variable ${variable} was not found`
+      `Matcher with value ${matcher} for variable ${variable} was not found`,
     );
   }
 }
@@ -27,7 +27,7 @@ export abstract class EnvironmentHelper {
 
   public match<R extends Record<string, any>>(
     name: string,
-    matches: R
+    matches: R,
   ): R extends Record<string, infer K extends (...args: any[]) => any>
     ? ReturnType<K>
     : never | undefined {

@@ -20,7 +20,7 @@ export class InMemoryCatalogEntryStore
     super(
       database,
       "catalogEntry",
-      new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry))
+      new SerializableSerializer(Either(MovieCatalogEntry, ShowCatalogEntry)),
     );
   }
 

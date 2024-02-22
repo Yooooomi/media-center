@@ -1,60 +1,60 @@
 import { JSDOM, DOMWindow } from "jsdom";
-import { SafeRequest } from "../../../framework/safeRequest/safeRequest";
 import { TorrentIndexer } from "@media-center/domains/src/torrentIndexer/applicative/torrentIndexer";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { TorrentIndexerResult } from "@media-center/domains/src/torrentIndexer/domain/torrentIndexerResult";
 import { TorrentIndexerResultId } from "@media-center/domains/src/torrentIndexer/domain/torrentIndexerResultId";
+import { SafeRequest } from "../../../framework/safeRequest/safeRequest";
 
 const getters = (window: DOMWindow, document: DOMWindow["document"]) => ({
   category: [...document.querySelectorAll("[id=torrent_name]")].map((e) =>
     Math.abs(
       +window
         .getComputedStyle(
-          e.parentElement!.previousElementSibling!.children[1]!.children[0]!
+          e.parentElement!.previousElementSibling!.children[1]!.children[0]!,
         )
-        .backgroundPositionY.split("px")[0]!
-    )
+        .backgroundPositionY.split("px")[0]!,
+    ),
   ),
   name: [...document.querySelectorAll("[id=torrent_name]")].map((e) =>
-    e.textContent!.trim()
+    e.textContent!.trim(),
   ),
   url: [...document.querySelectorAll("[id=torrent_name]")].map(
-    (e) => e.getAttribute("href")!
+    (e) => e.getAttribute("href")!,
   ),
   id: [...document.querySelectorAll("[id=get_nfo]")].map(
-    (e) => e.getAttribute("target")!
+    (e) => e.getAttribute("target")!,
   ),
   age: [...document.querySelectorAll("[class=ico_clock-o]")].map(
-    (e) => +e.previousSibling!.textContent!
+    (e) => +e.previousSibling!.textContent!,
   ),
   size: [...document.querySelectorAll("[id=get_nfo]")].map(
     (e) =>
       e.parentElement!.nextElementSibling!.nextElementSibling!
-        .nextElementSibling!.textContent!
+        .nextElementSibling!.textContent!,
   ),
   completed: [...document.querySelectorAll("[id=get_nfo]")].map(
     (e) =>
       +e.parentElement!.nextElementSibling!.nextElementSibling!
-        .nextElementSibling!.nextElementSibling!.textContent!
+        .nextElementSibling!.nextElementSibling!.textContent!,
   ),
   seed: [...document.querySelectorAll("[id=get_nfo]")].map(
     (e) =>
       +e.parentElement!.nextElementSibling!.nextElementSibling!
         .nextElementSibling!.nextElementSibling!.nextElementSibling!
-        .textContent!
+        .textContent!,
   ),
   leech: [...document.querySelectorAll("[id=get_nfo]")].map(
     (e) =>
       +e.parentElement!.nextElementSibling!.nextElementSibling!
         .nextElementSibling!.nextElementSibling!.nextElementSibling!
-        .nextElementSibling!.textContent!
+        .nextElementSibling!.textContent!,
   ),
 });
 
 export class YggTorrentIndexer extends TorrentIndexer {
   constructor(
     environmentHelper: EnvironmentHelper,
-    private readonly safeRequest: SafeRequest
+    private readonly safeRequest: SafeRequest,
   ) {
     super();
     this.username = environmentHelper.get("YGG_TORRENT_USERNAME");
@@ -96,7 +96,7 @@ export class YggTorrentIndexer extends TorrentIndexer {
     const result = await this.safeRequest.get(
       `${YggTorrentIndexer.URL}/engine/search?name=${query
         .split(" ")
-        .join("+")}&do=search&order=desc&sort=seed`
+        .join("+")}&do=search&order=desc&sort=seed`,
     );
     if (!result.status) {
       return [];
@@ -115,7 +115,7 @@ export class YggTorrentIndexer extends TorrentIndexer {
           seeders: gets.seed[i]!,
           size: YggTorrentIndexer.sizeToBytes(gets.size[i]!),
           pageUrl: gets.url[i]!,
-        })
+        }),
       );
     }
 

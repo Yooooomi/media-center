@@ -91,7 +91,7 @@ export class DelugeTorrentClient extends TorrentClient {
       {
         withCredentials: true,
         headers,
-      }
+      },
     );
     return { data: data, headers: receivedHeaders as Record<string, string> };
   }
@@ -228,7 +228,7 @@ export class DelugeTorrentClient extends TorrentClient {
           hash: id,
           downloaded: torrent.progress,
           speed: torrent.download_payload_rate,
-        })
+        }),
     );
   }
 }

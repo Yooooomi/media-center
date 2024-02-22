@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { GetAsset } from "@media-center/domains/src/tools/meta";
+import { GetAsset } from "@media-center/domains/src/miscellaneous/tools/meta";
 import { TorrentIndexer } from "@media-center/domains/src/torrentIndexer/applicative/torrentIndexer";
 import { TorrentIndexerResult } from "@media-center/domains/src/torrentIndexer/domain/torrentIndexerResult";
 import { TorrentIndexerResultId } from "@media-center/domains/src/torrentIndexer/domain/torrentIndexerResultId";

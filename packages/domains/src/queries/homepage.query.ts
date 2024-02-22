@@ -72,7 +72,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly userTmdbInfoStore: UserTmdbInfoStore,
-    private readonly tmdbStore: TmdbStore
+    private readonly tmdbStore: TmdbStore,
   ) {
     super();
   }
@@ -83,7 +83,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
-      | TorrentRequestUpdated
+      | TorrentRequestUpdated,
   ) {
     return true;
   }
@@ -107,7 +107,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
     const neededTmdbIds = [...neededTmdbs.keys()].map((e) => new TmdbId(e));
 
     const tmdbs = keyBy(await this.tmdbStore.loadMany(neededTmdbIds), (e) =>
-      e.id.toString()
+      e.id.toString(),
     );
 
     const fulfilledMovies = catalogEntries

@@ -9,12 +9,12 @@ import { EnvironmentHelper } from "@media-center/domains/src/environment/applica
 import { FileWatcher } from "@media-center/domains/src/fileWatcher/applicative/fileWatcher";
 import { FileType } from "@media-center/domains/src/fileWatcher/applicative/fileWatcher.events";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
-import { File } from "@media-center/domains/src/valueObjects/file";
+import { File } from "@media-center/domains/src/miscellaneous/valueObjects/file";
 
 class CannotWatchSameDirectory extends InfrastructureError {
   constructor(dirname: string) {
     super(
-      `Cannot watch same directory, determination of movie and show is based on their location (received: ${dirname})`
+      `Cannot watch same directory, determination of movie and show is based on their location (received: ${dirname})`,
     );
   }
 }
@@ -31,7 +31,7 @@ export class DiskFileWatcher extends FileWatcher {
   constructor(
     eventBus: EventBus,
     hierarchyStore: HierarchyStore,
-    private readonly environmentHelper: EnvironmentHelper
+    private readonly environmentHelper: EnvironmentHelper,
   ) {
     super(eventBus, hierarchyStore);
   }
@@ -106,7 +106,7 @@ export class DiskFileWatcher extends FileWatcher {
       this.environmentHelper.get("FILE_WATCHER_MOVIE_DIR")
     ) {
       throw new CannotWatchSameDirectory(
-        this.environmentHelper.get("FILE_WATCHER_SHOW_DIR")
+        this.environmentHelper.get("FILE_WATCHER_SHOW_DIR"),
       );
     }
 

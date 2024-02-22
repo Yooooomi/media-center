@@ -1,18 +1,18 @@
 import { Query, QueryHandler } from "@media-center/domain-driven";
 import { uniqBy } from "@media-center/algorithm";
 import { TorrentIndexerResult } from "../domain/torrentIndexerResult";
+import { SearchQuery } from "../../miscellaneous/tools/searchQuery";
 import { TorrentIndexer } from "./torrentIndexer";
-import { SearchQuery } from "../../tools/searchQuery";
 
 export class SearchTorrentsQuery extends Query(
   {
     queries: [SearchQuery],
   },
-  [TorrentIndexerResult]
+  [TorrentIndexerResult],
 ) {}
 
 export class SearchTorrentsQueryHandler extends QueryHandler(
-  SearchTorrentsQuery
+  SearchTorrentsQuery,
 ) {
   constructor(private readonly torrentIndexer: TorrentIndexer) {
     super();
@@ -27,7 +27,7 @@ export class SearchTorrentsQueryHandler extends QueryHandler(
 
     return uniqBy(
       results.sort((a, b) => b.seeders - a.seeders),
-      (torrent) => torrent.id.toString()
+      (torrent) => torrent.id.toString(),
     );
   }
 }

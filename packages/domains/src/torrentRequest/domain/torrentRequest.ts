@@ -53,7 +53,7 @@ export class TorrentRequest extends Shape({
 
   public getSizeProgress() {
     return `${this.getDisplaySize(
-      this.getClampedDownloaded() * this.size
+      this.getClampedDownloaded() * this.size,
     )}/${this.getDisplaySize(this.size)}`;
   }
 }

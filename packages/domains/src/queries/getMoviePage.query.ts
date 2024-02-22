@@ -37,7 +37,7 @@ class MoviePageSummary extends Shape({
 
 export class GetMoviePageQuery extends Query(
   { actorId: UserId, tmdbId: TmdbId },
-  MoviePageSummary
+  MoviePageSummary,
 ) {}
 
 export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
@@ -54,7 +54,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly hierarchyStore: HierarchyStore,
-    private readonly userTmdbInfoStore: UserTmdbInfoStore
+    private readonly userTmdbInfoStore: UserTmdbInfoStore,
   ) {
     super();
   }
@@ -67,7 +67,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       | TorrentRequestAdded
       | TorrentRequestUpdated
       | UserTmdbInfoUpdated,
-    intent: GetMoviePageQuery
+    intent: GetMoviePageQuery,
   ) {
     if (event instanceof UserTmdbInfoUpdated) {
       return event.userTmdbInfoId.equals(event.userTmdbInfoId);
@@ -101,7 +101,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
 
     const hierarchyItems = catalogEntry
       ? await this.hierarchyStore.loadMany(
-          catalogEntry.dataset.hierarchyItemIds
+          catalogEntry.dataset.hierarchyItemIds,
         )
       : [];
 

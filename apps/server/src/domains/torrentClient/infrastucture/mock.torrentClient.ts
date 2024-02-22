@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { compact } from "@media-center/algorithm";
-import { TorrentService } from "@media-center/domains/src/tools/torrentService";
+import { TorrentService } from "@media-center/domains/src/miscellaneous/tools/torrentService";
 import { TorrentClient } from "@media-center/domains/src/torrentClient/applicative/torrentClient";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { TorrentClientEntry } from "@media-center/domains/src/torrentClient/domain/torrentClientEntry";
@@ -60,8 +60,8 @@ export class MockTorrentClient extends TorrentClient {
             // Random between 0o/s and 30mo/s
             speed: Math.floor(Math.random() * 1024 * 1024 * 30),
           });
-        })
-      )
+        }),
+      ),
     );
   }
 

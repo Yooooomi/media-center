@@ -9,7 +9,7 @@ import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 export class MockTmdbAPI extends TmdbAPI {
   async getEpisodes(
     tmdbId: TmdbId,
-    seasonNumber: number
+    seasonNumber: number,
   ): Promise<ShowEpisode[]> {
     return {
       _id: "590072e1c3a3680ffd00a0b8",
@@ -7618,7 +7618,7 @@ export class MockTmdbAPI extends TmdbAPI {
           still_path: e.still_path,
           vote_average: e.vote_average,
           vote_count: e.vote_count,
-        })
+        }),
     );
   }
 
@@ -7677,7 +7677,7 @@ export class MockTmdbAPI extends TmdbAPI {
           overview: e.overview,
           poster_path: e.poster_path,
           vote_average: e.vote_average,
-        })
+        }),
     );
   }
 
@@ -8099,7 +8099,7 @@ export class MockTmdbAPI extends TmdbAPI {
           vote_average: d.vote_average,
           vote_count: d.vote_count,
           season_count: 0,
-        })
+        }),
     );
   }
 
@@ -8468,7 +8468,7 @@ export class MockTmdbAPI extends TmdbAPI {
           video: d.video,
           vote_average: d.vote_average,
           vote_count: d.vote_count,
-        })
+        }),
     );
   }
 

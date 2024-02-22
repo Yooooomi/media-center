@@ -1,19 +1,19 @@
 import { InMemoryDatabase, QueryBus } from "@media-center/domain-driven";
-import { FilesystemTmdbStore } from "./infrastructure/filesystem.tmdb.store";
-import { InMemoryTmdbStore } from "./infrastructure/inMemory.tmdb.store";
-import { MockTmdbAPI } from "./infrastructure/mock.tmdb.api";
-import { RealTmdbAPI } from "./infrastructure/real.tmdb.api";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { GetEpisodesQueryHandler } from "@media-center/domains/src/tmdb/applicative/getEpisodes.query";
 import { GetMovieDetailsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getMovieDetails.query";
 import { GetSeasonsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getSeasons.query";
 import { GetTmdbsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getTmdbs.query";
 import { SearchQueryHandler } from "@media-center/domains/src/tmdb/applicative/search.query";
+import { RealTmdbAPI } from "./infrastructure/real.tmdb.api";
+import { MockTmdbAPI } from "./infrastructure/mock.tmdb.api";
+import { InMemoryTmdbStore } from "./infrastructure/inMemory.tmdb.store";
+import { FilesystemTmdbStore } from "./infrastructure/filesystem.tmdb.store";
 
 export function bootTmdb(
   database: InMemoryDatabase,
   queryBus: QueryBus,
-  environmentHelper: EnvironmentHelper
+  environmentHelper: EnvironmentHelper,
 ) {
   const tmdbApi = environmentHelper.match("DI_TMDB_API", {
     mock: () => new MockTmdbAPI(),

@@ -23,11 +23,11 @@ export class GetShowEntriesQuery extends Query(undefined, [
 ]) {}
 
 export class GetShowEntriesQueryHandler extends QueryHandler(
-  GetShowEntriesQuery
+  GetShowEntriesQuery,
 ) {
   constructor(
     private readonly catalogEntryStore: CatalogEntryStore,
-    private readonly hierarchyItemStore: HierarchyStore
+    private readonly hierarchyItemStore: HierarchyStore,
   ) {
     super();
   }
@@ -43,9 +43,9 @@ export class GetShowEntriesQueryHandler extends QueryHandler(
     });
     const neededHierarchyItems = keyBy(
       await this.hierarchyItemStore.loadMany(
-        [...neededHierarchyItemIds.values()].map((i) => new HierarchyItemId(i))
+        [...neededHierarchyItemIds.values()].map((i) => new HierarchyItemId(i)),
       ),
-      (e) => e.id.toString()
+      (e) => e.id.toString(),
     );
 
     return entries.map((entry) => {

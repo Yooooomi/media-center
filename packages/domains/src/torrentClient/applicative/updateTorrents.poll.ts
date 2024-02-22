@@ -6,7 +6,7 @@ import { TorrentClient } from "./torrentClient";
 export class UpdateTorrentsPoll extends Polling {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly torrentClient: TorrentClient
+    private readonly torrentClient: TorrentClient,
   ) {
     super();
   }
@@ -23,9 +23,9 @@ export class UpdateTorrentsPoll extends Polling {
             torrentRequestId: new TorrentRequestId(torrent.hash),
             downloaded: torrent.downloaded,
             speed: torrent.speed,
-          })
+          }),
         );
-      })
+      }),
     );
   }
 }

@@ -4,7 +4,7 @@ import { EnvironmentHelper } from "../../environment/applicative/environmentHelp
 export class GetDeclaredUsersQuery extends Query(undefined, [String]) {}
 
 export class GetDeclaredUsersQueryHandler extends QueryHandler(
-  GetDeclaredUsersQuery
+  GetDeclaredUsersQuery,
 ) {
   constructor(private readonly environmentHelper: EnvironmentHelper) {
     super();

@@ -15,7 +15,7 @@ export class InMemoryTorrentRequestStore
     super(
       database,
       "torrentRequest",
-      new SerializableSerializer(TorrentRequest)
+      new SerializableSerializer(TorrentRequest),
     );
   }
 

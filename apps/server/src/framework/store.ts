@@ -13,7 +13,7 @@ export class FilesystemStore<M extends AtLeastId> extends DDFilesystemStore<M> {
     environmentHelper: EnvironmentHelper,
     database: InMemoryDatabase,
     collectionName: string,
-    serializer: Serializer<M>
+    serializer: Serializer<M>,
   ) {
     const dir = environmentHelper.get("FILESYSTEM_STORE_DIR");
     if (!fs.existsSync(dir)) {

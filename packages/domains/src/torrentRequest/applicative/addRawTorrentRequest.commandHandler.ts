@@ -4,11 +4,11 @@ import { TorrentIndexer } from "../../torrentIndexer/applicative/torrentIndexer"
 import { AddRawTorrentRequestCommand } from "./addRawTorrentRequest.command";
 
 export class AddRawTorrentRequestCommandHandler extends CommandHandler(
-  AddRawTorrentRequestCommand
+  AddRawTorrentRequestCommand,
 ) {
   constructor(
     private readonly torrentIndexer: TorrentIndexer,
-    private readonly torrentClient: TorrentClient
+    private readonly torrentClient: TorrentClient,
   ) {
     super();
   }

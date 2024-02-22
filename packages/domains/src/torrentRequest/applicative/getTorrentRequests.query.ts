@@ -7,11 +7,11 @@ export class GetTorrentRequestsQuery extends Query(
   {
     tmdbId: TmdbId,
   },
-  [TorrentRequest]
+  [TorrentRequest],
 ) {}
 
 export class GetTorrentRequestsQueryHandler extends QueryHandler(
-  GetTorrentRequestsQuery
+  GetTorrentRequestsQuery,
 ) {
   constructor(private readonly torrentRequestStore: TorrentRequestStore) {
     super();

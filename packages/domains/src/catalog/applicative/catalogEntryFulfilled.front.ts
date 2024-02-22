@@ -10,7 +10,7 @@ export class MovieCatalogEntryDatasetFulfilled extends Shape({
     return (
       other instanceof MovieCatalogEntryDatasetFulfilled &&
       this.hierarchyItems.every((item, index) =>
-        item.equals(other.hierarchyItems[index])
+        item.equals(other.hierarchyItems[index]),
       )
     );
   }
@@ -45,7 +45,7 @@ export class ShowCatalogEntryDatasetFulfilled extends Shape({
       this.season === other.season &&
       this.episode === other.episode &&
       this.hierarchyItems.every((item, index) =>
-        item.equals(other.hierarchyItems[index])
+        item.equals(other.hierarchyItems[index]),
       )
     );
   }

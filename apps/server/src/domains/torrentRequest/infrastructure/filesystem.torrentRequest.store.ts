@@ -14,13 +14,13 @@ export class FilesystemTorrentRequestStore
 {
   constructor(
     environmentHelper: EnvironmentHelper,
-    database: InMemoryDatabase
+    database: InMemoryDatabase,
   ) {
     super(
       environmentHelper,
       database,
       "torrentRequest",
-      new SerializableSerializer(TorrentRequest)
+      new SerializableSerializer(TorrentRequest),
     );
   }
 

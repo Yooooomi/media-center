@@ -16,7 +16,10 @@ export class InMemoryTmdbStore
   extends InMemoryStore<AnyTmdb>
   implements TmdbStore
 {
-  constructor(database: InMemoryDatabase, private readonly tmdbAPI: TmdbAPI) {
+  constructor(
+    database: InMemoryDatabase,
+    private readonly tmdbAPI: TmdbAPI,
+  ) {
     super(database, "tmdb", new SerializableSerializer(Either(Movie, Show)));
   }
 
@@ -37,13 +40,13 @@ export class InMemoryTmdbStore
     let existing = await super.loadMany(ids);
 
     const notExisting = ids.filter(
-      (i) => !existing.some((e) => e.id.equals(i))
+      (i) => !existing.some((e) => e.id.equals(i)),
     );
 
     let loaded: AnyTmdb[] = [];
     if (notExisting.length > 0) {
       loaded = compact(
-        await Promise.all(notExisting.map((ne) => this.tmdbAPI.get(ne)))
+        await Promise.all(notExisting.map((ne) => this.tmdbAPI.get(ne))),
       );
     }
 

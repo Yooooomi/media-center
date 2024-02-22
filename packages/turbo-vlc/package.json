@@ -1,6 +1,7 @@
 {
   "name": "@media-center/turbo-vlc",
-  "version": "0.1.0",
+  "version": "0.0.1",
+  "private": true,
   "description": "VLC Turbo module implementation",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -41,9 +42,6 @@
     "@types/jest": "^28.1.2",
     "@types/react": "~17.0.21",
     "del-cli": "^5.0.0",
-    "eslint": "^8.4.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "pod-install": "^0.1.0",
     "react": "18.2.0",
     "react-native-builder-bob": "^0.23.2",

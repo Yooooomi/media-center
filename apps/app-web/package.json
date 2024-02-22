@@ -1,0 +1,41 @@
+{
+  "name": "@media-center/app-web",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "yoyo": "DISABLE_ESLINT_PLUGIN=true react-app-rewired start",
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@media-center/domains": "*",
+    "@media-center/frontend": "*",
+    "@media-center/ui": "*",
+    "customize-cra": "^1.0.0",
+    "event-source-polyfill": "^1.0.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native-web": "^0.19.10",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.23.6",
+    "@babel/plugin-transform-flow-strip-types": "^7.23.3",
+    "@babel/plugin-transform-private-methods": "^7.23.3",
+    "@babel/plugin-transform-reserved-words": "^7.23.3",
+    "@types/node": "^16.18.82",
+    "@types/react": "^18.2.57",
+    "@types/react-dom": "^18.2.19",
+    "event-source-polyfill": "^1.0.31",
+    "react-app-rewired": "^2.2.1"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
+}

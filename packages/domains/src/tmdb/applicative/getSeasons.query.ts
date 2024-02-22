@@ -7,7 +7,7 @@ export class GetSeasonsQuery extends Query(
   {
     tmdbId: TmdbId,
   },
-  [ShowSeason]
+  [ShowSeason],
 ) {}
 
 export class GetSeasonsQueryHandler extends QueryHandler(GetSeasonsQuery) {

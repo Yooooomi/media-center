@@ -4,7 +4,6 @@ import {
   InMemoryDatabase,
   SerializableSerializer,
 } from "@media-center/domain-driven";
-import { FilesystemStore } from "../../../framework/store";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
 import { TmdbStore } from "@media-center/domains/src/tmdb/applicative/tmdb.store";
@@ -12,6 +11,7 @@ import { AnyTmdb } from "@media-center/domains/src/tmdb/domain/anyTmdb";
 import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
+import { FilesystemStore } from "../../../framework/store";
 
 export class FilesystemTmdbStore
   extends FilesystemStore<AnyTmdb>
@@ -20,13 +20,13 @@ export class FilesystemTmdbStore
   constructor(
     environmentHelper: EnvironmentHelper,
     database: InMemoryDatabase,
-    private readonly tmdbAPI: TmdbAPI
+    private readonly tmdbAPI: TmdbAPI,
   ) {
     super(
       environmentHelper,
       database,
       "tmdb",
-      new SerializableSerializer(Either(Movie, Show))
+      new SerializableSerializer(Either(Movie, Show)),
     );
   }
 
@@ -47,13 +47,13 @@ export class FilesystemTmdbStore
     let existing = await super.loadMany(ids);
 
     const notExisting = ids.filter(
-      (i) => !existing.some((e) => e.id.equals(i))
+      (i) => !existing.some((e) => e.id.equals(i)),
     );
 
     let loaded: AnyTmdb[] = [];
     if (notExisting.length > 0) {
       loaded = compact(
-        await Promise.all(notExisting.map((ne) => this.tmdbAPI.get(ne)))
+        await Promise.all(notExisting.map((ne) => this.tmdbAPI.get(ne))),
       );
       await Promise.all(loaded.map((l) => this.save(l)));
     }

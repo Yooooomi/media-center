@@ -1,12 +1,10 @@
 {
   "name": "@media-center/algorithm",
-  "version": "1.0.0",
-  "main": "./lib/index",
+  "version": "0.0.1",
+  "private": true,
   "license": "MIT",
+  "main": "./src/index",
   "types": "./src/index",
-  "files": [
-    "./src/"
-  ],
   "scripts": {
     "build:watch": "yarn build --watch --preserveWatchOutput",
     "build": "tsc"

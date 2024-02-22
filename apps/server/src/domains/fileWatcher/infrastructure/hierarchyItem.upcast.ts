@@ -3,8 +3,8 @@ import {
   UpcastManifest,
   EnsureFrozen,
 } from "@media-center/domain-driven";
-import type { HierarchyItem0 } from "./hierarchyItem.version.0";
 import { HierarchyItem } from "@media-center/domains/src/fileWatcher/domain/hierarchyItem";
+import type { HierarchyItem0 } from "./hierarchyItem.version.0";
 
 export class HierarchyItemUpcastSerializer extends UpcastSerializer<HierarchyItem> {
   constructor() {

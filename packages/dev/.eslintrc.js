@@ -1,5 +1,4 @@
 module.exports = {
-  root: true,
   extends: [
     "plugin:import/recommended",
     "plugin:import/typescript",
@@ -21,12 +20,24 @@ module.exports = {
     "import/order": ["error"],
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",
+    "import/no-extraneous-dependencies": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        trailingComma: "all",
+        tabWidth: 2,
+        semi: true,
+        singleQuote: false,
+      },
+    ],
   },
   ignorePatterns: ["lib"],
   settings: {
     "import/resolver": {
       typescript: true,
-      node: true,
+      node: {
+        extensions: [".ts", ".tsx", ".web.ts", ".native.ts"]
+      },
     },
   },
 };

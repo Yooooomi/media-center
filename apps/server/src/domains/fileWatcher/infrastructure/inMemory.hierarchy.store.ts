@@ -1,7 +1,7 @@
 import { InMemoryDatabase, InMemoryStore } from "@media-center/domain-driven";
-import { HierarchyItemUpcastSerializer } from "./hierarchyItem.upcast";
 import { HierarchyItem } from "@media-center/domains/src/fileWatcher/domain/hierarchyItem";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
+import { HierarchyItemUpcastSerializer } from "./hierarchyItem.upcast";
 
 export class InMemoryHierarchyStore
   extends InMemoryStore<HierarchyItem>

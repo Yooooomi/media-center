@@ -1,8 +1,6 @@
 import { Alert } from "react-native";
-import { ignoreNextForeground } from "../../../services/listenToUpdate";
 
 export function PromptAlert(...args: Parameters<typeof Alert.alert>) {
-  ignoreNextForeground();
   Alert.alert(...args);
 }
 

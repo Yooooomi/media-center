@@ -18,8 +18,8 @@ import { ConfigureServer } from "../screens/configureServer";
 import { Text } from "../components/ui/input/text";
 import { ReactiveShape } from "./contexts/reactive.context";
 import { localStore } from "./localStore";
-import { SplashScreenContext } from "./contexts/splashScreen.context";
 import { Beta } from "./api/api";
+import { DI_HOOKS } from "./di/injectHook";
 
 export class LocalUserProfile extends Shape({
   user: Optional(String),
@@ -62,7 +62,6 @@ interface LocalUserContextProviderProps {
 export function LocalUserContextProvider({
   children,
 }: LocalUserContextProviderProps) {
-  const { hide } = useContext(SplashScreenContext);
   const [error, setError] = useState<Error | undefined>(undefined);
   const reactive = ReactiveShape.use<LocalUserProfile | undefined>(undefined);
   const [declaredUsers, setDeclaredUsers] = useState<string[] | undefined>(
@@ -79,12 +78,12 @@ export function LocalUserContextProvider({
       reactive.updateInstance(storedUser);
 
       if (!storedUser.serverAddress || !storedUser.serverPassword) {
-        hide();
+        DI_HOOKS.trigger("OnLoginError");
         return;
       }
 
       if (!storedUser.user) {
-        hide();
+        DI_HOOKS.trigger("OnLoginError");
       }
 
       Beta.setServer(
@@ -100,10 +99,10 @@ export function LocalUserContextProvider({
       storedUser.setUser(declaredStoredUser);
     } catch (e) {
       console.log(e);
-      hide();
+      DI_HOOKS.trigger("OnLoginError");
       setError(e as Error);
     }
-  }, [hide, reactive]);
+  }, [reactive]);
 
   useEffect(() => {
     async function callInit() {
@@ -181,7 +180,7 @@ export function LocalUserContextProvider({
           reactive.call("setServerAddress", address);
           reactive.call("setServerPassword", password);
           await localStore.set("user", reactive.instance);
-          init();
+          init().catch(console.error);
         }}
       />
     );
@@ -204,7 +203,7 @@ export function LocalUserContextProvider({
             return;
           }
           reactive.call("setUser", selected);
-          localStore.set("user", reactive.instance);
+          localStore.set("user", reactive.instance).catch(console.error);
           Beta.setServer(
             reactive.instance.serverAddress,
             reactive.instance.serverPassword,

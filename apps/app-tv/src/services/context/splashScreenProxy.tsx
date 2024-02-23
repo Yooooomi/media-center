@@ -1,50 +1,37 @@
 import LottieView from "lottie-react-native";
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import Animated, { FadeOut } from "react-native-reanimated";
 import * as SplashScreen from "expo-splash-screen";
 import { color } from "@media-center/ui/src/constants";
-import animation from "../../assets/splash.lottie.json";
+import animation from "@media-center/frontend/src/assets/splash.lottie.json";
+import { DI_HOOKS } from "@media-center/frontend/src/services/di/injectHook";
 
-export const SplashScreenContext = createContext({
-  hide: () => {},
-});
-
-interface SplashScreenContextProviderProps {
+interface SplashScreenProxyProps {
   children: ReactNode;
 }
 
-export function SplashScreenContextProvider({
-  children,
-}: SplashScreenContextProviderProps) {
+export function SplashScreenProxy({ children }: SplashScreenProxyProps) {
   const [showLottie, setShowLottie] = useState(!__DEV__);
   const readyToHide = useRef(false);
   const requestedHide = useRef(false);
 
   useEffect(() => {
-    SplashScreen.hideAsync();
+    SplashScreen.hideAsync().catch(console.error);
   }, []);
 
-  const context = useMemo(
-    () => ({
-      hide: () => {
-        if (readyToHide.current) {
-          setShowLottie(false);
-        } else {
-          requestedHide.current = true;
-        }
-      },
-    }),
-    [],
-  );
+  const hide = useCallback(() => {
+    if (readyToHide.current) {
+      setShowLottie(false);
+    } else {
+      requestedHide.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    DI_HOOKS.register("OnFirstAddedRecently", hide);
+    return DI_HOOKS.unregister("OnFirstAddedRecently", hide);
+  }, [hide]);
 
   const checkHide = useCallback(() => {
     readyToHide.current = true;
@@ -54,7 +41,7 @@ export function SplashScreenContextProvider({
   }, []);
 
   return (
-    <SplashScreenContext.Provider value={context}>
+    <>
       {children}
       {showLottie ? (
         <Animated.View style={styles.lottieContainer} exiting={FadeOut}>
@@ -67,7 +54,7 @@ export function SplashScreenContextProvider({
           />
         </Animated.View>
       ) : null}
-    </SplashScreenContext.Provider>
+    </>
   );
 }
 

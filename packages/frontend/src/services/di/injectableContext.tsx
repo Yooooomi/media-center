@@ -6,15 +6,15 @@ interface InjectableContextProps<T> {
   children: ReactNode;
 }
 
-const injected: Record<symbol, ComponentType<{}>[]> = {};
+const injected: Map<symbol, ComponentType<{}>[]> = new Map();
 
 export function InjectUnderContext(
   provider: Provider<any>,
   component: ComponentType<{}>,
 ) {
-  const existing = injected[provider.prototype] ?? [];
+  const existing = injected.get(provider.prototype) ?? [];
   existing.push(component);
-  injected[provider.prototype] = existing;
+  injected.set(provider.prototype, existing);
 }
 
 export function InjectableContext<T>({
@@ -23,7 +23,7 @@ export function InjectableContext<T>({
   value,
 }: InjectableContextProps<T>) {
   const ContextProvider = provider;
-  const injectedForThisContext = injected[provider.prototype];
+  const injectedForThisContext = injected.get(provider.prototype);
 
   return (
     <ContextProvider value={value}>

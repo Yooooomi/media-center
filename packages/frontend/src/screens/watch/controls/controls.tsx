@@ -24,6 +24,7 @@ import { ProgressBar } from "../../../components/ui/display/progressBar/progress
 import { IconButton } from "../../../components/ui/input/pressable/iconButton";
 import { isNative } from "../../../services/platform";
 import { Timeout } from "../../../services/types";
+import { useNavigate } from "../../params";
 import { ControlsActionSheet } from "./controlsActionSheet";
 import { useControlInteraction } from "./useControlInteraction";
 
@@ -64,6 +65,7 @@ export function Controls({
   progress,
   style,
 }: ControlsProps) {
+  const { goBack } = useNavigate();
   const showTimeout = useRef<Timeout | undefined>(undefined);
   const [isShowing, show, hide] = useBooleanState(true);
   const [actionSheet, setActionSheet] = useState<"text" | "audio" | undefined>(
@@ -116,6 +118,9 @@ export function Controls({
 
   return (
     <>
+      <View style={styles.close}>
+        <IconButton size={24} icon="arrow-left" onPress={goBack} />
+      </View>
       {seekActive && (
         <Animated.View
           style={styles.overlay}
@@ -237,8 +242,16 @@ const styles = StyleSheet.create({
     backgroundColor: `${color.background}69`,
     paddingBottom: spacing.S16,
   },
+  close: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
+    top: spacing.S24,
+    left: spacing.S24,
+    right: "auto",
+  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
     alignItems: "center",
     justifyContent: "center",
   },

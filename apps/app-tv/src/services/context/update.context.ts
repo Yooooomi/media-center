@@ -1,5 +1,5 @@
 import { Shape } from "@media-center/domain-driven";
-import { localStore } from "../localStore";
+import { localStore } from "@media-center/frontend/src/services/localStore";
 
 export class Update extends Shape({
   updated: Boolean,

@@ -17,6 +17,9 @@ export const Pressable = forwardRef<View, PressableProps>(
       <RNPressable
         ref={ref}
         style={style}
+        onLongPress={onLongPress}
+        onPress={handleOnPress}
+        // @ts-expect-error
         onMouseEnter={() => {
           setFocused(true);
           onFocus?.();
@@ -25,8 +28,6 @@ export const Pressable = forwardRef<View, PressableProps>(
           setFocused(false);
           onBlur?.();
         }}
-        onLongPress={onLongPress}
-        onPress={handleOnPress}
       >
         {renderedChildren}
       </RNPressable>

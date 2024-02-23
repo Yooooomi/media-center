@@ -1,12 +1,15 @@
 import { Platform, StyleSheet, View } from "react-native";
-import { useMemo } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { color } from "@media-center/ui/src/constants";
-import { Navigation } from "./src/screens";
+import { Navigation } from "@media-center/frontend/src/screens";
 import { useListenToUpdate } from "./src/services/listenToUpdate";
-import { SplashScreenContextProvider } from "./src/services/contexts/splashScreen.context";
+import { SplashScreenProxy } from "./src/services/context/splashScreenProxy";
+import { NavigationContext, useNavigate } from "@media-center/frontend/src/screens/params";
+import { InjectUnderContext } from "@media-center/frontend/src/services/di/injectableContext";
+import { useBack } from "@media-center/frontend/src/services/hooks/useBack";
+import { useCallback } from "react";
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(console.error);
 
 const fonts = Platform.select<Record<string, string>>({
   default: {
@@ -29,19 +32,29 @@ StyleSheet.setStyleAttributePreprocessor("fontFamily", (next) => {
   return fonts[next] ?? next;
 });
 
+InjectUnderContext(NavigationContext.Provider, () => {
+  const { goBack } = useNavigate();
+
+  useBack(
+    useCallback(() => {
+      goBack();
+      return true;
+    }, [goBack]),
+  );
+
+  return null;
+});
+
 export function App() {
   useListenToUpdate();
 
-  const content = useMemo(
-    () => (
+  return (
+    <SplashScreenProxy>
       <View style={styles.root}>
         <Navigation />
       </View>
-    ),
-    [],
+    </SplashScreenProxy>
   );
-
-  return <SplashScreenContextProvider>{content}</SplashScreenContextProvider>;
 }
 
 const styles = StyleSheet.create({

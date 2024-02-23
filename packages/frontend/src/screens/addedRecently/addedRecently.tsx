@@ -1,8 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { HomepageQuery } from "@media-center/domains/src/queries/homepage.query";
 import { ScrollView } from "react-native";
-import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
-import { Beta } from "@media-center/frontend/src/services/api/api";
 import { ShowCardsLine } from "../../components/implementedUi/showCardsLine/showCardsLine";
 import { MovieCardsLine } from "../../components/implementedUi/movieCardsLine/movieCardsLine";
 import { Box } from "../../components/ui/display/box/box";
@@ -12,10 +10,11 @@ import { DownloadingCardLine } from "../../components/implementedUi/downloadingC
 import { TmdbCardsLine } from "../../components/implementedUi/tmdbCardsLine/tmdbCardsLine";
 import { Text } from "../../components/ui/input/text";
 import { useMeshContext } from "../../services/contexts/mesh.context";
-import { SplashScreenContext } from "../../services/contexts/splashScreen.context";
+import { DI_HOOKS } from "../../services/di/injectHook";
+import { Beta } from "@media-center/frontend/src/services/api/api";
+import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
 
 export function AddedRecently() {
-  const { hide } = useContext(SplashScreenContext);
   const { initStatus } = useMeshContext(StatusContext);
   const [{ result: homepage }] = useQuery(HomepageQuery, Beta.userId, {
     reactive: true,
@@ -25,15 +24,11 @@ export function AddedRecently() {
     initStatus();
   }, [initStatus]);
 
-  useEffect(() => {
-    if (homepage) {
-      setTimeout(hide, 0);
-    }
-  }, [hide, homepage]);
-
   if (!homepage) {
     return <FullScreenLoading />;
   }
+
+  DI_HOOKS.trigger("OnFirstAddedRecently");
 
   const downloading = homepage.downloading
     .filter((e) => e.torrent.getClampedDownloaded() !== 1)

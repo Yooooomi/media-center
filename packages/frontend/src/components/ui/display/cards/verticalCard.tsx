@@ -1,16 +1,12 @@
 import { StyleSheet } from "react-native";
-import {
-  radius,
-  card,
-  cardShadow,
-  color,
-} from "@media-center/ui/src/constants";
+import { radius, cardShadow, color } from "@media-center/ui/src/constants";
 import { ScaleButton } from "../../input/pressable/scaleButton";
 import { Box } from "../box";
 import { Icon } from "../icon";
 import { DisabledFill } from "../disabledFill";
 import { RateLimitedImage } from "../rateLimitedImage";
 import { ProgressOverlay } from "../progressOverlay";
+import { card } from "../../../../services/cards";
 
 interface VerticalCardProps {
   uri: string | undefined;

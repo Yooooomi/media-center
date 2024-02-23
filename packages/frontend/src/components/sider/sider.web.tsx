@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import { spacing } from "@media-center/ui/src/constants";
+import { color, spacing } from "@media-center/ui/src/constants";
 import { useNavigate } from "../../screens/params";
 import { IconName } from "../ui/display/icon/icon";
 import { StatusContext } from "../../services/contexts/status.context";
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   root: {
     height: "100%",
     padding: spacing.S16,
+    backgroundColor: color.darkBackground,
   },
   status: {
     flexGrow: 1,

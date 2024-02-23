@@ -1,12 +1,13 @@
 import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
 import { StyleSheet } from "react-native";
 import React, { useCallback } from "react";
-import { card, spacing } from "@media-center/ui/src/constants";
+import { spacing } from "@media-center/ui/src/constants";
 import { useNavigate } from "../../../../screens/params";
 import { useImageUri } from "../../../../services/tmdb";
 import { Text } from "../../../ui/input/text/text";
 import { Box } from "../../../ui/display/box/box";
 import { VerticalCard } from "../../../ui/display/cards/verticalCard";
+import { card } from "../../../../services/cards";
 
 interface MovieCardProps {
   movie: Movie;

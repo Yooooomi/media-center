@@ -3,7 +3,6 @@ import { TorrentRequest } from "@media-center/domains/src/torrentRequest/domain/
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import { useCallback } from "react";
 import { StyleSheet } from "react-native";
-import { card } from "@media-center/ui/src/constants";
 import { MovieCard } from "../cards/movieCard/movieCard";
 import {
   SectionLine,
@@ -12,6 +11,7 @@ import {
 import { ShowCard } from "../cards/showCard";
 import { Box } from "../../ui/display/box";
 import { Text } from "../../ui/input/text";
+import { card } from "../../../services/cards";
 
 interface DownloadingCardLine extends ExtraSectionLineProps {
   autoFocusFirst?: boolean;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { HomepageQuery } from "@media-center/domains/src/queries/homepage.query";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { ShowCardsLine } from "../../components/implementedUi/showCardsLine/showCardsLine";
 import { MovieCardsLine } from "../../components/implementedUi/movieCardsLine/movieCardsLine";
 import { Box } from "../../components/ui/display/box/box";
@@ -45,7 +45,7 @@ export function AddedRecently() {
     0;
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.root}>
       <Box row grow>
         <Box shrink grow gap="S16" ml="S16" mt="S16">
           {hasNoContent ? <Text>Vous n'avez aucun média</Text> : null}
@@ -91,3 +91,9 @@ export function AddedRecently() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flexBasis: 0,
+  },
+});

@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import React, { useCallback } from "react";
-import { card, spacing } from "@media-center/ui/src/constants";
+import { spacing } from "@media-center/ui/src/constants";
 import { useImageUri } from "../../../../services/tmdb";
 import { useNavigate } from "../../../../screens/params";
 import { Box } from "../../../ui/display/box";
 import { Text } from "../../../ui/input/text/text";
 import { VerticalCard } from "../../../ui/display/cards/verticalCard";
+import { card } from "../../../../services/cards";
 
 interface ShowCardProps {
   show: Show;

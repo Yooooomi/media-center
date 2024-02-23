@@ -116,16 +116,6 @@ export const durations = {
   default: 175,
 };
 
-export const card = {
-  width: 90,
-  height: 140,
-};
-
-export const hcard = {
-  width: 240,
-  height: 150,
-};
-
 export const cardShadow = {
   shadowColor: rawColor.black,
   shadowOffset: {

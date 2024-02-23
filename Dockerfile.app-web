@@ -1,0 +1,47 @@
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json .
+COPY yarn.lock .
+
+COPY apps/app-web/package.json apps/app-web/
+
+COPY packages/domains/package.json packages/domains/
+COPY packages/frontend/package.json packages/frontend/
+COPY packages/ui/package.json packages/ui/
+COPY packages/dev/package.json packages/dev/
+COPY packages/domain-driven/package.json packages/domain-driven/
+COPY packages/algorithm/package.json packages/algorithm/
+
+COPY packages/video-player/package.json packages/video-player/
+COPY packages/turbo-vlc/package.json packages/turbo-vlc/
+COPY packages/web-video-player/package.json packages/web-video-player/
+
+RUN yarn --frozen-lockfile
+
+COPY apps/app-web apps/app-web
+
+COPY packages/domains packages/domains/
+COPY packages/frontend packages/frontend/
+COPY packages/ui packages/ui/
+COPY packages/dev packages/dev/
+COPY packages/domain-driven packages/domain-driven/
+COPY packages/algorithm packages/algorithm/
+
+COPY packages/video-player packages/video-player/
+COPY packages/turbo-vlc packages/turbo-vlc/
+COPY packages/web-video-player packages/web-video-player/
+
+RUN yarn workspace @media-center/app-web build
+
+RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN npm install -g serve
+COPY --from=BUILDER /app/apps/app-web/build ./
+
+CMD [ "serve", "-l", "tcp://0.0.0.0:3000" ]

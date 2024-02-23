@@ -4,4 +4,9 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.server
+
+  app-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.app-web

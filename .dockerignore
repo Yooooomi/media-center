@@ -5,8 +5,10 @@ docker-compose.yml
 .git
 .gitignore
 
-node_modules
+**/node_modules
 .env
 lib
 
 aaa
+**/Pods
+**/build

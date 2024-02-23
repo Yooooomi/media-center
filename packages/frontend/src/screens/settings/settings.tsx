@@ -7,11 +7,11 @@ import { Section } from "../../components/ui/display/section";
 import { Box } from "../../components/ui/display/box";
 import { LineButton } from "../../components/ui/input/pressable/lineButton";
 import { useLocalUser } from "../../services/localUserProfile";
-import { useQuery } from "../../services/hooks/useQuery";
-import { Beta } from "../../services/api";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { useMeshContext } from "../../services/contexts/mesh.context";
 import { StatusContext } from "../../services/contexts/status.context";
+import { useQuery } from "../../services/api/useQuery";
+import { Beta } from "../../services/api/api";
 
 export function Settings() {
   const [{ result }] = useQuery(SettingsPageQuery, undefined);

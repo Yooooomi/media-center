@@ -1,6 +1,7 @@
 import { Optional, Shape } from "@media-center/domain-driven";
-import React, {
+import {
   ReactNode,
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -16,9 +17,9 @@ import { ChooseUser } from "../screens/chooseUser";
 import { ConfigureServer } from "../screens/configureServer";
 import { Text } from "../components/ui/input/text";
 import { ReactiveShape } from "./contexts/reactive.context";
-import { Beta } from "./api";
 import { localStore } from "./localStore";
 import { SplashScreenContext } from "./contexts/splashScreen.context";
+import { Beta } from "./api/api";
 
 export class LocalUserProfile extends Shape({
   user: Optional(String),
@@ -49,7 +50,7 @@ export class LocalUserProfile extends Shape({
   }
 }
 
-export const LocalUserContext = React.createContext<{
+export const LocalUserContext = createContext<{
   user: ReactiveShape<LocalUserProfile | undefined>;
   save: () => void;
 }>({} as any);

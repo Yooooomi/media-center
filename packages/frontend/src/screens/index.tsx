@@ -8,6 +8,7 @@ import { AlertProvider } from "../components/ui/tools/alert/alertProvider";
 import { withSider } from "../services/hocs/withSider";
 import { LocalUserContextProvider } from "../services/localUserProfile";
 import { StatusContextProvider } from "../services/contexts/status.context";
+import { InjectableContext } from "../services/contexts/injectableContext";
 import { Discover } from "./discover";
 import { Movie } from "./movie/movie";
 import { Watch } from "./watch/watch";
@@ -65,15 +66,18 @@ export function Navigation() {
       <PortalProvider rootHostName={DEFAULT_HOSTNAME} shouldAddRootHost={false}>
         <NativeRouter>
           <AlertProvider>
-            <NavigationContext.Provider value={value}>
+            <InjectableContext
+              provider={NavigationContext.Provider}
+              value={value}
+            >
               <LocalUserContextProvider>
                 <StatusContextProvider>{routes}</StatusContextProvider>
               </LocalUserContextProvider>
-            </NavigationContext.Provider>
+            </InjectableContext>
           </AlertProvider>
         </NativeRouter>
         <PortalHost
-          style={StyleSheet.absoluteFillObject}
+          style={{ ...StyleSheet.absoluteFillObject, zIndex: 1000 }}
           name={DEFAULT_HOSTNAME}
         />
       </PortalProvider>

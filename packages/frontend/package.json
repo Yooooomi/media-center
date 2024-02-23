@@ -8,22 +8,28 @@
     "src/"
   ],
   "dependencies": {
+    "@gorhom/portal": "^1.0.14",
+    "@media-center/algorithm": "*",
     "@media-center/domain-driven": "*",
     "@media-center/domains": "*",
     "@media-center/ui": "*",
-    "@media-center/algorithm": "*",
+    "@media-center/video-player": "*",
     "axios": "^1.6.7"
   },
   "peerDependencies": {
+    "@media-center/dev": "*",
     "@types/event-source-polyfill": "*",
+    "@types/react-native-vector-icons": "*",
     "event-source-polyfill": "*",
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
+    "react-native-reanimated": "*",
     "react-native-sse": "*",
-    "react-native-reanimated": "*"
+    "react-native-vector-icons": "*"
   },
   "devDependencies": {
-    "@types/event-source-polyfill": "^1.0.5"
+    "@types/event-source-polyfill": "^1.0.5",
+    "@types/node": "^20.11.20"
   }
 }

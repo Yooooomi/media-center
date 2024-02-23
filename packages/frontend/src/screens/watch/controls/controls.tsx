@@ -1,14 +1,19 @@
-import { Pressable, StyleSheet, View, ViewStyle } from "react-native";
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Animated, {
   FadeIn,
   FadeOut,
-  SharedValue,
   useDerivedValue,
+  SharedValue,
 } from "react-native-reanimated";
-import { VideoInfoEvent } from "@media-center/turbo-vlc";
 import { color, fontSize, spacing } from "@media-center/ui/src/constants";
-import { useRemote } from "../../../services/hooks/useRemote";
+import { VideoInfoEvent } from "@media-center/video-player";
 import { useBooleanState } from "../../../services/hooks/useBooleanState";
 import { useAdditiveThrottle } from "../../../services/hooks/useAdditiveThrottle";
 import { Box } from "../../../components/ui/display/box/box";
@@ -17,9 +22,12 @@ import { formatVideoDuration } from "../../../services/string";
 import { RealtimeText } from "../../../components/ui/display/realtimeText/realtimeText";
 import { ProgressBar } from "../../../components/ui/display/progressBar/progressBar";
 import { IconButton } from "../../../components/ui/input/pressable/iconButton";
+import { isNative } from "../../../services/platform";
+import { Timeout } from "../../../services/types";
 import { ControlsActionSheet } from "./controlsActionSheet";
+import { useControlInteraction } from "./useControlInteraction";
 
-interface ControlsProps {
+export interface ControlsProps {
   name: string;
   progress: SharedValue<number>;
   isPlaying: boolean;
@@ -32,14 +40,15 @@ interface ControlsProps {
   videoInfo: VideoInfoEvent;
   setTextTrack: (id: string) => void;
   setAudioTrack: (id: string) => void;
-  style?: ViewStyle;
+  onFullscreen: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
-const SHOW_DURATION_MS = 3_000;
-const REWIND_MS = 10_000;
-const FORWARD_MS = 30_000;
+export const SHOW_DURATION_MS = 3_000;
+export const REWIND_MS = 10_000;
+export const FORWARD_MS = 30_000;
 
-export const Controls = ({
+export function Controls({
   name,
   isPlaying,
   previousAllowed,
@@ -48,14 +57,14 @@ export const Controls = ({
   onNext,
   rollPlay,
   seek,
-  style,
   setAudioTrack,
   setTextTrack,
+  onFullscreen,
   videoInfo,
   progress,
-}: ControlsProps) => {
-  const showTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
-  const currentCallback = useRef<(() => void) | undefined>(undefined);
+  style,
+}: ControlsProps) {
+  const showTimeout = useRef<Timeout | undefined>(undefined);
   const [isShowing, show, hide] = useBooleanState(true);
   const [actionSheet, setActionSheet] = useState<"text" | "audio" | undefined>(
     undefined,
@@ -91,21 +100,11 @@ export const Controls = ({
     resetShow();
   }, [actionSheet, resetShow]);
 
-  useRemote({
-    pan: () => console.log("PAN!"),
-    playPause: rollPlay,
-    select: () => {
-      resetShow();
-      if (shouldShow) {
-        currentCallback.current?.();
-      }
-    },
-    left: resetShow,
-    right: resetShow,
-    up: resetShow,
-    down: resetShow,
-    rewind,
+  useControlInteraction({
+    resetShow,
     fastForward,
+    rewind,
+    rollPlay,
   });
 
   const progressString = useDerivedValue(() =>
@@ -199,8 +198,14 @@ export const Controls = ({
                 icon="skip-forward"
               />
             </Box>
-            <Box flex={1}>
-              <View />
+            <Box flex={1} row items="center" content="flex-end">
+              {!isNative() ? (
+                <IconButton
+                  size={24}
+                  onPress={onFullscreen}
+                  icon="fullscreen"
+                />
+              ) : null}
             </Box>
           </Box>
         </Animated.View>
@@ -224,7 +229,7 @@ export const Controls = ({
       />
     </>
   );
-};
+}
 
 const styles = StyleSheet.create({
   root: {

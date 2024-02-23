@@ -5,8 +5,8 @@ import { TorrentIndexerResult } from "@media-center/domains/src/torrentIndexer/d
 import { AddTorrentRequestCommand } from "@media-center/domains/src/torrentRequest/applicative/addTorrentRequest.command";
 import { SearchQuery } from "@media-center/domains/src/miscellaneous/tools/searchQuery";
 import { TorrentsActionSheet } from "../../components/implementedUi/torrentsActionSheet";
-import { Beta } from "../api";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
+import { Beta } from "../api/api";
 import { useBooleanState } from "./useBooleanState";
 
 interface QueryTorrentsProps {

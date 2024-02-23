@@ -7,7 +7,6 @@ import { useParams } from "../params";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
 import { Box } from "../../components/ui/display/box/box";
-import { useQuery } from "../../services/hooks/useQuery";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
 import { PageBackground } from "../../components/pageBackground/pageBackground";
 import { useQueryTorrents } from "../../services/hooks/useQueryTorrents";
@@ -15,8 +14,9 @@ import { BigPressable } from "../../components/ui/input/bigPressable";
 import { TorrentRequests } from "../../components/implementedUi/torrentRequests";
 import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntryMoreOptions";
 import { ShowEpisodeCardsLine } from "../../components/implementedUi/showEpisodeCardsLine";
-import { Beta } from "../../services/api";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
+import { useQuery } from "../../services/api/useQuery";
+import { Beta } from "../../services/api/api";
 import { SeasonSelector } from "./seasonSelector";
 
 export function Show() {

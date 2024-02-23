@@ -14,5 +14,8 @@
   "resolutions": {
     "pretty-format": "26.5.2",
     "eslint-plugin-prettier": "5.1.2"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

@@ -6,10 +6,10 @@ import { ScrollView } from "react-native";
 import { Box } from "../../components/ui/display/box";
 import { ShowCardsLine } from "../../components/implementedUi/showCardsLine/showCardsLine";
 import { MovieCardsLine } from "../../components/implementedUi/movieCardsLine/movieCardsLine";
-import { useQuery } from "../../services/hooks/useQuery";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
 import { Text } from "../../components/ui/input/text";
 import { TmdbNote } from "../../components/ui/display/tmdbNote";
+import { useQuery } from "../../services/api/useQuery";
 
 export function Discover() {
   const [{ result: discoverPage }] = useQuery(DiscoverPageQuery, undefined);

@@ -4,10 +4,10 @@ import {
 } from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
 import { DeleteCatalogEntryCommand } from "@media-center/domains/src/commands/deleteCatalogEntry.command";
 import { useCallback } from "react";
-import { Modal } from "../../components/ui/tools/modal";
 import { LineButton } from "../../components/ui/input/pressable/lineButton";
-import { Beta } from "../api";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
+import { Modal } from "../../components/ui/tools/modal";
+import { Beta } from "../api/api";
 import { useBooleanState } from "./useBooleanState";
 
 interface CatalogEntryMoreOptionsProps {

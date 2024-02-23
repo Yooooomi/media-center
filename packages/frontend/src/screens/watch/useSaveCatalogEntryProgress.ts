@@ -1,9 +1,9 @@
 import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTmdbInfo/applicative/setUserTmdbInfoProgress.command";
 import { RefObject, useCallback, useEffect, useRef } from "react";
-import { ProgressEvent } from "@media-center/turbo-vlc";
-import { Beta } from "../../services/api";
+import { ProgressEvent } from "@media-center/video-player";
 import { useAppState } from "../../services/hooks/useAppState";
+import { Beta } from "../../services/api/api";
 
 export function useSaveCatalogEntryProgress(
   isPlaying: boolean,
@@ -41,9 +41,9 @@ export function useSaveCatalogEntryProgress(
       return;
     }
     if (state === "background") {
-      saveProgressRef.current(
-        progress.current.progress / progress.current.duration,
-      );
+      saveProgressRef
+        .current(progress.current.progress / progress.current.duration)
+        .catch(console.error);
     }
   }, [progress, state]);
 
@@ -55,9 +55,9 @@ export function useSaveCatalogEntryProgress(
     ) {
       return;
     }
-    saveProgressRef.current(
-      progress.current.progress / progress.current.duration,
-    );
+    saveProgressRef
+      .current(progress.current.progress / progress.current.duration)
+      .catch(console.error);
   }, [saveProgress, isPlaying, progress]);
 
   useEffect(
@@ -65,9 +65,9 @@ export function useSaveCatalogEntryProgress(
       if (!progress.current?.progress || !progress.current?.duration) {
         return;
       }
-      saveProgressRef.current(
-        progress.current.progress / progress.current.duration,
-      );
+      saveProgressRef
+        .current(progress.current.progress / progress.current.duration)
+        .catch(console.error);
     },
     [progress],
   );

@@ -2,10 +2,7 @@ import { View, StyleSheet } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { color } from "@media-center/ui/src/constants";
 import { RateLimitedImage } from "../ui/display/rateLimitedImage";
-
-interface PageBackgroundProps {
-  imageUri: string | undefined;
-}
+import { PageBackgroundProps } from "./pageBackground.props";
 
 export function PageBackground({ imageUri }: PageBackgroundProps) {
   return (

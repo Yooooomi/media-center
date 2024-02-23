@@ -7,18 +7,18 @@ import { useParams } from "../params";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
 import { Box } from "../../components/ui/display/box/box";
-import { useQuery } from "../../services/hooks/useQuery";
 import { useQueryTorrents } from "../../services/hooks/useQueryTorrents";
 import { BigPressable } from "../../components/ui/input/bigPressable/bigPressable";
 import { WatchCatalogEntry } from "../../components/implementedUi/watchCatalogEntry";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
 import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntryMoreOptions";
-import { Beta } from "../../services/api";
 import { RateLimitedImage } from "../../components/ui/display/rateLimitedImage";
 import { ProgressOverlay } from "../../components/ui/display/progressOverlay";
 import { TorrentRequests } from "../../components/implementedUi/torrentRequests";
 import { TmdbNote } from "../../components/ui/display/tmdbNote";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
+import { Beta } from "../../services/api/api";
+import { useQuery } from "../../services/api/useQuery";
 
 export function Movie() {
   const { movie } = useParams<"Movie">();

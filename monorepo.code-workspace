@@ -3,7 +3,9 @@
     "search.useParentIgnoreFiles": true,
     "eslint.enable": true,
     "eslint.format.enable": true,
-    "eslint.workingDirectories": ["."],
+    "eslint.workingDirectories": [
+      {"mode": "auto"}
+    ],
     "[typescript]": {
       "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },

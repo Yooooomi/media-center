@@ -1,19 +1,19 @@
-import { Alert, StyleSheet, NativeSyntheticEvent, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import {
-  TurboVlc,
+  VideoPlayer,
   ProgressEvent,
   VideoInfoEvent,
-  TurboVlcHandle,
-} from "@media-center/turbo-vlc";
+  VideoPlayerHandle,
+} from "@media-center/video-player";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSharedValue } from "react-native-reanimated";
 import { ShowCatalogEntryDatasetFulfilled } from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
-import { debugBorder, rawColor } from "@media-center/ui/src/constants";
+import { rawColor } from "@media-center/ui/src/constants";
 import { useToggle } from "../../services/hooks/useToggle";
-import { useVideoUri } from "../../services/api";
 import { useNavigate, useParams } from "../params";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading";
 import { useAppStateEvent } from "../../services/hooks/useOnBlur";
+import { useVideoUri } from "../../services/api/api";
 import { useSaveCatalogEntryProgress } from "./useSaveCatalogEntryProgress";
 import { usePreviousNext } from "./usePreviousNext";
 import { Controls } from "./controls";
@@ -31,7 +31,7 @@ export function Watch() {
   const [audioTrack, setAudioTrack] = useState<string | undefined>(undefined);
   const [textTrack, setTextTrack] = useState("none");
   const { goBack } = useNavigate();
-  const vlcRef = useRef<TurboVlcHandle>(null);
+  const vlcRef = useRef<VideoPlayerHandle>(null);
 
   const season =
     dataset instanceof ShowCatalogEntryDatasetFulfilled
@@ -51,6 +51,10 @@ export function Watch() {
     vlcRef.current?.seek(videoInfo.duration * progress);
   }, [progress, videoInfo]);
 
+  const handleFullscreen = useCallback(() => {
+    vlcRef.current?.fullscreen();
+  }, []);
+
   const onError = useCallback(() => {
     Alert.alert(
       "Erreur",
@@ -61,20 +65,17 @@ export function Watch() {
   }, [goBack]);
 
   const onProgress = useCallback(
-    (event: NativeSyntheticEvent<ProgressEvent>) => {
-      currentProgress.current = event.nativeEvent;
-      currentProgressMs.value = event.nativeEvent.progress;
+    (event: ProgressEvent) => {
+      currentProgress.current = event;
+      currentProgressMs.value = event.progress;
     },
     [currentProgressMs],
   );
 
-  const onVideoInfo = useCallback(
-    (event: NativeSyntheticEvent<VideoInfoEvent>) => {
-      setVideoInfo(event.nativeEvent);
-      setAudioTrack(event.nativeEvent.audioTracks[0]?.id);
-    },
-    [],
-  );
+  const onVideoInfo = useCallback((event: VideoInfoEvent) => {
+    setVideoInfo(event);
+    setAudioTrack(event.audioTracks[0]?.id);
+  }, []);
 
   const doSeek = useCallback(
     (added: number) => {
@@ -114,23 +115,25 @@ export function Watch() {
       <View style={styles.background}>
         {!videoInfo && <FullScreenLoading />}
       </View>
-      <TurboVlc
-        ref={vlcRef}
-        uri={videoUri}
-        audioTrack={audioTrack}
-        textTrack={textTrack}
-        play={playing}
-        style={styles.video}
-        volume={100}
-        hwDecode={!hierarchyItem.file.path.endsWith(".avi")}
-        forceHwDecode={false}
-        onProgress={onProgress}
-        onVideoInfo={onVideoInfo}
-        onError={onError}
-      />
+      <View style={styles.player}>
+        <VideoPlayer
+          ref={vlcRef}
+          uri={videoUri}
+          audioTrack={audioTrack}
+          textTrack={textTrack}
+          play={playing}
+          volume={100}
+          hwDecode={!hierarchyItem.file.path.endsWith(".avi")}
+          forceHwDecode={false}
+          onProgress={onProgress}
+          onVideoInfo={onVideoInfo}
+          onError={onError}
+        />
+      </View>
       {videoInfo && (
         <Controls
           name={name}
+          onFullscreen={handleFullscreen}
           progress={currentProgressMs}
           videoInfo={videoInfo}
           style={styles.controls}
@@ -150,18 +153,16 @@ export function Watch() {
 }
 
 const styles = StyleSheet.create({
-  video: {
-    flexGrow: 1,
-    // width: 300,
-    // height: 300,
-    ...debugBorder("green"),
-  },
   controls: {
     position: "absolute",
     width: "100%",
     height: 140,
     bottom: 0,
     zIndex: 1,
+  },
+  player: {
+    zIndex: 1,
+    flexGrow: 1,
   },
   background: {
     ...StyleSheet.absoluteFillObject,

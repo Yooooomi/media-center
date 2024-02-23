@@ -5,7 +5,6 @@ import { TorrentIndexerResult } from "@media-center/domains/src/torrentIndexer/d
 import { AddRawTorrentRequestCommand } from "@media-center/domains/src/torrentRequest/applicative/addRawTorrentRequest.command";
 import { SearchQuery } from "@media-center/domains/src/miscellaneous/tools/searchQuery";
 import { Box } from "../../components/ui/display/box/box";
-import { Beta } from "../../services/api";
 import { Section } from "../../components/ui/display/section/section";
 import { useBooleanState } from "../../services/hooks/useBooleanState";
 import { TorrentIndexerResultLine } from "../../components/implementedUi/torrentIndexerResultLine/torrentIndexerResultLine";
@@ -13,6 +12,7 @@ import { useAlert } from "../../components/ui/tools/alert/alertProvider";
 import { IconButton } from "../../components/ui/input/pressable/iconButton";
 import { TextInput } from "../../components/ui/input/textInput/textInput";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
+import { Beta } from "../../services/api/api";
 
 export function SearchTorrent() {
   const [isFocused, focus, blur] = useBooleanState();

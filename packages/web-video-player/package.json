@@ -1,0 +1,11 @@
+{
+  "name": "@media-center/web-video-player",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index",
+  "license": "MIT",
+  "peerDependencies": {
+    "@media-center/video-player": "*",
+    "react": "*"
+  }
+}

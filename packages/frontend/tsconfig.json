@@ -1,8 +1,9 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
+  "extends": ["@react-native/typescript-config/tsconfig.json", "@media-center/dev/tsconfig.json"],
   "compilerOptions": {
     "lib": ["ES2022", "DOM"],
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "moduleSuffixes": [".web", ".native", ""]
   }
 }

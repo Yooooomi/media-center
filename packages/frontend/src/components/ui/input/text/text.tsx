@@ -3,6 +3,7 @@ import {
   TextStyle,
   TextProps as RNTextProps,
   StyleProp,
+  Platform,
 } from "react-native";
 import { ReactNode, useMemo } from "react";
 import { color, fontSize } from "@media-center/ui/src/constants";
@@ -31,7 +32,14 @@ export function Text({
   const styles = useMemo<StyleProp<TextStyle>>(
     () => [
       {
-        fontFamily: bold ? "Montserrat-Bold" : "Montserrat",
+        fontFamily: Platform.select({
+          default: bold ? "Montserrat-Bold" : "Montserrat",
+          web: "Montserrat",
+        }),
+        fontWeight: Platform.select({
+          default: undefined,
+          web: bold ? "bold" : "normal",
+        }),
         fontSize: fontSize[size],
         color: pcolor ? color[pcolor] : color.whiteText,
         textAlign: align,

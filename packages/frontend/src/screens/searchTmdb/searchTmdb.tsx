@@ -4,13 +4,13 @@ import { SearchQuery } from "@media-center/domains/src/tmdb/applicative/search.q
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import { FlatList, StyleSheet } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
-import { Beta } from "../../services/api";
 import { useAdditiveThrottle } from "../../services/hooks/useAdditiveThrottle";
 import { Box } from "../../components/ui/display/box/box";
 import { MovieCard } from "../../components/implementedUi/cards/movieCard/movieCard";
 import { ShowCard } from "../../components/implementedUi/cards/showCard/showCard";
 import { Section } from "../../components/ui/display/section/section";
 import { TextInput } from "../../components/ui/input/textInput/textInput";
+import { Beta } from "../../services/api/api";
 
 export function SearchTmdb() {
   const [results, setResults] = useState<(Movie | Show)[]>([]);

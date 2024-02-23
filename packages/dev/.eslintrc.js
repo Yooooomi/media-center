@@ -5,6 +5,9 @@ module.exports = {
     "plugin:prettier/recommended",
   ],
   parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: "tsconfig.json",
+  },
   plugins: ["@typescript-eslint"],
   rules: {
     "@typescript-eslint/no-shadow": ["error"],
@@ -21,6 +24,7 @@ module.exports = {
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",
     "import/no-extraneous-dependencies": "error",
+    "@typescript-eslint/no-floating-promises": "error",
     "prettier/prettier": [
       "error",
       {

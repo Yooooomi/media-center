@@ -53,7 +53,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "@types/react-native": "*"
+    "@types/react-native": "*",
+    "@media-center/video-player": "*"
   },
   "react-native-builder-bob": {
     "source": "src",

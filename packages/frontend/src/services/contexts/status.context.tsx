@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useState } from "react";
 import { StatusQuery } from "@media-center/domains/src/queries/status.query";
-import { Beta } from "../api";
+import { Beta } from "../api/api";
 import { createMeshContext, useMeshContextSetup } from "./mesh.context";
 
 interface Status {

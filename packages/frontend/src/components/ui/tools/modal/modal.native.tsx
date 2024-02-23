@@ -72,10 +72,6 @@ const styles = StyleSheet.create({
     width: "80%",
     backgroundColor: color.background,
     borderRadius: radius.big,
-    // shadowColor: color.black,
-    // shadowRadius: 8,
-    // shadowOffset: {height: -2, width: 0},
-    // shadowOpacity: 0.2,
     padding: spacing.S16,
   },
 });

@@ -16,7 +16,6 @@ import {
 } from "react";
 import { useLocation } from "react-router-native";
 import { BackHandler } from "react-native";
-import { useBack } from "../services/hooks/useBack";
 
 export interface PlaylistItem<T extends "show" | "movie"> {
   progress: number;
@@ -112,13 +111,6 @@ export function useNavigationContext() {
       pop,
     }),
     [add, pop],
-  );
-
-  useBack(
-    useCallback(() => {
-      pop();
-      return true;
-    }, [pop]),
   );
 
   return { value, currentRoute: history[history.length - 1]! };

@@ -84,8 +84,8 @@ export function Sider() {
 
 const styles = StyleSheet.create({
   root: {
-    width: 24 + 2 * spacing.S16,
     height: "100%",
+    padding: spacing.S16,
   },
   status: {
     flexGrow: 1,

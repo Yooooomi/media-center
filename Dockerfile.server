@@ -5,20 +5,22 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
-COPY packages/server/package.json packages/server/
-COPY packages/domain-driven/package.json packages/domain-driven/
-COPY packages/algorithm/package.json packages/algorithm/
+COPY apps/server/package.json apps/server/
+
 COPY packages/dev/package.json packages/dev/
+COPY packages/algorithm/package.json packages/algorithm/
+COPY packages/domain-driven/package.json packages/domain-driven/
+COPY packages/domains/package.json packages/domains/
 
 RUN yarn --frozen-lockfile
+
+COPY apps/server apps/server
 
 COPY packages/dev packages/dev
 COPY packages/algorithm packages/algorithm
 COPY packages/domain-driven packages/domain-driven
-COPY packages/server packages/server
+COPY packages/domains packages/domains
 
-RUN yarn workspace @media-center/algorithm build
-RUN yarn workspace @media-center/domain-driven build
 RUN yarn workspace @media-center/server build:production
 
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
@@ -31,6 +33,6 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY --from=BUILDER /app/packages/server/lib/index.js .
+COPY --from=BUILDER /app/apps/server/dist/index.js .
 
 CMD [ "node", "index.js" ]

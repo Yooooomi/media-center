@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
+COPY patches patches/
+
 COPY apps/app-web/package.json apps/app-web/
 
 COPY packages/domains/package.json packages/domains/

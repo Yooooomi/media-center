@@ -54,16 +54,16 @@ export function SearchTorrent() {
         buttons: ["film", "série"],
       });
       if (result) {
-        doDownload(item, result === "série");
+        doDownload(item, result === "série").catch(console.error);
       }
     },
     [doAlert, doDownload],
   );
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.root}>
       <Box mt="S8" mh="S8">
-        <Box row gap="S8" items="center">
+        <Box grow row gap="S8" items="center">
           <TextInput
             style={styles.input}
             autoFocus
@@ -99,6 +99,9 @@ export function SearchTorrent() {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flexBasis: 0,
+  },
   input: {
     width: 300,
   },

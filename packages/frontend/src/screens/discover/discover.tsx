@@ -21,7 +21,7 @@ export function Discover() {
 
   return (
     <ScrollView>
-      <Box ml="S8" mt="S8" grow>
+      <Box ml="S16" mt="S16" grow>
         <MovieCardsLine
           onFocus={setFocused}
           autoFocusFirst

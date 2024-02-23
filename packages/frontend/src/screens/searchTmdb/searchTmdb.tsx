@@ -63,6 +63,7 @@ export function SearchTmdb() {
 const styles = StyleSheet.create({
   list: {
     flex: 1,
+    flexBasis: 0,
   },
   content: {
     gap: spacing.S8,

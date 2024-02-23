@@ -1,16 +1,7 @@
-import { FlatList, StyleSheet, View, ViewStyle } from "react-native";
-import { ReactNode } from "react";
+import { StyleSheet, View } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
-import { Box } from "../box";
-import { MovieCardSize } from "../../../implementedUi/cards/movieCard";
-
-interface LineListProps<T> {
-  data: T[];
-  keyExtractor: (data: T) => string;
-  renderItem: (data: T, index: number) => ReactNode;
-  itemPerLine?: number;
-  style?: ViewStyle;
-}
+import { useMemo } from "react";
+import { LineListProps } from "./lineList.props";
 
 export function LineList<T>({
   data,
@@ -21,29 +12,25 @@ export function LineList<T>({
 }: LineListProps<T>) {
   const isHorizontal = itemPerLine === undefined;
 
+  const rendered = useMemo(
+    () =>
+      data.map((e, index) => (
+        <div key={keyExtractor(e)}>{renderItem(e, index)}</div>
+      )),
+    [data, keyExtractor, renderItem],
+  );
+
   return (
     <View
       style={[
         styles.root,
-        isHorizontal ? undefined : styles.verticalScrollView,
+        isHorizontal ? styles.horizontalWrapper : styles.verticalWrapper,
         style,
       ]}
     >
-      <FlatList
-        keyExtractor={keyExtractor}
-        data={data}
-        renderItem={({ item, index }) => (
-          <Box p="S8">{renderItem(item, index)}</Box>
-        )}
-        getItemLayout={(_, index) => ({
-          index,
-          length: data.length,
-          offset: index * MovieCardSize.height,
-        })}
-        numColumns={itemPerLine}
-        horizontal={isHorizontal}
-        showsHorizontalScrollIndicator={false}
-      />
+      <View style={isHorizontal ? styles.horizontal : styles.vertical}>
+        {rendered}
+      </View>
     </View>
   );
 }
@@ -51,12 +38,25 @@ export function LineList<T>({
 const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
+    zIndex: 100,
+    padding: spacing.S8,
   },
-  verticalScrollView: {
+  verticalWrapper: {
+    overflow: "scroll",
     flexBasis: 0,
   },
-  verticalLine: {
+  horizontalWrapper: {
+    overflow: "scroll",
+  },
+  horizontal: {
     flexDirection: "row",
-    gap: spacing.S16,
+    flexWrap: "nowrap",
+    gap: 8,
+  },
+  vertical: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    display: "flex",
+    gap: 8,
   },
 });

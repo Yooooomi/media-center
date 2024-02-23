@@ -37,7 +37,8 @@ export interface ControlsProps {
   onPrevious: () => void;
   nextAllowed: boolean;
   onNext: () => void;
-  seek: (diff: number) => void;
+  seekAdd: (diff: number) => void;
+  seek: (ms: number) => void;
   videoInfo: VideoInfoEvent;
   setTextTrack: (id: string) => void;
   setAudioTrack: (id: string) => void;
@@ -152,7 +153,11 @@ export function Controls({
               />
             </Box>
             <Box grow>
-              <ProgressBar progress={progressValue} />
+              <ProgressBar
+                progress={progressValue}
+                duration={videoInfo.duration}
+                onSeek={seek}
+              />
             </Box>
             <Text>{formatVideoDuration(videoInfo.duration)}</Text>
           </Box>

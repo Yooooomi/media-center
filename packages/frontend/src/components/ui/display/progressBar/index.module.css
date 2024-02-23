@@ -1,0 +1,16 @@
+.tooltip {
+  position: fixed;
+  transform: translateY(-100%) translateX(-50%);
+  padding: var(--spacing-S8);
+  background-color: var(--background);
+  color: var(--whiteText)
+}
+
+.mouse {
+  flex-grow: 1;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}

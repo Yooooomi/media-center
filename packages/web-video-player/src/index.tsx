@@ -16,12 +16,12 @@ import s from "./index.module.css";
 interface WebTrack {
   id: string;
   label: string;
-  selected: boolean;
+  enabled: boolean;
 }
 
 function getSelectedTrack(tracks: Iterable<WebTrack>) {
   for (const track of tracks) {
-    if (track.selected) {
+    if (track.enabled) {
       return track;
     }
   }
@@ -29,7 +29,7 @@ function getSelectedTrack(tracks: Iterable<WebTrack>) {
 }
 
 export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
-  ({ uri, play, onVideoInfo, onProgress }, ref) => {
+  ({ uri, play, onVideoInfo, onProgress, audioTrack }, ref) => {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useImperativeHandle(ref, () => ({
@@ -41,6 +41,17 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       },
       fullscreen: () => videoRef.current?.requestFullscreen(),
     }));
+
+    useEffect(() => {
+      if (!videoRef.current) {
+        return;
+      }
+      const webAudioTracks: WebTrack[] = (videoRef.current as any).audioTracks;
+      for (const track of webAudioTracks) {
+        track.enabled = track.id === audioTrack;
+      }
+      videoRef.current.currentTime = videoRef.current.currentTime;
+    }, [audioTrack]);
 
     const handleOnProgress = useCallback(() => {
       if (!videoRef.current) {
@@ -100,7 +111,6 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
           ref={videoRef}
           className={s.video}
           id="video"
-          onLoad={console.log}
           onTimeUpdate={handleOnProgress}
           onLoadedMetadata={handleLoadedMetadata}
         >

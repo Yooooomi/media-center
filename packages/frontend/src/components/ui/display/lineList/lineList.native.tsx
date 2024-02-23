@@ -1,21 +1,8 @@
-import {
-  FlatList,
-  StyleSheet,
-  TVFocusGuideView,
-  ViewStyle,
-} from "react-native";
-import { ReactNode } from "react";
+import { FlatList, StyleSheet, TVFocusGuideView } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
 import { Box } from "../box";
 import { MovieCardSize } from "../../../implementedUi/cards/movieCard";
-
-interface LineListProps<T> {
-  data: T[];
-  keyExtractor: (data: T) => string;
-  renderItem: (data: T, index: number) => ReactNode;
-  itemPerLine?: number;
-  style?: ViewStyle;
-}
+import { LineListProps } from "./lineList.props";
 
 export function LineList<T>({
   data,

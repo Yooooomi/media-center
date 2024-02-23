@@ -77,7 +77,7 @@ export function Watch() {
     setAudioTrack(event.audioTracks[0]?.id);
   }, []);
 
-  const doSeek = useCallback(
+  const addSeek = useCallback(
     (added: number) => {
       if (!currentProgress.current) {
         return;
@@ -89,6 +89,10 @@ export function Watch() {
     },
     [currentProgressMs],
   );
+
+  const seek = useCallback((ms: number) => {
+    vlcRef.current?.seek(ms);
+  }, []);
 
   useSaveCatalogEntryProgress(
     playing,
@@ -145,7 +149,8 @@ export function Watch() {
           setTextTrack={setTextTrack}
           setAudioTrack={setAudioTrack}
           rollPlay={rollPlaying}
-          seek={doSeek}
+          seekAdd={addSeek}
+          seek={seek}
         />
       )}
     </>

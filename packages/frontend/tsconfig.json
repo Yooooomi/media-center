@@ -1,5 +1,6 @@
 {
   "extends": ["@media-center/dev/tsconfig.json"],
+  "include": ["src", "types.d.ts"],
   "compilerOptions": {
     "lib": ["ES2022", "DOM"],
     "jsx": "react-jsx",

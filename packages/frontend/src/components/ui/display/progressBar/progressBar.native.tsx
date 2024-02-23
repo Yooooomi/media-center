@@ -1,15 +1,7 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { StyleSheet, View } from "react-native";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { color, radius } from "@media-center/ui/src/constants";
-
-interface ProgressBarProps {
-  // A number between 0 and 1
-  progress: SharedValue<number> | number;
-  style?: ViewStyle;
-}
+import { ProgressBarProps } from "./progressBar.props";
 
 export function ProgressBar({ progress, style }: ProgressBarProps) {
   const bar = useAnimatedStyle(() => ({

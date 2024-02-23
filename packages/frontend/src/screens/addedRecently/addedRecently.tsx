@@ -47,7 +47,7 @@ export function AddedRecently() {
   return (
     <ScrollView>
       <Box row grow>
-        <Box gap="S16" ml="S16" mt="S16">
+        <Box shrink grow gap="S16" ml="S16" mt="S16">
           {hasNoContent ? <Text>Vous n'avez aucun média</Text> : null}
           {homepage.continue.length > 0 ? (
             <TmdbCardsLine

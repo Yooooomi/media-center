@@ -20,6 +20,10 @@ export class UserTmdbMovieInfo extends Shape({
     this.setProgress(1);
   }
 
+  started() {
+    return this.progress > 0;
+  }
+
   isFinished() {
     return this.progress > 0.9;
   }
@@ -78,14 +82,17 @@ export class UserTmdbShowInfo extends Shape({
 
   getShowProgress() {
     const latest = maxBy(
-      this.progress,
+      this.progress.filter((progress) => progress.progress > 0),
       (progress) => progress.season * 10e9 + progress.episode,
     );
     return latest?.progress ?? 0;
   }
 
   getLastWatchedInfo() {
-    const lastSeen = maxBy(this.progress, (p) => p.season);
+    const lastSeen = maxBy(
+      this.progress.filter((progress) => progress.progress > 0),
+      (p) => p.season,
+    );
     if (!lastSeen) {
       return undefined;
     }

@@ -3,6 +3,7 @@ import {
   CommandHandler,
   TransactionPerformer,
 } from "@media-center/domain-driven";
+import { PromiseAllByChunk } from "@media-center/algorithm";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
 import { SubtitleService } from "./subtitle.service";
@@ -28,10 +29,12 @@ export class RescanSubtitlesCommandHandler extends CommandHandler(
       const all = await this.hierarchyStore.loadAll(transaction);
       await this.subtitleStore.deleteAll();
       await this.hierarchyEntryInformationStore.deleteAll(transaction);
-      await Promise.all(
-        all.map(async (info) => {
+      await PromiseAllByChunk(
+        all,
+        async (info) => {
           await this.subtitleService.extractFor(info, transaction);
-        }),
+        },
+        3,
       );
     });
   }

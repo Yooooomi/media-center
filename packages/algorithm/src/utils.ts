@@ -57,7 +57,7 @@ export function uniqBy<T>(value: T[], by: (item: T) => string) {
 
 export function debounce<F extends (...args: any[]) => void>(
   fn: F,
-  ms: number
+  ms: number,
 ) {
   let timeoutId: NodeJS.Timeout | undefined;
 
@@ -77,7 +77,7 @@ export function debounce<F extends (...args: any[]) => void>(
 export function debounceOverflow<F extends (...args: any[]) => void>(
   fn: F,
   ms: number,
-  overflowAt: number
+  overflowAt: number,
 ) {
   let timeoutId: NodeJS.Timeout | undefined;
   let currentQueueSize = 0;
@@ -108,10 +108,51 @@ export function wait(ms: number) {
 }
 
 export function fromPairs<K extends string | number, V>(
-  arrayOfTuple: [K, V][]
+  arrayOfTuple: [K, V][],
 ) {
-  return arrayOfTuple.reduce((acc, curr) => {
-    acc[curr[0]] = curr[1];
-    return acc;
-  }, {} as Record<K, V>);
+  return arrayOfTuple.reduce(
+    (acc, curr) => {
+      acc[curr[0]] = curr[1];
+      return acc;
+    },
+    {} as Record<K, V>,
+  );
+}
+
+export async function PromiseAllByChunk<T, R>(
+  list: T[],
+  handler: (data: T) => Promise<R>,
+  chunkSize: number,
+) {
+  return new Promise<{ result: R | undefined; error: any }[]>((res) => {
+    const notFullfilled = list.map((_, index) => index);
+    let running = 0;
+    const results: { result: R | undefined; error: any }[] = [];
+
+    function launch() {
+      const index = notFullfilled.shift();
+      if (running === 0 && notFullfilled.length === 0) {
+        res(results);
+      }
+      if (index === undefined) {
+        return;
+      }
+      running += 1;
+      handler(list[index]!)
+        .then((result: R) => {
+          results[index] = { result, error: undefined };
+        })
+        .catch((error) => {
+          results[index] = { result: undefined, error };
+        })
+        .finally(() => {
+          running -= 1;
+          launch();
+        });
+    }
+
+    for (let i = 0; i < chunkSize; i += 1) {
+      launch();
+    }
+  });
 }

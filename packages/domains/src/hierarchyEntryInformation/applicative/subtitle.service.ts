@@ -43,6 +43,9 @@ export class SubtitleService {
     hierarchyItem: HierarchyItem,
     transaction?: Transaction,
   ) {
+    SubtitleService.logger.info(
+      `Extracting subtitles for ${hierarchyItem.file.getFilenameWithExtension()}`,
+    );
     const { subtitles, audioTracks } = await getSubtitlesFromPath(
       hierarchyItem.file.path,
     );

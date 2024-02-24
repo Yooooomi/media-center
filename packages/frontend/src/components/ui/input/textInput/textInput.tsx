@@ -40,7 +40,7 @@ export function TextInput({ style, ...other }: TextInputProps) {
           ref={input}
           blurOnSubmit={false}
           onSubmitEditing={() => {
-            pressableInput.current?.requestTVFocus();
+            pressableInput.current?.requestTVFocus?.();
             Keyboard.dismiss();
           }}
           {...other}

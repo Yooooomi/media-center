@@ -58,7 +58,7 @@ export function bootApi(
     res.header(
       "Access-Control-Allow-Headers",
       "Authorization, Origin, X-Requested-With, Content-Type, Accept",
-    ); // Allow the specified headers
+    );
     res.header("Access-Control-Allow-Credentials", "true");
     next();
   });
@@ -179,6 +179,18 @@ export function bootApi(
     const { path } = req.params;
     const encodedPath = encodeURIComponent(path);
     const buffer = await endpointCaching.get(encodedPath);
+    res.set("Cache-Control", "public, max-age=86400");
+
+    const lastModified = new Date(0);
+    res.set("Last-Modified", lastModified.toUTCString());
+
+    // Check if the image hasn't been modified
+    const ifModifiedSinceHeader = req.get("if-modified-since");
+    console.log("IF MODIFIED", ifModifiedSinceHeader);
+    if (ifModifiedSinceHeader) {
+      return res.status(304).end();
+    }
+
     if (buffer) {
       logger.info(`> proxy hit ${measure.calc()}ms`);
       return buffer.pipe(res);

@@ -21,7 +21,9 @@ export function bootHierarchyEntryInformation(
     },
   );
 
-  new HierarchyEntryInformationSaga().listen(eventBus);
+  new HierarchyEntryInformationSaga(hierarchyEntryInformationStore).listen(
+    eventBus,
+  );
 
   return { hierarchyEntryInformationStore };
 }

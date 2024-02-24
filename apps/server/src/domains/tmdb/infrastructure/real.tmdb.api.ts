@@ -105,7 +105,7 @@ export class RealTmdbAPI extends TmdbAPI {
           original_title: e.original_title,
           overview: e.overview,
           popularity: e.popularity,
-          release_date: new Date(e.release_date),
+          release_date: e.release_date ? new Date(e.release_date) : new Date(0),
           title: e.title,
           video: e.video,
           vote_average: e.vote_average,
@@ -131,7 +131,9 @@ export class RealTmdbAPI extends TmdbAPI {
       (e) =>
         new Show({
           id: TmdbId.fromIdAndType(e.id.toString(), "show"),
-          first_air_date: new Date(e.first_air_date),
+          first_air_date: e.first_air_date
+            ? new Date(e.first_air_date)
+            : new Date(0),
           original_language: e.original_language,
           original_title: e.original_name,
           overview: e.overview,

@@ -4,7 +4,7 @@ export class SearchQuery extends Shape(String) {
   static from(query: string): SearchQuery {
     return new SearchQuery(
       query
-        .replace(/[-=\+\.:]/g, "")
+        .replace(/[-=\+\.:!,;]/g, "")
         .replace(/&/g, "and")
         .replace(/\s+/g, " "),
     );

@@ -13,10 +13,10 @@ class Base {}
 
 export const Shape = <
   const D extends AnyShorthand | AnyDefinition,
-  const B extends Class<{}>
+  const B extends Class<{}>,
 >(
   definition: D,
-  base: B = Base as B
+  base: B = Base as B,
 ): D extends DictConfiguration | DictDefinition
   ? ReturnType<typeof ObjectShape<D, B>>
   : ReturnType<typeof Primitive<ShorthandToLonghand<D>, B>> => {
@@ -29,7 +29,7 @@ export const Shape = <
 
 export type ShapeConstructor<
   D extends AnyShorthand | AnyDefinition,
-  B extends Class<{}> = Class<{}>
+  B extends Class<{}> = Class<{}>,
 > = D extends DictConfiguration | DictDefinition
   ? ReturnType<typeof ObjectShape<D, B>>
   : ReturnType<typeof Primitive<ShorthandToLonghand<D>, B>>;

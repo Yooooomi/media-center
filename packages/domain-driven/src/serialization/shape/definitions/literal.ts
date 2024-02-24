@@ -4,7 +4,7 @@ export type Literals = [
   [typeof String, string, string],
   [typeof Number, number, number],
   [typeof Boolean, boolean, boolean],
-  [typeof Date, Date, string]
+  [typeof Date, Date, string],
 ];
 export type LiteralInput = Literals[number][0];
 export type LiteralPrimitive = Literals[number][1];
@@ -22,10 +22,10 @@ export type LiteralSerialized<L extends LiteralInput> = Extract<
 export type LiteralShorthand = LiteralInput;
 export type LiteralConfiguration = LiteralInput | LiteralShorthand;
 export type LiteralDefinition<
-  C extends LiteralConfiguration = LiteralConfiguration
+  C extends LiteralConfiguration = LiteralConfiguration,
 > = Definition<LiteralRuntime<C>, LiteralSerialized<C>>;
 export function Literal<C extends LiteralConfiguration>(
-  configuration: C
+  configuration: C,
 ): LiteralDefinition<C> {
   return {
     paramToRuntime: (param) => param,

@@ -5,15 +5,17 @@ import {
   VideoInfoEvent,
   VideoPlayerHandle,
 } from "@media-center/video-player";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSharedValue } from "react-native-reanimated";
 import { ShowCatalogEntryDatasetFulfilled } from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
 import { rawColor } from "@media-center/ui/src/constants";
+import { GetSubtitlesQuery } from "@media-center/domains/src/hierarchyEntryInformation/applicative/getSubtitles.query";
 import { useToggle } from "../../services/hooks/useToggle";
 import { useNavigate, useParams } from "../params";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading";
 import { useAppStateEvent } from "../../services/hooks/useOnBlur";
 import { useVideoUri } from "../../services/api/api";
+import { useQuery } from "../../services/api/useQuery";
 import { useSaveCatalogEntryProgress } from "./useSaveCatalogEntryProgress";
 import { usePreviousNext } from "./usePreviousNext";
 import { Controls } from "./controls";
@@ -32,6 +34,17 @@ export function Watch() {
   const [textTrack, setTextTrack] = useState("none");
   const { goBack } = useNavigate();
   const vlcRef = useRef<VideoPlayerHandle>(null);
+
+  const [{ result: subtitles }] = useQuery(GetSubtitlesQuery, hierarchyItem.id);
+
+  const additionalTextTracks = useMemo(
+    () =>
+      subtitles?.map((subtitle) => ({
+        id: subtitle.name,
+        name: subtitle.name,
+      })),
+    [subtitles],
+  );
 
   const season =
     dataset instanceof ShowCatalogEntryDatasetFulfilled
@@ -132,6 +145,7 @@ export function Watch() {
           onProgress={onProgress}
           onVideoInfo={onVideoInfo}
           onError={onError}
+          additionalTextTracks={subtitles}
         />
       </View>
       {videoInfo && (
@@ -151,6 +165,7 @@ export function Watch() {
           rollPlay={rollPlaying}
           seekAdd={addSeek}
           seek={seek}
+          additionalTextTracks={additionalTextTracks}
         />
       )}
     </>

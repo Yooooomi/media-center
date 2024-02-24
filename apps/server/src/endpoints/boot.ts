@@ -11,6 +11,7 @@ import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicativ
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
+import { SubtitleStore } from "@media-center/domains/src/hierarchyEntryInformation/applicative/subtitle.store";
 import { streamVideo } from "./videoStreaming/streamVideo";
 import { FilesystemEndpointCaching } from "./caching";
 
@@ -103,7 +104,6 @@ export function bootApi(
   });
 
   app.get("/reactive/query/:name", logMiddleware, async (req, res) => {
-    console.log("IN");
     const { name } = req.params;
     const { needing: stringifiedNeeding } = req.query;
 
@@ -179,17 +179,8 @@ export function bootApi(
     const { path } = req.params;
     const encodedPath = encodeURIComponent(path);
     const buffer = await endpointCaching.get(encodedPath);
-    res.set("Cache-Control", "public, max-age=86400");
 
-    const lastModified = new Date(0);
-    res.set("Last-Modified", lastModified.toUTCString());
-
-    // Check if the image hasn't been modified
-    const ifModifiedSinceHeader = req.get("if-modified-since");
-    console.log("IF MODIFIED", ifModifiedSinceHeader);
-    if (ifModifiedSinceHeader) {
-      return res.status(304).end();
-    }
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
 
     if (buffer) {
       logger.info(`> proxy hit ${measure.calc()}ms`);

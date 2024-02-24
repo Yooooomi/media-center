@@ -112,7 +112,15 @@ export async function globalBoot() {
     torrentIndexer,
   );
 
-  bootHierarchyEntryInformation(environmentHelper, database, eventBus);
+  bootHierarchyEntryInformation(
+    environmentHelper,
+    transactionPerformer,
+    database,
+    eventBus,
+    commandBus,
+    queryBus,
+    hierarchyStore,
+  );
 
   return {
     commandBus,

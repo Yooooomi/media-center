@@ -60,6 +60,8 @@ export interface VideoPlayerProps {
   onVideoInfo?: EventHandler<VideoInfoEvent>;
   onError?: EventHandler<{}>;
   onBuffer?: EventHandler<BufferingEvent>;
+
+  additionalTextTracks?: { name: string; content: string }[];
 }
 
 export interface VideoPlayerHandle {

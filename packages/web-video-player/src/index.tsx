@@ -9,6 +9,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
 } from "react";
 import s from "./index.module.css";
@@ -29,7 +30,18 @@ function getSelectedTrack(tracks: Iterable<WebTrack>) {
 }
 
 export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
-  ({ uri, play, onVideoInfo, onProgress, audioTrack }, ref) => {
+  (
+    {
+      uri,
+      play,
+      onVideoInfo,
+      onProgress,
+      audioTrack,
+      textTrack,
+      additionalTextTracks,
+    },
+    ref,
+  ) => {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useImperativeHandle(ref, () => ({
@@ -52,6 +64,16 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       }
       videoRef.current.currentTime = videoRef.current.currentTime;
     }, [audioTrack]);
+
+    useEffect(() => {
+      if (!videoRef.current) {
+        return;
+      }
+      const webTextTracks: WebTrack[] = (videoRef.current as any).textTracks;
+      for (const track of webTextTracks) {
+        track.enabled = track.label === textTrack;
+      }
+    }, [textTrack]);
 
     const handleOnProgress = useCallback(() => {
       if (!videoRef.current) {
@@ -105,6 +127,14 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       }
     }, [play]);
 
+    const blobs = useMemo(
+      () =>
+        additionalTextTracks?.map((additionalTextTrack) =>
+          URL.createObjectURL(new Blob([additionalTextTrack.content])),
+        ) ?? [],
+      [additionalTextTracks],
+    );
+
     return (
       <div className={s.root}>
         <video
@@ -115,6 +145,17 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
           onLoadedMetadata={handleLoadedMetadata}
         >
           <source src={uri} />
+          {blobs.map((blob, index) =>
+            additionalTextTracks?.[index].name === textTrack ? (
+              <track
+                key={blob}
+                default
+                kind="subtitles"
+                label={additionalTextTracks?.[index].name ?? `#${index + 1}`}
+                src={blob}
+              />
+            ) : null,
+          )}
         </video>
       </div>
     );

@@ -3,6 +3,6 @@ import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 
 export class HierarchyEntryInformation extends Shape({
   id: HierarchyItemId,
-  textTracks: [{ name: String, content: String }],
-  audioTracks: [{ name: String }],
+  textTracks: [{ index: Number, name: String }],
+  audioTracks: [{ index: Number, name: String }],
 }) {}

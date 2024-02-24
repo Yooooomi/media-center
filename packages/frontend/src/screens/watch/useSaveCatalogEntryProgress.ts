@@ -4,6 +4,8 @@ import { RefObject, useCallback, useEffect, useRef } from "react";
 import { ProgressEvent } from "@media-center/video-player";
 import { useAppState } from "../../services/hooks/useAppState";
 import { Beta } from "../../services/api/api";
+import { Interval } from "../../services/types";
+import { isNative } from "../../services/platform";
 
 export function useSaveCatalogEntryProgress(
   isPlaying: boolean,
@@ -35,6 +37,22 @@ export function useSaveCatalogEntryProgress(
   saveProgressRef.current = saveProgress;
 
   const state = useAppState();
+
+  const intervalRef = useRef<Interval>();
+
+  useEffect(() => {
+    if (!isNative() && state === "active") {
+      intervalRef.current = setInterval(() => {
+        if (!progress.current?.progress || !progress.current?.duration) {
+          return;
+        }
+        saveProgressRef
+          .current(progress.current.progress / progress.current.duration)
+          .catch(console.error);
+      }, 10_000);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [progress, state]);
 
   useEffect(() => {
     if (!progress.current?.progress || !progress.current?.duration) {

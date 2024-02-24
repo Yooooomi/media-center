@@ -1,6 +1,7 @@
 import { noop } from "@media-center/algorithm";
 import { SettingsPageQuery } from "@media-center/domains/src/queries/settingsPage.query";
 import { ReinitCatalogCommand } from "@media-center/domains/src/catalog/applicative/reinit.command";
+import { RescanSubtitlesCommand } from "@media-center/domains/src/hierarchyEntryInformation/applicative/rescanSubtitles.command";
 import { ScanExistingCommand } from "@media-center/domains/src/fileWatcher/applicative/scanExisting.command";
 import { useCallback } from "react";
 import { Section } from "../../components/ui/display/section";
@@ -24,6 +25,10 @@ export function Settings() {
 
   const scanLibrary = useCallback(async () => {
     handleBasicUserQuery(Beta.command(new ScanExistingCommand()));
+  }, []);
+
+  const rescanSubtitles = useCallback(async () => {
+    handleBasicUserQuery(Beta.command(new RescanSubtitlesCommand()));
   }, []);
 
   return (
@@ -61,6 +66,11 @@ export function Settings() {
           text="Re-scanner la librairie (peut prendre longtemps)"
           variant="delete"
           onPress={rescanLibrary}
+        />
+        <LineButton
+          text="Re-scanner les sous-titres (peut prendre très longtemps)"
+          variant="delete"
+          onPress={rescanSubtitles}
         />
       </Section>
     </Box>

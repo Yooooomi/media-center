@@ -50,6 +50,10 @@ export class MovieCatalogEntry extends Shape({
   public markUpdated(date: Date) {
     this.updatedAt = date;
   }
+
+  public getHierarchyItemIds() {
+    return this.dataset.hierarchyItemIds;
+  }
 }
 
 export class ShowCatalogEntryDataset extends Shape({
@@ -120,26 +124,13 @@ export class ShowCatalogEntry extends Shape({
   public markUpdated(date: Date) {
     this.updatedAt = date;
   }
+
+  public getHierarchyItemIds() {
+    return this.dataset.flatMap((e) => e.hierarchyItemIds);
+  }
 }
 
 export type AnyCatalogEntry = MovieCatalogEntry | ShowCatalogEntry;
-
-export function CatalogEntryContainsHierarchyItemId(
-  catalogEntry: AnyCatalogEntry,
-  hierarchyItemId: HierarchyItemId,
-) {
-  if (catalogEntry instanceof MovieCatalogEntry) {
-    return catalogEntry.dataset.hierarchyItemIds.some((id) =>
-      id.equals(hierarchyItemId),
-    );
-  }
-  if (catalogEntry instanceof ShowCatalogEntry) {
-    return catalogEntry.dataset.some((entry) =>
-      entry.hierarchyItemIds.some((id) => id.equals(hierarchyItemId)),
-    );
-  }
-  assertNever(catalogEntry);
-}
 
 export type AnyCatalogEntryDataset =
   | MovieCatalogEntryDataset

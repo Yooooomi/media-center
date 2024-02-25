@@ -31,8 +31,6 @@ export class ScanSubtitlesCommandHandler extends CommandHandler(
     super();
   }
 
-  static logger = useLog("ScanMissingSubtitles");
-
   async execute(intent: ScanSubtitlesCommand) {
     const hierarchyEntryInformation =
       await this.transactionPerformer.transactionnally(async (transaction) => {

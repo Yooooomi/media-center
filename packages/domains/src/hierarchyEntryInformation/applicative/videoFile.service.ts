@@ -2,6 +2,7 @@ import { Transaction, useLog } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { HierarchyEntryInformation } from "../domain/hierarchyEntryInformation";
 import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
+import { Filesystem } from "../../miscellaneous/valueObjects/fileSystem";
 import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
 import { SubtitleStore } from "./subtitle.store";
 import { extractTracksFromPath } from "./ffmpeg";
@@ -10,6 +11,7 @@ export class VideoFileService {
   constructor(
     private readonly hierarchyEntryInformationStore: HierarchyEntryInformationStore,
     private readonly subtitleStore: SubtitleStore,
+    private readonly filesystem: Filesystem,
   ) {}
 
   static logger = useLog(VideoFileService.name);
@@ -42,8 +44,10 @@ export class VideoFileService {
         ),
       ),
     );
+    const fileSize = await this.filesystem.fileSize(hierarchyItem.file);
     const entryInformation = new HierarchyEntryInformation({
       id: hierarchyItem.id,
+      checkedAtFileSize: fileSize,
       videoTrack,
       textTracks,
       audioTracks,

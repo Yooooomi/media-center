@@ -7,6 +7,7 @@ export abstract class Filesystem {
   abstract pipe(filename: string): Promise<{ stream: WStream; file: File }>;
   abstract write(filename: string, content: Buffer): Promise<File>;
   abstract delete(file: File): Promise<void>;
+  abstract fileSize(file: File): Promise<number>;
 }
 
 export type RStream = fs.ReadStream;
@@ -28,5 +29,9 @@ export class DiskFilesystem extends Filesystem {
   async pipe(filename: string) {
     const createdStream = fs.createWriteStream(filename);
     return { stream: createdStream, file: new File({ path: filename }) };
+  }
+
+  async fileSize(file: File) {
+    return fs.statSync(file.path).size;
   }
 }

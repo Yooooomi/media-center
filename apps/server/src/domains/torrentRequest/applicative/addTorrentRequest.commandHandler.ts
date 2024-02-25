@@ -37,6 +37,11 @@ export class AddTorrentRequestCommandHandler extends CommandHandler(
       torrentBuffer,
       command.tmdbId.getType() === "show",
     );
-    this.eventBus.publish(new TorrentRequestAdded({ tmdbId: command.tmdbId }));
+    this.eventBus.publish(
+      new TorrentRequestAdded({
+        tmdbId: command.tmdbId,
+        torrentRequestId: request.id,
+      }),
+    );
   }
 }

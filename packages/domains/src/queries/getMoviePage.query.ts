@@ -15,10 +15,7 @@ import {
   MovieCatalogEntryFulfilled,
   MovieCatalogEntryDatasetFulfilled,
 } from "../catalog/applicative/catalogEntryFulfilled.front";
-import {
-  CatalogEntryContainsHierarchyItemId,
-  MovieCatalogEntry,
-} from "../catalog/domain/catalogEntry";
+import { MovieCatalogEntry } from "../catalog/domain/catalogEntry";
 import { HierarchyStore } from "../fileWatcher/applicative/hierarchy.store";
 import { TmdbAPI } from "../tmdb/applicative/tmdb.api";
 import { TmdbStore } from "../tmdb/applicative/tmdb.store";
@@ -102,10 +99,9 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       if (!catalogEntry) {
         return false;
       }
-      return CatalogEntryContainsHierarchyItemId(
-        catalogEntry,
-        event.hierarchyItemId,
-      );
+      return catalogEntry
+        .getHierarchyItemIds()
+        .some((e) => e.equals(event.hierarchyItemId));
     }
     return event.catalogEntry.id.equals(intent.tmdbId);
   }

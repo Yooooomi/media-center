@@ -27,7 +27,6 @@ import { UserId, UserTmdbInfoId } from "../userTmdbInfo/domain/userTmdbInfoId";
 import { HierarchyEntryInformationStore } from "../hierarchyEntryInformation/applicative/hierarchyEntryInformation.store";
 import { HierarchyEntryInformation } from "../hierarchyEntryInformation/domain/hierarchyEntryInformation";
 import { HierarchyEntryInformationUpdated } from "../hierarchyEntryInformation/domain/hierarchyEntryInformation.events";
-import { CatalogEntryContainsHierarchyItemId } from "../catalog/domain/catalogEntry";
 import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 
 class ShowPageSummary extends Shape({
@@ -96,10 +95,9 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       if (!catalogEntry) {
         return false;
       }
-      return CatalogEntryContainsHierarchyItemId(
-        catalogEntry,
-        event.hierarchyItemId,
-      );
+      return catalogEntry
+        .getHierarchyItemIds()
+        .some((e) => e.equals(event.hierarchyItemId));
     }
     return event.catalogEntry.id.equals(intent.tmdbId);
   }

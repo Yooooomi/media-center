@@ -39,7 +39,10 @@ export class UpdateTorrentRequestCommandHandler extends CommandHandler(
 
     if (updated) {
       this.eventBus.publish(
-        new TorrentRequestUpdated({ tmdbId: existing.tmdbId }),
+        new TorrentRequestUpdated({
+          tmdbId: existing.tmdbId,
+          torrentRequestId: existing.id,
+        }),
       );
     }
   }

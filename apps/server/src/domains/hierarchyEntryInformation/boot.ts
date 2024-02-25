@@ -13,6 +13,9 @@ import { VideoFileService } from "@media-center/domains/src/hierarchyEntryInform
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
 import { ScanMissingSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanMissingSubtitles.command";
 import { ScanSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanSubtitles.command";
+import { Filesystem } from "@media-center/domains/src/miscellaneous/valueObjects/fileSystem";
+import { CatalogEntryStore } from "@media-center/domains/src/catalog/applicative/catalogEntry.store";
+import { TorrentRequestStore } from "@media-center/domains/src/torrentRequest/applicative/torrentRequest.store";
 import { FilesystemHierarchyEntryInformationStore } from "./infrastructure/filesystem.catalogEntryInformation.store";
 import { InMemoryHierarchyEntryInformationStore } from "./infrastructure/inMemory.catalogEntryInformation.store";
 import { FilesystemSubtitleStore } from "./infrastructure/filesystem.subtitleStore";
@@ -25,6 +28,9 @@ export function bootHierarchyEntryInformation(
   commandBus: CommandBus,
   queryBus: QueryBus,
   hierarchyStore: HierarchyStore,
+  filesystem: Filesystem,
+  catalogEntryStore: CatalogEntryStore,
+  torrentRequestStore: TorrentRequestStore,
 ) {
   const hierarchyEntryInformationStore = environmentHelper.match(
     "DI_DATABASE",
@@ -42,11 +48,16 @@ export function bootHierarchyEntryInformation(
   const videoFileService = new VideoFileService(
     hierarchyEntryInformationStore,
     subtitleStore,
+    filesystem,
   );
 
-  new HierarchyEntryInformationSaga(hierarchyStore, videoFileService).listen(
-    eventBus,
-  );
+  new HierarchyEntryInformationSaga(
+    commandBus,
+    hierarchyStore,
+    catalogEntryStore,
+    videoFileService,
+    torrentRequestStore,
+  ).listen(eventBus);
 
   queryBus.register(
     new GetSubtitlesQueryHandler(hierarchyEntryInformationStore, subtitleStore),
@@ -54,22 +65,18 @@ export function bootHierarchyEntryInformation(
 
   commandBus.register(
     new RescanSubtitlesCommandHandler(
-      transactionPerformer,
-      eventBus,
+      commandBus,
       hierarchyStore,
       hierarchyEntryInformationStore,
       subtitleStore,
-      videoFileService,
     ),
   );
 
   commandBus.register(
     new ScanMissingSubtitlesCommandHandler(
-      transactionPerformer,
-      eventBus,
+      commandBus,
       hierarchyStore,
       hierarchyEntryInformationStore,
-      videoFileService,
     ),
   );
 

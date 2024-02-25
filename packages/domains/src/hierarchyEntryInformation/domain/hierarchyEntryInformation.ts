@@ -35,6 +35,7 @@ export class Resolution extends Shape({
 
 export class HierarchyEntryInformation extends Shape({
   id: HierarchyItemId,
+  checkedAtFileSize: Number,
   videoTrack: { type: String, resolution: Resolution },
   textTracks: [{ index: Number, name: String }],
   audioTracks: [{ index: Number, name: String }],

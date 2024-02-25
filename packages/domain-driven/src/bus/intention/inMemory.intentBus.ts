@@ -129,6 +129,7 @@ export class InMemoryIntentionBus extends IntentBus {
 
   listenToState(handler: (state: Record<string, IntentBusStateItem>) => void) {
     this.stateListeners.push(handler);
+    this.triggerStateListeners();
     return () => {
       const index = this.stateListeners.indexOf(handler);
       if (index < 0) {

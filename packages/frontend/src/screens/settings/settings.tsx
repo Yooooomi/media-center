@@ -15,6 +15,7 @@ import { StatusContext } from "../../services/contexts/status.context";
 import { useQuery } from "../../services/api/useQuery";
 import { Beta } from "../../services/api/api";
 import { Text } from "../../components/ui/input/text";
+import { IconWithText } from "../../components/ui/display/iconWithText";
 
 export function Settings() {
   const [{ result }] = useQuery(SettingsPageQuery, undefined);
@@ -86,8 +87,11 @@ export function Settings() {
       </Section>
       <Section title="Bus">
         {Object.entries(busState).map(([requestId, item]) => (
-          <Box row items="flex-start" content="space-between">
-            <Text>{requestId}</Text>
+          <Box key={requestId} row items="flex-start" content="space-between">
+            <IconWithText
+              name={item.type === "instant" ? "lightning-bolt" : "eye"}
+              text={requestId}
+            />
             <Text>
               {item.intentHandlerName}: {JSON.stringify(item.intent)}
             </Text>

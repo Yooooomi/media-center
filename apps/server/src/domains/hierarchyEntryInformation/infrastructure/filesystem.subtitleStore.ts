@@ -40,7 +40,8 @@ export class FilesystemSubtitleStore implements SubtitleStore {
     filepath: string,
   ) {
     const path = this.getPathFromIdAndIndex(hierarchyItemId, trackIndex);
-    fs.renameSync(filepath, path);
+    fs.cpSync(filepath, path);
+    fs.rmSync(filepath);
   }
 
   async delete(hierarchyItemId: HierarchyItemId, trackIndex: number) {

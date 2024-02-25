@@ -38,7 +38,6 @@ async function ffprobeFile(path: string) {
       "-show_streams",
       path,
     ]));
-    console.log("OUT", out);
     const probe: FFProbe = JSON.parse(out);
     return probe;
   } catch (e) {
@@ -65,7 +64,6 @@ async function extractVttFromFile(
       "-y",
     ]);
   } catch (e) {
-    console.error("ERROR LA", e);
     return undefined;
   }
 }

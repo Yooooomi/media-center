@@ -102,6 +102,13 @@ export class Bridge {
     return close;
   }
 
+  rawReactiveQuery(url: URL, handler: (result: string) => void) {
+    const close = SSE.listenOn(url, this.getHeaders(), (data) => {
+      handler(data);
+    });
+    return close;
+  }
+
   async command<Q extends BaseIntent<any, any>>(
     command: Q,
   ): Promise<IntentReturning<Q>> {

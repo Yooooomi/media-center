@@ -4,8 +4,11 @@ import {
   CommandBus,
   EventBus,
 } from "@media-center/domain-driven";
-import Express, { urlencoded, json } from "express";
-import { IntentBus } from "@media-center/domain-driven/src/bus/intention/intentBus";
+import Express, { urlencoded, json, Response } from "express";
+import {
+  IntentBus,
+  IntentBusStateItem,
+} from "@media-center/domain-driven/src/bus/intention/intentBus";
 import { TimeMeasurer } from "@media-center/algorithm";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
@@ -13,6 +16,31 @@ import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hi
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
 import { streamVideo } from "./videoStreaming/streamVideo";
 import { FilesystemEndpointCaching } from "./caching";
+
+class ServerSent {
+  private onCloseHandler: (() => void) | undefined;
+
+  constructor(private readonly response: Response) {
+    response.writeHead(200, {
+      Connection: "keep-alive",
+      "Cache-Control": "no-cache",
+      "Content-Type": "text/event-stream",
+    });
+
+    response.on("close", () => {
+      this.onCloseHandler?.();
+      this.response.end();
+    });
+  }
+
+  send(data: string) {
+    this.response.write(`data: ${data}\n\n`);
+  }
+
+  onClose(handler: () => void) {
+    this.onCloseHandler = handler;
+  }
+}
 
 export function bootApi(
   queryBus: QueryBus,
@@ -119,16 +147,12 @@ export function bootApi(
 
       logger.info(`< reactive ${req.path}`);
 
-      res.writeHead(200, {
-        Connection: "keep-alive",
-        "Cache-Control": "no-cache",
-        "Content-Type": "text/event-stream",
-      });
+      const serverSent = new ServerSent(res);
 
       const ctor = queryBus.get(name!);
       const deserialized = ctor.needing.deserialize(needing);
       const instance = new ctor(deserialized);
-      const unsubscribe = await queryBus.executeAndReact(
+      const unsubscribe = queryBus.executeAndReact(
         eventBus,
         instance,
         (result, timeMs) => {
@@ -136,15 +160,11 @@ export function bootApi(
           const serialized = ctor.returning?.serialize(runtime);
           const data = JSON.stringify(serialized);
           logger.info(`  react ${req.path} ${timeMs}ms`);
-          res.write(`data: ${data}\n\n`);
+          serverSent.send(data);
         },
       );
 
-      res.on("close", () => {
-        logger.info(`> OK reactive ${req.path}`);
-        unsubscribe();
-        res.end();
-      });
+      serverSent.onClose(unsubscribe);
     } catch (e) {
       logger.info(`> KO reactive ${req.path} ${e}`);
       res.status(500).end();
@@ -164,6 +184,58 @@ export function bootApi(
       res.status(500).end();
       logger.info(`> command KO ${req.path} ${measure.calc()}ms ${e}`);
     }
+  });
+
+  app.get("/meta/bus", logMiddleware, async (req, res) => {
+    const serverSent = new ServerSent(res);
+
+    function stringifyState(state: Record<string, IntentBusStateItem>) {
+      return JSON.stringify(
+        Object.entries(state).reduce<
+          Record<
+            string,
+            { intentHandlerName: string; type: string; intent: any }
+          >
+        >((acc, [requestId, item]) => {
+          acc[requestId] = {
+            type: item.type,
+            intentHandlerName: item.intentHandlerName,
+            intent: item.intent.serialize(),
+          };
+          return acc;
+        }, {}),
+      );
+    }
+
+    let queryState: Record<string, IntentBusStateItem> = {};
+    let commandState: Record<string, IntentBusStateItem> = {};
+
+    const unsubscribeFromQueryBus = queryBus.listenToState((queryBusState) => {
+      queryState = queryBusState;
+      serverSent.send(
+        stringifyState({
+          ...queryState,
+          ...commandState,
+        }),
+      );
+    });
+
+    const unsubscribeFromCommandBus = commandBus.listenToState(
+      (commandBusState) => {
+        commandState = commandBusState;
+        serverSent.send(
+          stringifyState({
+            ...queryState,
+            ...commandState,
+          }),
+        );
+      },
+    );
+
+    serverSent.onClose(() => {
+      unsubscribeFromQueryBus();
+      unsubscribeFromCommandBus();
+    });
   });
 
   const endpointCaching = new FilesystemEndpointCaching(environmentHelper);

@@ -3,7 +3,8 @@ import { SettingsPageQuery } from "@media-center/domains/src/queries/settingsPag
 import { ReinitCatalogCommand } from "@media-center/domains/src/catalog/applicative/reinit.command";
 import { RescanSubtitlesCommand } from "@media-center/domains/src/hierarchyEntryInformation/applicative/rescanSubtitles.command";
 import { ScanExistingCommand } from "@media-center/domains/src/fileWatcher/applicative/scanExisting.command";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { IntentBusStateItem } from "@media-center/domain-driven/src/bus/intention/intentBus";
 import { Section } from "../../components/ui/display/section";
 import { Box } from "../../components/ui/display/box";
 import { LineButton } from "../../components/ui/input/pressable/lineButton";
@@ -13,11 +14,15 @@ import { useMeshContext } from "../../services/contexts/mesh.context";
 import { StatusContext } from "../../services/contexts/status.context";
 import { useQuery } from "../../services/api/useQuery";
 import { Beta } from "../../services/api/api";
+import { Text } from "../../components/ui/input/text";
 
 export function Settings() {
   const [{ result }] = useQuery(SettingsPageQuery, undefined);
   const { user, resetAccount, resetServer } = useLocalUser();
   const { initStatus } = useMeshContext(StatusContext);
+  const [busState, setBusState] = useState<Record<string, IntentBusStateItem>>(
+    {},
+  );
 
   const rescanLibrary = useCallback(async () => {
     handleBasicUserQuery(Beta.command(new ReinitCatalogCommand()));
@@ -29,6 +34,12 @@ export function Settings() {
 
   const rescanSubtitles = useCallback(async () => {
     handleBasicUserQuery(Beta.command(new RescanSubtitlesCommand()));
+  }, []);
+
+  useEffect(() => {
+    Beta.rawReactiveQuery(new URL(Beta.getUrl("/meta/bus")), (rawResult) => {
+      setBusState(JSON.parse(rawResult));
+    });
   }, []);
 
   return (
@@ -72,6 +83,16 @@ export function Settings() {
           variant="delete"
           onPress={rescanSubtitles}
         />
+      </Section>
+      <Section title="Bus">
+        {Object.entries(busState).map(([requestId, item]) => (
+          <Box row items="flex-start" content="space-between">
+            <Text>{requestId}</Text>
+            <Text>
+              {item.intentHandlerName}: {JSON.stringify(item.intent)}
+            </Text>
+          </Box>
+        ))}
       </Section>
     </Box>
   );

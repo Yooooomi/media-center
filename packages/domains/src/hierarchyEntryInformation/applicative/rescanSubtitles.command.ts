@@ -34,7 +34,7 @@ export class RescanSubtitlesCommandHandler extends CommandHandler(
         async (info) => {
           await this.subtitleService.extractFor(info, transaction);
         },
-        3,
+        1,
       );
     });
   }

@@ -34,13 +34,13 @@ export class FilesystemSubtitleStore implements SubtitleStore {
     return fs.readFileSync(path).toString();
   }
 
-  async save(
+  async fromLocalFile(
     hierarchyItemId: HierarchyItemId,
     trackIndex: number,
-    content: string,
+    filepath: string,
   ) {
     const path = this.getPathFromIdAndIndex(hierarchyItemId, trackIndex);
-    fs.writeFileSync(path, content);
+    fs.renameSync(filepath, path);
   }
 
   async delete(hierarchyItemId: HierarchyItemId, trackIndex: number) {

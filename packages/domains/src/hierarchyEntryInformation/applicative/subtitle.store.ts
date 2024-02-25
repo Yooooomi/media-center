@@ -1,10 +1,10 @@
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 
 export interface SubtitleStore {
-  save(
+  fromLocalFile(
     hierarchyItemId: HierarchyItemId,
     trackIndex: number,
-    content: string,
+    filepath: string,
   ): Promise<void>;
   load(
     hierarchyItemId: HierarchyItemId,

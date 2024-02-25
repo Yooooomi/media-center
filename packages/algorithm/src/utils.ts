@@ -119,6 +119,14 @@ export function fromPairs<K extends string | number, V>(
   );
 }
 
+export function mapNumber<R>(count: number, handle: (index: number) => R) {
+  const results: R[] = [];
+  for (let i = 0; i < count; i += 1) {
+    results.push(handle(i));
+  }
+  return results;
+}
+
 export async function PromiseAllByChunk<T, R>(
   list: T[],
   handler: (data: T) => Promise<R>,

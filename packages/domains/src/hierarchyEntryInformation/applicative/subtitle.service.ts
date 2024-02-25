@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { PromiseAllByChunk, fromPairs, wait } from "@media-center/algorithm";
+import { fromPairs, mapNumber } from "@media-center/algorithm";
 import { Transaction, useLog } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { HierarchyEntryInformation } from "../domain/hierarchyEntryInformation";
@@ -39,6 +39,13 @@ export class SubtitleService {
 
   static logger = useLog(SubtitleService.name);
 
+  static generateFileNameForIndex(
+    hierarchyItemId: HierarchyItemId,
+    index: number,
+  ) {
+    return `${hierarchyItemId.toString()}-${index}.vtt`;
+  }
+
   public async extractFor(
     hierarchyItem: HierarchyItem,
     transaction?: Transaction,
@@ -48,10 +55,16 @@ export class SubtitleService {
     );
     const { subtitles, audioTracks } = await getSubtitlesFromPath(
       hierarchyItem.file.path,
+      (index) =>
+        SubtitleService.generateFileNameForIndex(hierarchyItem.id, index),
     );
     await Promise.all(
       subtitles.map((subtitle, index) =>
-        this.subtitleStore.save(hierarchyItem.id, index, subtitle.content),
+        this.subtitleStore.fromLocalFile(
+          hierarchyItem.id,
+          index,
+          subtitle.filepath,
+        ),
       ),
     );
     const entryInformation = new HierarchyEntryInformation({
@@ -132,20 +145,24 @@ async function getVideoMetadata(path: string) {
   return streams;
 }
 
-async function getVideoTextTrack(path: string, trackIndex: number) {
+async function getVideoTextTrack(
+  path: string,
+  trackCount: number,
+  generateFileNameForIndex: (index: number) => string,
+) {
   try {
-    const { out } = await spawnAndGetOutput("ffmpeg", [
+    await spawnAndGetOutput("ffmpeg", [
       "-i",
       path,
-      "-map",
-      `0:s:${trackIndex}`,
-      "-c:s",
-      "webvtt",
-      "-f",
-      "webvtt",
-      "-",
+      ...mapNumber(trackCount, (index) => [
+        "-map",
+        `0:s:${index}`,
+        "-f",
+        "webvtt",
+        generateFileNameForIndex(index),
+      ]).flat(),
     ]);
-    return out;
+    return mapNumber(trackCount, generateFileNameForIndex);
   } catch (e) {
     return undefined;
   }
@@ -153,10 +170,13 @@ async function getVideoTextTrack(path: string, trackIndex: number) {
 
 interface Subtitle {
   name: string;
-  content: string;
+  filepath: string;
 }
 
-async function getSubtitlesFromPath(path: string) {
+async function getSubtitlesFromPath(
+  path: string,
+  generateFileNameForIndex: (index: number) => string,
+) {
   const streams = await getVideoMetadata(path);
   if (!streams) {
     return { subtitles: [], audioTracks: [] };
@@ -165,19 +185,24 @@ async function getSubtitlesFromPath(path: string) {
     (stream) =>
       stream.type === "Subtitle" && stream.typeParameters.includes("subrip"),
   );
-  const subtitlesContent = await Promise.all(
-    subtitleStreams.map((stream) => getVideoTextTrack(path, stream.typeIndex)),
+  const filepaths = await getVideoTextTrack(
+    path,
+    subtitleStreams.length,
+    generateFileNameForIndex,
   );
+  if (!filepaths) {
+    return { subtitles: [], audioTracks: [] };
+  }
   const subtitles: Subtitle[] = [];
   for (let i = 0; i < subtitleStreams.length; i += 1) {
     const stream = subtitleStreams[i];
-    const subtitleContent = subtitlesContent[i];
-    if (!stream || !subtitleContent) {
+    const subtitleFilepath = filepaths[i];
+    if (!stream || !subtitleFilepath) {
       continue;
     }
     subtitles.push({
       name: stream.metadata.title ?? `#${i + 1}`,
-      content: subtitleContent,
+      filepath: subtitleFilepath,
     });
   }
   return {

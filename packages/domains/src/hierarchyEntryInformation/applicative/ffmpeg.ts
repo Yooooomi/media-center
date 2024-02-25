@@ -93,12 +93,12 @@ export async function extractTracksFromPath(
     .filter((stream) => stream.codec_type === "audio")
     .map((stream, index) => ({
       index,
-      name: stream.tags.title ?? "",
+      name: stream.tags?.title ?? `#${index + 1}`,
     }));
 
   const textTracks = subtitleStreams.map((stream, index) => ({
     index,
-    name: stream.tags.title ?? "",
+    name: stream.tags?.title ?? `#${index + 1}`,
   }));
 
   const probeVideoTrack = ffprobe.streams.filter(

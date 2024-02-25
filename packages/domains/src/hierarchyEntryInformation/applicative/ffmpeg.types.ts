@@ -92,7 +92,7 @@ export interface TextTrack {
   duration_ts: number;
   duration: string;
   disposition: Disposition;
-  tags: Record<string, string>;
+  tags: Record<string, string> | undefined;
 }
 
 export type Track = VideoTrack | AudioTrack | TextTrack;

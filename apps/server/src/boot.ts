@@ -6,6 +6,7 @@ import {
   InMemoryQueryBus,
   InMemoryTransactionPerformer,
 } from "@media-center/domain-driven";
+import { DiskFilesystem } from "@media-center/domains/src/miscellaneous/valueObjects/fileSystem";
 import { SolverSafeRequest } from "./framework/safeRequest/solver.safeRequest";
 import { bootApi } from "./endpoints/boot";
 import { FilesystemTorrentRequestStore } from "./domains/torrentRequest/infrastructure/filesystem.torrentRequest.store";
@@ -26,6 +27,7 @@ import { InMemoryTorrentRequestStore } from "./domains/torrentRequest/infrastruc
 export async function globalBoot() {
   configureDotenv();
 
+  const filesystem = new DiskFilesystem();
   const database = new InMemoryDatabase();
   const transactionPerformer = new InMemoryTransactionPerformer(database);
   const commandBus = new InMemoryCommandBus();
@@ -106,6 +108,9 @@ export async function globalBoot() {
     commandBus,
     queryBus,
     hierarchyStore,
+    filesystem,
+    catalogEntryStore,
+    torrentRequestStore,
   );
 
   bootCommands(commandBus, torrentClient, torrentRequestStore);

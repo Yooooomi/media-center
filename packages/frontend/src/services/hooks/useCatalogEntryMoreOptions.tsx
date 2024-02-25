@@ -84,6 +84,7 @@ export function useCatalogEntryMoreOptions({
         );
       }
       if (catalogEntry instanceof ShowCatalogEntryFulfilled) {
+        console.log(catalogEntry.dataset);
         await PromiseAllByChunk(
           catalogEntry.dataset,
           (data) =>

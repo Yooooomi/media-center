@@ -19,6 +19,7 @@ import { TmdbNote } from "../../components/ui/display/tmdbNote";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Beta } from "../../services/api/api";
 import { useQuery } from "../../services/api/useQuery";
+import { HierarchyEntryInformationLine } from "../../components/implementedUi/hierarchyEntryInformationLine";
 
 export function Movie() {
   const { movie } = useParams<"Movie">();
@@ -111,12 +112,19 @@ export function Movie() {
               </Text>
             </Box>
             <Box mb="S24">
-              <Box row gap="S32">
+              <Box row content="space-between">
                 <Text>
                   <TmdbNote note={moviePage.tmdb.getRoundedNote()} />・{" "}
                   {moviePage.details.getStringRuntime()} ・{" "}
                   {moviePage.details.genres[0]}
                 </Text>
+                {hasHierarchyItems ? (
+                  <HierarchyEntryInformationLine
+                    hierarchyEntryInformation={
+                      moviePage.firstHierarchyInformation
+                    }
+                  />
+                ) : null}
               </Box>
             </Box>
             <Text size="smaller" color="textFaded" lineHeight={20}>

@@ -62,7 +62,7 @@ export function IntentHandler<
     public intent = intent;
     public events = reactOn;
 
-    public shouldReact(event: InstanceType<E>, _intent: I) {
+    public async shouldReact(event: InstanceType<E>, _intent: I) {
       return !!reactOn && reactOn.length > 0;
     }
 

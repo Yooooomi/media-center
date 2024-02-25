@@ -9,7 +9,7 @@ import { EnvironmentHelper } from "@media-center/domains/src/environment/applica
 import { HierarchyEntryInformationSaga } from "@media-center/domains/src/hierarchyEntryInformation/applicative/hierarchyEntryInformation.saga";
 import { GetSubtitlesQueryHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/getSubtitles.query";
 import { RescanSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/rescanSubtitles.command";
-import { SubtitleService } from "@media-center/domains/src/hierarchyEntryInformation/applicative/subtitle.service";
+import { VideoFileService } from "@media-center/domains/src/hierarchyEntryInformation/applicative/videoFile.service";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
 import { ScanMissingSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanMissingSubtitles.command";
 import { ScanSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanSubtitles.command";
@@ -39,12 +39,12 @@ export function bootHierarchyEntryInformation(
   );
 
   const subtitleStore = new FilesystemSubtitleStore(environmentHelper);
-  const subtitleService = new SubtitleService(
+  const videoFileService = new VideoFileService(
     hierarchyEntryInformationStore,
     subtitleStore,
   );
 
-  new HierarchyEntryInformationSaga(hierarchyStore, subtitleService).listen(
+  new HierarchyEntryInformationSaga(hierarchyStore, videoFileService).listen(
     eventBus,
   );
 
@@ -55,27 +55,30 @@ export function bootHierarchyEntryInformation(
   commandBus.register(
     new RescanSubtitlesCommandHandler(
       transactionPerformer,
+      eventBus,
       hierarchyStore,
       hierarchyEntryInformationStore,
       subtitleStore,
-      subtitleService,
+      videoFileService,
     ),
   );
 
   commandBus.register(
     new ScanMissingSubtitlesCommandHandler(
       transactionPerformer,
+      eventBus,
       hierarchyStore,
       hierarchyEntryInformationStore,
-      subtitleService,
+      videoFileService,
     ),
   );
 
   commandBus.register(
     new ScanSubtitlesCommandHandler(
       transactionPerformer,
+      eventBus,
       hierarchyStore,
-      subtitleService,
+      videoFileService,
     ),
   );
 

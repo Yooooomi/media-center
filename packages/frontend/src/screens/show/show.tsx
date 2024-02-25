@@ -17,6 +17,7 @@ import { ShowEpisodeCardsLine } from "../../components/implementedUi/showEpisode
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { useQuery } from "../../services/api/useQuery";
 import { Beta } from "../../services/api/api";
+import { HierarchyEntryInformationLine } from "../../components/implementedUi/hierarchyEntryInformationLine";
 import { SeasonSelector } from "./seasonSelector";
 
 export function Show() {
@@ -111,6 +112,20 @@ export function Show() {
       )) ??
     false;
 
+  const focusedEpisodeHierarchyInformation = focusedEpisode
+    ? showPage.hierarchyEntryInformation.find(
+        (e) =>
+          e.season === focusedEpisode.season_number &&
+          e.episode === focusedEpisode.episode_number,
+      )?.information
+    : undefined;
+  const focusedEpisodeHasHierarchyEntry = focusedEpisode
+    ? showPage.catalogEntry.getEpisode(
+        focusedEpisode.season_number,
+        focusedEpisode.episode_number,
+      ).length !== 0
+    : null;
+
   return (
     <>
       <ScrollView style={styles.grow}>
@@ -135,7 +150,7 @@ export function Show() {
               season={highlightedSeason}
               onSeasonChange={setSeasonIndex}
             />
-            <Box row w={330} mb="S4">
+            <Box row w={focusedEpisode ? 330 : (330 * 2) / 3} mb="S4">
               <BigPressable
                 text="Télécharger"
                 focusOnMount={!hasSeasons}
@@ -173,18 +188,27 @@ export function Show() {
               season={season.season_number}
             />
           ) : null}
-          <Box w="60%" mt="S16">
-            <Box mb="S4">
-              <Text color="whiteText" bold size="default">
-                Synopsis
-              </Text>
+          <Box row mt="S16">
+            <Box w="60%">
+              <Box mb="S4">
+                <Text color="whiteText" bold size="default">
+                  Synopsis
+                </Text>
+              </Box>
+              <Box mb="S16">
+                <Text lineHeight={20} size="small" color="textFaded">
+                  {show.overview}
+                </Text>
+              </Box>
+              <TorrentRequests requests={showPage.requests} />
             </Box>
-            <Box mb="S16">
-              <Text lineHeight={20} size="small" color="textFaded">
-                {show.overview}
-              </Text>
+            <Box grow items="flex-end">
+              {focusedEpisodeHasHierarchyEntry ? (
+                <HierarchyEntryInformationLine
+                  hierarchyEntryInformation={focusedEpisodeHierarchyInformation}
+                />
+              ) : null}
             </Box>
-            <TorrentRequests requests={showPage.requests} />
           </Box>
         </Box>
       </ScrollView>

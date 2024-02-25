@@ -1,4 +1,10 @@
-import { Query, QueryHandler, Shape } from "@media-center/domain-driven";
+import {
+  Optional,
+  Query,
+  QueryHandler,
+  Shape,
+} from "@media-center/domain-driven";
+import { keyBy } from "@media-center/algorithm";
 import {
   CatalogDeleted,
   CatalogEntryUpdated,
@@ -9,7 +15,10 @@ import {
   MovieCatalogEntryFulfilled,
   MovieCatalogEntryDatasetFulfilled,
 } from "../catalog/applicative/catalogEntryFulfilled.front";
-import { MovieCatalogEntry } from "../catalog/domain/catalogEntry";
+import {
+  CatalogEntryContainsHierarchyItemId,
+  MovieCatalogEntry,
+} from "../catalog/domain/catalogEntry";
 import { HierarchyStore } from "../fileWatcher/applicative/hierarchy.store";
 import { TmdbAPI } from "../tmdb/applicative/tmdb.api";
 import { TmdbStore } from "../tmdb/applicative/tmdb.store";
@@ -26,6 +35,9 @@ import { UserTmdbInfoStore } from "../userTmdbInfo/applicative/userTmdbInfo.stor
 import { UserTmdbMovieInfo } from "../userTmdbInfo/domain/userTmdbInfo";
 import { UserTmdbInfoUpdated } from "../userTmdbInfo/domain/userTmdbInfo.events";
 import { UserId, UserTmdbInfoId } from "../userTmdbInfo/domain/userTmdbInfoId";
+import { HierarchyEntryInformationStore } from "../hierarchyEntryInformation/applicative/hierarchyEntryInformation.store";
+import { HierarchyEntryInformation } from "../hierarchyEntryInformation/domain/hierarchyEntryInformation";
+import { HierarchyEntryInformationUpdated } from "../hierarchyEntryInformation/domain/hierarchyEntryInformation.events";
 
 class MoviePageSummary extends Shape({
   tmdb: Movie,
@@ -33,6 +45,7 @@ class MoviePageSummary extends Shape({
   requests: [TorrentRequest],
   catalogEntry: MovieCatalogEntryFulfilled,
   userInfo: UserTmdbMovieInfo,
+  firstHierarchyInformation: Optional(HierarchyEntryInformation),
 }) {}
 
 export class GetMoviePageQuery extends Query(
@@ -47,6 +60,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
   TorrentRequestAdded,
   TorrentRequestUpdated,
   UserTmdbInfoUpdated,
+  HierarchyEntryInformationUpdated,
 ]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
@@ -55,18 +69,20 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly hierarchyStore: HierarchyStore,
     private readonly userTmdbInfoStore: UserTmdbInfoStore,
+    private readonly hierarchyEntryInformationStore: HierarchyEntryInformationStore,
   ) {
     super();
   }
 
-  shouldReact(
+  async shouldReact(
     event:
       | CatalogDeleted
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
       | TorrentRequestUpdated
-      | UserTmdbInfoUpdated,
+      | UserTmdbInfoUpdated
+      | HierarchyEntryInformationUpdated,
     intent: GetMoviePageQuery,
   ) {
     if (event instanceof UserTmdbInfoUpdated) {
@@ -80,6 +96,16 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       event instanceof TorrentRequestUpdated
     ) {
       return event.tmdbId.equals(intent.tmdbId);
+    }
+    if (event instanceof HierarchyEntryInformationUpdated) {
+      const catalogEntry = await this.catalogEntryStore.load(intent.tmdbId);
+      if (!catalogEntry) {
+        return false;
+      }
+      return CatalogEntryContainsHierarchyItemId(
+        catalogEntry,
+        event.hierarchyItemId,
+      );
     }
     return event.catalogEntry.id.equals(intent.tmdbId);
   }
@@ -105,6 +131,21 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
         )
       : [];
 
+    const hierarchyEntryInformation = keyBy(
+      await this.hierarchyEntryInformationStore.loadMany(
+        hierarchyItems.map((h) => h.id),
+      ),
+      (e) => e.id.toString(),
+    );
+
+    const analyzed = hierarchyItems.every(
+      (item) => hierarchyEntryInformation[item.id.toString()],
+    );
+    const firstHierarchyItemId = hierarchyItems[0]?.id.toString();
+    const firstHierarchyInformation = firstHierarchyItemId
+      ? hierarchyEntryInformation[firstHierarchyItemId]
+      : undefined;
+
     const catalogEntryFulfilled = new MovieCatalogEntryFulfilled({
       id: intent.tmdbId,
       dataset: new MovieCatalogEntryDatasetFulfilled({ hierarchyItems }),
@@ -127,6 +168,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       requests,
       details,
       userInfo,
+      firstHierarchyInformation,
     });
   }
 }

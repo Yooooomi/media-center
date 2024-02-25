@@ -4,12 +4,12 @@ import {
   HierarchyItemDeleted,
 } from "../../fileWatcher/applicative/fileWatcher.events";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
-import { SubtitleService } from "./subtitle.service";
+import { VideoFileService } from "./videoFile.service";
 
 export class HierarchyEntryInformationSaga extends Saga {
   constructor(
     private readonly hierarchyStore: HierarchyStore,
-    private readonly subtitleService: SubtitleService,
+    private readonly videoFileService: VideoFileService,
   ) {
     super();
   }
@@ -22,11 +22,11 @@ export class HierarchyEntryInformationSaga extends Saga {
       return;
     }
 
-    await this.subtitleService.extractFor(item);
+    await this.videoFileService.extractFor(item);
   }
 
   @Saga.on(HierarchyItemDeleted)
   private async deleteHierarchyEntryInformation(event: HierarchyItemDeleted) {
-    await this.subtitleService.deleteFor(event.item.id);
+    await this.videoFileService.deleteFor(event.item.id);
   }
 }

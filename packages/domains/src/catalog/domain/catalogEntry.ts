@@ -1,4 +1,5 @@
 import { Shape, Freeze } from "@media-center/domain-driven";
+import { assertNever } from "@media-center/algorithm";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 
@@ -122,6 +123,23 @@ export class ShowCatalogEntry extends Shape({
 }
 
 export type AnyCatalogEntry = MovieCatalogEntry | ShowCatalogEntry;
+
+export function CatalogEntryContainsHierarchyItemId(
+  catalogEntry: AnyCatalogEntry,
+  hierarchyItemId: HierarchyItemId,
+) {
+  if (catalogEntry instanceof MovieCatalogEntry) {
+    return catalogEntry.dataset.hierarchyItemIds.some((id) =>
+      id.equals(hierarchyItemId),
+    );
+  }
+  if (catalogEntry instanceof ShowCatalogEntry) {
+    return catalogEntry.dataset.some((entry) =>
+      entry.hierarchyItemIds.some((id) => id.equals(hierarchyItemId)),
+    );
+  }
+  assertNever(catalogEntry);
+}
 
 export type AnyCatalogEntryDataset =
   | MovieCatalogEntryDataset

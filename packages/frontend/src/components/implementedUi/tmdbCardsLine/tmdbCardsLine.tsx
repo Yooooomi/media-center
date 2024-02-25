@@ -4,6 +4,7 @@ import {
   UserTmdbShowInfo,
 } from "@media-center/domains/src/userTmdbInfo/domain/userTmdbInfo";
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
+import { assertNever } from "@media-center/algorithm";
 import { MovieCard } from "../cards/movieCard/movieCard";
 import {
   SectionLine,
@@ -26,16 +27,13 @@ export function TmdbCardsLine({
   ...other
 }: MovieCardsLine) {
   function getProgress(info: UserTmdbMovieInfo | UserTmdbShowInfo | undefined) {
-    if (!info) {
+    if (!info || info instanceof UserTmdbShowInfo) {
       return undefined;
     }
     if (info instanceof UserTmdbMovieInfo) {
       return info.progress;
     }
-    if (info instanceof UserTmdbShowInfo) {
-      return info.getShowProgress();
-    }
-    return undefined;
+    assertNever(info);
   }
 
   return (

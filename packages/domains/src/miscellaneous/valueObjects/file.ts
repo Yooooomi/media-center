@@ -9,7 +9,7 @@ export class File extends Shape({
   }
 
   getFilenameWithExtension() {
-    const parts = this.path.split("/");
+    const parts = this.path.split(path.sep);
     const lastPart = parts[parts.length - 1];
     return lastPart ?? "";
   }

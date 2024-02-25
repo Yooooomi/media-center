@@ -98,6 +98,16 @@ export async function globalBoot() {
     tmdbStore,
   );
 
+  const { hierarchyEntryInformationStore } = bootHierarchyEntryInformation(
+    environmentHelper,
+    transactionPerformer,
+    database,
+    eventBus,
+    commandBus,
+    queryBus,
+    hierarchyStore,
+  );
+
   bootCommands(commandBus, torrentClient, torrentRequestStore);
 
   bootQueries(
@@ -110,16 +120,7 @@ export async function globalBoot() {
     userTmdbInfoStore,
     torrentClient,
     torrentIndexer,
-  );
-
-  bootHierarchyEntryInformation(
-    environmentHelper,
-    transactionPerformer,
-    database,
-    eventBus,
-    commandBus,
-    queryBus,
-    hierarchyStore,
+    hierarchyEntryInformationStore,
   );
 
   return {

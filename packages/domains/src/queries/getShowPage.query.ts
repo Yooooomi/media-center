@@ -1,4 +1,5 @@
 import { Query, QueryHandler, Shape } from "@media-center/domain-driven";
+import { keyBy } from "@media-center/algorithm";
 import {
   CatalogDeleted,
   CatalogEntryUpdated,
@@ -23,6 +24,10 @@ import { UserTmdbInfoStore } from "../userTmdbInfo/applicative/userTmdbInfo.stor
 import { UserTmdbShowInfo } from "../userTmdbInfo/domain/userTmdbInfo";
 import { UserTmdbInfoUpdated } from "../userTmdbInfo/domain/userTmdbInfo.events";
 import { UserId, UserTmdbInfoId } from "../userTmdbInfo/domain/userTmdbInfoId";
+import { HierarchyEntryInformationStore } from "../hierarchyEntryInformation/applicative/hierarchyEntryInformation.store";
+import { HierarchyEntryInformation } from "../hierarchyEntryInformation/domain/hierarchyEntryInformation";
+import { HierarchyEntryInformationUpdated } from "../hierarchyEntryInformation/domain/hierarchyEntryInformation.events";
+import { CatalogEntryContainsHierarchyItemId } from "../catalog/domain/catalogEntry";
 import { getShowCatalogEntryFulfilled } from "./showCatalogEntryFulfilled.service";
 
 class ShowPageSummary extends Shape({
@@ -32,6 +37,9 @@ class ShowPageSummary extends Shape({
   seasons: [ShowSeason],
   episodes: [{ season: Number, episodes: [ShowEpisode] }],
   userInfo: UserTmdbShowInfo,
+  hierarchyEntryInformation: [
+    { season: Number, episode: Number, information: HierarchyEntryInformation },
+  ],
 }) {}
 
 export class GetShowPageQuery extends Query(
@@ -46,6 +54,7 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
   TorrentRequestAdded,
   TorrentRequestUpdated,
   UserTmdbInfoUpdated,
+  HierarchyEntryInformationUpdated,
 ]) {
   constructor(
     private readonly tmdbStore: TmdbStore,
@@ -54,20 +63,22 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly hierarchyStore: HierarchyStore,
     private readonly userTmdbInfoStore: UserTmdbInfoStore,
+    private readonly hierarchyEntryInformationStore: HierarchyEntryInformationStore,
   ) {
     super();
   }
 
-  shouldReact(
+  async shouldReact(
     event:
       | CatalogDeleted
       | CatalogEntryUpdated
       | CatalogEntryDeleted
       | TorrentRequestAdded
       | TorrentRequestUpdated
-      | UserTmdbInfoUpdated,
+      | UserTmdbInfoUpdated
+      | HierarchyEntryInformationUpdated,
     intent: GetShowPageQuery,
-  ): boolean {
+  ) {
     if (event instanceof UserTmdbInfoUpdated) {
       return event.userTmdbInfoId.equals(event.userTmdbInfoId);
     }
@@ -79,6 +90,16 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       event instanceof TorrentRequestUpdated
     ) {
       return event.tmdbId.equals(intent.tmdbId);
+    }
+    if (event instanceof HierarchyEntryInformationUpdated) {
+      const catalogEntry = await this.catalogEntryStore.load(intent.tmdbId);
+      if (!catalogEntry) {
+        return false;
+      }
+      return CatalogEntryContainsHierarchyItemId(
+        catalogEntry,
+        event.hierarchyItemId,
+      );
     }
     return event.catalogEntry.id.equals(intent.tmdbId);
   }
@@ -98,12 +119,40 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       this.catalogEntryStore,
     );
 
+    const allHierarchyItems = catalogEntryFulfilled.dataset.flatMap(
+      (e) => e.hierarchyItems,
+    );
+    const hierarchyEntryInformation = keyBy(
+      await this.hierarchyEntryInformationStore.loadMany(
+        allHierarchyItems.map((h) => h.id),
+      ),
+      (e) => e.id.toString(),
+    );
+
+    const informationPerEpisode = catalogEntryFulfilled.dataset.reduce<
+      Record<number, Record<number, HierarchyEntryInformation>>
+    >((acc, curr) => {
+      const season = acc[curr.season] ?? {};
+      const firstHierarchyItemId = curr.hierarchyItems[0]?.id;
+      if (!firstHierarchyItemId) {
+        return acc;
+      }
+      const firstHierarchyItemInformation =
+        hierarchyEntryInformation[firstHierarchyItemId.toString()];
+      if (!firstHierarchyItemInformation) {
+        return acc;
+      }
+      season[curr.episode] = firstHierarchyItemInformation;
+      acc[curr.season] = season;
+      return acc;
+    }, {});
+
     const seasons = await this.tmdbApi.getSeasons(intent.tmdbId);
     const neededSeasonNumbers = catalogEntryFulfilled.availableSeasons();
     const neededSeasons = seasons.filter((season) =>
       neededSeasonNumbers.includes(season.season_number),
     );
-    const episodes = await Promise.all(
+    const tmdbEpisodes = await Promise.all(
       neededSeasonNumbers.map(async (seasonNumber) => ({
         season: seasonNumber,
         episodes: await this.tmdbApi.getEpisodes(intent.tmdbId, seasonNumber),
@@ -126,8 +175,17 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       requests,
       catalogEntry: catalogEntryFulfilled,
       seasons: neededSeasons,
-      episodes,
+      episodes: tmdbEpisodes,
       userInfo,
+      hierarchyEntryInformation: Object.entries(informationPerEpisode).flatMap(
+        ([season, episodes]) => {
+          return Object.entries(episodes).map(([episode, information]) => ({
+            season: +season,
+            episode: +episode,
+            information,
+          }));
+        },
+      ),
     });
   }
 }

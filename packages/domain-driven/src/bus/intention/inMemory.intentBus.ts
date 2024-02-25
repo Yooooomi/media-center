@@ -1,10 +1,10 @@
+import { TimeMeasurer, debounceOverflow } from "@media-center/algorithm";
 import { InfrastructureError } from "../../error";
 import { Definition } from "../../serialization";
 import { BaseEvent } from "../eventBus/event";
 import { EventBus } from "../eventBus/eventBus";
 import { BaseIntent, BaseIntentConstructor, BaseIntentHandler } from "./intent";
 import { IntentBus } from "./intentBus";
-import { TimeMeasurer, debounceOverflow } from "@media-center/algorithm";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -44,7 +44,7 @@ export class InMemoryIntentionBus extends IntentBus {
   async executeAndReact(
     bus: EventBus,
     intent: BaseIntent<Definition, Definition>,
-    handle: (result: any, timeMs: number) => void
+    handle: (result: any, timeMs: number) => void,
   ): Promise<() => void> {
     const handler = this.handlerRegistry[intent.constructor.name];
     if (!handler) {
@@ -52,7 +52,11 @@ export class InMemoryIntentionBus extends IntentBus {
     }
 
     async function react(event: BaseEvent<any>) {
-      if (!handler?.shouldReact(event, intent)) {
+      if (!handler) {
+        return;
+      }
+      const handlerShouldReact = await handler?.shouldReact(event, intent);
+      if (!handlerShouldReact) {
         return;
       }
       try {
@@ -65,7 +69,7 @@ export class InMemoryIntentionBus extends IntentBus {
     }
 
     const listeners = handler.events?.map((e) =>
-      bus.on(e, debounceOverflow(react, 1000, 20))
+      bus.on(e, debounceOverflow(react, 1000, 20)),
     );
 
     const measure = TimeMeasurer.fromNow();

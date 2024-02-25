@@ -1,5 +1,9 @@
 export function noop() {}
 
+export function assertNever(shouldNotExist: never): never {
+  throw new Error("Assert never asserted non never value");
+}
+
 export function compact<T>(array: T[]): NonNullable<T>[] {
   return array.filter(Boolean) as NonNullable<T>[];
 }
@@ -7,6 +11,16 @@ export function compact<T>(array: T[]): NonNullable<T>[] {
 export function keyBy<T>(values: T[], getKey: (value: T) => string) {
   return values.reduce<Record<string, T>>((acc, curr) => {
     acc[getKey(curr)] = curr;
+    return acc;
+  }, {});
+}
+
+export function groupBy<T>(values: T[], by: (value: T) => string) {
+  return values.reduce<Record<string, T[]>>((acc, curr) => {
+    const key = by(curr);
+    const group = acc[key] ?? [];
+    group.push(curr);
+    acc[key] = group;
     return acc;
   }, {});
 }
@@ -138,10 +152,10 @@ export async function PromiseAllByChunk<T, R>(
     const results: { result: R | undefined; error: any }[] = [];
 
     function launch() {
-      const index = notFullfilled.shift();
       if (running === 0 && notFullfilled.length === 0) {
         res(results);
       }
+      const index = notFullfilled.shift();
       if (index === undefined) {
         return;
       }

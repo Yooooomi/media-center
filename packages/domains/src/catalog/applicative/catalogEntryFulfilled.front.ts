@@ -87,6 +87,12 @@ export class ShowCatalogEntryFulfilled extends Shape({
       .sort((a, b) => a.episode - b.episode);
   }
 
+  getEpisode(season: number, episode: number) {
+    return this.dataset.filter(
+      (item) => item.season === season && item.episode === episode,
+    );
+  }
+
   hasHierarchyItems() {
     return this.dataset.length > 0;
   }

@@ -1,6 +1,7 @@
 import { QueryBus } from "@media-center/domain-driven";
 import { CatalogEntryStore } from "@media-center/domains/src/catalog/applicative/catalogEntry.store";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
+import { HierarchyEntryInformationStore } from "@media-center/domains/src/hierarchyEntryInformation/applicative/hierarchyEntryInformation.store";
 import { DiscoverPageQueryHandler } from "@media-center/domains/src/queries/discoverPage.query";
 import { GetMoviePageQueryHandler } from "@media-center/domains/src/queries/getMoviePage.query";
 import { GetMoviesPageQueryHandler } from "@media-center/domains/src/queries/getMoviesPage.query";
@@ -26,6 +27,7 @@ export function bootQueries(
   userTmdbInfoStore: UserTmdbInfoStore,
   torrentClient: TorrentClient,
   torrentIndexer: TorrentIndexer,
+  hierarchyEntryInformationStore: HierarchyEntryInformationStore,
 ) {
   queryBus.register(
     new HomepageQueryHandler(
@@ -44,6 +46,7 @@ export function bootQueries(
       catalogEntryStore,
       hierarchyStore,
       userTmdbInfoStore,
+      hierarchyEntryInformationStore,
     ),
   );
 
@@ -55,6 +58,7 @@ export function bootQueries(
       catalogEntryStore,
       hierarchyStore,
       userTmdbInfoStore,
+      hierarchyEntryInformationStore,
     ),
   );
 

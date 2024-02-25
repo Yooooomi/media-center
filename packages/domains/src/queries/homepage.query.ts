@@ -77,7 +77,7 @@ export class HomepageQueryHandler extends QueryHandler(HomepageQuery, [
     super();
   }
 
-  shouldReact(
+  async shouldReact(
     event:
       | CatalogDeleted
       | CatalogEntryUpdated

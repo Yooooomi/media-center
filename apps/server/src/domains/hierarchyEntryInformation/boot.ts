@@ -11,6 +11,8 @@ import { GetSubtitlesQueryHandler } from "@media-center/domains/src/hierarchyEnt
 import { RescanSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/rescanSubtitles.command";
 import { SubtitleService } from "@media-center/domains/src/hierarchyEntryInformation/applicative/subtitle.service";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
+import { ScanMissingSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanMissingSubtitles.command";
+import { ScanSubtitlesCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanSubtitles.command";
 import { FilesystemHierarchyEntryInformationStore } from "./infrastructure/filesystem.catalogEntryInformation.store";
 import { InMemoryHierarchyEntryInformationStore } from "./infrastructure/inMemory.catalogEntryInformation.store";
 import { FilesystemSubtitleStore } from "./infrastructure/filesystem.subtitleStore";
@@ -56,6 +58,23 @@ export function bootHierarchyEntryInformation(
       hierarchyStore,
       hierarchyEntryInformationStore,
       subtitleStore,
+      subtitleService,
+    ),
+  );
+
+  commandBus.register(
+    new ScanMissingSubtitlesCommandHandler(
+      transactionPerformer,
+      hierarchyStore,
+      hierarchyEntryInformationStore,
+      subtitleService,
+    ),
+  );
+
+  commandBus.register(
+    new ScanSubtitlesCommandHandler(
+      transactionPerformer,
+      hierarchyStore,
       subtitleService,
     ),
   );

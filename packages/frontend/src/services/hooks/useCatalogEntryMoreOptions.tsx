@@ -3,7 +3,9 @@ import {
   ShowCatalogEntryFulfilled,
 } from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
 import { DeleteCatalogEntryCommand } from "@media-center/domains/src/commands/deleteCatalogEntry.command";
+import { ScanSubtitlesCommand } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanSubtitles.command";
 import { useCallback } from "react";
+import { PromiseAllByChunk } from "@media-center/algorithm";
 import { LineButton } from "../../components/ui/input/pressable/lineButton";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Modal } from "../../components/ui/tools/modal";
@@ -17,12 +19,14 @@ interface CatalogEntryMoreOptionsProps {
     | undefined;
   reload: () => void;
   close: () => void;
+  scanSubtitles: () => void;
 }
 
 function CatalogEntryMoreOptions({
   catalogEntry,
   reload,
   close,
+  scanSubtitles,
 }: CatalogEntryMoreOptionsProps) {
   const handleDelete = useCallback(async () => {
     if (!catalogEntry?.id) {
@@ -37,6 +41,11 @@ function CatalogEntryMoreOptions({
   return (
     <>
       <LineButton text="Recharger" onPress={reload} focusOnMount />
+      <LineButton
+        variant="delete"
+        text="Recharger les sous-titres"
+        onPress={scanSubtitles}
+      />
       <LineButton variant="delete" text="Supprimer" onPress={handleDelete} />
     </>
   );
@@ -61,6 +70,34 @@ export function useCatalogEntryMoreOptions({
     close();
   }, [close, reload]);
 
+  const handleScanSubtitles = useCallback(async () => {
+    close();
+    if (!catalogEntry) {
+      return;
+    }
+    try {
+      if (catalogEntry instanceof MovieCatalogEntryFulfilled) {
+        await Promise.all(
+          catalogEntry.dataset.hierarchyItems.map((hierarchyItem) =>
+            Beta.command(new ScanSubtitlesCommand(hierarchyItem.id)),
+          ),
+        );
+      }
+      if (catalogEntry instanceof ShowCatalogEntryFulfilled) {
+        await PromiseAllByChunk(
+          catalogEntry.dataset,
+          (data) =>
+            Promise.all(
+              data.hierarchyItems.map((hierarchyItem) =>
+                Beta.command(new ScanSubtitlesCommand(hierarchyItem.id)),
+              ),
+            ),
+          1,
+        );
+      }
+    } catch (e) {}
+  }, [catalogEntry, close]);
+
   return {
     open,
     element: (
@@ -69,6 +106,7 @@ export function useCatalogEntryMoreOptions({
           catalogEntry={catalogEntry}
           reload={handleReload}
           close={close}
+          scanSubtitles={handleScanSubtitles}
         />
       </Modal>
     ),

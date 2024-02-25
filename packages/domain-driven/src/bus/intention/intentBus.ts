@@ -12,7 +12,7 @@ export abstract class IntentBus {
   abstract executeAndReact(
     bus: EventBus,
     intent: BaseIntent<Definition, Definition>,
-    handler: (result: any, timeMs: number) => void
+    handler: (result: any, timeMs: number) => void,
   ): Promise<() => void>;
   abstract get(name: string): BaseIntentConstructor<any>;
 }

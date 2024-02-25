@@ -8,7 +8,7 @@ import { IntentBus } from "./intentBus";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
-    super(`Command handler for command "${name}" was not found`);
+    super(`Command handler for intent "${name}" was not found`);
   }
 }
 
@@ -28,17 +28,17 @@ export class InMemoryIntentionBus extends IntentBus {
     return handler.execute(intent);
   }
 
-  get(commandName: string) {
-    const ctor = this.intentRegistry[commandName];
+  get(intentName: string) {
+    const ctor = this.intentRegistry[intentName];
     if (!ctor) {
-      throw new NoHandlerFound(commandName);
+      throw new NoHandlerFound(intentName);
     }
     return ctor;
   }
 
-  register(commandHandler: BaseIntentHandler<any, any>) {
-    this.intentRegistry[commandHandler.intent.name] = commandHandler.intent;
-    this.handlerRegistry[commandHandler.intent.name] = commandHandler;
+  register(intentHandler: BaseIntentHandler<any, any>) {
+    this.intentRegistry[intentHandler.intent.name] = intentHandler.intent;
+    this.handlerRegistry[intentHandler.intent.name] = intentHandler;
   }
 
   async executeAndReact(

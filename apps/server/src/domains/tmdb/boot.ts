@@ -4,7 +4,7 @@ import { GetEpisodesQueryHandler } from "@media-center/domains/src/tmdb/applicat
 import { GetMovieDetailsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getMovieDetails.query";
 import { GetSeasonsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getSeasons.query";
 import { GetTmdbsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getTmdbs.query";
-import { SearchQueryHandler } from "@media-center/domains/src/tmdb/applicative/search.query";
+import { SearchTmdbQueryHandler } from "@media-center/domains/src/tmdb/applicative/searchTmdb.query";
 import { RealTmdbAPI } from "./infrastructure/real.tmdb.api";
 import { MockTmdbAPI } from "./infrastructure/mock.tmdb.api";
 import { InMemoryTmdbStore } from "./infrastructure/inMemory.tmdb.store";
@@ -28,7 +28,7 @@ export function bootTmdb(
   queryBus.register(new GetTmdbsQueryHandler(tmdbStore));
   queryBus.register(new GetSeasonsQueryHandler(tmdbApi));
   queryBus.register(new GetEpisodesQueryHandler(tmdbApi));
-  queryBus.register(new SearchQueryHandler(tmdbApi));
+  queryBus.register(new SearchTmdbQueryHandler(tmdbApi));
   queryBus.register(new GetMovieDetailsQueryHandler(tmdbApi));
 
   return { tmdbApi, tmdbStore };

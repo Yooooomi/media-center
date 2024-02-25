@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
-import { SearchQuery } from "@media-center/domains/src/tmdb/applicative/search.query";
+import { SearchTmdbQuery } from "@media-center/domains/src/tmdb/applicative/searchTmdb.query";
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import { FlatList, StyleSheet } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
@@ -16,7 +16,7 @@ export function SearchTmdb() {
   const [results, setResults] = useState<(Movie | Show)[]>([]);
 
   const updateSearch = useCallback(async (text: string) => {
-    const newResults = await Beta.query(new SearchQuery(text));
+    const newResults = await Beta.query(new SearchTmdbQuery(text));
     setResults(newResults);
   }, []);
   const { add, value } = useAdditiveThrottle(

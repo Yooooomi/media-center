@@ -3,14 +3,14 @@ import { Movie } from "../domain/movie";
 import { Show } from "../domain/show";
 import { TmdbAPI } from "./tmdb.api";
 
-export class SearchQuery extends Query(String, [Either(Show, Movie)]) {}
+export class SearchTmdbQuery extends Query(String, [Either(Show, Movie)]) {}
 
-export class SearchQueryHandler extends QueryHandler(SearchQuery) {
+export class SearchTmdbQueryHandler extends QueryHandler(SearchTmdbQuery) {
   constructor(private readonly tmdbApi: TmdbAPI) {
     super();
   }
 
-  public async execute(query: SearchQuery) {
+  public async execute(query: SearchTmdbQuery) {
     const results = await this.tmdbApi.search(query.value);
 
     return results;

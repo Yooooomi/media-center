@@ -58,8 +58,9 @@ export class InMemoryIntentionBus extends IntentBus {
       intentHandlerName: handler.constructor.name,
       intent,
     });
-    const result = await handler.execute(intent);
-    this.deleteItemFromState(requestId);
+    const result = await handler.execute(intent).finally(() => {
+      this.deleteItemFromState(requestId);
+    });
     return result;
   }
 

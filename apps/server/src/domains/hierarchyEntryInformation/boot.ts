@@ -16,6 +16,7 @@ import { ScanSubtitlesCommandHandler } from "@media-center/domains/src/hierarchy
 import { Filesystem } from "@media-center/domains/src/miscellaneous/valueObjects/fileSystem";
 import { CatalogEntryStore } from "@media-center/domains/src/catalog/applicative/catalogEntry.store";
 import { TorrentRequestStore } from "@media-center/domains/src/torrentRequest/applicative/torrentRequest.store";
+import { ScanSubtitlesForModifiedFileCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanSubtitlesForModifiedFile.command";
 import { FilesystemHierarchyEntryInformationStore } from "./infrastructure/filesystem.catalogEntryInformation.store";
 import { InMemoryHierarchyEntryInformationStore } from "./infrastructure/inMemory.catalogEntryInformation.store";
 import { FilesystemSubtitleStore } from "./infrastructure/filesystem.subtitleStore";
@@ -86,6 +87,16 @@ export function bootHierarchyEntryInformation(
       eventBus,
       hierarchyStore,
       videoFileService,
+    ),
+  );
+
+  commandBus.register(
+    new ScanSubtitlesForModifiedFileCommandHandler(
+      catalogEntryStore,
+      hierarchyStore,
+      hierarchyEntryInformationStore,
+      filesystem,
+      commandBus,
     ),
   );
 

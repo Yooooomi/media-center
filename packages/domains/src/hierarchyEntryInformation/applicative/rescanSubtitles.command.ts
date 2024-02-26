@@ -6,7 +6,6 @@ import {
 import { PromiseAllByChunk } from "@media-center/algorithm";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
-import { VideoFileService } from "./videoFile.service";
 import { SubtitleStore } from "./subtitle.store";
 import { ScanSubtitlesCommand } from "./scanSubtitles.command";
 

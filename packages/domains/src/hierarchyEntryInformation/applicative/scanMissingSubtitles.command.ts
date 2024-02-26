@@ -8,7 +8,6 @@ import { keyBy } from "@media-center/algorithm";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyEntryInformation } from "../domain/hierarchyEntryInformation";
 import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
-import { VideoFileService } from "./videoFile.service";
 import { ScanSubtitlesCommand } from "./scanSubtitles.command";
 
 export class ScanMissingSubtitlesCommand extends Command() {}

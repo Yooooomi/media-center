@@ -4,7 +4,6 @@ import {
   CommandHandler,
   EventBus,
   TransactionPerformer,
-  useLog,
 } from "@media-center/domain-driven";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";

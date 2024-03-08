@@ -1,7 +1,7 @@
 import { ActivityIndicator } from "react-native";
 import { Icon } from "../../display/icon";
-import { IconName } from "../../display/icon/icon";
 import { Box } from "../../display/box";
+import { IconName } from "../../display/icon/icon.props";
 import { Pressable } from "./pressable";
 
 interface IconButtonProps {

@@ -8,11 +8,11 @@ class CannotUpcastError extends Error {
 }
 
 export class UpcastSerializer<
-  T extends Serializable & AtLeastId
+  T extends Serializable & AtLeastId,
 > extends Serializer<T> {
   constructor(
     private readonly ctor: SerializableConstructor<T>,
-    private readonly upcastManifest: UpcastManifest<any>
+    private readonly upcastManifest: UpcastManifest<any>,
   ) {
     super();
   }
@@ -60,16 +60,17 @@ type LastFromArray<T extends any[]> = T extends [...any[], infer Last]
 
 export type EnsureFrozen<
   A extends Serializable,
-  Versions extends any[]
+  Versions extends any[],
 > = Equals<A, LastFromArray<Versions>>;
 
 export abstract class VersionUpcaster<From, To> {
   abstract upcast(from: From): To;
+  abstract downcast(to: To): From;
 }
 
 export abstract class UpcastManifest<
   T extends any[],
-  ShouldCompile extends true = true
+  ShouldCompile extends true = true,
 > {
   abstract get manifest(): VersionUpcaster<T[number], T[number]>[];
 }

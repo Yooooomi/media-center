@@ -1,5 +1,4 @@
 import { Shape, Freeze } from "@media-center/domain-driven";
-import { assertNever } from "@media-center/algorithm";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 
@@ -53,6 +52,10 @@ export class MovieCatalogEntry extends Shape({
 
   public getHierarchyItemIds() {
     return this.dataset.hierarchyItemIds;
+  }
+
+  public hasHierarchyItemId(hierarchyItemId: HierarchyItemId) {
+    return this.getHierarchyItemIds().some((e) => e.equals(hierarchyItemId));
   }
 }
 
@@ -127,6 +130,10 @@ export class ShowCatalogEntry extends Shape({
 
   public getHierarchyItemIds() {
     return this.dataset.flatMap((e) => e.hierarchyItemIds);
+  }
+
+  public hasHierarchyItemId(hierarchyItemId: HierarchyItemId) {
+    return this.getHierarchyItemIds().some((e) => e.equals(hierarchyItemId));
   }
 }
 

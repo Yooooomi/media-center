@@ -8,8 +8,8 @@ import {
   Decorator,
   TypeAliasDeclaration,
   IndentationText,
-  ts,
 } from "ts-morph";
+import { resolveTypeAsString } from "./resolveTypeAsString";
 
 class Logger {
   static info = (...args: any) =>
@@ -38,12 +38,12 @@ class ClassFreezer {
     private readonly project: Project,
     private readonly relativeDir: string,
     private readonly classReferencing: ReferencedSymbolEntry,
-    private readonly erase: boolean
+    private readonly erase: boolean,
   ) {}
 
   private getDetailsFromReference() {
     const decorator = ClassFreezer.getDecoratorSymbolFromReference(
-      this.classReferencing
+      this.classReferencing,
     );
     // Freeze not used as a decorator
     if (!decorator) {
@@ -68,22 +68,22 @@ class ClassFreezer {
   private readonly serializedType =
     this.getDetailsFromReference().serializedType;
   private readonly sourceFilename = path.basename(
-    (this as any).classReferencing.getSourceFile().getFilePath()
+    (this as any).classReferencing.getSourceFile().getFilePath(),
   );
   private readonly sourceDir = path.dirname(
-    (this as any).classReferencing.getSourceFile().getFilePath()
+    (this as any).classReferencing.getSourceFile().getFilePath(),
   );
   private readonly destinationDir = path.join(
     this.sourceDir,
-    (this as any).relativeDir
+    (this as any).relativeDir,
   );
   private readonly pathBackToSourceFile = path.relative(
     this.destinationDir,
-    this.sourceDir
+    this.sourceDir,
   );
   private readonly upcastFilepath = path.join(
     this.destinationDir,
-    `${FilenameUtils.normalize(this.className)}.${this.upcastFileSuffix}.ts`
+    `${FilenameUtils.normalize(this.className)}.${this.upcastFileSuffix}.ts`,
   );
   private readonly upcastClassName = `${this.className}${this.upcastClassNameSuffix}`;
   private readonly upcastSerializerClassName = `${this.className}${this.upcastSerializerBaseClassName}`;
@@ -111,7 +111,7 @@ class ClassFreezer {
       this.destinationDir,
       `${FilenameUtils.normalize(this.className)}.${
         this.versionFileSuffix
-      }.${version}.ts`
+      }.${version}.ts`,
     );
   }
 
@@ -151,7 +151,7 @@ class ClassFreezer {
     });
 
     const pathToClass = this.importifyFilepath(
-      path.join(this.pathBackToSourceFile, this.sourceFilename)
+      path.join(this.pathBackToSourceFile, this.sourceFilename),
     );
 
     sourceFile.addImportDeclaration({
@@ -174,7 +174,7 @@ class ClassFreezer {
 
   private createVersionUpcastSourceFile(version: number) {
     const sourceFile = this.project.createSourceFile(
-      this.versionUpcastFilepath(version)
+      this.versionUpcastFilepath(version),
     );
 
     sourceFile.addImportDeclaration({
@@ -187,7 +187,7 @@ class ClassFreezer {
 
     sourceFile.addImportDeclaration({
       moduleSpecifier: this.importifyFilepath(
-        this.getVersionFileName(version - 1)
+        this.getVersionFileName(version - 1),
       ),
       namedImports: [{ name: lastVersion }],
     });
@@ -205,8 +205,8 @@ class ClassFreezer {
     });
     Logger.success(
       `Created upcast class from version ${Logger.bold(
-        (version - 1).toString()
-      )} to ${Logger.bold(version.toString())}, you should implement the upcast`
+        (version - 1).toString(),
+      )} to ${Logger.bold(version.toString())}, you should implement the upcast`,
     );
     return sourceFile;
   }
@@ -221,7 +221,7 @@ class ClassFreezer {
     }
     Logger.info(`Upcast source file existing`);
     const upcastSourceFile = this.project.getSourceFileOrThrow(
-      this.upcastFilepath
+      this.upcastFilepath,
     );
     const versionsArray = upcastSourceFile
       .getTypeAliasOrThrow(this.versionsArrayTypeName)
@@ -236,7 +236,7 @@ class ClassFreezer {
   private static resolveImportType(sourceFile: SourceFile, name: string) {
     return sourceFile
       .getImportDeclarationOrThrow((e) =>
-        e.getNamedImports().some((i) => i.getName() === name)
+        e.getNamedImports().some((i) => i.getName() === name),
       )
       .getNamedImports()[0]
       ?.getNameNode()
@@ -247,7 +247,7 @@ class ClassFreezer {
   }
 
   private static getPropertiesOfTypeDeclaration(
-    declaration: TypeAliasDeclaration
+    declaration: TypeAliasDeclaration,
   ) {
     return declaration
       .getFirstChildByKindOrThrow(SyntaxKind.TypeLiteral)
@@ -266,7 +266,7 @@ class ClassFreezer {
 
   private addVersionToUpcastSourceFile(
     sourceFile: SourceFile,
-    version: number
+    version: number,
   ) {
     let versionsArray = sourceFile
       .getTypeAlias(this.versionsArrayTypeName)
@@ -312,17 +312,17 @@ class ClassFreezer {
 
     const lastVersioned = versions
       .getElements()
-      [versions.getElements().length - 1]?.asKindOrThrow(
-        SyntaxKind.TypeReference
-      );
+      [
+        versions.getElements().length - 1
+      ]?.asKindOrThrow(SyntaxKind.TypeReference);
     if (lastVersioned) {
       const newVersionType = ClassFreezer.resolveImportType(
         newVersionImport.getSourceFile(),
-        newVersionImport.getName()
+        newVersionImport.getName(),
       );
       const lastVersionType = ClassFreezer.resolveImportType(
         lastVersioned.getSourceFile(),
-        lastVersioned.getTypeName().getText()
+        lastVersioned.getTypeName().getText(),
       );
       if (!lastVersionType || !newVersionType) {
         throw new ClassFreezer.UnexpectedError();
@@ -334,13 +334,13 @@ class ClassFreezer {
       if (
         ClassFreezer.propertiesEqual(
           lastVersionProperties,
-          newVersionProperties
+          newVersionProperties,
         )
       ) {
         Logger.noop(
           `Unnecessary freeze for ${Logger.bold(
-            this.className
-          )}, (${lastVersionProperties} is equal to ${newVersionProperties})`
+            this.className,
+          )}, (${lastVersionProperties} is equal to ${newVersionProperties})`,
         );
         return false;
       }
@@ -356,15 +356,15 @@ class ClassFreezer {
     if (version === 0) {
       Logger.success(
         `Frozen ${Logger.bold(
-          this.className
-        )}, no upcast is needed until second version`
+          this.className,
+        )}, no upcast is needed until second version`,
       );
       return true;
     }
 
     sourceFile.addImportDeclaration({
       moduleSpecifier: this.importifyFilepath(
-        this.versionUpcastFilename(version)
+        this.versionUpcastFilename(version),
       ),
       namedImports: [{ name: this.versionUpcasterClassName(version) }],
     });
@@ -379,12 +379,12 @@ class ClassFreezer {
       `new ${this.versionUpcasterClassName(version)}()`,
       {
         useNewLines: true,
-      }
+      },
     );
     Logger.success(
       `Frozen ${this.className} as ${Logger.bold(
-        this.versionizeClassName(version)
-      )}`
+        this.versionizeClassName(version),
+      )}`,
     );
     return true;
   }
@@ -395,11 +395,12 @@ class ClassFreezer {
       undefined,
       {
         overwrite: true,
-      }
+      },
     );
+    versionedTypeSourceFile.insertText(0, this.serializedType.dependencies);
     const typeAlias = versionedTypeSourceFile.addTypeAlias({
       name: this.versionizeClassName(version),
-      type: this.serializedType,
+      type: this.serializedType.type,
       isExported: true,
     });
     typeAlias.addJsDoc("GENERATED TYPE, DO NOT EDIT");
@@ -408,7 +409,7 @@ class ClassFreezer {
 
   private getClassDetailsFromDecorator(decorator: Decorator) {
     const classDeclaration = decorator.getParentIfKind(
-      SyntaxKind.ClassDeclaration
+      SyntaxKind.ClassDeclaration,
     );
     if (!classDeclaration) {
       throw new ClassFreezer.UnexpectedError();
@@ -436,19 +437,19 @@ class ClassFreezer {
       throw new ClassFreezer.UnnamedClassError();
     }
 
+    const newInsanePropertyExpanded = resolveTypeAsString(
+      this.project.getTypeChecker().compilerObject,
+      serializeSignature.getReturnType().compilerType,
+    );
+
     return {
       className: className,
-      serializedType: serializeSignature
-        .getReturnType()
-        .getText(
-          undefined,
-          ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias
-        ),
+      serializedType: newInsanePropertyExpanded,
     };
   }
 
   private static getDecoratorSymbolFromReference(
-    reference: ReferencedSymbolEntry
+    reference: ReferencedSymbolEntry,
   ) {
     const decorator = reference
       .getNode()
@@ -467,7 +468,7 @@ class ClassFreezer {
 
     const serializedTypeDiffers = this.addVersionToUpcastSourceFile(
       upcastSourceFile,
-      version
+      version,
     );
 
     let versionUpcastSourceFile: SourceFile | undefined;
@@ -485,7 +486,7 @@ class ClassFreezer {
   public doEraseLastVersion(version: number) {
     const lastVersion = version - 1;
     Logger.info(
-      `Erasing type version ${lastVersion} for ${Logger.bold(this.className)}`
+      `Erasing type version ${lastVersion} for ${Logger.bold(this.className)}`,
     );
     const versionFilepath = this.versionTypeFilepath(lastVersion);
     if (fs.existsSync(versionFilepath)) {
@@ -500,7 +501,7 @@ class ClassFreezer {
     Logger.info(`Freezing ${Logger.bold(this.className)}...`);
 
     const { version, sourceFile: upcastSourceFile } = this.getUpcastSourceFile(
-      this.className
+      this.className,
     );
     if (this.erase && version > 0) {
       this.doEraseLastVersion(version);
@@ -514,7 +515,7 @@ export class Freezer {
   constructor(
     private readonly relativeDir: string,
     private readonly erase: boolean,
-    private readonly only: string
+    private readonly only: string,
   ) {}
 
   readonly project = new Project({
@@ -546,20 +547,20 @@ export class Freezer {
     }
     const freezeReferences = freezeNameNode.findReferences();
     for (const freezeReference of freezeReferences.flatMap((e) =>
-      e.getReferences()
+      e.getReferences(),
     )) {
       try {
         const classFreezer = new ClassFreezer(
           this.project,
           this.relativeDir,
           freezeReference,
-          this.erase
+          this.erase,
         );
         if (this.only && !classFreezer.match(this.only)) {
           Logger.info(
             `Passing ${Logger.bold(classFreezer.className)}, not matching \"${
               this.only
-            }\"`
+            }\"`,
           );
           continue;
         }

@@ -37,7 +37,22 @@ export function maxBy<T>(values: T[], getValue: (value: T) => number) {
       maxValue = value;
     }
   }
-  return maxIndex === undefined ? undefined : values[maxIndex];
+  return values[maxIndex];
+}
+
+export function minBy<T>(values: T[], getValue: (value: T) => number) {
+  let minIndex: number | undefined = 0;
+  let maxValue: number | undefined = undefined;
+
+  for (let i = 0; i < values.length; i += 1) {
+    const item = values[i]!;
+    const value = getValue(item);
+    if (maxValue === undefined || value < maxValue) {
+      minIndex = i;
+      maxValue = value;
+    }
+  }
+  return values[minIndex];
 }
 
 export function chunk<T>(values: T[], chunkSize: number) {

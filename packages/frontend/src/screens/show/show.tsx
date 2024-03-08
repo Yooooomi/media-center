@@ -93,7 +93,11 @@ export function Show() {
   const hasSeasons = showPage.seasons.length > 0;
   const userLastSeen = showPage.userInfo.getLastWatchedInfo();
   const highlightedSeason =
-    seasonIndex !== -1 ? seasonIndex : userLastSeen?.season ?? 1;
+    seasonIndex !== -1
+      ? seasonIndex
+      : userLastSeen?.season ??
+        showPage.catalogEntry.getFirstAvailableSeason()?.season ??
+        1;
   const highlightedEpisode = userLastSeen?.episode ?? 0;
   const season = showPage.seasons.find(
     (s) => s.season_number === highlightedSeason,

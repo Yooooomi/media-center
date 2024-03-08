@@ -1,5 +1,5 @@
 import { Shape } from "@media-center/domain-driven";
-import { uniqBy } from "@media-center/algorithm";
+import { maxBy, minBy, uniqBy } from "@media-center/algorithm";
 import { HierarchyItem } from "../../fileWatcher/domain/hierarchyItem";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 
@@ -79,6 +79,10 @@ export class ShowCatalogEntryFulfilled extends Shape({
 
   availableSeasons() {
     return [...new Set(this.dataset.map((e) => e.season)).values()];
+  }
+
+  getFirstAvailableSeason() {
+    return minBy(this.dataset, (item) => item.season);
   }
 
   getEpisodesOfSeason(season: number) {

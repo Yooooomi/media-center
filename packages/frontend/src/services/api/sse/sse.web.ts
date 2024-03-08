@@ -8,8 +8,6 @@ export const SSE: SSEInterface = {
       headers,
     });
 
-    console.log("Hey");
-
     source.onmessage = (e) => {
       onData(e.data);
     };

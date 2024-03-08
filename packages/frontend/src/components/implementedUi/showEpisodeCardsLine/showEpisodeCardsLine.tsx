@@ -6,7 +6,8 @@ import { StyleSheet } from "react-native";
 import { useCallback, useMemo } from "react";
 import { LineList } from "../../ui/display/lineList";
 import { Playlist } from "../../../screens/params";
-import { ShowEpisodeCard } from "../cards/showEpisodeCard/showEpisodeCard";
+import { ShowEpisodeCardWrapper } from "../cardWrappers/showEpisodeCardWrapper";
+import { ShowEpisodeCard } from "../cards/showEpisodeCard";
 
 interface ShowEpisodeCardsLineProps {
   show: Show;
@@ -50,17 +51,21 @@ export function ShowEpisodeCardsLine({
   const renderItem = useCallback(
     (data: ShowEpisode, index: number) => {
       return (
-        <ShowEpisodeCard
-          show={show}
-          playlist={playlist}
-          userInfo={userInfo}
-          disabled={availableEpisodes.indexOf(data.episode_number) === -1}
-          focusOnMount={
-            focusIndex !== undefined && index === focusIndex ? true : undefined
-          }
-          onFocus={onFocusEpisode}
-          showEpisode={data}
-        />
+        <ShowEpisodeCardWrapper>
+          <ShowEpisodeCard
+            show={show}
+            playlist={playlist}
+            userInfo={userInfo}
+            disabled={availableEpisodes.indexOf(data.episode_number) === -1}
+            focusOnMount={
+              focusIndex !== undefined && index === focusIndex
+                ? true
+                : undefined
+            }
+            onFocus={onFocusEpisode}
+            showEpisode={data}
+          />
+        </ShowEpisodeCardWrapper>
       );
     },
     [availableEpisodes, focusIndex, onFocusEpisode, playlist, show, userInfo],

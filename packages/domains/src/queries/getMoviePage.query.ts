@@ -99,9 +99,7 @@ export class GetMoviePageQueryHandler extends QueryHandler(GetMoviePageQuery, [
       if (!catalogEntry) {
         return false;
       }
-      return catalogEntry
-        .getHierarchyItemIds()
-        .some((e) => e.equals(event.hierarchyItemId));
+      return catalogEntry.hasHierarchyItemId(event.hierarchyItemId);
     }
     return event.catalogEntry.id.equals(intent.tmdbId);
   }

@@ -1,4 +1,4 @@
-import { InMemoryDatabase, QueryBus } from "@media-center/domain-driven";
+import { Database, QueryBus } from "@media-center/domain-driven";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { GetEpisodesQueryHandler } from "@media-center/domains/src/tmdb/applicative/getEpisodes.query";
 import { GetMovieDetailsQueryHandler } from "@media-center/domains/src/tmdb/applicative/getMovieDetails.query";
@@ -9,9 +9,10 @@ import { RealTmdbAPI } from "./infrastructure/real.tmdb.api";
 import { MockTmdbAPI } from "./infrastructure/mock.tmdb.api";
 import { InMemoryTmdbStore } from "./infrastructure/inMemory.tmdb.store";
 import { FilesystemTmdbStore } from "./infrastructure/filesystem.tmdb.store";
+import { SQLiteTmdbStore } from "./infrastructure/sqlite.tmdb.store";
 
 export function bootTmdb(
-  database: InMemoryDatabase,
+  database: Database,
   queryBus: QueryBus,
   environmentHelper: EnvironmentHelper,
 ) {
@@ -24,6 +25,7 @@ export function bootTmdb(
     memory: () => new InMemoryTmdbStore(database, tmdbApi),
     filesystem: () =>
       new FilesystemTmdbStore(environmentHelper, database, tmdbApi),
+    sqlite: () => new SQLiteTmdbStore(database, tmdbApi),
   });
   queryBus.register(new GetTmdbsQueryHandler(tmdbStore));
   queryBus.register(new GetSeasonsQueryHandler(tmdbApi));

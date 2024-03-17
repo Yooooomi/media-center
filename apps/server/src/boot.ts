@@ -1,10 +1,12 @@
 import { config as configureDotenv } from "dotenv";
+import Database from "better-sqlite3";
 import {
   InMemoryCommandBus,
   InMemoryDatabase,
   InMemoryEventBus,
   InMemoryQueryBus,
   InMemoryTransactionPerformer,
+  SQLiteTransactionPerformer,
 } from "@media-center/domain-driven";
 import { DiskFilesystem } from "@media-center/domains/src/miscellaneous/valueObjects/fileSystem";
 import { SolverSafeRequest } from "./framework/safeRequest/solver.safeRequest";
@@ -23,23 +25,39 @@ import { bootUserTmdbInfo } from "./domains/userTmdbInfo/boot";
 import { ProcessEnvironmentHelper } from "./domains/environment/infrastructure/process.environmentHelper";
 import { bootHierarchyEntryInformation } from "./domains/hierarchyEntryInformation/boot";
 import { InMemoryTorrentRequestStore } from "./domains/torrentRequest/infrastructure/inMemory.torrentRequest.store";
+import { SQLiteTorrentRequestStore } from "./domains/torrentRequest/infrastructure/sqlite.torrentRequest.store";
 
 export async function globalBoot() {
   configureDotenv();
 
   const filesystem = new DiskFilesystem();
-  const database = new InMemoryDatabase();
-  const transactionPerformer = new InMemoryTransactionPerformer(database);
+  const environmentHelper = new ProcessEnvironmentHelper();
+  const database = environmentHelper.match("DI_DATABASE", {
+    memory: () => new InMemoryDatabase(),
+    filesystem: () => new InMemoryDatabase(),
+    sqlite: () => {
+      const db = new Database(
+        environmentHelper.get("SQLITE_STORE_FILEPATH"),
+      ) as any;
+      // db.pragma("journal_mode = WAL");
+      return db;
+    },
+  });
+  const transactionPerformer = environmentHelper.match("DI_DATABASE", {
+    memory: () => new InMemoryTransactionPerformer(database),
+    filesystem: () => new InMemoryTransactionPerformer(database),
+    sqlite: () => new SQLiteTransactionPerformer(database),
+  });
   const commandBus = new InMemoryCommandBus();
   const eventBus = new InMemoryEventBus();
   const queryBus = new InMemoryQueryBus();
-  const environmentHelper = new ProcessEnvironmentHelper();
   const safeRequest = new SolverSafeRequest(environmentHelper);
   // TODO FIX THIS
   const torrentRequestStore = environmentHelper.match("DI_DATABASE", {
     memory: () => new InMemoryTorrentRequestStore(database),
     filesystem: () =>
       new FilesystemTorrentRequestStore(environmentHelper, database),
+    sqlite: () => new SQLiteTorrentRequestStore(database),
   });
 
   const { tmdbStore, tmdbApi } = bootTmdb(

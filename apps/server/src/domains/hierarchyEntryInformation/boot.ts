@@ -20,6 +20,7 @@ import { ScanSubtitlesForModifiedFileCommandHandler } from "@media-center/domain
 import { FilesystemHierarchyEntryInformationStore } from "./infrastructure/filesystem.catalogEntryInformation.store";
 import { InMemoryHierarchyEntryInformationStore } from "./infrastructure/inMemory.catalogEntryInformation.store";
 import { FilesystemSubtitleStore } from "./infrastructure/filesystem.subtitleStore";
+import { SQLiteHierarchyEntryInformationStore } from "./infrastructure/sqlite.catalogEntryInformation.store";
 
 export function bootHierarchyEntryInformation(
   environmentHelper: EnvironmentHelper,
@@ -42,6 +43,7 @@ export function bootHierarchyEntryInformation(
           environmentHelper,
           database,
         ),
+      sqlite: () => new SQLiteHierarchyEntryInformationStore(database),
     },
   );
 
@@ -58,6 +60,7 @@ export function bootHierarchyEntryInformation(
     catalogEntryStore,
     videoFileService,
     torrentRequestStore,
+    hierarchyEntryInformationStore,
   ).listen(eventBus);
 
   queryBus.register(
@@ -87,6 +90,7 @@ export function bootHierarchyEntryInformation(
       eventBus,
       hierarchyStore,
       videoFileService,
+      hierarchyEntryInformationStore,
     ),
   );
 

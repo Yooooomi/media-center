@@ -23,7 +23,9 @@ export class PromiseQueue {
       } catch (e) {
         item.onError(e as any);
       }
-      await wait(this.cooldown);
+      if (this.cooldown > 0) {
+        await wait(this.cooldown);
+      }
       this.q.shift();
     }
   };
@@ -36,7 +38,7 @@ export class PromiseQueue {
         onError: rej,
       });
       if (this.q.length === 1) {
-        this.execQueue();
+        this.execQueue().catch(console.error);
       }
     });
   };

@@ -23,10 +23,7 @@ export class VideoFileService {
     return `${hierarchyItemId.toString()}-${index}.vtt`;
   }
 
-  public async extractFor(
-    hierarchyItem: HierarchyItem,
-    transaction?: Transaction,
-  ) {
+  public async extractFor(hierarchyItem: HierarchyItem) {
     VideoFileService.logger.info(
       `Extracting metadata for ${hierarchyItem.file.getFilenameWithExtension()}`,
     );
@@ -52,10 +49,6 @@ export class VideoFileService {
       textTracks,
       audioTracks,
     });
-    await this.hierarchyEntryInformationStore.save(
-      entryInformation,
-      transaction,
-    );
     VideoFileService.logger.info(
       `Extracted metadata for ${hierarchyItem.file.getFilenameWithExtension()} ${audioTracks.length} audio tracks, ${textTracks.length} text tracks`,
     );

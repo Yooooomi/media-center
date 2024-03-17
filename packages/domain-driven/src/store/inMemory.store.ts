@@ -1,7 +1,7 @@
+import * as fs from "fs";
 import { compact, wait } from "@media-center/algorithm";
 import { Serializer, AtLeastId } from "../serialization";
 import { Database, Store, TransactionPerformer } from "./store";
-import * as fs from "fs";
 
 interface Document {
   updatedAt: number;
@@ -130,7 +130,7 @@ class Collection {
 
   public async filter<T>(
     predicate: (item: Document) => Promise<T | undefined>,
-    transaction?: InMemoryTransaction
+    transaction?: InMemoryTransaction,
   ) {
     return compact(
       await Promise.all(
@@ -140,8 +140,8 @@ class Collection {
             transaction?.markRead(this.name, id, value.updatedAt);
           }
           return shouldKeep;
-        })
-      )
+        }),
+      ),
     );
   }
 }
@@ -164,7 +164,7 @@ export class InMemoryDatabase implements Database {
   ];
 
   public async transactionnally<T>(
-    executor: (transaction: InMemoryTransaction) => Promise<T>
+    executor: (transaction: InMemoryTransaction) => Promise<T>,
   ): Promise<T> {
     let tries = 0;
     while (true) {
@@ -174,7 +174,7 @@ export class InMemoryDatabase implements Database {
         for (const operation of transaction.operations) {
           if (operation.type === "read") {
             const item = this.getCollection(operation.collectionName).read(
-              operation.id
+              operation.id,
             );
             if (item?.updatedAt !== operation.updatedAt) {
               throw new TransactionCollision();
@@ -184,7 +184,7 @@ export class InMemoryDatabase implements Database {
           if (operation.type === "write") {
             this.getCollection(operation.collectionName).write(
               operation.id,
-              operation.data
+              operation.data,
             );
           }
           if (operation.type === "delete") {
@@ -212,7 +212,7 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
   constructor(
     private readonly database: InMemoryDatabase,
     public readonly collectionName: string,
-    public readonly serializer: Serializer<M>
+    public readonly serializer: Serializer<M>,
   ) {}
 
   protected collection<T extends InMemoryStore<any>>(this: T) {
@@ -220,7 +220,7 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
   }
 
   public transactionnally<T>(
-    executor: (transaction: InMemoryTransaction) => Promise<T>
+    executor: (transaction: InMemoryTransaction) => Promise<T>,
   ) {
     return this.database.transactionnally(executor);
   }
@@ -236,7 +236,7 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
   async loadMany(ids: M["id"][], transaction?: InMemoryTransaction) {
     const loaded = await this.filter(
       (f) => ids.some((i) => i.equals(f.id)),
-      transaction
+      transaction,
     );
     return loaded;
   }
@@ -245,7 +245,7 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
     return await Promise.all(
       this.collection()
         .readAll(transaction)
-        .map((d) => this.serializer.deserializeModel(d.data))
+        .map((d) => this.serializer.deserializeModel(d.data)),
     );
   }
 
@@ -253,7 +253,7 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
     this.collection().write(
       model.id.toString(),
       await this.serializer.serializeModel(model),
-      transaction
+      transaction,
     );
   }
 
@@ -262,14 +262,14 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
   }
 
   async deleteAll(
-    transaction?: InMemoryTransaction | undefined
+    transaction?: InMemoryTransaction | undefined,
   ): Promise<void> {
     this.collection().deleteAll(transaction);
   }
 
   protected async filter(
     predicate: (item: M) => boolean,
-    transaction?: InMemoryTransaction
+    transaction?: InMemoryTransaction,
   ) {
     return await this.collection().filter(async (item) => {
       const deserialized = await this.serializer.deserializeModel(item.data);
@@ -287,13 +287,13 @@ export class InMemoryStore<M extends AtLeastId> implements Store<M> {
 }
 
 export abstract class FilesystemStore<
-  M extends AtLeastId
+  M extends AtLeastId,
 > extends InMemoryStore<M> {
   constructor(
     protected readonly filepath: string,
     database: InMemoryDatabase,
     collectionName: string,
-    serializer: Serializer<M>
+    serializer: Serializer<M>,
   ) {
     super(database, collectionName, serializer);
     this.init();
@@ -310,7 +310,7 @@ export abstract class FilesystemStore<
   private commit() {
     fs.writeFileSync(
       this.filepath,
-      JSON.stringify(this.collection().getStorage())
+      JSON.stringify(this.collection().getStorage()),
     );
   }
 
@@ -319,7 +319,7 @@ export abstract class FilesystemStore<
   }
 
   async deleteAll(
-    transaction?: InMemoryTransaction | undefined
+    transaction?: InMemoryTransaction | undefined,
   ): Promise<void> {
     await super.deleteAll(transaction);
   }
@@ -335,7 +335,7 @@ export class InMemoryTransactionPerformer extends TransactionPerformer<InMemoryT
   }
 
   async transactionnally<R>(
-    executor: (transaction: InMemoryTransaction) => Promise<R>
+    executor: (transaction: InMemoryTransaction) => Promise<R>,
   ): Promise<R> {
     return await this.database.transactionnally(executor);
   }

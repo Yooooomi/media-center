@@ -15,6 +15,7 @@ import { GetShowEntriesQueryHandler } from "@media-center/domains/src/catalog/ap
 import { ReinitCatalogCommandHandler } from "@media-center/domains/src/catalog/applicative/reinit.command";
 import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
 import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
+import { SQLiteCatalogEntryStore } from "./infrastructure/sqlite.catalogEntry.store";
 
 export function bootCatalog(
   database: Database,
@@ -31,6 +32,7 @@ export function bootCatalog(
     memory: () => new InMemoryCatalogEntryStore(database),
     filesystem: () =>
       new FilesystemCatalogEntryStore(environmentHelper, database),
+    sqlite: () => new SQLiteCatalogEntryStore(database),
   });
 
   new CatalogSaga(

@@ -1,5 +1,4 @@
 import Axios, { AxiosInstance } from "axios";
-import { PromiseQueue } from "@media-center/domains/src/miscellaneous/tools/queue";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
 import { AnyTmdb } from "@media-center/domains/src/tmdb/domain/anyTmdb";
@@ -9,6 +8,7 @@ import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import { ShowEpisode } from "@media-center/domains/src/tmdb/domain/showEpisode";
 import { ShowSeason } from "@media-center/domains/src/tmdb/domain/showSeason";
 import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
+import { PromiseQueue } from "@media-center/domain-driven";
 import {
   DiscoverMovie,
   DiscoverShow,

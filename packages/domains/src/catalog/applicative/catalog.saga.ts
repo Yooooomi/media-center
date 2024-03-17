@@ -102,7 +102,7 @@ export class CatalogSaga extends Saga {
           return undefined;
         }
         // Caches the entry in the store already
-        await this.tmdbStore.load(tmdbEntry.id);
+        await this.tmdbStore.load(tmdbEntry.id, transaction);
 
         const alreadyExisting =
           (await this.catalogEntryStore.load(tmdbEntry.id, transaction)) ??

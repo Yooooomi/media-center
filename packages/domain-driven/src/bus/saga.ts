@@ -10,7 +10,7 @@ export class Saga {
 
   static registerHandler(
     event: Constructor<BaseEvent<any>>,
-    handler: (event: BaseEvent<any>) => void
+    handler: (event: BaseEvent<any>) => void,
   ) {
     if (!this.registry) {
       this.registry = new Map<
@@ -27,7 +27,7 @@ export class Saga {
     return (
       target: T,
       _propertyKey: string,
-      descriptor: PropertyDescriptor
+      descriptor: PropertyDescriptor,
     ) => {
       const ctor = target.constructor as typeof Saga;
       ctor.registerHandler(event, descriptor.value);

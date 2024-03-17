@@ -16,7 +16,7 @@ export abstract class Serializer<M extends AtLeastId> {
   protected abstract serialize(model: M): Promise<any>;
   protected abstract deserialize(
     serialized: Awaited<ReturnType<Serializer<M>["serialize"]>>,
-    version: number
+    version: number,
   ): Promise<M>;
 
   public async serializeModel(model: M) {
@@ -28,7 +28,7 @@ export abstract class Serializer<M extends AtLeastId> {
 
   public async deserializeModel(
     serialized: Awaited<ReturnType<Serializer<M>["serialize"]>> &
-      AdditionalSerialized
+      AdditionalSerialized,
   ) {
     return await this.deserialize(serialized, serialized.version);
   }
@@ -41,13 +41,13 @@ export type S<A> = A & AdditionalSerialized;
 export type Deserialized<S> = S extends Serializer<infer K> ? K : never;
 
 export class SerializableSerializer<
-  M extends AtLeastId & Serializable
+  M extends AtLeastId & Serializable,
 > extends Serializer<M> {
   constructor(
     private readonly ctor: {
       deserialize(serialized: any): M;
       serialize(runtime: M): any;
-    }
+    },
   ) {
     super();
   }

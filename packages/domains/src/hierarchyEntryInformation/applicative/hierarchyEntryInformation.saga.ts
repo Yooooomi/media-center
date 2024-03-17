@@ -9,6 +9,7 @@ import { TorrentRequestStore } from "../../torrentRequest/applicative/torrentReq
 import { CatalogEntryStore } from "../../catalog/applicative/catalogEntry.store";
 import { VideoFileService } from "./videoFile.service";
 import { ScanSubtitlesForModifiedFileCommand } from "./scanSubtitlesForModifiedFile.command";
+import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
 
 export class HierarchyEntryInformationSaga extends Saga {
   constructor(
@@ -17,6 +18,7 @@ export class HierarchyEntryInformationSaga extends Saga {
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly videoFileService: VideoFileService,
     private readonly torrentRequestStore: TorrentRequestStore,
+    private readonly hierarchyEntryInformationStore: HierarchyEntryInformationStore,
   ) {
     super();
   }
@@ -29,7 +31,10 @@ export class HierarchyEntryInformationSaga extends Saga {
       return;
     }
 
-    await this.videoFileService.extractFor(item);
+    const hierarchyEntryInformation =
+      await this.videoFileService.extractFor(item);
+    // TODO transaction
+    await this.hierarchyEntryInformationStore.save(hierarchyEntryInformation);
   }
 
   @Saga.on(HierarchyItemDeleted)

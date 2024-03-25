@@ -37,6 +37,7 @@ RUN apk update
 RUN apk upgrade
 RUN apk add --no-cache ffmpeg
 
+COPY --from=BUILDER /app/apps/server/dist/build build
 COPY --from=BUILDER /app/apps/server/dist/index.js .
 
 CMD [ "node", "index.js" ]

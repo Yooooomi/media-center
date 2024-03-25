@@ -23,7 +23,9 @@ export class HierarchyEntryInformationSaga extends Saga {
     super(jobRegistry);
   }
 
-  @Saga.on(HierarchyItemAdded)
+  @Saga.on(HierarchyItemAdded, {
+    maxConcurrent: 3,
+  })
   private async initializeHierarchyEntryInformation(event: HierarchyItemAdded) {
     const item = await this.hierarchyStore.load(event.item.id);
 

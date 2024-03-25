@@ -1,7 +1,12 @@
+import { maxConcurrent } from "@media-center/algorithm";
 import { Constructor } from "../serialization";
 import { BaseEvent } from "./eventBus/event";
 import { EventBus } from "./eventBus/eventBus";
 import { Job, JobRegistry } from "./jobRegistry";
+
+interface HandlerOptions {
+  maxConcurrent?: number;
+}
 
 export class Saga {
   static registry: Map<
@@ -26,14 +31,24 @@ export class Saga {
     this.registry.set(event, exists);
   }
 
-  static on<T extends Saga>(event: Constructor<BaseEvent<any>>) {
+  static on<T extends Saga>(
+    event: Constructor<BaseEvent<any>>,
+    options?: HandlerOptions,
+  ) {
     return (
       target: T,
       _propertyKey: string,
       descriptor: PropertyDescriptor,
     ) => {
       const ctor = target.constructor as typeof Saga;
-      ctor.registerHandler(event, descriptor.value);
+      if (options?.maxConcurrent) {
+        ctor.registerHandler(
+          event,
+          maxConcurrent(descriptor.value.bind(target), options.maxConcurrent),
+        );
+      } else {
+        ctor.registerHandler(event, descriptor.value);
+      }
     };
   }
 

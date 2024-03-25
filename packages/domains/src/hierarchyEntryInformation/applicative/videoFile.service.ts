@@ -1,3 +1,5 @@
+import * as path from "path";
+import * as os from "os";
 import { Transaction, useLog } from "@media-center/domain-driven";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { HierarchyEntryInformation } from "../domain/hierarchyEntryInformation";
@@ -16,11 +18,11 @@ export class VideoFileService {
 
   static logger = useLog(VideoFileService.name);
 
-  static generateFileNameForIndex(
+  static generateFilepathFromIndex(
     hierarchyItemId: HierarchyItemId,
     index: number,
   ) {
-    return `${hierarchyItemId.toString()}-${index}.vtt`;
+    return path.join(os.tmpdir(), `${hierarchyItemId.toString()}-${index}.vtt`);
   }
 
   public async extractFor(hierarchyItem: HierarchyItem) {
@@ -30,14 +32,14 @@ export class VideoFileService {
     const { videoTrack, audioTracks, textTracks } = await extractTracksFromPath(
       hierarchyItem.file.path,
       (index) =>
-        VideoFileService.generateFileNameForIndex(hierarchyItem.id, index),
+        VideoFileService.generateFilepathFromIndex(hierarchyItem.id, index),
     );
     await Promise.all(
       textTracks.map((_, index) =>
         this.subtitleStore.fromLocalFile(
           hierarchyItem.id,
           index,
-          VideoFileService.generateFileNameForIndex(hierarchyItem.id, index),
+          VideoFileService.generateFilepathFromIndex(hierarchyItem.id, index),
         ),
       ),
     );

@@ -3,8 +3,6 @@ version: "3"
 services:
   server:
     image: media-center-server
-    ports:
-      - "8080:8080"
     environment:
       AVAILABLE_USERS: "User1,User2"
       SERVER_PASSWORD: "somerandompassword"
@@ -30,6 +28,9 @@ services:
 
       YGG_TORRENT_USERNAME: username
       YGG_TORRENT_PASSWORD: password
+
+  app-web:
+    image: media-center-app-web
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest

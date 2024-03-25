@@ -1,5 +1,5 @@
-import { config as configureDotenv } from "dotenv";
 import Database from "better-sqlite3";
+import { config as configureDotenv } from "dotenv";
 import {
   InMemoryCommandBus,
   InMemoryDatabase,
@@ -9,6 +9,7 @@ import {
   SQLiteTransactionPerformer,
 } from "@media-center/domain-driven";
 import { DiskFilesystem } from "@media-center/domains/src/miscellaneous/valueObjects/fileSystem";
+import { InMemoryJobRegistry } from "@media-center/domain-driven/src/bus/jobRegistry";
 import { SolverSafeRequest } from "./framework/safeRequest/solver.safeRequest";
 import { bootApi } from "./endpoints/boot";
 import { FilesystemTorrentRequestStore } from "./domains/torrentRequest/infrastructure/filesystem.torrentRequest.store";
@@ -48,9 +49,12 @@ export async function globalBoot() {
     filesystem: () => new InMemoryTransactionPerformer(database),
     sqlite: () => new SQLiteTransactionPerformer(database),
   });
-  const commandBus = new InMemoryCommandBus();
+  const jobRegistry = new InMemoryJobRegistry();
+
+  const commandBus = new InMemoryCommandBus(jobRegistry);
+  const queryBus = new InMemoryQueryBus(jobRegistry);
   const eventBus = new InMemoryEventBus();
-  const queryBus = new InMemoryQueryBus();
+
   const safeRequest = new SolverSafeRequest(environmentHelper);
   // TODO FIX THIS
   const torrentRequestStore = environmentHelper.match("DI_DATABASE", {
@@ -91,6 +95,7 @@ export async function globalBoot() {
     environmentHelper,
   );
   bootApi(
+    jobRegistry,
     queryBus,
     commandBus,
     hierarchyStore,
@@ -99,6 +104,7 @@ export async function globalBoot() {
     tmdbApi,
   );
   const { catalogEntryStore } = bootCatalog(
+    jobRegistry,
     database,
     transactionPerformer,
     queryBus,
@@ -119,6 +125,7 @@ export async function globalBoot() {
   );
 
   const { hierarchyEntryInformationStore } = bootHierarchyEntryInformation(
+    jobRegistry,
     environmentHelper,
     transactionPerformer,
     database,

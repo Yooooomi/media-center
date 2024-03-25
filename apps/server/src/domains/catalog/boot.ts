@@ -13,11 +13,13 @@ import { CatalogSaga } from "@media-center/domains/src/catalog/applicative/catal
 import { GetMovieEntriesQueryHandler } from "@media-center/domains/src/catalog/applicative/getMovieEntries.query";
 import { GetShowEntriesQueryHandler } from "@media-center/domains/src/catalog/applicative/getShowEntries.query";
 import { ReinitCatalogCommandHandler } from "@media-center/domains/src/catalog/applicative/reinit.command";
+import { JobRegistry } from "@media-center/domain-driven/src/bus/jobRegistry";
 import { InMemoryCatalogEntryStore } from "./infrastructure/inMemory.catalogEntry.store";
 import { FilesystemCatalogEntryStore } from "./infrastructure/filesystem.catalogEntry.store";
 import { SQLiteCatalogEntryStore } from "./infrastructure/sqlite.catalogEntry.store";
 
 export function bootCatalog(
+  jobRegistry: JobRegistry,
   database: Database,
   transactionPerformer: TransactionPerformer,
   queryBus: QueryBus,
@@ -36,6 +38,7 @@ export function bootCatalog(
   });
 
   new CatalogSaga(
+    jobRegistry,
     transactionPerformer,
     tmdbApi,
     tmdbStore,

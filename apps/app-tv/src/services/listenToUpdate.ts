@@ -48,8 +48,7 @@ export function useListenToUpdate() {
       onFetchUpdateAsync().catch(console.error);
     }
     setupUpdates().catch(console.log);
-    const subscription = AppState.addEventListener("change", (state) => {
-      console.log("State", state);
+    const subscription = AppState.addEventListener("change", () => {
       if (ignoreNext) {
         ignoreNext = false;
         return;

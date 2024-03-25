@@ -1,12 +1,15 @@
 import { Constructor } from "../serialization";
 import { BaseEvent } from "./eventBus/event";
 import { EventBus } from "./eventBus/eventBus";
+import { Job, JobRegistry } from "./jobRegistry";
 
 export class Saga {
   static registry: Map<
     Constructor<BaseEvent<any>>,
     ((event: BaseEvent<any>) => void)[]
   >;
+
+  constructor(private readonly jobRegistry: JobRegistry) {}
 
   static registerHandler(
     event: Constructor<BaseEvent<any>>,
@@ -34,14 +37,20 @@ export class Saga {
     };
   }
 
-  listen(eventBus: EventBus) {
+  listen<T extends Saga>(this: T, eventBus: EventBus) {
     const ctor = this.constructor as typeof Saga;
     for (const [event, handlers] of ctor.registry.entries()) {
-      for (const handler of handlers) {
-        eventBus.on(event, (ev) => {
-          handler.bind(this)(ev);
-        });
-      }
+      eventBus.on(event, async (ev) => {
+        const unregister = this.jobRegistry.register(
+          new Job({
+            namespace: ctor.name,
+            name: ev.constructor.name,
+            data: JSON.stringify(ev.serialize()),
+          }),
+        );
+        await Promise.all(handlers.map((handler) => handler.bind(this)(ev)));
+        unregister();
+      });
     }
   }
 }

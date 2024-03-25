@@ -4,6 +4,7 @@ import {
   TransactionPerformer,
   useLog,
 } from "@media-center/domain-driven";
+import { JobRegistry } from "@media-center/domain-driven/src/bus/jobRegistry";
 import {
   HierarchyItemAdded,
   HierarchyItemDeleted,
@@ -23,13 +24,14 @@ import { CatalogEntryUpdated, CatalogEntryDeleted } from "./catalog.events";
 
 export class CatalogSaga extends Saga {
   constructor(
+    jobRegistry: JobRegistry,
     private readonly transactionPerformer: TransactionPerformer,
     private readonly tmdbApi: TmdbAPI,
     private readonly tmdbStore: TmdbStore,
     private readonly catalogEntryStore: CatalogEntryStore,
     private readonly eventBus: EventBus,
   ) {
-    super();
+    super(jobRegistry);
   }
 
   private static movieReplacements: ((filename: string) => string)[] = [

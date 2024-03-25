@@ -1,4 +1,5 @@
 import { CommandBus, Saga } from "@media-center/domain-driven";
+import { JobRegistry } from "@media-center/domain-driven/src/bus/jobRegistry";
 import {
   HierarchyItemAdded,
   HierarchyItemDeleted,
@@ -6,21 +7,20 @@ import {
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
 import { TorrentRequestUpdated } from "../../torrentRequest/domain/torrentRequest.events";
 import { TorrentRequestStore } from "../../torrentRequest/applicative/torrentRequest.store";
-import { CatalogEntryStore } from "../../catalog/applicative/catalogEntry.store";
 import { VideoFileService } from "./videoFile.service";
 import { ScanSubtitlesForModifiedFileCommand } from "./scanSubtitlesForModifiedFile.command";
 import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
 
 export class HierarchyEntryInformationSaga extends Saga {
   constructor(
+    jobRegistry: JobRegistry,
     private readonly commandBus: CommandBus,
     private readonly hierarchyStore: HierarchyStore,
-    private readonly catalogEntryStore: CatalogEntryStore,
     private readonly videoFileService: VideoFileService,
     private readonly torrentRequestStore: TorrentRequestStore,
     private readonly hierarchyEntryInformationStore: HierarchyEntryInformationStore,
   ) {
-    super();
+    super(jobRegistry);
   }
 
   @Saga.on(HierarchyItemAdded)

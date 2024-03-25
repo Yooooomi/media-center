@@ -21,7 +21,6 @@ export class SearchTorrentsQueryHandler extends QueryHandler(
   async execute(query: SearchTorrentsQuery) {
     const results: TorrentIndexerResult[] = [];
     for (const q of query.queries) {
-      console.log("Searching for", q.value);
       const r = await this.torrentIndexer.search(q.value);
       results.push(...r);
     }

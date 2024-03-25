@@ -17,12 +17,14 @@ import { Filesystem } from "@media-center/domains/src/miscellaneous/valueObjects
 import { CatalogEntryStore } from "@media-center/domains/src/catalog/applicative/catalogEntry.store";
 import { TorrentRequestStore } from "@media-center/domains/src/torrentRequest/applicative/torrentRequest.store";
 import { ScanSubtitlesForModifiedFileCommandHandler } from "@media-center/domains/src/hierarchyEntryInformation/applicative/scanSubtitlesForModifiedFile.command";
+import { JobRegistry } from "@media-center/domain-driven/src/bus/jobRegistry";
 import { FilesystemHierarchyEntryInformationStore } from "./infrastructure/filesystem.catalogEntryInformation.store";
 import { InMemoryHierarchyEntryInformationStore } from "./infrastructure/inMemory.catalogEntryInformation.store";
 import { FilesystemSubtitleStore } from "./infrastructure/filesystem.subtitleStore";
 import { SQLiteHierarchyEntryInformationStore } from "./infrastructure/sqlite.catalogEntryInformation.store";
 
 export function bootHierarchyEntryInformation(
+  jobRegistry: JobRegistry,
   environmentHelper: EnvironmentHelper,
   transactionPerformer: TransactionPerformer,
   database: Database,
@@ -55,9 +57,9 @@ export function bootHierarchyEntryInformation(
   );
 
   new HierarchyEntryInformationSaga(
+    jobRegistry,
     commandBus,
     hierarchyStore,
-    catalogEntryStore,
     videoFileService,
     torrentRequestStore,
     hierarchyEntryInformationStore,

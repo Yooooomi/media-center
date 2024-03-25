@@ -5,15 +5,13 @@ import {
   EventBus,
 } from "@media-center/domain-driven";
 import Express, { urlencoded, json, Response } from "express";
-import {
-  IntentBus,
-  IntentBusStateItem,
-} from "@media-center/domain-driven/src/bus/intention/intentBus";
+import { IntentBus } from "@media-center/domain-driven/src/bus/intention/intentBus";
 import { TimeMeasurer } from "@media-center/algorithm";
 import { HierarchyStore } from "@media-center/domains/src/fileWatcher/applicative/hierarchy.store";
 import { EnvironmentHelper } from "@media-center/domains/src/environment/applicative/environmentHelper";
 import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
+import { JobRegistry } from "@media-center/domain-driven/src/bus/jobRegistry";
 import { streamVideo } from "./videoStreaming/streamVideo";
 import { FilesystemEndpointCaching } from "./caching";
 
@@ -43,6 +41,7 @@ class ServerSent {
 }
 
 export function bootApi(
+  jobRegistry: JobRegistry,
   queryBus: QueryBus,
   commandBus: CommandBus,
   hierarchyItemStore: HierarchyStore,
@@ -189,52 +188,14 @@ export function bootApi(
   app.get("/meta/bus", logMiddleware, async (req, res) => {
     const serverSent = new ServerSent(res);
 
-    function stringifyState(state: Record<string, IntentBusStateItem>) {
-      return JSON.stringify(
-        Object.entries(state).reduce<
-          Record<
-            string,
-            { intentHandlerName: string; type: string; intent: any }
-          >
-        >((acc, [requestId, item]) => {
-          acc[requestId] = {
-            type: item.type,
-            intentHandlerName: item.intentHandlerName,
-            intent: item.intent.serialize(),
-          };
-          return acc;
-        }, {}),
-      );
-    }
-
-    let queryState: Record<string, IntentBusStateItem> = {};
-    let commandState: Record<string, IntentBusStateItem> = {};
-
-    const unsubscribeFromQueryBus = queryBus.listenToState((queryBusState) => {
-      queryState = queryBusState;
+    const unlisten = jobRegistry.listen(() => {
       serverSent.send(
-        stringifyState({
-          ...queryState,
-          ...commandState,
-        }),
+        JSON.stringify(jobRegistry.getJobs().map((job) => job.serialize())),
       );
     });
 
-    const unsubscribeFromCommandBus = commandBus.listenToState(
-      (commandBusState) => {
-        commandState = commandBusState;
-        serverSent.send(
-          stringifyState({
-            ...queryState,
-            ...commandState,
-          }),
-        );
-      },
-    );
-
     serverSent.onClose(() => {
-      unsubscribeFromQueryBus();
-      unsubscribeFromCommandBus();
+      unlisten();
     });
   });
 

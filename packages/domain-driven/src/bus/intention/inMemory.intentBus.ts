@@ -5,8 +5,9 @@ import { BaseEvent } from "../eventBus/event";
 import { EventBus } from "../eventBus/eventBus";
 import { useLog } from "../../useLog";
 import { Id } from "../../id";
+import { Job, JobRegistry } from "../jobRegistry";
 import { BaseIntent, BaseIntentConstructor, BaseIntentHandler } from "./intent";
-import { IntentBus, IntentBusStateItem } from "./intentBus";
+import { IntentBus } from "./intentBus";
 
 class NoHandlerFound extends InfrastructureError {
   constructor(name: string) {
@@ -21,47 +22,11 @@ export class InMemoryIntentionBus extends IntentBus {
   > = {};
   private readonly intentRegistry: Record<string, BaseIntentConstructor<any>> =
     {};
-  private readonly stateListeners: ((
-    state: Record<string, IntentBusStateItem>,
-  ) => void)[] = [];
-  private readonly state: Record<string, IntentBusStateItem> = {};
 
   static logger = useLog(InMemoryIntentionBus.name);
 
-  private triggerStateListeners() {
-    if (this.stateListeners.length === 0) {
-      return;
-    }
-    const editableState = { ...this.state };
-    this.stateListeners.forEach((fn) => fn(editableState));
-  }
-
-  private addItemToState(item: IntentBusStateItem) {
-    const requestId = Id.generate().toString();
-    this.state[requestId] = item;
-    this.triggerStateListeners();
-    return requestId;
-  }
-
-  private deleteItemFromState(requestId: string) {
-    delete this.state[requestId];
-    this.triggerStateListeners();
-  }
-
-  async execute(intent: BaseIntent<Definition, Definition>) {
-    const handler = this.handlerRegistry[intent.constructor.name];
-    if (!handler) {
-      throw new NoHandlerFound(intent.constructor.name);
-    }
-    const requestId = this.addItemToState({
-      type: "instant",
-      intentHandlerName: handler.constructor.name,
-      intent,
-    });
-    const result = await handler.execute(intent).finally(() => {
-      this.deleteItemFromState(requestId);
-    });
-    return result;
+  constructor(private readonly jobRegistry: JobRegistry) {
+    super();
   }
 
   get(intentName: string) {
@@ -77,6 +42,26 @@ export class InMemoryIntentionBus extends IntentBus {
     this.handlerRegistry[intentHandler.intent.name] = intentHandler;
   }
 
+  async execute<T extends InMemoryIntentionBus>(
+    this: T,
+    intent: BaseIntent<Definition, Definition>,
+  ) {
+    const handler = this.handlerRegistry[intent.constructor.name];
+    if (!handler) {
+      throw new NoHandlerFound(intent.constructor.name);
+    }
+    const unregister = this.jobRegistry.register(
+      new Job({
+        namespace: this.constructor.name,
+        name: intent.constructor.name,
+        data: JSON.stringify(intent.serialize()),
+      }),
+    );
+    const result = await handler.execute(intent);
+    unregister();
+    return result;
+  }
+
   executeAndReact(
     bus: EventBus,
     intent: BaseIntent<Definition, Definition>,
@@ -87,11 +72,13 @@ export class InMemoryIntentionBus extends IntentBus {
       throw new NoHandlerFound(intent.constructor.name);
     }
 
-    const requestId = this.addItemToState({
-      type: "reactive",
-      intentHandlerName: handler.constructor.name,
-      intent: intent,
-    });
+    const unregister = this.jobRegistry.register(
+      new Job({
+        namespace: this.constructor.name,
+        name: intent.constructor.name,
+        data: JSON.stringify(intent.serialize()),
+      }),
+    );
 
     async function react(event: BaseEvent<any>) {
       if (!handler) {
@@ -124,22 +111,7 @@ export class InMemoryIntentionBus extends IntentBus {
 
     return () => {
       listeners?.forEach((unsubscribe) => unsubscribe());
-      this.deleteItemFromState(requestId);
-    };
-  }
-
-  listenToState(handler: (state: Record<string, IntentBusStateItem>) => void) {
-    this.stateListeners.push(handler);
-    this.triggerStateListeners();
-    return () => {
-      const index = this.stateListeners.indexOf(handler);
-      if (index < 0) {
-        InMemoryIntentionBus.logger.warn(
-          "State listener not found when unsubscribing",
-        );
-        return;
-      }
-      this.stateListeners.splice(index, 1);
+      unregister();
     };
   }
 }

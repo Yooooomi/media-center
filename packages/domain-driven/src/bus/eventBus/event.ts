@@ -2,13 +2,15 @@ import { DictConfiguration, DictShorthand, Shape } from "../../serialization";
 import { IsShapeConstructor } from "../../serialization/shape/mixins/objectShape";
 
 class ParentEvent {
+  createdAt = Date.now();
+
   getName<T extends ParentEvent>(this: T) {
     return this.constructor.name;
   }
 }
 
 export function Event<const T extends DictConfiguration | DictShorthand>(
-  definition: T
+  definition: T,
 ) {
   return Shape(definition, ParentEvent);
 }

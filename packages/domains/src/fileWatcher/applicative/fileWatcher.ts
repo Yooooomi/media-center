@@ -22,11 +22,9 @@ export abstract class FileWatcher {
 
   public async setup() {
     const hierarchy = await this.hierarchyStore.loadAll();
-    console.log("All hierarchy", hierarchy);
     for (const hierarchyItem of hierarchy) {
       const stillExists = await this.checkExistence(hierarchyItem.file);
       if (!stillExists) {
-        console.log("Does not exist");
         await this.hierarchyStore.delete(hierarchyItem.id);
       }
     }

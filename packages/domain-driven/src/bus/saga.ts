@@ -31,6 +31,8 @@ export class Saga {
     this.registry.set(event, exists);
   }
 
+  a = 1;
+
   static on<T extends Saga>(
     event: Constructor<BaseEvent<any>>,
     options?: HandlerOptions,
@@ -44,7 +46,7 @@ export class Saga {
       if (options?.maxConcurrent) {
         ctor.registerHandler(
           event,
-          maxConcurrent(descriptor.value.bind(target), options.maxConcurrent),
+          maxConcurrent(descriptor.value, options.maxConcurrent),
         );
       } else {
         ctor.registerHandler(event, descriptor.value);
@@ -63,7 +65,7 @@ export class Saga {
             data: JSON.stringify(ev.serialize()),
           }),
         );
-        await Promise.all(handlers.map((handler) => handler.bind(this)(ev)));
+        await Promise.all(handlers.map((handler) => handler.call(this, ev)));
         unregister();
       });
     }

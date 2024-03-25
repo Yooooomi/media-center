@@ -28,7 +28,6 @@ export class ConcurrentWrapper {
     }
     try {
       this.current += 1;
-      console.log("Processing", this.current);
       const result = await nextItemInQueue.handler();
       nextItemInQueue.resolve(result);
     } catch (e) {
@@ -39,13 +38,13 @@ export class ConcurrentWrapper {
   }
 }
 
-export function maxConcurrent<T extends (...args: any[]) => Promise<any>>(
+export const maxConcurrent = <T extends (...args: any[]) => Promise<any>>(
   handler: T,
   max: number,
-): T {
+): T => {
   const concurrent = new ConcurrentWrapper(max);
-  return (async (...args: any[]) => {
-    const result = await concurrent.queue(() => handler(...args));
+  return async function (this: any, ...args: any[]) {
+    const result = await concurrent.queue(() => handler.call(this, ...args));
     return result;
-  }) as T;
-}
+  } as T;
+};

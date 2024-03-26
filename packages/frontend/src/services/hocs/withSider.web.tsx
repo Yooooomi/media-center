@@ -9,7 +9,7 @@ export function withSider<C extends (args: any) => ReactNode>(
   return (a: Parameters<C>["0"]) => (
     <Box row grow style={styles.root}>
       <View style={styles.content}>
-        <Box grow>
+        <Box grow basis={0} shrink>
           <Component {...a} />
         </Box>
       </View>
@@ -23,6 +23,7 @@ export function withSider<C extends (args: any) => ReactNode>(
 const styles = StyleSheet.create({
   root: {
     flexDirection: "row-reverse",
+    flexBasis: 0,
   },
   content: {
     flexBasis: 0,

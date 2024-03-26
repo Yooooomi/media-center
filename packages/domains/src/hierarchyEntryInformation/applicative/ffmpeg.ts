@@ -85,14 +85,15 @@ export async function extractTracksFromPath(
       textTracks: [],
     };
   }
-  const subtitleStreams = ffprobe.streams.reduce<
-    { track: Track; typeIndex: number }[]
-  >((acc, track, index) => {
-    if (track.codec_type === "subtitle" && track.codec_name === "subrip") {
-      acc.push({ typeIndex: index, track });
-    }
-    return acc;
-  }, []);
+
+  const subtitleStreams = ffprobe.streams
+    .filter((track) => track.codec_type === "subtitle")
+    .reduce<{ track: Track; typeIndex: number }[]>((acc, track, index) => {
+      if (track.codec_type === "subtitle" && track.codec_name === "subrip") {
+        acc.push({ typeIndex: index, track });
+      }
+      return acc;
+    }, []);
 
   const audioTracks = ffprobe.streams
     .filter((stream) => stream.codec_type === "audio")

@@ -6,7 +6,6 @@ import {
 } from "@media-center/domain-driven";
 import { keyBy } from "@media-center/algorithm";
 import { HierarchyStore } from "../../fileWatcher/applicative/hierarchy.store";
-import { HierarchyEntryInformation } from "../domain/hierarchyEntryInformation";
 import { HierarchyEntryInformationStore } from "./hierarchyEntryInformation.store";
 import { ScanSubtitlesCommand } from "./scanSubtitles.command";
 
@@ -32,7 +31,6 @@ export class ScanMissingSubtitlesCommandHandler extends CommandHandler(
       (info) => info.id.toString(),
     );
 
-    const updated: HierarchyEntryInformation[] = [];
     for (const hierarchyItem of allHierarchyItems) {
       const info = allInfo[hierarchyItem.id.toString()];
       if (info) {

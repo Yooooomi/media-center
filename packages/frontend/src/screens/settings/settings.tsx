@@ -24,17 +24,20 @@ export function Settings() {
   const { initStatus } = useMeshContext(StatusContext);
   const [busState, setBusState] = useState<ReturnType<Job["serialize"]>[]>([]);
 
-  const rescanLibrary = useCallback(async () => {
-    handleBasicUserQuery(Beta.command(new ReinitCatalogCommand()));
-  }, []);
+  const rescanLibrary = useCallback(
+    () => handleBasicUserQuery(Beta.command(new ReinitCatalogCommand())),
+    [],
+  );
 
-  const scanLibrary = useCallback(async () => {
-    handleBasicUserQuery(Beta.command(new ScanExistingCommand()));
-  }, []);
+  const scanLibrary = useCallback(
+    () => handleBasicUserQuery(Beta.command(new ScanExistingCommand())),
+    [],
+  );
 
-  const rescanSubtitles = useCallback(async () => {
-    handleBasicUserQuery(Beta.command(new RescanSubtitlesCommand()));
-  }, []);
+  const rescanSubtitles = useCallback(
+    () => handleBasicUserQuery(Beta.command(new RescanSubtitlesCommand())),
+    [],
+  );
 
   useEffect(() => {
     Beta.rawReactiveQuery(new URL(Beta.getUrl("/meta/bus")), (rawResult) => {

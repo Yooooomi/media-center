@@ -1,7 +1,6 @@
 import { spawn } from "child_process";
-import { mapNumber } from "@media-center/algorithm";
 import { Resolution } from "../domain/hierarchyEntryInformation";
-import { FFProbe, VideoTrack } from "./ffmpeg.types";
+import { FFProbe, Track, VideoTrack } from "./ffmpeg.types";
 
 async function spawnAndGetOutput(command: string, args: string[]) {
   return new Promise<{ out: string; err: string }>((res, rej) => {
@@ -47,23 +46,24 @@ async function ffprobeFile(path: string) {
 
 async function extractVttFromFile(
   path: string,
-  trackCount: number,
+  textTrackIndexes: number[],
   generateFileNameForIndex: (index: number) => string,
 ) {
   try {
     await spawnAndGetOutput("ffmpeg", [
       "-i",
       path,
-      ...mapNumber(trackCount, (index) => [
-        "-map",
-        `0:s:${index}`,
-        "-f",
-        "webvtt",
-        generateFileNameForIndex(index),
-      ]).flat(),
+      ...textTrackIndexes
+        .map((trackIndex, index) => [
+          "-map",
+          `0:s:${trackIndex}`,
+          "-f",
+          "webvtt",
+          generateFileNameForIndex(index),
+        ])
+        .flat(),
       "-y",
     ]);
-    console.log(`Extracted ${trackCount} text tracks for filepath ${path}`);
   } catch (e) {
     return undefined;
   }
@@ -85,10 +85,14 @@ export async function extractTracksFromPath(
       textTracks: [],
     };
   }
-  const subtitleStreams = ffprobe.streams.filter(
-    (stream) =>
-      stream.codec_type === "subtitle" && stream.codec_name === "subrip",
-  );
+  const subtitleStreams = ffprobe.streams.reduce<
+    { track: Track; typeIndex: number }[]
+  >((acc, track, index) => {
+    if (track.codec_type === "subtitle" && track.codec_name === "subrip") {
+      acc.push({ typeIndex: index, track });
+    }
+    return acc;
+  }, []);
 
   const audioTracks = ffprobe.streams
     .filter((stream) => stream.codec_type === "audio")
@@ -99,7 +103,7 @@ export async function extractTracksFromPath(
 
   const textTracks = subtitleStreams.map((stream, index) => ({
     index,
-    name: stream.tags?.title ?? `#${index + 1}`,
+    name: stream.track.tags?.title ?? `#${index + 1}`,
   }));
 
   const probeVideoTrack = ffprobe.streams.filter(
@@ -125,7 +129,7 @@ export async function extractTracksFromPath(
   }
   await extractVttFromFile(
     path,
-    subtitleStreams.length,
+    subtitleStreams.map((e) => e.typeIndex),
     generateFileNameForIndex,
   );
   return {

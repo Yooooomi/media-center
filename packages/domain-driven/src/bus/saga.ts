@@ -31,8 +31,6 @@ export class Saga {
     this.registry.set(event, exists);
   }
 
-  a = 1;
-
   static on<T extends Saga>(
     event: Constructor<BaseEvent<any>>,
     options?: HandlerOptions,

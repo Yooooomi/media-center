@@ -42,6 +42,7 @@ export class FilesystemSubtitleStore implements SubtitleStore {
     const path = this.getPathFromIdAndIndex(hierarchyItemId, trackIndex);
     fs.cpSync(filepath, path);
     fs.rmSync(filepath);
+    console.log(`Moved file ${filepath} to subtitle store`);
   }
 
   async delete(hierarchyItemId: HierarchyItemId, trackIndex: number) {

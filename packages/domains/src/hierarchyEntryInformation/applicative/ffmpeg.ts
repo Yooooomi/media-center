@@ -63,6 +63,7 @@ async function extractVttFromFile(
       ]).flat(),
       "-y",
     ]);
+    console.log(`Extracted ${trackCount} text tracks for filepath ${path}`);
   } catch (e) {
     return undefined;
   }

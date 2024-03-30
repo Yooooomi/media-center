@@ -62,6 +62,8 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
     playlistItem.hierarchyItem.id,
   );
 
+  console.log(subtitles);
+
   const additionalTextTracks = useMemo(
     () =>
       subtitles?.map((subtitle) => ({

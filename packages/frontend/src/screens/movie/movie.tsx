@@ -133,7 +133,7 @@ function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
                 {moviePage.tmdb.getYear()}
               </Text>
             </Box>
-            <Box mb="S24">
+            <Box mb="S24" style={{ zIndex: 1 }}>
               <Box row content="space-between">
                 <Text>
                   <TmdbNote note={moviePage.tmdb.getRoundedNote()} />・{" "}

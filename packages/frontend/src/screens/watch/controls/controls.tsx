@@ -5,7 +5,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -119,6 +119,10 @@ export function Controls({
   const duration = videoInfo.duration;
   const progressValue = useDerivedValue(() => progress.value / duration);
 
+  const audioTrackCount = videoInfo.audioTracks.length;
+  const textTrackCount =
+    videoInfo.textTracks.length + (additionalTextTracks?.length ?? 0);
+
   return (
     <>
       <View style={styles.close}>
@@ -167,13 +171,13 @@ export function Controls({
             <Box row gap="S16" flex={1}>
               <IconButton
                 size={24}
-                disabled={videoInfo.textTracks.length === 0}
+                disabled={textTrackCount === 0}
                 onPress={() => setActionSheet("text")}
                 icon="subtitles-outline"
               />
               <IconButton
                 size={24}
-                disabled={videoInfo.textTracks.length === 0}
+                disabled={audioTrackCount === 0}
                 onPress={() => setActionSheet("audio")}
                 icon="music"
               />

@@ -161,9 +161,7 @@ export class SQLiteTransactionPerformer extends TransactionPerformer<any> {
       const id = SQLiteTransactionPerformer.id++;
       singleton.currentTransaction = id;
       this.database.exec("BEGIN");
-      console.log("Beginning transaction");
       const result = await executor({ id });
-      console.log("Ended transaction");
       this.database.exec("COMMIT");
       return result;
     });

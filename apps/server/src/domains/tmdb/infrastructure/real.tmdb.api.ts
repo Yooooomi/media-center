@@ -162,7 +162,9 @@ export class RealTmdbAPI extends TmdbAPI {
         overview: data.overview,
         popularity: data.popularity,
         poster_path: data.poster_path,
-        release_date: new Date(data.release_date),
+        release_date: data.release_date
+          ? new Date(data.release_date)
+          : new Date(0),
         title: data.title,
         video: data.video,
         vote_average: data.vote_average,
@@ -180,7 +182,9 @@ export class RealTmdbAPI extends TmdbAPI {
         overview: data.overview,
         popularity: data.popularity,
         poster_path: data.poster_path,
-        first_air_date: new Date(data.first_air_date),
+        first_air_date: data.first_air_date
+          ? new Date(data.first_air_date)
+          : new Date(0),
         title: data.name,
         vote_average: data.vote_average,
         vote_count: data.vote_count,
@@ -204,7 +208,9 @@ export class RealTmdbAPI extends TmdbAPI {
             overview: d.overview,
             popularity: d.popularity,
             poster_path: d.poster_path,
-            first_air_date: new Date(d.first_air_date),
+            first_air_date: d.first_air_date
+              ? new Date(d.first_air_date)
+              : new Date(0),
             title: d.name,
             vote_average: d.vote_average,
             vote_count: d.vote_count,
@@ -230,7 +236,9 @@ export class RealTmdbAPI extends TmdbAPI {
             overview: d.overview,
             popularity: d.popularity,
             poster_path: d.poster_path,
-            release_date: new Date(d.release_date),
+            release_date: d.release_date
+              ? new Date(d.release_date)
+              : new Date(0),
             title: d.title,
             video: d.video,
             vote_average: d.vote_average,

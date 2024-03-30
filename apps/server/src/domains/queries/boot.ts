@@ -16,6 +16,7 @@ import { TorrentClient } from "@media-center/domains/src/torrentClient/applicati
 import { TorrentIndexer } from "@media-center/domains/src/torrentIndexer/applicative/torrentIndexer";
 import { TorrentRequestStore } from "@media-center/domains/src/torrentRequest/applicative/torrentRequest.store";
 import { UserTmdbInfoStore } from "@media-center/domains/src/userTmdbInfo/applicative/userTmdbInfo.store";
+import { WatchQueryHandler } from "@media-center/domains/src/queries/watch.query";
 
 export function bootQueries(
   queryBus: QueryBus,
@@ -75,4 +76,13 @@ export function bootQueries(
   queryBus.register(new DiscoverPageQueryHandler(tmdbApi));
 
   queryBus.register(new StatusQueryHandler(torrentClient, torrentIndexer));
+
+  queryBus.register(
+    new WatchQueryHandler(
+      tmdbStore,
+      catalogEntryStore,
+      userTmdbInfoStore,
+      hierarchyStore,
+    ),
+  );
 }

@@ -1,19 +1,21 @@
 import { useCallback } from "react";
-import { Playlist, useNavigate } from "../../screens/params";
+import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
+import { useNavigate } from "../../screens/navigation";
 
 export function usePlayCatalogEntry(
-  contextName: string,
-  playlist: Playlist<any>,
-  itemIndex: number,
+  hierarchyItemId: HierarchyItemId | undefined,
 ) {
   const { navigate } = useNavigate();
 
   const play = useCallback(() => {
+    if (!hierarchyItemId) {
+      return;
+    }
+
     return navigate("Watch", {
-      playlist,
-      startingPlaylistIndex: itemIndex,
+      hierarchyItemId: hierarchyItemId.toString(),
     });
-  }, [itemIndex, navigate, playlist]);
+  }, [hierarchyItemId, navigate]);
 
   return { play };
 }

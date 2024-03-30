@@ -3,7 +3,7 @@ import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import React, { useCallback } from "react";
 import { spacing } from "@media-center/ui/src/constants";
 import { useImageUri } from "../../../../services/tmdb";
-import { useNavigate } from "../../../../screens/params";
+import { useNavigate } from "../../../../screens/navigation";
 import { Box } from "../../../ui/display/box";
 import { Text } from "../../../ui/input/text/text";
 import { VerticalCard } from "../../../ui/display/cards/verticalCard";
@@ -33,7 +33,7 @@ function ShowCard_({
   const { navigate } = useNavigate();
 
   const handlePress = useCallback(() => {
-    navigate("Show", { show });
+    navigate("Show", { showId: show.id.toString() });
   }, [navigate, show]);
 
   const handleFocus = useCallback(() => {

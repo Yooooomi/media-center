@@ -1,4 +1,5 @@
 import { Database } from "better-sqlite3";
+import { uniqGroupBy } from "@media-center/algorithm";
 import { AtLeastId, Serializer } from "../serialization";
 import { PromiseQueue } from "../queue";
 import { Store, TransactionPerformer } from "./store";
@@ -14,9 +15,9 @@ interface SQLiteTransaction {
 
 export class SQLiteStore<M extends AtLeastId> implements Store<M> {
   constructor(
-    private readonly database: Database,
-    private readonly collectionName: string,
-    private readonly serializer: Serializer<M>,
+    protected readonly database: Database,
+    protected readonly collectionName: string,
+    protected readonly serializer: Serializer<M>,
   ) {
     database.exec(`
       CREATE TABLE IF NOT EXISTS ${collectionName} (
@@ -26,7 +27,7 @@ export class SQLiteStore<M extends AtLeastId> implements Store<M> {
     `);
   }
 
-  private run<R>(
+  protected run<R>(
     run: (database: Database) => R,
     transaction: SQLiteTransaction | undefined,
   ) {
@@ -98,11 +99,20 @@ export class SQLiteStore<M extends AtLeastId> implements Store<M> {
   }
 
   async loadMany(ids: M["id"][], transaction?: SQLiteTransaction) {
-    return this._select(
+    const result = await this._select(
       `WHERE id IN (${ids.map(() => "?").join(", ")})`,
       transaction,
       ...ids.map((e) => e.toString()),
     );
+    const groupedResult = uniqGroupBy(result, (r) => r.id.toString());
+    return ids.reduce<M[]>((acc, curr) => {
+      const r = groupedResult[curr.toString()];
+      if (!r) {
+        return acc;
+      }
+      acc.push(r);
+      return acc;
+    }, []);
   }
 
   async loadAll(transaction?: SQLiteTransaction) {

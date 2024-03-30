@@ -1,4 +1,5 @@
 import { Shape, Freeze } from "@media-center/domain-driven";
+import { groupByArray, uniqBy } from "@media-center/algorithm";
 import { HierarchyItemId } from "../../fileWatcher/domain/hierarchyItemId";
 import { TmdbId } from "../../tmdb/domain/tmdbId";
 
@@ -134,6 +135,11 @@ export class ShowCatalogEntry extends Shape({
 
   public hasHierarchyItemId(hierarchyItemId: HierarchyItemId) {
     return this.getHierarchyItemIds().some((e) => e.equals(hierarchyItemId));
+  }
+
+  public getDatasetForSeason(season: number) {
+    const dataset = this.dataset.filter((e) => e.season === season);
+    return dataset.sort((a, b) => a.episode - b.episode);
   }
 }
 

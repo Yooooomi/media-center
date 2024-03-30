@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { color, spacing } from "@media-center/ui/src/constants";
-import { useNavigate } from "../../screens/params";
-import { IconName } from "../ui/display/icon/icon";
+import { useNavigate } from "../../screens/navigation";
 import { StatusContext } from "../../services/contexts/status.context";
 import { useMeshContext } from "../../services/contexts/mesh.context";
+import { IconName } from "../ui/display/icon/icon.props";
 import { SiderButton } from "./siderButton";
 import { StatusLine } from "./statusLine";
 

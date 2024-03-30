@@ -3,7 +3,8 @@ import { GetMoviePageQuery } from "@media-center/domains/src/queries/getMoviePag
 import { useCallback } from "react";
 import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTmdbInfo/applicative/setUserTmdbInfoProgress.command";
 import { color, rawColor } from "@media-center/ui/src/constants";
-import { useParams } from "../params";
+import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
+import { IntentReturning } from "@media-center/domain-driven";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
 import { Box } from "../../components/ui/display/box/box";
@@ -20,16 +21,41 @@ import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Beta } from "../../services/api/api";
 import { useQuery } from "../../services/api/useQuery";
 import { HierarchyEntryInformationLine } from "../../components/implementedUi/hierarchyEntryInformationLine";
+import { useParams } from "../navigation";
+import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
 
-export function Movie() {
-  const { movie } = useParams<"Movie">();
+export const Movie = withDependencyWrapper(
+  MovieWrapped,
+  () => {
+    const { movieId } = useParams<"Movie">();
+    const [{ result }, _, reload] = useQuery(
+      GetMoviePageQuery,
+      {
+        actorId: Beta.userId,
+        tmdbId: new TmdbId(movieId),
+      },
+      { reactive: true },
+    );
+
+    if (!result) {
+      return undefined;
+    }
+
+    return { moviePage: result, reload };
+  },
+  {
+    Fallback: FullScreenLoading,
+  },
+);
+
+interface MovieWrappedProps {
+  moviePage: IntentReturning<GetMoviePageQuery>;
+  reload: () => void;
+}
+
+function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
+  const movie = moviePage.tmdb;
   const imageUri = useImageUri(movie.poster_path, true);
-
-  const [{ result: moviePage }, _, reload] = useQuery(
-    GetMoviePageQuery,
-    { actorId: Beta.userId, tmdbId: movie.id },
-    { reactive: true },
-  );
 
   const {
     element,
@@ -72,10 +98,6 @@ export function Movie() {
       ),
     );
   }, [movie.id]);
-
-  if (!moviePage) {
-    return <FullScreenLoading />;
-  }
 
   const hasHierarchyItems = moviePage.catalogEntry.hasHierarchyItems();
   const isFinished = moviePage.userInfo.isFinished();
@@ -139,7 +161,6 @@ export function Movie() {
           <Box w="100%" row gap="S16">
             {hasHierarchyItems && (
               <WatchCatalogEntry
-                name={moviePage.tmdb.title}
                 entry={moviePage.catalogEntry}
                 requests={moviePage.requests}
                 userInfo={moviePage.userInfo}

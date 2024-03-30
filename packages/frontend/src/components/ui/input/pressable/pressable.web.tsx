@@ -3,7 +3,10 @@ import { Pressable as RNPressable, View } from "react-native";
 import { PressableProps } from "./pressable.props";
 
 export const Pressable = forwardRef<View, PressableProps>(
-  ({ children, style, onPress, onBlur, onFocus, onLongPress }, ref) => {
+  (
+    { children, style, onPress, onBlur, onFocus, onLongPress, disabled },
+    ref,
+  ) => {
     const [focused, setFocused] = useState(false);
 
     const renderedChildren =
@@ -17,6 +20,7 @@ export const Pressable = forwardRef<View, PressableProps>(
       <RNPressable
         ref={ref}
         style={style}
+        disabled={disabled}
         onLongPress={onLongPress}
         onPress={handleOnPress}
         // @ts-expect-error

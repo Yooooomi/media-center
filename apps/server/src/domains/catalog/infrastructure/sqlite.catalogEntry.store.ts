@@ -25,18 +25,30 @@ export class SQLiteCatalogEntryStore
     );
   }
 
-  loadByHierarchyItemId(
+  async loadByHierarchyItemId(
     hierarchyItemId: HierarchyItemId,
     transaction?: Transaction,
   ) {
-    return this._select(
-      `, json_each(data, '$.1.dataset')
-      WHERE ? IN (json_extract(data, '$.1.dataset.hierarchyItemIds'))
-      OR ? IN (json_extract(json_each.value, '$.hierarchyItemIds'))
-      `,
+    const result = await this.run(
+      (database) =>
+        database
+          .prepare(
+            `SELECT ${this.collectionName}.id, ${this.collectionName}.data, json_each.value as fv FROM ${this.collectionName}, json_each(data, '$.1.dataset')
+              WHERE CASE
+              WHEN json_extract(data, '$.0') = 0
+              THEN ?
+                IN (SELECT json_each.value as idd from json_each(fv))
+              ELSE ?
+                IN (SELECT json_each.value AS idd FROM json_each(json_extract(fv, '$.hierarchyItemIds')))
+              END`,
+          )
+          .all(hierarchyItemId.toString(), hierarchyItemId.toString()),
       transaction,
-      hierarchyItemId.toString(),
-      hierarchyItemId.toString(),
+    );
+    return Promise.all(
+      result.map((e: any) =>
+        this.serializer.deserializeModel({ id: e.id, ...JSON.parse(e.data) }),
+      ),
     );
   }
 
@@ -44,7 +56,7 @@ export class SQLiteCatalogEntryStore
     return this._select(
       "WHERE json_extract(data, '$.0') = ?",
       undefined,
-      1,
+      0,
     ) as Promise<MovieCatalogEntry[]>;
   }
 
@@ -52,7 +64,7 @@ export class SQLiteCatalogEntryStore
     return this._select(
       "WHERE json_extract(data, '$.0') = ?",
       undefined,
-      0,
+      1,
     ) as Promise<ShowCatalogEntry[]>;
   }
 

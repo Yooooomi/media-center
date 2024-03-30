@@ -3,7 +3,8 @@ import { GetShowPageQuery } from "@media-center/domains/src/queries/getShowPage.
 import { useCallback, useState } from "react";
 import { ShowEpisode } from "@media-center/domains/src/tmdb/domain/showEpisode";
 import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTmdbInfo/applicative/setUserTmdbInfoProgress.command";
-import { useParams } from "../params";
+import { IntentReturning } from "@media-center/domain-driven";
+import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
 import { Box } from "../../components/ui/display/box/box";
@@ -18,21 +19,38 @@ import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { useQuery } from "../../services/api/useQuery";
 import { Beta } from "../../services/api/api";
 import { HierarchyEntryInformationLine } from "../../components/implementedUi/hierarchyEntryInformationLine";
+import { useParams } from "../navigation";
+import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
 import { SeasonSelector } from "./seasonSelector";
 
-export function Show() {
-  const { show } = useParams<"Show">();
-  const imageUri = useImageUri(show.backdrop_path, true);
-  const [focusedEpisode, setFocusedEpisode] = useState<ShowEpisode | undefined>(
-    undefined,
-  );
+export const Show = withDependencyWrapper(ShowWrapped, () => {
+  const { showId } = useParams<"Show">();
 
   const [{ result: showPage }, _, reload] = useQuery(
     GetShowPageQuery,
-    { actorId: Beta.userId, tmdbId: show.id },
+    { actorId: Beta.userId, tmdbId: new TmdbId(showId) },
     {
       reactive: true,
     },
+  );
+
+  if (!showPage) {
+    return undefined;
+  }
+
+  return { showPage, reload };
+});
+
+interface ShowWrappedProps {
+  showPage: IntentReturning<GetShowPageQuery>;
+  reload: () => void;
+}
+
+function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
+  const show = showPage.tmdb;
+  const imageUri = useImageUri(show.backdrop_path, true);
+  const [focusedEpisode, setFocusedEpisode] = useState<ShowEpisode | undefined>(
+    undefined,
   );
 
   const {
@@ -105,9 +123,6 @@ export function Show() {
   const seasonEpisodes = showPage.episodes.find(
     (e) => e.season === highlightedSeason,
   )?.episodes;
-  const availableEpisodes = showPage.catalogEntry
-    .getEpisodesOfSeason(highlightedSeason)
-    .map((e) => e.episode);
   const focusedEpisodeFinished =
     (focusedEpisode &&
       showPage.userInfo.isEpisodeFinished(
@@ -184,9 +199,7 @@ export function Show() {
             <ShowEpisodeCardsLine
               onFocusEpisode={setFocusedEpisode}
               focusIndex={highlightedEpisode}
-              show={show}
               userInfo={showPage.userInfo}
-              availableEpisodes={availableEpisodes}
               showEpisodes={seasonEpisodes}
               catalogEntry={showPage.catalogEntry}
               season={season.season_number}

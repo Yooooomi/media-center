@@ -100,6 +100,12 @@ export class ShowCatalogEntryFulfilled extends Shape({
   hasHierarchyItems() {
     return this.dataset.length > 0;
   }
+
+  getHierarchyItemForEpisode(season: number, episode: number) {
+    return this.dataset
+      .find((e) => e.season === season && e.episode === episode)
+      ?.getLatestItem();
+  }
 }
 
 export class MovieCatalogEntryFulfilled extends Shape({

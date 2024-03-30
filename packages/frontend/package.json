@@ -27,7 +27,9 @@
     "react-dom": "*",
     "react-native": "*",
     "react-native-sse": "*",
-    "react-native-reanimated": "*"
+    "react-native-reanimated": "*",
+    "react-router-native": "*",
+    "react-router-dom": "*"
   },
   "devDependencies": {
     "@types/event-source-polyfill": "^1.0.5",

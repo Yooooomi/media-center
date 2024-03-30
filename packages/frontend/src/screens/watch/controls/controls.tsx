@@ -24,7 +24,7 @@ import { ProgressBar } from "../../../components/ui/display/progressBar/progress
 import { IconButton } from "../../../components/ui/input/pressable/iconButton";
 import { isNative } from "../../../services/platform";
 import { Timeout } from "../../../services/types";
-import { useNavigate } from "../../params";
+import { useNavigate } from "../../navigation";
 import { ControlsActionSheet } from "./controlsActionSheet";
 import { useControlInteraction } from "./useControlInteraction";
 

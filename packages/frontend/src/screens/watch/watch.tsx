@@ -7,24 +7,46 @@ import {
 } from "@media-center/video-player";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSharedValue } from "react-native-reanimated";
-import { ShowCatalogEntryDatasetFulfilled } from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
 import { rawColor } from "@media-center/ui/src/constants";
 import { GetSubtitlesQuery } from "@media-center/domains/src/hierarchyEntryInformation/applicative/getSubtitles.query";
+import { WatchQuery } from "@media-center/domains/src/queries/watch.query";
+import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
+import { IntentReturning } from "@media-center/domain-driven";
 import { useToggle } from "../../services/hooks/useToggle";
-import { useNavigate, useParams } from "../params";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading";
 import { useAppStateEvent } from "../../services/hooks/useOnBlur";
-import { useVideoUri } from "../../services/api/api";
+import { Beta, useVideoUri } from "../../services/api/api";
 import { useQuery } from "../../services/api/useQuery";
+import { useParams, useNavigate } from "../navigation";
+import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
 import { useSaveCatalogEntryProgress } from "./useSaveCatalogEntryProgress";
-import { usePreviousNext } from "./usePreviousNext";
 import { Controls } from "./controls";
 
-export function Watch() {
-  const { playlist, startingPlaylistIndex } = useParams<"Watch">();
-  const { dataset, progress, name } = playlist.items[startingPlaylistIndex]!;
-  const hierarchyItem = dataset.getLatestItem()!;
-  const videoUri = useVideoUri(hierarchyItem.id);
+export const Watch = withDependencyWrapper(WatchWrapped, () => {
+  const { hierarchyItemId } = useParams<"Watch">();
+  const [{ result }] = useQuery(WatchQuery, {
+    actorId: Beta.userId,
+    hierarchyItemId: new HierarchyItemId(hierarchyItemId),
+  });
+
+  if (!result) {
+    return undefined;
+  }
+
+  console.log("Watching", result);
+  return { watch: result };
+});
+
+interface WatchWrappedProps {
+  watch: IntentReturning<WatchQuery>;
+}
+
+function WatchWrapped({ watch }: WatchWrappedProps) {
+  const [playlistIndex, setPlaylistIndex] = useState(watch.index);
+
+  const playlistItem = watch.playlist[playlistIndex]!;
+
+  const videoUri = useVideoUri(playlistItem.hierarchyItem.id);
   const [videoInfo, setVideoInfo] = useState<VideoInfoEvent | undefined>(
     undefined,
   );
@@ -35,7 +57,10 @@ export function Watch() {
   const { goBack } = useNavigate();
   const vlcRef = useRef<VideoPlayerHandle>(null);
 
-  const [{ result: subtitles }] = useQuery(GetSubtitlesQuery, hierarchyItem.id);
+  const [{ result: subtitles }] = useQuery(
+    GetSubtitlesQuery,
+    playlistItem.hierarchyItem.id,
+  );
 
   const additionalTextTracks = useMemo(
     () =>
@@ -46,23 +71,14 @@ export function Watch() {
     [subtitles],
   );
 
-  const season =
-    dataset instanceof ShowCatalogEntryDatasetFulfilled
-      ? dataset.season
-      : undefined;
-  const episode =
-    dataset instanceof ShowCatalogEntryDatasetFulfilled
-      ? dataset.episode
-      : undefined;
-
   const [playing, rollPlaying, setPlaying] = useToggle(true);
 
   useEffect(() => {
-    if (!videoInfo || progress === 0) {
+    if (!videoInfo || playlistItem.progress === 0) {
       return;
     }
-    vlcRef.current?.seek(videoInfo.duration * progress);
-  }, [progress, videoInfo]);
+    vlcRef.current?.seek(videoInfo.duration * playlistItem.progress);
+  }, [playlistItem.progress, videoInfo]);
 
   const handleFullscreen = useCallback(() => {
     vlcRef.current?.fullscreen();
@@ -110,21 +126,25 @@ export function Watch() {
   useSaveCatalogEntryProgress(
     playing,
     currentProgress,
-    playlist.tmdbId,
-    season,
-    episode,
+    watch.tmdb.id,
+    playlistItem.season,
+    playlistItem.episode,
   );
+
+  const previousAllowed = playlistIndex !== 0;
+  const nextAllowed = playlistIndex !== watch.playlist.length - 1;
+
+  const previous = useCallback(
+    () => setPlaylistIndex((index) => index - 1),
+    [],
+  );
+  const next = useCallback(() => setPlaylistIndex((index) => index + 1), []);
 
   useAppStateEvent(
     "blur",
     useCallback(() => {
       setPlaying(false);
     }, [setPlaying]),
-  );
-
-  const { previousAllowed, previous, nextAllowed, next } = usePreviousNext(
-    playlist,
-    startingPlaylistIndex,
   );
 
   return (
@@ -140,7 +160,7 @@ export function Watch() {
           textTrack={textTrack}
           play={playing}
           volume={100}
-          hwDecode={!hierarchyItem.file.path.endsWith(".avi")}
+          hwDecode={!playlistItem.hierarchyItem.file.path.endsWith(".avi")}
           forceHwDecode={false}
           onProgress={onProgress}
           onVideoInfo={onVideoInfo}
@@ -150,7 +170,7 @@ export function Watch() {
       </View>
       {videoInfo && (
         <Controls
-          name={name}
+          name={watch.tmdb.original_title}
           onFullscreen={handleFullscreen}
           progress={currentProgressMs}
           videoInfo={videoInfo}

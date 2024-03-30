@@ -1,4 +1,4 @@
-import { AtLeastId, Constructor } from "../serialization";
+import { AtLeastId } from "../serialization";
 
 export type Transaction = any;
 
@@ -15,9 +15,9 @@ export abstract class Store<M extends AtLeastId> {
 }
 
 export abstract class TransactionPerformer<
-  T extends Transaction = Transaction
+  T extends Transaction = Transaction,
 > {
   abstract transactionnally<R>(
-    executor: (transaction: T) => Promise<R>
+    executor: (transaction: T) => Promise<R>,
   ): Promise<R>;
 }

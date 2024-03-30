@@ -1,6 +1,6 @@
 import { Box } from "../../components/ui/display/box";
 import { IconTextButton } from "../../components/ui/input/pressable/iconTextButton";
-import { useNavigate } from "../params";
+import { useNavigate } from "../navigation";
 
 export function Search() {
   const { navigate } = useNavigate();

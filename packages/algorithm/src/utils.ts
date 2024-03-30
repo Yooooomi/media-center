@@ -25,6 +25,20 @@ export function groupBy<T>(values: T[], by: (value: T) => string) {
   }, {});
 }
 
+export function uniqGroupBy<T>(values: T[], by: (value: T) => string) {
+  return values.reduce<Record<string, T>>((acc, curr) => {
+    const key = by(curr);
+    acc[key] = curr;
+    return acc;
+  }, {});
+}
+
+export function groupByArray<T>(values: T[], by: (value: T) => number) {
+  return Object.entries(groupBy(values, (value) => by(value).toString()))
+    .sort(([keya], [keyb]) => +keya - +keyb)
+    .map(([key, value]) => value);
+}
+
 export function maxBy<T>(values: T[], getValue: (value: T) => number) {
   let maxIndex: number | undefined = 0;
   let maxValue: number | undefined = undefined;
@@ -69,9 +83,12 @@ export function chunk<T>(values: T[], chunkSize: number) {
   return results;
 }
 
-export function uniqBy<T>(value: T[], by: (item: T) => string) {
+export function uniqBy<T, B extends string | number>(
+  value: T[],
+  by: (item: T) => B,
+) {
   const results: T[] = [];
-  const already = new Set<string>();
+  const already = new Set<B>();
 
   for (const v of value) {
     const id = by(v);

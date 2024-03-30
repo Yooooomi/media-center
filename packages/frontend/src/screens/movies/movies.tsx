@@ -8,6 +8,8 @@ import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
 export function Movies() {
   const [{ result: movies }] = useQuery(GetMoviesPageQuery, undefined);
 
+  console.log(movies);
+
   if (!movies) {
     return <FullScreenLoading />;
   }

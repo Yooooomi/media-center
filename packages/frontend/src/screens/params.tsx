@@ -1,49 +1,12 @@
-import {
-  MovieCatalogEntryDatasetFulfilled,
-  ShowCatalogEntryDatasetFulfilled,
-  ShowCatalogEntryFulfilled,
-} from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
-import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
-import { Show } from "@media-center/domains/src/tmdb/domain/show";
-import { ShowSeason } from "@media-center/domains/src/tmdb/domain/showSeason";
-import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
-import { useLocation } from "react-router-native";
+import { createContext, useCallback, useMemo, useState } from "react";
 import { BackHandler } from "react-native";
-
-export interface PlaylistItem<T extends "show" | "movie"> {
-  progress: number;
-  name: string;
-  dataset: T extends "show"
-    ? ShowCatalogEntryDatasetFulfilled
-    : MovieCatalogEntryDatasetFulfilled;
-}
-
-export interface Playlist<T extends "show" | "movie"> {
-  tmdbId: TmdbId;
-  items: PlaylistItem<T>[];
-}
 
 export type NavigationParams = {
   Discover: undefined;
   Library: undefined;
-  Movie: { movie: Movie };
-  Show: { show: Show };
-  ShowSeason: {
-    show: Show;
-    season: ShowSeason;
-    catalogEntry: ShowCatalogEntryFulfilled;
-  };
-  Watch: {
-    playlist: Playlist<any>;
-    startingPlaylistIndex: number;
-  };
+  Movie: { movieId: string };
+  Show: { showId: string };
+  Watch: { hierarchyItemId: string };
   Search: undefined;
   SearchTmdb: undefined;
   SearchTorrent: undefined;
@@ -52,12 +15,23 @@ export type NavigationParams = {
   Settings: undefined;
 };
 
+type Serializable =
+  | {
+      [key: string]: string | number | boolean | undefined;
+    }
+  | undefined;
+type EnsureSerializable<T extends Serializable> = T;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type __EnsureNavigationParamsSerializable = EnsureSerializable<
+  NavigationParams[keyof NavigationParams]
+>;
+
 export const paths: Record<keyof NavigationParams, string> = {
   Library: "/",
   Discover: "/discover",
   Movie: "/movie",
   Show: "/show",
-  ShowSeason: "/show/season",
   Watch: "/watch",
   Search: "/search",
   SearchTmdb: "/search_tmdb",
@@ -67,11 +41,7 @@ export const paths: Record<keyof NavigationParams, string> = {
   Settings: "/settings",
 };
 
-export function useParams<K extends keyof NavigationParams>() {
-  return useLocation().state as NavigationParams[K];
-}
-
-interface HistoryItem {
+export interface HistoryItem {
   pathname: string;
   params: Record<string, any> | undefined;
   key: string;
@@ -114,29 +84,4 @@ export function useNavigationContext() {
   );
 
   return { value, currentRoute: history[history.length - 1]! };
-}
-
-let uniqueId = 0;
-
-export function useNavigate() {
-  const { add, pop } = useContext(NavigationContext);
-
-  return {
-    navigate: useCallback(
-      <K extends keyof NavigationParams>(
-        path: K,
-        params: NavigationParams[K] extends undefined
-          ? void
-          : NavigationParams[K],
-      ) => {
-        add({
-          pathname: paths[path],
-          params: params ?? undefined,
-          key: (uniqueId++).toString(),
-        });
-      },
-      [add],
-    ),
-    goBack: pop,
-  };
 }

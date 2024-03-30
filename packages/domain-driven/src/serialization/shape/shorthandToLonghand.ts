@@ -21,7 +21,7 @@ import { StringEnum } from "./definitions/stringEnum";
 import { Tuple } from "./definitions/tuple";
 
 export function shorthandToLonghand<D extends AnyDefinition | AnyShorthand>(
-  definition: D
+  definition: D,
 ): Definition<
   DefinitionRuntime<ShorthandToLonghand<D>>,
   DefinitionSerialized<ShorthandToLonghand<D>>,
@@ -56,7 +56,7 @@ export function shorthandToLonghand<D extends AnyDefinition | AnyShorthand>(
       return Child(definition as ChildConfiguration);
     }
     return SerializableClass(
-      definition as SerializableClassConfiguration
+      definition as SerializableClassConfiguration,
     ) as any;
   }
   if (Array.isArray(definition)) {

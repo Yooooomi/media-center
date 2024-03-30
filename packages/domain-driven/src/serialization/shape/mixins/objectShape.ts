@@ -41,14 +41,27 @@ export const ObjectShape = <
       this: T,
       serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>,
     ) {
-      return new this(longhand.deserialize(serialized as any));
+      try {
+        const deserialized = longhand.deserialize(serialized as any);
+        return new this(deserialized);
+      } catch (e) {
+        throw new Error(
+          `Cannot deserialize ${JSON.stringify(serialized, null, " ")}: ${e}`,
+        );
+      }
     }
 
     static serialize<T extends IsShapeConstructor<D>>(
       this: T,
       runtime: InstanceType<T>,
     ) {
-      return runtime.serialize();
+      try {
+        return runtime.serialize();
+      } catch (e) {
+        throw new Error(
+          `Cannot serialize ${JSON.stringify(runtime, null, " ")}: ${e}`,
+        );
+      }
     }
 
     serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>> {

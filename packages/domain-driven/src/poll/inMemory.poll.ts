@@ -10,6 +10,7 @@ export class InMemoryPoll extends Poll {
       }
     };
 
+    doPoll().catch((e) => console.log("Polling failed", e));
     const id = setInterval(doPoll, this.polling.intervalMs);
     return () => clearInterval(id);
   }

@@ -1,4 +1,9 @@
+import {
+  ImdbId,
+  TheTVDBId,
+} from "@media-center/domains/src/calendar/domain/calendar";
 import { TmdbAPI } from "@media-center/domains/src/tmdb/applicative/tmdb.api";
+import { AnyTmdb } from "@media-center/domains/src/tmdb/domain/anyTmdb";
 import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
 import { MovieDetails } from "@media-center/domains/src/tmdb/domain/movieDetails";
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
@@ -8483,5 +8488,9 @@ export class MockTmdbAPI extends TmdbAPI {
 
   async getAsBuffer() {
     return Buffer.from("");
+  }
+
+  async getFromExternalIds(_ids: (ImdbId | TheTVDBId)[]) {
+    return [];
   }
 }

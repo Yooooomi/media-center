@@ -287,6 +287,28 @@ export interface MovieDetailsQuery {
   vote_count: number;
 }
 
+export interface LinkQuery {
+  tv_results: [
+    {
+      adult: boolean;
+      backdrop_path: string;
+      id: number;
+      name: string;
+      original_language: string;
+      original_name: string;
+      overview: string;
+      poster_path: string;
+      media_type: string;
+      genre_ids: number[];
+      popularity: number;
+      first_air_date: string | null;
+      vote_average: number;
+      vote_count: number;
+      origin_country: string[];
+    },
+  ];
+}
+
 export function extractYear(input: string) {
   return +input.split("-")[0]!;
 }

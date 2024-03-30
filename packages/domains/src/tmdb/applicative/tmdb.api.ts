@@ -1,3 +1,4 @@
+import { ImdbId, TheTVDBId } from "../../calendar/domain/calendar";
 import { AnyTmdb } from "../domain/anyTmdb";
 import { Movie } from "../domain/movie";
 import { MovieDetails } from "../domain/movieDetails";
@@ -19,6 +20,9 @@ export abstract class TmdbAPI {
   abstract discoverShow(): Promise<Show[]>;
   abstract getMovieDetails(tmdbId: TmdbId): Promise<MovieDetails | undefined>;
   abstract getAsBuffer(path: string): Promise<Buffer>;
+  abstract getFromExternalIds(
+    ids: (ImdbId | TheTVDBId)[],
+  ): Promise<{ findWith: ImdbId | TheTVDBId; tmdb: AnyTmdb }[]>;
 
   async search(
     query: string,

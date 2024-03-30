@@ -10,11 +10,16 @@ import { ShowSeason } from "@media-center/domains/src/tmdb/domain/showSeason";
 import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import { PromiseQueue } from "@media-center/domain-driven";
 import {
+  ImdbId,
+  TheTVDBId,
+} from "@media-center/domains/src/calendar/domain/calendar";
+import {
   DiscoverMovie,
   DiscoverShow,
   Episode,
   GetMovie,
   GetShow,
+  LinkQuery,
   MovieDetailsQuery,
   SearchMovie,
   SearchShow,
@@ -273,5 +278,43 @@ export class RealTmdbAPI extends TmdbAPI {
       }),
     );
     return data;
+  }
+
+  async getFromExternalIds(ids: (ImdbId | TheTVDBId)[]) {
+    const results: { findWith: ImdbId | TheTVDBId; tmdb: AnyTmdb }[] = [];
+
+    for (const id of ids) {
+      const source = id instanceof ImdbId ? "imdb_id" : "tvdb_id";
+      const { data: linked } = await globalQueue.queue(() =>
+        this.axios.get<LinkQuery>(
+          `/find/${id.toString()}?external_source=${source}`,
+        ),
+      );
+      const [firstLinkedResult] = linked.tv_results;
+      if (!firstLinkedResult) {
+        continue;
+      }
+      results.push({
+        findWith: id,
+        tmdb: new Show({
+          id: TmdbId.fromIdAndType(firstLinkedResult.id.toString(), "show"),
+          first_air_date: firstLinkedResult.first_air_date
+            ? new Date(firstLinkedResult.first_air_date)
+            : new Date(0),
+          original_language: firstLinkedResult.original_language,
+          original_title: firstLinkedResult.original_name,
+          overview: firstLinkedResult.overview,
+          popularity: firstLinkedResult.popularity,
+          season_count: 0,
+          title: firstLinkedResult.name,
+          vote_average: firstLinkedResult.vote_average,
+          vote_count: firstLinkedResult.vote_count,
+          backdrop_path: firstLinkedResult.backdrop_path,
+          poster_path: firstLinkedResult.poster_path,
+        }),
+      });
+    }
+
+    return results;
   }
 }

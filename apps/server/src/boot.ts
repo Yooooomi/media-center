@@ -27,6 +27,7 @@ import { ProcessEnvironmentHelper } from "./domains/environment/infrastructure/p
 import { bootHierarchyEntryInformation } from "./domains/hierarchyEntryInformation/boot";
 import { InMemoryTorrentRequestStore } from "./domains/torrentRequest/infrastructure/inMemory.torrentRequest.store";
 import { SQLiteTorrentRequestStore } from "./domains/torrentRequest/infrastructure/sqlite.torrentRequest.store";
+import { bootCalendar } from "./domains/calendar/boot";
 
 export async function globalBoot() {
   configureDotenv();
@@ -152,6 +153,8 @@ export async function globalBoot() {
     torrentIndexer,
     hierarchyEntryInformationStore,
   );
+
+  bootCalendar(database, environmentHelper, commandBus, tmdbApi);
 
   return {
     commandBus,

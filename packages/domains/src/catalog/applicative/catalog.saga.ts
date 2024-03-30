@@ -103,6 +103,15 @@ export class CatalogSaga extends Saga {
           );
           return undefined;
         }
+
+        console.log(
+          "Found tmdb entry",
+          tmdbEntry.id.toString(),
+          "for",
+          event.item.file.getFilename(),
+          "extracted",
+          JSON.stringify(infosFromFilename, null, " "),
+        );
         // Caches the entry in the store already
         await this.tmdbStore.load(tmdbEntry.id, transaction);
 

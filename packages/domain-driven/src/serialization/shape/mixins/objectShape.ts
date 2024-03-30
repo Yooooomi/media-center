@@ -55,17 +55,17 @@ export const ObjectShape = <
       this: T,
       runtime: InstanceType<T>,
     ) {
-      try {
-        return runtime.serialize();
-      } catch (e) {
-        throw new Error(
-          `Cannot serialize ${JSON.stringify(runtime, null, " ")}: ${e}`,
-        );
-      }
+      return runtime.serialize();
     }
 
     serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>> {
-      return longhand.serialize(this) as any;
+      try {
+        return longhand.serialize(this) as any;
+      } catch (e) {
+        throw new Error(
+          `Cannot serialize ${JSON.stringify(this, null, " ")}: ${e}`,
+        );
+      }
     }
   }
 

@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-native-screens/ios/RNSScreenStack.mm b/node_modules/react-native-screens/ios/RNSScreenStack.mm
+index 3c0d957..90b2694 100644
+--- a/node_modules/react-native-screens/ios/RNSScreenStack.mm
++++ b/node_modules/react-native-screens/ios/RNSScreenStack.mm
+@@ -528,9 +528,9 @@ - (void)setModalViewControllers:(NSArray<UIViewController *> *)controllers
+ - (void)setPushViewControllers:(NSArray<UIViewController *> *)controllers
+ {
+   // when there is no change we return immediately
+-  if ([_controller.viewControllers isEqualToArray:controllers]) {
+-    return;
+-  }
++  // if ([_controller.viewControllers isEqualToArray:controllers]) {
++  //   return;
++  // }
+ 
+   // if view controller is not yet attached to window we skip updates now and run them when view
+   // is attached
+@@ -615,6 +615,8 @@ - (void)setPushViewControllers:(NSArray<UIViewController *> *)controllers
+     }
+   } else {
+     // change wasn't on the top of the stack. We don't need animation.
++    auto screenController = (RNSScreen *)top;  // Add this line
++    [screenController resetViewToScreen];   // Add this line
+     [_controller setViewControllers:controllers animated:NO];
+   }
+ }

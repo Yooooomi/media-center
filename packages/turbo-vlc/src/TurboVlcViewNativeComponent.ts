@@ -65,7 +65,7 @@ export interface NativeProps extends ViewProps {
 
 export type NativeViewType = HostComponent<NativeProps>;
 
-interface NativeCommands {
+export interface NativeCommands {
   seek: (ref: React.ElementRef<NativeViewType>, ms: Double) => void;
 }
 

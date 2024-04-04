@@ -1,10 +1,5 @@
 import Foundation
-
-#if os(iOS)
-import MobileVLCKit
-#else
-import TVVLCKit
-#endif
+import UIKit
 
 public typealias EventCallback = (_ event: NSDictionary) -> Void
 
@@ -19,11 +14,15 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   private var onVideoInfo: EventCallback
   private var onBuffer: EventCallback
   
+  private var released = false
+  
   @objc
   public init(frame: CGRect, view: UIView, onError: @escaping EventCallback, onProgress: @escaping EventCallback, onVideoInfo: @escaping EventCallback, onBuffer: @escaping EventCallback) {
-    
+        
     self.vlc = VLCLibrary()
     self.mediaPlayer = VLCMediaPlayer(library: self.vlc)
+    
+    self.mediaPlayer.scaleFactor = 0.1
     
     self.onError = onError
     self.onProgress = onProgress
@@ -40,6 +39,24 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     fatalError("init(coder:) has not been implemented")
   }
   
+  deinit {
+    print("SWIFT deinit")
+  }
+  
+  @objc
+  public func releasePlayer() {
+    self.released = true
+    self.mediaPlayer.stop()
+  }
+  
+  @objc func prepare() {
+    self.released = false
+  }
+  
+  @objc func isReleased() -> Bool {
+    return self.released
+  }
+  
   public func mediaPlayerStateChanged(_ newState: VLCMediaPlayerState) {
     print("mediaPlayerStateChanged")
   }
@@ -48,15 +65,18 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     print("mediaPlayerLengthChanged")
   }
   
-  public func mediaPlayerTrackSelected(_ trackType: VLCMedia.TrackType, selectedId unselectedId: String, unselectedId unselectedId2: String) {
+  public func mediaPlayerTrackSelected(selectedId unselectedId: String, unselectedId unselectedId2: String) {
     print("mediaPlayerTrackSelected")
   }
   
-  public func mediaPlayerTrackAdded(_ trackId: String, with trackType: VLCMedia.TrackType) {
+  public func mediaPlayerTrackAdded(_ trackId: String) {
     print("mediaPlayerTrackAdded")
   }
   
   public func mediaPlayerTimeChanged(_ aNotification: Notification) {
+    if self.released {
+      return
+    }
     self.onProgress([
       "progress": self.mediaPlayer.time.intValue,
       "duration": self.mediaPlayer.media?.length.intValue ?? 0,
@@ -79,6 +99,9 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   }
   
   public func mediaDidFinishParsing(_ aMedia: VLCMedia) {
+    if self.released {
+      return
+    }
     self.onVideoInfo([
       "duration": self.mediaPlayer.media?.length.intValue ?? 0,
       
@@ -102,10 +125,16 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     guard let parsedUri = URL.init(string: uri) else { return }
     guard let media = VLCMedia(url: parsedUri) else { return }
 
+    if let media = self.media {
+      media.delegate = nil
+    }
+    
     self.media = media
     self.mediaPlayer.media = self.media
     self.mediaPlayer.media?.delegate = self
 
+    print("PLAYING")
+    
     self.mediaPlayer.play()
   }
   

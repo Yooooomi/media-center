@@ -20,6 +20,7 @@ import { ReactiveShape } from "./contexts/reactive.context";
 import { localStore } from "./localStore";
 import { Beta } from "./api/api";
 import { DI_HOOKS } from "./di/injectHook";
+import { isTV } from "./platform";
 
 export class LocalUserProfile extends Shape({
   user: Optional(String),
@@ -107,7 +108,7 @@ export function LocalUserContextProvider({
   useEffect(() => {
     async function callInit() {
       await init();
-      if (__DEV__) {
+      if (__DEV__ && isTV()) {
         reactive.call("setServerAddress", "http://192.168.1.153:8080");
         reactive.call("setServerPassword", "somerandompassword");
         if (!reactive.instance) {
@@ -195,6 +196,7 @@ export function LocalUserContextProvider({
       <ChooseUser
         declaredUsers={declaredUsers}
         chooseUser={(selected) => {
+          console.log("selected");
           if (
             !reactive.instance ||
             !reactive.instance.serverAddress ||

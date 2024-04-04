@@ -4,7 +4,7 @@ import { ViewStyle } from "react-native";
 export interface PressableProps {
   style?: ViewStyle;
   disabled?: boolean;
-  children: ReactNode | ((infos: { focused: boolean }) => ReactNode);
+  children?: ReactNode | ((infos: { focused: boolean }) => ReactNode);
   onPress: () => void;
   onLongPress?: () => void;
   onFocus?: () => void;

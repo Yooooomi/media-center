@@ -6,8 +6,5 @@ module.exports = {
     [pak.name]: {
       root: path.join(__dirname, '..'),
     },
-    "@media-center/turbo-vlc": {
-      root: path.join(__dirname, '..'),
-    }
   },
 };

@@ -17,7 +17,7 @@ export function ConfigureServer({ onConfigured }: ConfigureServerProps) {
   }, [address, onConfigured, password]);
 
   return (
-    <Box grow items="center" content="center" gap="S8">
+    <Box grow items="center" content="center" gap="S8" bg="background">
       <TextInput
         defaultValue="http"
         keyboardType="url"

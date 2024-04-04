@@ -1,0 +1,45 @@
+{
+  "name": "Pompelup",
+  "displayName": "Pompelup",
+  "expo": {
+    "owner": "yooooomi",
+    "slug": "pompelup-mobile",
+    "icon": "./assets/icons/icon.png",
+    "splash": {
+      "image": "./assets/icons/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#222222"
+    },
+    "android": {
+      "package": "com.yooooomi.pompelupmobile",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "backgroundColor": "#222222"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.yooooomi.pompelupmobile",
+      "supportsTablet": true,
+      "splash": {
+        "image": "./assets/icons/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#222222"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d"
+      }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/ec6f4e8b-a7c1-4a30-973a-dc3a6efd049d",
+      "requestHeaders": {
+        "expo-runtime-version": "1.0.0",
+        "expo-channel-name": "master"
+      }
+    },
+    "jsEngine": "hermes",
+    "turboModules": true
+  }
+}

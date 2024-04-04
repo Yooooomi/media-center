@@ -1,70 +1,28 @@
-import React, { type FC, useImperativeHandle, useRef } from "react";
-import type {
-  VideoPlayerComponent,
-  VideoPlayerHandle,
-  VideoPlayerProps,
-} from "@media-center/video-player";
-import { StyleSheet } from "react-native";
-import TurboVlcViewNativeComponent, {
-  type BufferingEvent,
-  type ProgressEvent,
-  type VideoInfoEvent,
-  type Track,
+import React, { useImperativeHandle, useRef } from 'react';
+import { forwardRef } from 'react';
+import {
+  type NativeProps,
+  default as TurboVlc,
   Commands,
-  type NativeViewType,
-} from "./TurboVlcViewNativeComponent";
+} from './TurboVlcViewNativeComponent';
+import { StyleSheet } from 'react-native';
 
-export type { BufferingEvent, ProgressEvent, VideoInfoEvent, Track };
+export * from './TurboVlcViewNativeComponent';
 
-const TurboVlc_ = React.forwardRef<VideoPlayerHandle, VideoPlayerProps>(
-  (
-    {
-      uri,
-      play,
-      volume,
-      audioTrack,
-      textTrack,
-      arguments: vlcArguments,
-      hwDecode,
-      forceHwDecode,
-      onProgress,
-      onVideoInfo,
-      onError,
-      onBuffer,
-    },
-    ref,
-  ) => {
-    const nativeRef = useRef<React.ElementRef<NativeViewType>>(null);
+export interface VideoPlayerHandle {
+  seek: (ms: number) => void;
+}
+
+export const VideoPlayer = forwardRef<VideoPlayerHandle, NativeProps>(
+  ({ ...other }, ref) => {
+    const innerRef = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
-      seek: (ms: number) => {
-        if (!nativeRef.current) {
-          return;
-        }
-        Commands.seek(nativeRef.current, ms);
-      },
-      fullscreen: () => {},
+      seek: (ms: number) => Commands.seek(innerRef.current, ms),
     }));
 
-    return (
-      <TurboVlcViewNativeComponent
-        ref={nativeRef}
-        style={styles.root}
-        uri={uri}
-        play={play}
-        volume={volume}
-        audioTrack={audioTrack}
-        textTrack={textTrack}
-        arguments={vlcArguments}
-        hwDecode={hwDecode}
-        forceHwDecode={forceHwDecode}
-        onProgress={(event) => onProgress?.(event.nativeEvent)}
-        onBuffer={(event) => onBuffer?.(event.nativeEvent)}
-        onVideoInfo={(event) => onVideoInfo?.(event.nativeEvent)}
-        onError={(event) => onError?.(event.nativeEvent)}
-      />
-    );
-  },
+    return <TurboVlc ref={innerRef} style={styles.root} {...other} />;
+  }
 );
 
 const styles = StyleSheet.create({
@@ -72,7 +30,3 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
 });
-
-export const TurboVlc = React.memo(
-  TurboVlc_ as any,
-) as FC<VideoPlayerComponent>;

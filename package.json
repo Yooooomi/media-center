@@ -4,10 +4,12 @@
   "private": true,
   "main": "index.js",
   "license": "MIT",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "postinstall": "patch-package || exit 0"

@@ -1,24 +1,32 @@
 import { Alert, StyleSheet, View } from "react-native";
 import {
-  VideoPlayer,
-  ProgressEvent,
-  VideoInfoEvent,
-  VideoPlayerHandle,
-} from "@media-center/video-player";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useSharedValue } from "react-native-reanimated";
 import { rawColor } from "@media-center/ui/src/constants";
 import { GetSubtitlesQuery } from "@media-center/domains/src/hierarchyEntryInformation/applicative/getSubtitles.query";
 import { WatchQuery } from "@media-center/domains/src/queries/watch.query";
 import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
 import { IntentReturning } from "@media-center/domain-driven";
+import {
+  ProgressEvent,
+  VideoInfoEvent,
+  VideoPlayerHandle,
+} from "@media-center/web-video-player";
 import { useToggle } from "../../services/hooks/useToggle";
-import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading";
 import { useAppStateEvent } from "../../services/hooks/useOnBlur";
 import { Beta, useVideoUri } from "../../services/api/api";
 import { useQuery } from "../../services/api/useQuery";
 import { useParams, useNavigate } from "../navigation";
 import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
+import { VideoPlayer } from "../../components/ui/display/videoPlayer/videoPlayer";
+import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading";
+import { IconButton } from "../../components/ui/input/pressable/iconButton";
 import { useSaveCatalogEntryProgress } from "./useSaveCatalogEntryProgress";
 import { Controls } from "./controls";
 
@@ -33,7 +41,6 @@ export const Watch = withDependencyWrapper(WatchWrapped, () => {
     return undefined;
   }
 
-  console.log("Watching", result);
   return { watch: result };
 });
 
@@ -62,8 +69,6 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
     playlistItem.hierarchyItem.id,
   );
 
-  console.log(subtitles);
-
   const additionalTextTracks = useMemo(
     () =>
       subtitles?.map((subtitle) => ({
@@ -79,6 +84,7 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
     if (!videoInfo || playlistItem.progress === 0) {
       return;
     }
+    console.log("ref", vlcRef.current);
     vlcRef.current?.seek(videoInfo.duration * playlistItem.progress);
   }, [playlistItem.progress, videoInfo]);
 
@@ -96,17 +102,20 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
   }, [goBack]);
 
   const onProgress = useCallback(
-    (event: ProgressEvent) => {
-      currentProgress.current = event;
-      currentProgressMs.value = event.progress;
+    (event: SyntheticEvent<any, ProgressEvent>) => {
+      currentProgress.current = event.nativeEvent;
+      currentProgressMs.value = event.nativeEvent.progress;
     },
     [currentProgressMs],
   );
 
-  const onVideoInfo = useCallback((event: VideoInfoEvent) => {
-    setVideoInfo(event);
-    setAudioTrack(event.audioTracks[0]?.id);
-  }, []);
+  const onVideoInfo = useCallback(
+    (event: SyntheticEvent<any, VideoInfoEvent>) => {
+      setVideoInfo(event.nativeEvent);
+      setAudioTrack(event.nativeEvent.audioTracks[0]?.id);
+    },
+    [],
+  );
 
   const addSeek = useCallback(
     (added: number) => {
@@ -190,6 +199,9 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
           additionalTextTracks={additionalTextTracks}
         />
       )}
+      <View style={{ position: "absolute", top: 80, left: 8 }}>
+        <IconButton icon="cross" onPress={goBack} />
+      </View>
     </>
   );
 }

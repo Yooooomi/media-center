@@ -23,6 +23,7 @@ export function LineList<T>({
       ]}
     >
       <FlatList
+        style={isHorizontal ? undefined : styles.vertical}
         keyExtractor={keyExtractor}
         data={data}
         renderItem={({ item, index }) => (
@@ -54,5 +55,8 @@ const styles = StyleSheet.create({
   verticalLine: {
     flexDirection: "row",
     gap: spacing.S16,
+  },
+  vertical: {
+    height: "100%",
   },
 });

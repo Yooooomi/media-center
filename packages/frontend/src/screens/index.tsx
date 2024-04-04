@@ -21,19 +21,19 @@ export function Navigation() {
   return (
     <View style={styles.root}>
       <PortalProvider rootHostName={DEFAULT_HOSTNAME} shouldAddRootHost={false}>
-        <Router>
-          <AlertProvider>
-            <InjectableContext
-              provider={NavigationContext.Provider}
-              value={value}
-            >
-              <LocalUserContextProvider>
+        <LocalUserContextProvider>
+          <Router>
+            <AlertProvider>
+              <InjectableContext
+                provider={NavigationContext.Provider}
+                value={value}
+              >
                 <StatusContextProvider>{routes}</StatusContextProvider>
-              </LocalUserContextProvider>
-            </InjectableContext>
-          </AlertProvider>
-        </Router>
-        <PortalHost style={styles.portalHost} name={DEFAULT_HOSTNAME} />
+              </InjectableContext>
+            </AlertProvider>
+          </Router>
+          <PortalHost style={styles.portalHost} name={DEFAULT_HOSTNAME} />
+        </LocalUserContextProvider>
       </PortalProvider>
     </View>
   );

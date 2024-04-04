@@ -1,5 +1,5 @@
 import { ReactNode, useCallback } from "react";
-import { View, StyleSheet, TVFocusGuideView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   color,
   opacify,
@@ -11,6 +11,7 @@ import { Box } from "../../display/box";
 import { Text } from "../../input/text/text";
 import { Portal } from "../portal";
 import { DEFAULT_HOSTNAME } from "../portal/portal";
+import { Pressable } from "../../input/pressable/pressable";
 
 interface ModalProps {
   title: string;
@@ -36,21 +37,15 @@ export function Modal({ children, open, title, onClose }: ModalProps) {
 
   return (
     <Portal name={DEFAULT_HOSTNAME}>
-      <View style={styles.back} />
-      <TVFocusGuideView
-        style={styles.wrapper}
-        trapFocusUp
-        trapFocusDown
-        trapFocusLeft
-        trapFocusRight
-      >
+      <Pressable style={styles.back} onPress={onClose} />
+      <View style={styles.wrapper}>
         <Box mb="S16">
           <Text bold color="whiteText">
             {title}
           </Text>
         </Box>
         <View style={styles.content}>{children}</View>
-      </TVFocusGuideView>
+      </View>
     </Portal>
   );
 }
@@ -65,6 +60,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 1,
   },
   content: {
     maxHeight: 400,

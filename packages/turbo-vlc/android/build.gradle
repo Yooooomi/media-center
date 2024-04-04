@@ -106,7 +106,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation "org.videolan.android:libvlc-all:4.0.0-eap14"
+  implementation "org.videolan.android:libvlc-all:4.0.0-eap15"
 }
 
 if (isNewArchitectureEnabled()) {

@@ -1,5 +1,11 @@
-import { ReactNode, useMemo } from "react";
-import { View, ViewStyle } from "react-native";
+import { ComponentType, ReactNode, useMemo } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import {
   color,
   debugBorder,
@@ -7,6 +13,7 @@ import {
   radius,
   spacing,
 } from "@media-center/ui/src/constants";
+import { Pressable } from "../../input/pressable/pressable";
 
 export interface BoxProps {
   m?: keyof typeof spacing;
@@ -53,7 +60,7 @@ function getComputedColor(
   return color[c];
 }
 
-export function Box({
+function useBoxStyle({
   mb,
   ml,
   mr,
@@ -79,7 +86,6 @@ export function Box({
   maxw,
   items,
   content,
-  children,
   shrink,
   grow,
   bg,
@@ -88,7 +94,7 @@ export function Box({
   flex,
   opacity,
 }: BoxProps) {
-  const styles = useMemo<ViewStyle>(
+  return useMemo<ViewStyle>(
     () => ({
       margin: m && spacing[m],
       marginVertical: mv && spacing[mv],
@@ -158,6 +164,85 @@ export function Box({
       style,
     ],
   );
-
-  return <View style={styles}>{children}</View>;
 }
+
+function withBox<T extends { style?: StyleProp<ViewStyle> }>(
+  Component: ComponentType<T>,
+) {
+  return ({
+    basis,
+    bg,
+    content,
+    debug,
+    flex,
+    gap,
+    grow,
+    h,
+    items,
+    m,
+    maxh,
+    maxw,
+    mb,
+    mh,
+    ml,
+    mr,
+    mt,
+    mv,
+    opacity,
+    overflow,
+    p,
+    pb,
+    ph,
+    pl,
+    pr,
+    pt,
+    pv,
+    r,
+    row,
+    shrink,
+    style,
+    w,
+    ...props
+  }: T & BoxProps) => {
+    const styles = useBoxStyle({
+      basis,
+      bg,
+      content,
+      debug,
+      flex,
+      gap,
+      grow,
+      h,
+      items,
+      m,
+      maxh,
+      maxw,
+      mb,
+      mh,
+      ml,
+      mr,
+      mt,
+      mv,
+      opacity,
+      overflow,
+      p,
+      pb,
+      ph,
+      pl,
+      pr,
+      pt,
+      pv,
+      r,
+      row,
+      shrink,
+      style,
+      w,
+    });
+    return <Component {...(props as T)} style={styles} />;
+  };
+}
+
+export const Box = withBox(View);
+export const SafeAreaBox = withBox(SafeAreaView);
+export const PressableBox = withBox(Pressable);
+export const ScrollViewBox = withBox(ScrollView);

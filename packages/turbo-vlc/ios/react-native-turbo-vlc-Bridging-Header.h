@@ -1,8 +1,6 @@
-#import <React/RCTViewManager.h>
-#import "TurboVlcView.h"
+//
+//  Use this file to import your target's public headers that you would like to expose to Swift.
+//
 
-#if TARGET_OS_TV
-#import <TVVLCKit/TVVLCKit.h>
-#else
-#import <MobileVLCKit/MobileVLCKit.h>
-#endif
+#import "TurboVlcView.h"
+#import <VLCKit/VLCKit.h>

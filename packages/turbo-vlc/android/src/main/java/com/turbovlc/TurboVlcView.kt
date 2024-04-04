@@ -86,7 +86,7 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
       val surfaceId = UIManagerHelper.getSurfaceId(context as ReactContext)
 
       val media = mediaPlayer.media
-      
+
       if (media != null) {
         eventDispatcher?.dispatchEvent(
           VideoInfoEvent(

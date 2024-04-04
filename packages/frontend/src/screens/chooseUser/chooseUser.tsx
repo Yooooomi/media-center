@@ -8,7 +8,7 @@ interface ChooseUserProps {
 
 export function ChooseUser({ declaredUsers, chooseUser }: ChooseUserProps) {
   return (
-    <Box grow row items="center" content="center" gap="S16">
+    <Box grow row items="center" content="center" gap="S16" bg="background">
       {declaredUsers.map((declaredUser, index) => (
         <Box key={declaredUser} h={150} w={150}>
           <IconTextButton

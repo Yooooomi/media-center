@@ -75,7 +75,6 @@ export const Pressable = forwardRef<View, PressableProps>(
     const calledOnLongPress = useRef(false);
     useTVEventHandler((event) => {
       if (focused && event.eventType === "longSelect" && onLongPress) {
-        console.log("On long press", event);
         calledOnLongPress.current = true;
         onLongPress();
       }

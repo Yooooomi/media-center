@@ -1,9 +1,9 @@
 import { GetShowsPageQuery } from "@media-center/domains/src/queries/getShowsPage.query";
-import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
-import { Box } from "../../components/ui/display/box/box";
+import { SafeAreaBox } from "../../components/ui/display/box/box";
 import { ShowCardsLine } from "../../components/implementedUi/showCardsLine/showCardsLine";
 import { maxCardsPerLine } from "../../services/cards";
+import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
 
 export function Shows() {
   const [{ result: shows }] = useQuery(GetShowsPageQuery, undefined);
@@ -13,13 +13,13 @@ export function Shows() {
   }
 
   return (
-    <Box grow p="S16">
+    <SafeAreaBox grow m="S16">
       <ShowCardsLine
         autoFocusFirst
         title="Vos séries"
         shows={shows}
         itemPerLine={maxCardsPerLine}
       />
-    </Box>
+    </SafeAreaBox>
   );
 }

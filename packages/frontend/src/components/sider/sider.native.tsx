@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     paddingLeft: spacing.S8,
     paddingTop: spacing.S16,
     paddingRight: spacing.S8,
-    backgroundColor: color.darkBackground,
     overflow: "hidden",
+    backgroundColor: color.darkBackground,
   },
   above: {
     zIndex: 2,

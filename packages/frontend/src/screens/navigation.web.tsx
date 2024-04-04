@@ -7,11 +7,7 @@ import {
 } from "react-router-dom";
 import { useCallback } from "react";
 import { withSider } from "../services/hocs/withSider.web";
-import {
-  RouteProps,
-  RouterProps,
-  RoutesProps,
-} from "./navigation.native.props";
+import { RouterProps, RoutesProps } from "./navigation.native.props";
 import { NavigationParams, paths } from "./params";
 import { AddedRecently } from "./addedRecently";
 import { Discover } from "./discover";
@@ -24,10 +20,6 @@ import { Shows } from "./shows";
 import { Watch } from "./watch";
 import { Search } from "./search";
 import { Settings } from "./settings";
-
-export function Route({ component, path }: RouteProps) {
-  return <NativeRoute path={path} Component={component} />;
-}
 
 export function Routes({}: RoutesProps) {
   return (

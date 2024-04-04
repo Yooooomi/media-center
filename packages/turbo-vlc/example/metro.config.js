@@ -1,36 +1,41 @@
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 const path = require('path');
-const {mergeConfig, getDefaultConfig} = require('@react-native/metro-config');
+const escape = require('escape-string-regexp');
+const exclusionList = require('metro-config/src/defaults/exclusionList');
+const pak = require('../package.json');
 
-// Find the project and workspace directories
-const projectRoot = __dirname;
-// This can be replaced with `find-yarn-workspace-root`
-const workspaceRoot = path.resolve(projectRoot, '../../..');
+const root = path.resolve(__dirname, '..');
+const modules = Object.keys({ ...pak.peerDependencies });
 
-/** @type {import('expo/metro-config').MetroConfig} */
+/**
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
 const config = {
-  // 1. Watch all files within the monorepo
-  watchFolders: [workspaceRoot],
+  watchFolders: [root],
 
-  // 2. Let Metro know where to resolve packages and in what order
+  // We need to make sure that only one version is loaded for peerDependencies
+  // So we block them at the root, and alias them to the versions in example's node_modules
   resolver: {
-    nodeModulesPaths: [
-      path.resolve(projectRoot, 'node_modules'),
-      path.resolve(workspaceRoot, 'node_modules'),
-    ],
-    disableHierarchicalLookup: true,
-    resolveRequest: (context, moduleName, platform) => {
-      if (moduleName === 'path' || moduleName === 'fs') {
-        return {type: 'empty'};
-      }
-      return context.resolveRequest(context, moduleName, platform);
-    },
+    blacklistRE: exclusionList(
+      modules.map(
+        (m) =>
+          new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`)
+      )
+    ),
+
+    extraNodeModules: modules.reduce((acc, name) => {
+      acc[name] = path.join(__dirname, 'node_modules', name);
+      return acc;
+    }, {}),
   },
 
-  // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
   transformer: {
     getTransformOptions: async () => ({
       transform: {
-        experimentalImportSupport: true,
+        experimentalImportSupport: false,
         inlineRequires: true,
       },
     }),

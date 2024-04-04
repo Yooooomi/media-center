@@ -13,7 +13,7 @@ import Animated, {
   SharedValue,
 } from "react-native-reanimated";
 import { color, fontSize, spacing } from "@media-center/ui/src/constants";
-import { Track, VideoInfoEvent } from "@media-center/video-player";
+import { Track, VideoInfoEvent } from "@media-center/web-video-player";
 import { useBooleanState } from "../../../services/hooks/useBooleanState";
 import { useAdditiveThrottle } from "../../../services/hooks/useAdditiveThrottle";
 import { Box } from "../../../components/ui/display/box/box";

@@ -16,7 +16,6 @@ COPY packages/dev/package.json packages/dev/
 COPY packages/domain-driven/package.json packages/domain-driven/
 COPY packages/algorithm/package.json packages/algorithm/
 
-COPY packages/video-player/package.json packages/video-player/
 COPY packages/turbo-vlc/package.json packages/turbo-vlc/
 COPY packages/web-video-player/package.json packages/web-video-player/
 
@@ -31,7 +30,6 @@ COPY packages/dev packages/dev/
 COPY packages/domain-driven packages/domain-driven/
 COPY packages/algorithm packages/algorithm/
 
-COPY packages/video-player packages/video-player/
 COPY packages/turbo-vlc packages/turbo-vlc/
 COPY packages/web-video-player packages/web-video-player/
 

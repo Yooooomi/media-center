@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
 import { SearchTmdbQuery } from "@media-center/domains/src/tmdb/applicative/searchTmdb.query";
 import { Show } from "@media-center/domains/src/tmdb/domain/show";
-import { FlatList, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
 import { useAdditiveThrottle } from "../../services/hooks/useAdditiveThrottle";
 import { MovieCard } from "../../components/implementedUi/cards/movieCard/movieCard";
@@ -12,6 +12,8 @@ import { TextInput } from "../../components/ui/input/textInput/textInput";
 import { Beta } from "../../services/api/api";
 import { BoxPadded } from "../../components/ui/display/boxPadded";
 import { isMobile } from "../../services/platform";
+import { useCardsInLine } from "../../services/hooks/useCardsInLine";
+import { LineList } from "../../components/ui/display/lineList";
 
 export function SearchTmdb() {
   const [results, setResults] = useState<(Movie | Show)[]>([]);
@@ -27,17 +29,19 @@ export function SearchTmdb() {
     true,
   );
 
+  const { width, itemsPerLine } = useCardsInLine();
+
   const getItem = (item: Movie | Show) => {
     if (item instanceof Movie) {
-      return <MovieCard movie={item} />;
+      return <MovieCard width={width} movie={item} />;
     } else if (item instanceof Show) {
-      return <ShowCard show={item} />;
+      return <ShowCard width={width} show={item} />;
     }
     return null;
   };
 
   return (
-    <BoxPadded pt="S8" mh="S8" grow>
+    <BoxPadded pt="S8" grow>
       <TextInput
         style={styles.input}
         autoFocus
@@ -46,15 +50,13 @@ export function SearchTmdb() {
         value={value}
         onChangeText={(newText) => add(() => newText)}
       />
-      <Section title="Résultats" mt="S24" grow>
-        <FlatList
-          style={styles.list}
-          contentContainerStyle={styles.content}
-          columnWrapperStyle={styles.column}
-          numColumns={8}
+      <Section title="Résultats" mt="S24" grow titleBox={{ ml: "S8" }}>
+        <LineList
+          style={{ padding: spacing.S8, paddingTop: spacing.S8 }}
+          itemPerLine={itemsPerLine}
           data={results}
           keyExtractor={(r) => r.id.toString()}
-          renderItem={({ item }) => getItem(item)}
+          renderItem={(item) => getItem(item)}
         />
       </Section>
     </BoxPadded>
@@ -63,7 +65,7 @@ export function SearchTmdb() {
 
 const styles = StyleSheet.create({
   list: {
-    flex: 1,
+    flexGrow: 1,
     flexBasis: 0,
   },
   content: {
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     gap: spacing.S8,
   },
   input: {
+    marginHorizontal: spacing.S8,
     width: isMobile() ? "100%" : 300,
     borderWidth: 2,
     borderColor: "transparent",

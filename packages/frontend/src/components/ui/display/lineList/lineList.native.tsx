@@ -44,6 +44,8 @@ export function LineList<T>({
         windowSize={3}
         initialNumToRender={20}
         maxToRenderPerBatch={20}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
       />
     </TVFocusGuideView>
   );

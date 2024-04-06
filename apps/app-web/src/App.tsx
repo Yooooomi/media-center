@@ -1,3 +1,4 @@
+import "./services/injection";
 import "./App.css";
 import { color, spacing } from "@media-center/ui/src/constants";
 import { Navigation } from "@media-center/frontend/src/screens";

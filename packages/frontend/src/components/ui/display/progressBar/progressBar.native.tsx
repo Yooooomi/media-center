@@ -21,6 +21,7 @@ export function ProgressBar({ progress, style }: ProgressBarProps) {
 
 const styles = StyleSheet.create({
   root: {
+    position: "relative",
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: color.whiteText,

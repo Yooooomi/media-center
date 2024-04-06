@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from "react";
+import { useCallback } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   color,
@@ -12,15 +12,15 @@ import { Text } from "../../input/text/text";
 import { Portal } from "../portal";
 import { DEFAULT_HOSTNAME } from "../portal/portal";
 import { Pressable } from "../../input/pressable/pressable";
+import { ModalProps } from "./modal.props";
 
-interface ModalProps {
-  title: string;
-  children: ReactNode;
-  open: boolean;
-  onClose: () => void;
-}
-
-export function Modal({ children, open, title, onClose }: ModalProps) {
+export function Modal({
+  children,
+  open,
+  title,
+  onClose,
+  portalHostname,
+}: ModalProps) {
   useBack(
     useCallback(() => {
       if (open) {
@@ -36,7 +36,7 @@ export function Modal({ children, open, title, onClose }: ModalProps) {
   }
 
   return (
-    <Portal name={DEFAULT_HOSTNAME}>
+    <Portal name={portalHostname ?? DEFAULT_HOSTNAME}>
       <Pressable style={styles.back} onPress={onClose} />
       <View style={styles.wrapper}>
         <Box mb="S16">

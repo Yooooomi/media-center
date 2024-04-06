@@ -1,8 +1,8 @@
 import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTmdbInfo/applicative/setUserTmdbInfoProgress.command";
 import { rawColor } from "@media-center/ui/src/constants";
 import { useCallback } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { Box, SafeAreaBox } from "../../components/ui/display/box";
+import { StyleSheet, View } from "react-native";
+import { Box } from "../../components/ui/display/box";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Beta } from "../../services/api/api";
 import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntryMoreOptions";
@@ -15,6 +15,7 @@ import { TmdbNote } from "../../components/ui/display/tmdbNote";
 import { BigPressable } from "../../components/ui/input/bigPressable";
 import { Text } from "../../components/ui/input/text";
 import { TorrentRequests } from "../../components/implementedUi/torrentRequests";
+import { ScrollViewPadded } from "../../components/ui/display/scrollViewPadded";
 import { MovieWrappedProps } from "./movieWrapped.props";
 
 export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
@@ -68,15 +69,15 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
 
   return (
     <>
-      <SafeAreaBox grow ph="S32" pv="S24">
+      <Box grow>
         <RateLimitedImage
           uri={imageUri}
           style={StyleSheet.absoluteFillObject}
-          blurRadius={50}
+          blurRadius={170}
         />
         <View style={styles.blackOverlay} />
-        <ScrollView>
-          <Box overflow="hidden" row h={180} items="flex-start">
+        <ScrollViewPadded style={styles.grow}>
+          <Box overflow="hidden" row h={180} items="flex-start" mt="S8">
             <ProgressOverlay
               style={styles.coverContainer}
               progress={moviePage.userInfo.progress}
@@ -116,12 +117,14 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
               </Box>
             </Box>
           </Box>
-          <Box grow shrink content="space-between" p="S16">
-            <Text size="smaller" color="textFaded" lineHeight={20}>
-              {moviePage.tmdb.overview}
-            </Text>
-            <Box mt="S16">
-              <TorrentRequests requests={moviePage.requests} />
+          <Box grow content="space-between" p="S16">
+            <Box grow>
+              <Text size="smaller" color="textFaded" lineHeight={20}>
+                {moviePage.tmdb.overview}
+              </Text>
+              <Box mt="S16">
+                <TorrentRequests requests={moviePage.requests} />
+              </Box>
             </Box>
             <Box w="100%" row gap="S16">
               {hasHierarchyItems && (
@@ -150,8 +153,8 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
               />
             </Box>
           </Box>
-        </ScrollView>
-      </SafeAreaBox>
+        </ScrollViewPadded>
+      </Box>
       {element}
       {MoreOptionsElement}
     </>

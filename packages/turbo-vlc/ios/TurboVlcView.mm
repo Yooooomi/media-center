@@ -64,8 +64,8 @@ using namespace facebook::react;
       auto eventEmitter = std::static_pointer_cast<const TurboVlcViewEventEmitter>(self->_eventEmitter);
 
       eventEmitter->onProgress({
-        .progress = std::int32_t([[dictionary objectForKey:@"progress"] integerValue]),
-        .duration = std::int32_t([[dictionary objectForKey:@"duration"] integerValue]),
+        .progress = [[dictionary objectForKey:@"progress"] doubleValue],
+        .duration = [[dictionary objectForKey:@"duration"] doubleValue],
       });
     }
              onVideoInfo:^(NSDictionary *dictionary) {
@@ -99,7 +99,7 @@ using namespace facebook::react;
       }
       
       eventEmitter->onVideoInfo({
-        .duration = std::int32_t([[dictionary objectForKey:@"duration"] integerValue]),
+        .duration = [[dictionary objectForKey:@"duration"] doubleValue],
         .currentVideoTrackId = std::string([[dictionary objectForKey:@"currentVideoTrackId"] UTF8String]),
         .currentAudioTrackId = std::string([[dictionary objectForKey:@"currentAudioTrackId"] UTF8String]),
         .currentTextTrackId = std::string([[dictionary objectForKey:@"currentTextTrackId"] UTF8String]),
@@ -134,9 +134,6 @@ using namespace facebook::react;
   }
   if (wasReleased || oldViewProps.play != newViewProps.play) {
     [_view setPlayWithPlay:newViewProps.play || wasReleased];
-  }
-  if (wasReleased || oldViewProps.volume != newViewProps.volume) {
-    [_view setVolumeWithVolume:newViewProps.volume];
   }
   if (wasReleased || oldViewProps.audioTrack != newViewProps.audioTrack) {
     [_view setAudioTrackWithId:[NSString stringWithUTF8String:newViewProps.audioTrack.c_str()]];

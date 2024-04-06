@@ -13,7 +13,7 @@ export function withSider<C extends (args: any) => ReactNode>(
           <Component {...a} />
         </Box>
       </View>
-      <View>
+      <View style={styles.sider}>
         <Sider />
       </View>
     </Box>
@@ -29,5 +29,8 @@ const styles = StyleSheet.create({
     flexBasis: 0,
     flexGrow: 1,
     zIndex: 1,
+  },
+  sider: {
+    width: 250,
   },
 });

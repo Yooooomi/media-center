@@ -1,9 +1,9 @@
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 import type { HostComponent, ViewProps } from "react-native";
 import type {
-  Int32,
   Double,
   DirectEventHandler,
+  Int32,
 } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeCommands from "react-native/Libraries/Utilities/codegenNativeCommands";
 import type React from "react";
@@ -26,7 +26,7 @@ export interface VideoInfoEvent {
     name: string;
   }[];
 
-  duration: Int32;
+  duration: Double;
 }
 
 export interface Track {
@@ -35,8 +35,8 @@ export interface Track {
 }
 
 export interface ProgressEvent {
-  progress: Int32;
-  duration: Int32;
+  progress: Double;
+  duration: Double;
 }
 
 export interface BufferingEvent {
@@ -45,11 +45,11 @@ export interface BufferingEvent {
 
 export interface NativeProps extends ViewProps {
   uri: string;
-  play?: boolean;
+  play: boolean;
   volume: Int32;
 
-  audioTrack?: string;
-  textTrack?: string;
+  audioTrack: string;
+  textTrack: string;
 
   // Arguments passed to the creation of the libvlc instance
   arguments?: string[];

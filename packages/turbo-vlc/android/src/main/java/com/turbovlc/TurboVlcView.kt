@@ -107,16 +107,22 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
   }
 
   fun setAudioTrack(id: String) {
-    if (id == "none") {
-      mediaPlayer.unselectTrackType(Track.Type.Audio)
+    if (id == "default") {
+      var first = mediaPlayer.getTracks(Track.Type.Audio)?.firstOrNull()
+      if (first != null) {
+        mediaPlayer.selectTrack(first.id)
+      }
     } else {
       mediaPlayer.selectTrack(id)
     }
   }
 
   fun setTextTrack(id: String) {
-    if (id == "none") {
-      mediaPlayer.unselectTrackType(Track.Type.Text)
+    if (id == "default") {
+      var first = mediaPlayer.getTracks(Track.Type.Text)?.firstOrNull()
+      if (first != null) {
+        mediaPlayer.selectTrack(first.id)
+      }
     } else {
       mediaPlayer.selectTrack(id)
     }
@@ -195,8 +201,8 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
   class ProgressEvent(
     surfaceId: Int,
     viewId: Int,
-    private val progress: Double,
-    private val duration: Double
+    private val progress: Int,
+    private val duration: Int
   ) : Event<ProgressEvent>(surfaceId, viewId) {
     companion object {
       const val NAME = "ProgressEvent"
@@ -209,8 +215,8 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
 
     override fun getEventData(): WritableMap? {
       val map = Arguments.createMap()
-      map.putDouble("progress", this.progress)
-      map.putDouble("duration", this.duration)
+      map.putInt("progress", this.progress)
+      map.putInt("duration", this.duration)
       return map
     }
   }
@@ -294,8 +300,8 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
           ProgressEvent(
             surfaceId,
             id,
-            mediaPlayer.time.toDouble(),
-            mediaPlayer.length.toDouble()
+            mediaPlayer.time.toInt(),
+            mediaPlayer.length.toInt()
           )
         )
       }

@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { fontSize } from "@media-center/ui/src/constants";
 import { Box } from "../../display/box";
 import { Icon } from "../../display/icon";
-import { IconName } from "../../display/icon/icon";
+import { IconName } from "../../display/icon/icon.props";
 import { Text } from "../text";
 import { Pressable } from "./pressable";
 
@@ -44,6 +44,7 @@ export function IconTextButton({
             name={icon}
           />
           <Text
+            align="center"
             color={focused ? "buttonTextFocused" : "buttonText"}
             size={textSize}
           >

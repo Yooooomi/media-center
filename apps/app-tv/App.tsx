@@ -1,3 +1,4 @@
+import "./src/services/injection/navigation.injected";
 import { Platform, StyleSheet, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { color } from "@media-center/ui/src/constants";

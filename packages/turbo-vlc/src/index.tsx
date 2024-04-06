@@ -13,20 +13,27 @@ export interface VideoPlayerHandle {
   seek: (ms: number) => void;
 }
 
-export const VideoPlayer = forwardRef<VideoPlayerHandle, NativeProps>(
-  ({ ...other }, ref) => {
+interface UserlandProps extends Omit<NativeProps, "play" | "audioTrack" | "textTrack"> {
+  audioTrack?: string;
+  textTrack?: string;
+  play?: boolean;
+}
+
+export const VideoPlayer = forwardRef<VideoPlayerHandle, UserlandProps>(
+  ({ audioTrack, textTrack, play, ...other }, ref) => {
     const innerRef = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
       seek: (ms: number) => Commands.seek(innerRef.current, ms),
     }));
 
-    return <TurboVlc ref={innerRef} style={styles.root} {...other} />;
+    return <TurboVlc pointerEvents='none' ref={innerRef} style={styles.root} audioTrack={audioTrack ?? "default"} textTrack={textTrack ?? "default"} play={play ?? false} {...other} />;
   }
 );
 
 const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
+    pointerEvents: "none"
   },
 });

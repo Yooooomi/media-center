@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { HierarchyItemId } from "@media-center/domains/src/fileWatcher/domain/hierarchyItemId";
-import { useNavigate } from "../../screens/navigation";
+import { useNavigate } from "../../screens/navigation.dependency";
 
 export function usePlayCatalogEntry(
   hierarchyItemId: HierarchyItemId | undefined,

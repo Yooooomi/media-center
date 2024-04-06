@@ -1,7 +1,5 @@
 import { FlatList, StyleSheet, TVFocusGuideView } from "react-native";
-import { spacing } from "@media-center/ui/src/constants";
 import { Box } from "../box";
-import { MovieCardSize } from "../../../implementedUi/cards/movieCard";
 import { LineListProps } from "./lineList.props";
 
 export function LineList<T>({
@@ -19,21 +17,27 @@ export function LineList<T>({
       style={[
         styles.root,
         isHorizontal ? undefined : styles.verticalScrollView,
-        style,
       ]}
     >
       <FlatList
-        style={isHorizontal ? undefined : styles.vertical}
+        style={[isHorizontal ? undefined : styles.vertical, style]}
         keyExtractor={keyExtractor}
         data={data}
-        renderItem={({ item, index }) => (
-          <Box p="S8">{renderItem(item, index)}</Box>
-        )}
-        getItemLayout={(_, index) => ({
-          index,
-          length: data.length,
-          offset: index * MovieCardSize.height,
-        })}
+        renderItem={({ item, index }) => {
+          const isEndOfLine =
+            (isHorizontal && index === data.length - 1) ||
+            (!isHorizontal && index % itemPerLine === itemPerLine - 1);
+          return (
+            <Box mr={!isEndOfLine ? "S8" : undefined}>
+              {renderItem(item, index)}
+            </Box>
+          );
+        }}
+        // getItemLayout={(_, index) => ({
+        //   index,
+        //   length: data.length,
+        //   offset: index * MovieCardSize.height,
+        // })}
         numColumns={itemPerLine}
         horizontal={isHorizontal}
         showsHorizontalScrollIndicator={false}
@@ -51,10 +55,6 @@ const styles = StyleSheet.create({
   },
   verticalScrollView: {
     flexBasis: 0,
-  },
-  verticalLine: {
-    flexDirection: "row",
-    gap: spacing.S16,
   },
   vertical: {
     height: "100%",

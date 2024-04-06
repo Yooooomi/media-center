@@ -7,7 +7,7 @@ import { Text } from "../../../ui/input/text/text";
 import { Box } from "../../../ui/display/box/box";
 import { VerticalCard } from "../../../ui/display/cards/verticalCard";
 import { card } from "../../../../services/cards";
-import { useNavigate } from "../../../../screens/navigation";
+import { useNavigate } from "../../../../screens/navigation.dependency";
 
 interface MovieCardProps {
   movie: Movie;
@@ -15,12 +15,8 @@ interface MovieCardProps {
   disabled?: boolean;
   progress?: number;
   onFocus?: (movie: Movie) => void;
+  width?: number;
 }
-
-export const MovieCardSize = {
-  width: card.width,
-  height: card.height + 24 + 4,
-};
 
 function MovieCard_({
   movie,
@@ -28,6 +24,7 @@ function MovieCard_({
   disabled,
   progress,
   onFocus,
+  width = card.width,
 }: MovieCardProps) {
   const { navigate } = useNavigate();
   const imageUri = useImageUri(movie.poster_path ?? movie.backdrop_path);
@@ -37,12 +34,13 @@ function MovieCard_({
   }, [movie, onFocus]);
 
   const handlePress = useCallback(() => {
-    navigate("Movie", { movieId: movie.id.toString() });
+    navigate("Movie", { movieId: movie.id.toString(), title: movie.title });
   }, [movie, navigate]);
 
   return (
     <Box>
       <VerticalCard
+        width={width}
         disabled={disabled}
         focusOnMount={focusOnMount}
         uri={imageUri}
@@ -50,7 +48,7 @@ function MovieCard_({
         progress={progress}
         onFocus={handleFocus}
       />
-      <Box items="flex-start" style={styles.title}>
+      <Box w={width} items="flex-start" overflow="hidden" style={styles.title}>
         <Text size="small" align="left" numberOfLines={1} style={styles.text}>
           {movie.title}
         </Text>
@@ -63,8 +61,6 @@ export const MovieCard = React.memo(MovieCard_);
 
 const styles = StyleSheet.create({
   title: {
-    overflow: "hidden",
-    width: card.width,
     height: 24,
     zIndex: -1,
   },

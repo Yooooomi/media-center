@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { SearchTorrentsQuery } from "@media-center/domains/src/torrentIndexer/applicative/searchTorrents.query";
 import { TorrentIndexerResult } from "@media-center/domains/src/torrentIndexer/domain/torrentIndexerResult";
 import { AddRawTorrentRequestCommand } from "@media-center/domains/src/torrentRequest/applicative/addRawTorrentRequest.command";
@@ -13,6 +13,8 @@ import { IconButton } from "../../components/ui/input/pressable/iconButton";
 import { TextInput } from "../../components/ui/input/textInput/textInput";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Beta } from "../../services/api/api";
+import { BoxPadded } from "../../components/ui/display/boxPadded";
+import { isMobile } from "../../services/platform";
 
 export function SearchTorrent() {
   const [isFocused, focus, blur] = useBooleanState();
@@ -61,48 +63,46 @@ export function SearchTorrent() {
   );
 
   return (
-    <ScrollView style={styles.root}>
-      <Box mt="S8" mh="S8">
-        <Box grow row gap="S8" items="center">
-          <TextInput
-            style={styles.input}
-            autoFocus
-            onFocus={focus}
-            onBlur={blur}
-            numberOfLines={1}
-            placeholder="Rechercher"
-            value={text}
-            onChangeText={setText}
-            onSubmitEditing={updateSearch}
-          />
-          <IconButton
-            focusOnMount={!isFocused}
-            icon="magnify"
-            loading={loading}
-            onPress={updateSearch}
-          />
-        </Box>
-        <Section title="Résultats" mt="S24">
-          {results.map((r, index) => (
-            <Box mb="S8" key={r.id.toString()}>
-              <TorrentIndexerResultLine
-                focusOnMount={!isFocused && index === 0}
-                torrentIndexerResult={r}
-                onPress={() => askDownload(r)}
-              />
-            </Box>
-          ))}
-        </Section>
+    <BoxPadded pt="S8" mh="S8">
+      <Box grow row gap="S8" items="center">
+        <TextInput
+          style={styles.input}
+          autoFocus
+          onFocus={focus}
+          onBlur={blur}
+          numberOfLines={1}
+          placeholder="Rechercher"
+          value={text}
+          onChangeText={setText}
+          onSubmitEditing={updateSearch}
+        />
+        <IconButton
+          size={24}
+          focusOnMount={!isFocused}
+          icon="magnify"
+          loading={loading}
+          onPress={updateSearch}
+        />
       </Box>
-    </ScrollView>
+      <Section title="Résultats" mt="S24">
+        {results.map((r, index) => (
+          <Box mb="S8" key={r.id.toString()}>
+            <TorrentIndexerResultLine
+              focusOnMount={!isFocused && index === 0}
+              torrentIndexerResult={r}
+              onPress={() => askDownload(r)}
+            />
+          </Box>
+        ))}
+      </Section>
+    </BoxPadded>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flexBasis: 0,
-  },
-  input: {
-    width: 300,
-  },
+  input: isMobile()
+    ? { flexGrow: 1 }
+    : {
+        width: 300,
+      },
 });

@@ -21,6 +21,20 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (moduleName === "path" || moduleName === "fs") {
     return { type: "empty" };
   }
+  if (moduleName.endsWith(".dependency")) {
+    const moduleNameOnly = path.basename(moduleName);
+    const [injectionName] = moduleNameOnly.split(".dependency");
+    return {
+      type: "sourceFile",
+      filePath: path.join(
+        projectRoot,
+        "src",
+        "services",
+        "injection",
+        `${injectionName}.injected.tsx`,
+      ),
+    };
+  }
   if (oldResolver) {
     return oldResolver(context, moduleName, platform);
   }

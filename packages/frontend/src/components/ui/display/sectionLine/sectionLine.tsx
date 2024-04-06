@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { StyleSheet } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
 import { Section, SectionProps } from "../section/section";
 import { LineList } from "../lineList";
@@ -15,6 +15,7 @@ export interface SectionLineProps<T> {
 export interface ExtraSectionLineProps {
   itemPerLine?: number;
   sectionProps?: Omit<SectionProps, "children" | "title">;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function SectionLine<T>({
@@ -25,6 +26,7 @@ export function SectionLine<T>({
   renderItem,
   itemPerLine,
   sectionProps,
+  style,
 }: SectionLineProps<T> & ExtraSectionLineProps) {
   const isHorizontal = itemPerLine === undefined;
 
@@ -34,6 +36,7 @@ export function SectionLine<T>({
       subtitle={subtitle}
       grow={isHorizontal ? undefined : true}
       {...sectionProps}
+      style={style}
     >
       <LineList
         style={styles.align}

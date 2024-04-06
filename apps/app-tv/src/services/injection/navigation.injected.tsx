@@ -4,22 +4,30 @@ import {
   Routes as NativeRoutes,
   useLocation,
 } from "react-router-native";
-import { useContext, useCallback } from "react";
-import { withSider } from "../services/hocs/withSider.web";
-import { useBack } from "../services/hooks/useBack";
-import { RouterProps, RoutesProps } from "./navigation.native.props";
-import { NavigationParams, NavigationContext, paths } from "./params";
-import { AddedRecently } from "./addedRecently";
-import { Discover } from "./discover";
-import { Movie } from "./movie";
-import { Movies } from "./movies";
-import { SearchTmdb } from "./searchTmdb";
-import { SearchTorrent } from "./searchTorrent";
-import { Show } from "./show";
-import { Shows } from "./shows";
-import { Watch } from "./watch";
-import { Search } from "./search";
-import { Settings } from "./settings";
+
+import React, { useCallback, useContext } from "react";
+import {
+  NavigationContext,
+  NavigationParams,
+  paths,
+} from "@media-center/frontend/src/screens/params";
+import { useBack } from "@media-center/frontend/src/services/hooks/useBack";
+import { AddedRecently } from "@media-center/frontend/src/screens/addedRecently";
+import { Discover } from "@media-center/frontend/src/screens/discover";
+import { Movie } from "@media-center/frontend/src/screens/movie";
+import { Show } from "@media-center/frontend/src/screens/show";
+import { Watch } from "@media-center/frontend/src/screens/watch";
+import { Search } from "@media-center/frontend/src/screens/search";
+import { SearchTmdb } from "@media-center/frontend/src/screens/searchTmdb";
+import { SearchTorrent } from "@media-center/frontend/src/screens/searchTorrent";
+import { Movies } from "@media-center/frontend/src/screens/movies";
+import { Shows } from "@media-center/frontend/src/screens/shows";
+import { Settings } from "@media-center/frontend/src/screens/settings";
+import {
+  RouterProps,
+  RoutesProps,
+} from "@media-center/frontend/src/screens/navigation.props";
+import { withSider } from "@media-center/frontend/src/services/hocs/withSider";
 
 export function Routes({ location }: RoutesProps) {
   return (

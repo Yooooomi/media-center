@@ -1,9 +1,9 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useState } from "react";
 import { rawColor } from "@media-center/ui/src/constants";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
-import { Box, SafeAreaBox } from "../../components/ui/display/box/box";
+import { Box } from "../../components/ui/display/box/box";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
 import { useQueryTorrents } from "../../services/hooks/useQueryTorrents";
 import { BigPressable } from "../../components/ui/input/bigPressable";
@@ -12,6 +12,7 @@ import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntry
 import { RateLimitedImage } from "../../components/ui/display/rateLimitedImage";
 import { TmdbNote } from "../../components/ui/display/tmdbNote";
 import { ShowEpisodeCardsLine } from "../../components/implementedUi/showEpisodeCardsLine";
+import { ScrollViewPadded } from "../../components/ui/display/scrollViewPadded";
 import { ShowWrappedProps } from "./showWrapped.props";
 import { SeasonSelector } from "./seasonSelector";
 
@@ -57,14 +58,14 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
 
   return (
     <>
-      <SafeAreaBox grow ph="S32" pv="S24">
+      <Box>
         <RateLimitedImage
           uri={imageUri}
           style={StyleSheet.absoluteFillObject}
-          blurRadius={50}
+          blurRadius={170}
         />
         <View style={styles.blackOverlay} />
-        <ScrollView>
+        <ScrollViewPadded style={styles.grow}>
           <Box overflow="hidden" row h={180} items="flex-start">
             <View style={styles.coverContainer}>
               <RateLimitedImage
@@ -124,121 +125,13 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
               />
             </Box>
           </Box>
-        </ScrollView>
-      </SafeAreaBox>
+        </ScrollViewPadded>
+      </Box>
       {element}
       {MoreOptionsElement}
     </>
   );
-
-  // return (
-  //   <>
-  //     <SafeAreaBox>
-  //       <ScrollView style={styles.grow}>
-  //         <PageBackground imageUri={imageUri} />
-  //         <Box p="S32">
-  //           <Box mb="S16">
-  //             <Text bold size="big">
-  //               {show.title.toUpperCase()}
-  //             </Text>
-  //             <Text color="textFaded">{show.getYear()}</Text>
-  //           </Box>
-  //           <Box
-  //             row
-  //             gap="S8"
-  //             mb="S16"
-  //             items="flex-end"
-  //             content="space-between"
-  //             style={styles.tabContainer}
-  //           >
-  //             <SeasonSelector
-  //               seasons={showPage.seasons}
-  //               season={highlightedSeason}
-  //               onSeasonChange={setSeasonIndex}
-  //             />
-  //             <Box row w={focusedEpisode ? 330 : (330 * 2) / 3} mb="S4">
-  //               <BigPressable
-  //                 text="Télécharger"
-  //                 focusOnMount={!hasSeasons}
-  //                 icon="download"
-  //                 onPress={queryTorrents}
-  //                 loading={queryTorrentsLoading}
-  //               />
-  //               {focusedEpisode ? (
-  //                 <BigPressable
-  //                   text={
-  //                     focusedEpisodeFinished
-  //                       ? "Marquer pas vu"
-  //                       : "Marquer comme vu"
-  //                   }
-  //                   icon={focusedEpisodeFinished ? "eye-off" : "eye"}
-  //                   onPress={
-  //                     focusedEpisodeFinished ? markNotViewed : markViewed
-  //                   }
-  //                 />
-  //               ) : null}
-  //               <BigPressable
-  //                 text="Options"
-  //                 icon="dots-horizontal"
-  //                 onPress={openMoreOptions}
-  //               />
-  //             </Box>
-  //           </Box>
-  //           {season && seasonEpisodes ? (
-  //             <ShowEpisodeCardsLine
-  //               onFocusEpisode={setFocusedEpisode}
-  //               focusIndex={highlightedEpisode}
-  //               userInfo={showPage.userInfo}
-  //               showEpisodes={seasonEpisodes}
-  //               catalogEntry={showPage.catalogEntry}
-  //               season={season.season_number}
-  //             />
-  //           ) : null}
-  //           <Box row mt="S16">
-  //             <Box w="60%">
-  //               <Box mb="S4">
-  //                 <Text color="whiteText" bold size="default">
-  //                   Synopsis
-  //                 </Text>
-  //               </Box>
-  //               <Box mb="S16">
-  //                 <Text lineHeight={20} size="small" color="textFaded">
-  //                   {show.overview}
-  //                 </Text>
-  //               </Box>
-  //               <TorrentRequests requests={showPage.requests} />
-  //             </Box>
-  //             <Box grow items="flex-end">
-  //               {focusedEpisodeHasHierarchyEntry ? (
-  //                 <HierarchyEntryInformationLine
-  //                   hierarchyEntryInformation={
-  //                     focusedEpisodeHierarchyInformation
-  //                   }
-  //                 />
-  //               ) : null}
-  //             </Box>
-  //           </Box>
-  //         </Box>
-  //       </ScrollView>
-  //     </SafeAreaBox>
-  //     {element}
-  //     {MoreOptionsElement}
-  //   </>
-  // );
 }
-
-// const styles = StyleSheet.create({
-//   grow: {
-//     flexGrow: 1,
-//   },
-//   scrollview: {
-//     flexGrow: 1,
-//   },
-//   tabContainer: {
-//     borderBottomWidth: 0.5,
-//     borderBottomColor: "white",
-//   },
-// });
 
 const styles = StyleSheet.create({
   blackOverlay: {

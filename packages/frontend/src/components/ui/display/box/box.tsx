@@ -14,6 +14,7 @@ import {
   spacing,
 } from "@media-center/ui/src/constants";
 import { Pressable } from "../../input/pressable/pressable";
+import { ScrollViewPadded } from "../scrollViewPadded";
 
 export interface BoxProps {
   m?: keyof typeof spacing;
@@ -46,9 +47,10 @@ export interface BoxProps {
   row?: boolean;
   debug?: boolean;
   children?: ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   flex?: number;
   opacity?: number;
+  ratio?: ViewStyle["aspectRatio"];
 }
 
 function getComputedColor(
@@ -89,10 +91,10 @@ function useBoxStyle({
   shrink,
   grow,
   bg,
-  style,
   debug,
   flex,
   opacity,
+  ratio,
 }: BoxProps) {
   return useMemo<ViewStyle>(
     () => ({
@@ -126,8 +128,8 @@ function useBoxStyle({
       basis,
       flex: flex !== undefined ? flex : undefined,
       opacity: opacity !== undefined ? opacity : undefined,
+      aspectRatio: ratio,
       ...(debug && debugBorder("red")),
-      ...style,
     }),
     [
       m,
@@ -160,8 +162,8 @@ function useBoxStyle({
       basis,
       flex,
       opacity,
+      ratio,
       debug,
-      style,
     ],
   );
 }
@@ -202,6 +204,7 @@ function withBox<T extends { style?: StyleProp<ViewStyle> }>(
     shrink,
     style,
     w,
+    ratio,
     ...props
   }: T & BoxProps) => {
     const styles = useBoxStyle({
@@ -237,8 +240,9 @@ function withBox<T extends { style?: StyleProp<ViewStyle> }>(
       shrink,
       style,
       w,
+      ratio,
     });
-    return <Component {...(props as T)} style={styles} />;
+    return <Component {...(props as T)} style={[styles, style]} />;
   };
 }
 
@@ -246,3 +250,4 @@ export const Box = withBox(View);
 export const SafeAreaBox = withBox(SafeAreaView);
 export const PressableBox = withBox(Pressable);
 export const ScrollViewBox = withBox(ScrollView);
+export const ScrollViewPaddedBox = withBox(ScrollViewPadded);

@@ -22,7 +22,7 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     self.vlc = VLCLibrary()
     self.mediaPlayer = VLCMediaPlayer(library: self.vlc)
     
-    self.mediaPlayer.scaleFactor = 0.1
+    self.mediaPlayer.scaleFactor = 0
     
     self.onError = onError
     self.onProgress = onProgress
@@ -78,8 +78,8 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
       return
     }
     self.onProgress([
-      "progress": self.mediaPlayer.time.intValue,
-      "duration": self.mediaPlayer.media?.length.intValue ?? 0,
+      "progress": (self.mediaPlayer.time.value?.doubleValue ?? 0),
+      "duration": (self.mediaPlayer.media?.length.value?.doubleValue ?? 0) / 1000,
     ])
   }
   
@@ -95,15 +95,14 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   }
   
   public func mediaMetaDataDidChange(_ aMedia: VLCMedia) {
-    print("mediaMetaDataDidChange")
-  }
-  
-  public func mediaDidFinishParsing(_ aMedia: VLCMedia) {
+    if aMedia.length.intValue == 0 {
+      return
+    }
     if self.released {
       return
     }
     self.onVideoInfo([
-      "duration": self.mediaPlayer.media?.length.intValue ?? 0,
+      "duration": (self.mediaPlayer.media?.length.value?.doubleValue ?? 0) / 1000,
       
       "audioTracks": self.getTracks(tracks: self.mediaPlayer.audioTracks),
       "videoTracks": self.getTracks(tracks: self.mediaPlayer.videoTracks),
@@ -113,6 +112,10 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
       "currentAudioTrackId": self.mediaPlayer.audioTracks.first(where: { track in track.isSelected })?.trackId ?? "",
       "currentTextTrackId": self.mediaPlayer.textTracks.first(where: { track in track.isSelected })?.trackId ?? "",
     ])
+  }
+  
+  public func mediaDidFinishParsing(_ aMedia: VLCMedia) {
+    print("mediaDidFinishParsing")
   }
     
   @objc
@@ -125,13 +128,13 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
     guard let parsedUri = URL.init(string: uri) else { return }
     guard let media = VLCMedia(url: parsedUri) else { return }
 
-    if let media = self.media {
-      media.delegate = nil
+    if let m = self.media {
+      m.delegate = nil
     }
     
     self.media = media
+    media.delegate = self
     self.mediaPlayer.media = self.media
-    self.mediaPlayer.media?.delegate = self
 
     print("PLAYING")
     
@@ -157,17 +160,25 @@ public class Heyo: UIView, VLCMediaPlayerDelegate, VLCMediaDelegate {
   
   @objc
   public func setAudioTrack(id: String) {
-    let audioTrack = self.mediaPlayer.videoTracks.first { track in
-      track.trackId == id
+    self.mediaPlayer.videoTracks.forEach { track in
+      track.isSelected = track.trackId == id
     }
-    audioTrack?.isSelected = true
+    if id == "default" {
+      if let first = self.mediaPlayer.videoTracks.first {
+        first.isSelected = true
+      }
+    }
   }
   
   @objc
   public func setTextTrack(id: String) {
-    let textTrack = self.mediaPlayer.textTracks.first { track in
-      track.trackId == id
+    self.mediaPlayer.textTracks.forEach { track in
+      track.isSelected = track.trackId == id
     }
-    textTrack?.isSelected = true
+    if id == "default" {
+      if let first = self.mediaPlayer.textTracks.first {
+        first.isSelected = true
+      }
+    }
   }
 }

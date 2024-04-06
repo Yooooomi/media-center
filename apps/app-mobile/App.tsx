@@ -1,6 +1,8 @@
+import "./src/services/injection/navigation.injected";
 import { Platform, StyleSheet, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { Navigation } from "@media-center/frontend/src/screens";
+import { color } from "@media-center/ui/src/constants";
 import { SplashScreenProxy } from "./src/services/context/splashScreenProxy";
 import { useListenToUpdate } from "./src/services/listenToUpdate";
 
@@ -41,6 +43,7 @@ export function App() {
 
 const styles = StyleSheet.create({
   root: {
+    backgroundColor: color.background,
     flexGrow: 1,
   },
 });

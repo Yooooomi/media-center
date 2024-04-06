@@ -1,8 +1,9 @@
 import { FlatList } from "react-native";
 import { useMemo } from "react";
-import { Track } from "@media-center/video-player";
+import { Track } from "@media-center/web-video-player";
 import { Modal } from "../../../components/ui/tools/modal/modal";
 import { LineButton } from "../../../components/ui/input/pressable/lineButton";
+import { WATCH_PORTAL_NAME } from "../watch.portal";
 
 interface ControlsActionSheetProps {
   open: "text" | "audio" | undefined;
@@ -39,6 +40,7 @@ export function ControlsActionSheet({
   return (
     <>
       <Modal
+        portalHostname={WATCH_PORTAL_NAME}
         open={open === "text"}
         onClose={onClose}
         title="Selectionner des sous-titres"
@@ -59,6 +61,7 @@ export function ControlsActionSheet({
         />
       </Modal>
       <Modal
+        portalHostname={WATCH_PORTAL_NAME}
         open={open === "audio"}
         onClose={onClose}
         title="Selectionner une piste audio"

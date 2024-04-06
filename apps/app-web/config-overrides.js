@@ -5,6 +5,7 @@ const {
   addWebpackAlias,
   addBabelPlugin,
   addWebpackPlugin,
+  addWebpackModuleRule,
 } = require("customize-cra");
 const webpack = require("webpack");
 
@@ -12,7 +13,11 @@ const emptyModules = ["fs", "path", "crypto"].map((mdl) =>
   addWebpackAlias({ [mdl]: path.resolve("src/fake.js") }),
 );
 
+const projectRoot = __dirname;
+
 const IS_DEV = process.env.NODE_ENV === "development";
+
+console.log(webpack);
 
 module.exports = override(
   ...emptyModules,
@@ -32,6 +37,21 @@ module.exports = override(
     path.resolve("../../packages/video-player/src"),
     path.resolve("../../packages/web-video-player/src"),
     path.resolve("../../node_modules"),
+  ]),
+  addBabelPlugin([
+    "babel-plugin-transform-rewrite-imports",
+    {
+      // recognizedExtensions: [".ts", ".tsx"],
+      replaceExtensions: {
+        "(.+)\\/(.+?)\\.dependency$": path.join(
+          projectRoot,
+          "src",
+          "services",
+          "injection",
+          `$2.injected`,
+        ),
+      },
+    },
   ]),
   addBabelPlugin("@babel/plugin-transform-flow-strip-types"),
   addBabelPlugin(["@babel/plugin-proposal-decorators", { version: "legacy" }]),

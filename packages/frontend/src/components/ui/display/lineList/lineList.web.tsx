@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
-import { spacing } from "@media-center/ui/src/constants";
 import { useMemo } from "react";
+import { Box } from "../box";
 import { LineListProps } from "./lineList.props";
 
 export function LineList<T>({
@@ -14,10 +14,18 @@ export function LineList<T>({
 
   const rendered = useMemo(
     () =>
-      data.map((e, index) => (
-        <div key={keyExtractor(e)}>{renderItem(e, index)}</div>
-      )),
-    [data, keyExtractor, renderItem],
+      data.map((e, index) => {
+        const isEndOfLine =
+          (isHorizontal && index === data.length - 1) ||
+          (!isHorizontal && index % itemPerLine === itemPerLine - 1);
+
+        return (
+          <Box key={keyExtractor(e)} mr={!isEndOfLine ? "S8" : undefined}>
+            {renderItem(e, index)}
+          </Box>
+        );
+      }),
+    [data, isHorizontal, itemPerLine, keyExtractor, renderItem],
   );
 
   return (
@@ -39,7 +47,6 @@ const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
     zIndex: 100,
-    padding: spacing.S8,
   },
   verticalWrapper: {
     overflow: "scroll",
@@ -51,12 +58,10 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: "row",
     flexWrap: "nowrap",
-    gap: 8,
   },
   vertical: {
     flexDirection: "row",
     flexWrap: "wrap",
     display: "flex",
-    gap: 8,
   },
 });

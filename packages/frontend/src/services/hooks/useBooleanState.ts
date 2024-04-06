@@ -6,5 +6,5 @@ export function useBooleanState(defaultValue?: boolean | (() => boolean)) {
   const toTrue = useCallback(() => setValue(true), []);
   const toFalse = useCallback(() => setValue(false), []);
 
-  return [value, toTrue, toFalse] as const;
+  return [value, toTrue, toFalse, setValue] as const;
 }

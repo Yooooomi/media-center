@@ -1,25 +1,40 @@
 import { GetMoviesPageQuery } from "@media-center/domains/src/queries/getMoviesPage.query";
+import { spacing } from "@media-center/ui/src/constants";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
-import { MovieCardsLine } from "../../components/implementedUi/movieCardsLine/movieCardsLine";
-import { SafeAreaBox } from "../../components/ui/display/box/box";
-import { maxCardsPerLine } from "../../services/cards";
+import { cardNumber, screen } from "../../services/cards";
+import { useHeaderHeight } from "../../services/hooks/useHeaderHeight";
+import { LineList } from "../../components/ui/display/lineList";
+import { MovieCard } from "../../components/implementedUi/cards/movieCard";
+import { isMobile } from "../../services/platform";
 import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
 
 export function Movies() {
   const [{ result: movies }] = useQuery(GetMoviesPageQuery, undefined);
+  const headerHeight = useHeaderHeight();
 
   if (!movies) {
     return <FullScreenLoading />;
   }
 
+  const width = screen.width / cardNumber;
+  const additionalCardWidth = isMobile() ? 0 : 4;
+  const spacePadding = (spacing.S8 * (cardNumber - 1)) / cardNumber;
+  const borderPadding = (spacing.S8 * 2) / cardNumber;
+
+  console.log(width - spacePadding - borderPadding);
+
   return (
-    <SafeAreaBox grow m="S16">
-      <MovieCardsLine
-        autoFocusFirst
-        title="Vos films"
-        movies={movies}
-        itemPerLine={maxCardsPerLine}
-      />
-    </SafeAreaBox>
+    <LineList
+      style={{ padding: spacing.S8, paddingTop: headerHeight + spacing.S8 }}
+      keyExtractor={(e) => e.id.toString()}
+      data={movies}
+      renderItem={(item) => (
+        <MovieCard
+          width={width - spacePadding - borderPadding - additionalCardWidth}
+          movie={item}
+        />
+      )}
+      itemPerLine={cardNumber}
+    />
   );
 }

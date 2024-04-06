@@ -1,6 +1,11 @@
 import { ReactNode } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
-import { color, radius, rawColor } from "@media-center/ui/src/constants";
+import {
+  color,
+  radius,
+  rawColor,
+  spacing,
+} from "@media-center/ui/src/constants";
 import { Pressable } from "./pressable";
 
 interface ScaleButtonProps {
@@ -32,6 +37,7 @@ export function ScaleButton({
           style={[
             styles.root,
             {
+              borderWidth: border ? spacing.S2 : undefined,
               borderRadius:
                 border && typeof border === "string"
                   ? radius[border]
@@ -40,7 +46,6 @@ export function ScaleButton({
                     : radius.small,
               borderColor:
                 border && focused ? color.whiteText : rawColor.transparent,
-              transform: [{ scale: focused ? 1.05 : 1 }],
             },
           ]}
         >
@@ -53,7 +58,6 @@ export function ScaleButton({
 
 const styles = StyleSheet.create({
   root: {
-    borderWidth: 2,
     overflow: "hidden",
   },
 });

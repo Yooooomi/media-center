@@ -5,12 +5,13 @@ import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import { FlatList, StyleSheet } from "react-native";
 import { spacing } from "@media-center/ui/src/constants";
 import { useAdditiveThrottle } from "../../services/hooks/useAdditiveThrottle";
-import { Box } from "../../components/ui/display/box/box";
 import { MovieCard } from "../../components/implementedUi/cards/movieCard/movieCard";
 import { ShowCard } from "../../components/implementedUi/cards/showCard/showCard";
 import { Section } from "../../components/ui/display/section/section";
 import { TextInput } from "../../components/ui/input/textInput/textInput";
 import { Beta } from "../../services/api/api";
+import { BoxPadded } from "../../components/ui/display/boxPadded";
+import { isMobile } from "../../services/platform";
 
 export function SearchTmdb() {
   const [results, setResults] = useState<(Movie | Show)[]>([]);
@@ -36,7 +37,7 @@ export function SearchTmdb() {
   };
 
   return (
-    <Box mt="S8" ml="S8" grow>
+    <BoxPadded pt="S8" mh="S8" grow>
       <TextInput
         style={styles.input}
         autoFocus
@@ -56,7 +57,7 @@ export function SearchTmdb() {
           renderItem={({ item }) => getItem(item)}
         />
       </Section>
-    </Box>
+    </BoxPadded>
   );
 }
 
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     gap: spacing.S8,
   },
   input: {
-    width: 300,
+    width: isMobile() ? "100%" : 300,
     borderWidth: 2,
     borderColor: "transparent",
   },

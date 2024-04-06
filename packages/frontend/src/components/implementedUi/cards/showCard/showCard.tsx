@@ -3,7 +3,7 @@ import { Show } from "@media-center/domains/src/tmdb/domain/show";
 import React, { useCallback } from "react";
 import { spacing } from "@media-center/ui/src/constants";
 import { useImageUri } from "../../../../services/tmdb";
-import { useNavigate } from "../../../../screens/navigation";
+import { useNavigate } from "../../../../screens/navigation.dependency";
 import { Box } from "../../../ui/display/box";
 import { Text } from "../../../ui/input/text/text";
 import { VerticalCard } from "../../../ui/display/cards/verticalCard";
@@ -15,12 +15,8 @@ interface ShowCardProps {
   disabled?: boolean;
   progress?: number;
   onFocus?: (show: Show) => void;
+  width?: number;
 }
-
-export const ShowCardSize = {
-  width: card.width,
-  height: card.height + 24,
-};
 
 function ShowCard_({
   show,
@@ -28,12 +24,13 @@ function ShowCard_({
   disabled,
   progress,
   onFocus,
+  width = card.width,
 }: ShowCardProps) {
   const imageUri = useImageUri(show.poster_path ?? show.backdrop_path);
   const { navigate } = useNavigate();
 
   const handlePress = useCallback(() => {
-    navigate("Show", { showId: show.id.toString() });
+    navigate("Show", { showId: show.id.toString(), title: show.title });
   }, [navigate, show]);
 
   const handleFocus = useCallback(() => {
@@ -43,6 +40,7 @@ function ShowCard_({
   return (
     <Box>
       <VerticalCard
+        width={width}
         focusOnMount={focusOnMount}
         uri={imageUri}
         onPress={handlePress}
@@ -50,7 +48,7 @@ function ShowCard_({
         progress={progress}
         onFocus={handleFocus}
       />
-      <Box items="flex-start" style={styles.title}>
+      <Box w={width} items="flex-start" overflow="hidden" style={styles.title}>
         <Text size="small" align="left" numberOfLines={1} style={styles.text}>
           {show.title}
         </Text>
@@ -63,8 +61,6 @@ export const ShowCard = React.memo(ShowCard_);
 
 const styles = StyleSheet.create({
   title: {
-    overflow: "hidden",
-    width: card.width,
     height: 24,
     zIndex: -1,
   },

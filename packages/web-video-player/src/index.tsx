@@ -147,9 +147,11 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         return;
       }
       onProgress?.({
-        duration: videoRef.current.duration * 1000,
-        progress: videoRef.current.currentTime * 1000,
-      });
+        nativeEvent: {
+          duration: videoRef.current.duration * 1000,
+          progress: videoRef.current.currentTime * 1000,
+        },
+      } as any);
     }, [onProgress]);
 
     const handleLoadedMetadata = useCallback(() => {
@@ -176,14 +178,16 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         });
       }
       onVideoInfo?.({
-        audioTracks: audioTracks,
-        videoTracks,
-        duration: webDuration * 1000,
-        textTracks: [],
-        currentVideoTrackId: getSelectedTrack(webVideoTracks)?.id,
-        currentAudioTrackId: getSelectedTrack(webAudioTracks)?.id,
-        currentTextTrackId: undefined,
-      });
+        nativeEvent: {
+          audioTracks: audioTracks,
+          videoTracks,
+          duration: webDuration * 1000,
+          textTracks: [],
+          currentVideoTrackId: getSelectedTrack(webVideoTracks)?.id,
+          currentAudioTrackId: getSelectedTrack(webAudioTracks)?.id,
+          currentTextTrackId: undefined,
+        },
+      } as any);
     }, [onVideoInfo]);
 
     useEffect(() => {

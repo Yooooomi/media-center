@@ -29,6 +29,7 @@
     "eas-cli": "^5.9.1",
     "expo": "^50.0.14",
     "expo-asset": "~9.0.2",
+    "expo-blur": "~12.9.2",
     "expo-splash-screen": "~0.26.4",
     "expo-updates": "~0.24.8",
     "lottie-react-native": "^6.5.1",

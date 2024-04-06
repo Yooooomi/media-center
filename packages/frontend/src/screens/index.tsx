@@ -8,7 +8,7 @@ import { LocalUserContextProvider } from "../services/localUserProfile";
 import { StatusContextProvider } from "../services/contexts/status.context";
 import { InjectableContext } from "../services/di/injectableContext";
 import { NavigationContext, useNavigationContext } from "./params";
-import { Routes, Router } from "./navigation";
+import { Router, Routes } from "./navigation.dependency";
 
 export function Navigation() {
   const { value, currentRoute } = useNavigationContext();
@@ -31,8 +31,8 @@ export function Navigation() {
                 <StatusContextProvider>{routes}</StatusContextProvider>
               </InjectableContext>
             </AlertProvider>
+            <PortalHost absoluteFill name={DEFAULT_HOSTNAME} />
           </Router>
-          <PortalHost style={styles.portalHost} name={DEFAULT_HOSTNAME} />
         </LocalUserContextProvider>
       </PortalProvider>
     </View>
@@ -42,9 +42,5 @@ export function Navigation() {
 const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
-  },
-  portalHost: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1000,
   },
 });

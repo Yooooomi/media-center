@@ -3,7 +3,7 @@ import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
 import { Beta } from "../../services/api/api";
 import { useQuery } from "../../services/api/useQuery";
-import { useParams } from "../navigation";
+import { useParams } from "../navigation.dependency";
 import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
 import { MovieWrapped } from "./movieWrapped";
 

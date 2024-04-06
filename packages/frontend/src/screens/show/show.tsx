@@ -2,7 +2,7 @@ import { GetShowPageQuery } from "@media-center/domains/src/queries/getShowPage.
 import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import { useQuery } from "../../services/api/useQuery";
 import { Beta } from "../../services/api/api";
-import { useParams } from "../navigation";
+import { useParams } from "../navigation.dependency";
 import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
 import { ShowWrapped } from "./showWrapped";
 

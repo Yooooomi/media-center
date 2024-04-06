@@ -149,8 +149,10 @@ export function LocalUserContextProvider({
 
   if (error) {
     return (
-      <Box grow items="center" content="center">
-        <Text>Erreur d'accès au server {reactive.instance?.serverAddress}</Text>
+      <Box grow items="center" content="center" bg="background">
+        <Text align="center">
+          Erreur d'accès au server {reactive.instance?.serverAddress}
+        </Text>
         <Text size="small">{error.message}</Text>
         <Box mt="S8">
           <TextButton text="Réessayer" onPress={init} focusOnMount />

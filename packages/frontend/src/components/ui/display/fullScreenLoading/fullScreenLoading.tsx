@@ -1,3 +1,4 @@
+import { color } from "@media-center/ui/src/constants";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -14,5 +15,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: color.background,
   },
 });

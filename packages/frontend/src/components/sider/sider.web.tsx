@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { color, spacing } from "@media-center/ui/src/constants";
-import { useNavigate } from "../../screens/navigation";
+import { useNavigate } from "../../screens/navigation.dependency";
 import { StatusContext } from "../../services/contexts/status.context";
 import { useMeshContext } from "../../services/contexts/mesh.context";
 import { IconName } from "../ui/display/icon/icon.props";

@@ -1,6 +1,7 @@
 import { Movie } from "@media-center/domains/src/tmdb/domain/movie";
 import { UserTmdbMovieInfo } from "@media-center/domains/src/userTmdbInfo/domain/userTmdbInfo";
 import React from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import { MovieCard } from "../cards/movieCard/movieCard";
 import { SectionLine } from "../../ui/display/sectionLine/sectionLine";
 
@@ -11,6 +12,7 @@ interface MovieCardsLine {
   autoFocusFirst?: boolean;
   onFocus?: (movie: Movie) => void;
   itemPerLine?: number;
+  style?: StyleProp<ViewStyle>;
 }
 
 function MovieCardsLine_({
@@ -20,9 +22,11 @@ function MovieCardsLine_({
   infos,
   onFocus,
   itemPerLine,
+  style,
 }: MovieCardsLine) {
   return (
     <SectionLine
+      style={style}
       title={title}
       data={movies}
       keyExtractor={(movie) => movie.id.toString()}

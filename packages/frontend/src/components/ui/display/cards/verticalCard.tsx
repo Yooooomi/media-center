@@ -7,6 +7,7 @@ import { DisabledFill } from "../disabledFill";
 import { RateLimitedImage } from "../rateLimitedImage";
 import { ProgressOverlay } from "../progressOverlay";
 import { card } from "../../../../services/cards";
+import { isMobile } from "../../../../services/platform";
 
 interface VerticalCardProps {
   uri: string | undefined;
@@ -15,6 +16,7 @@ interface VerticalCardProps {
   disabled?: boolean;
   progress?: number;
   onFocus?: () => void;
+  width: number;
 }
 
 export function VerticalCard({
@@ -24,24 +26,25 @@ export function VerticalCard({
   disabled,
   progress,
   onFocus,
+  width,
 }: VerticalCardProps) {
+  const size = {
+    width,
+    height: width * card.ratio,
+  };
+
   return (
     <ScaleButton
       focusOnMount={focusOnMount}
       onPress={onPress}
       onFocus={onFocus}
-      border
+      border={!isMobile()}
     >
-      <ProgressOverlay style={styles.root} progress={progress}>
+      <ProgressOverlay style={[styles.root, size]} progress={progress}>
         {uri ? (
-          <RateLimitedImage uri={uri} style={styles.image} resizeMode="cover" />
+          <RateLimitedImage uri={uri} style={size} resizeMode="cover" />
         ) : (
-          <Box
-            style={styles.image}
-            bg="background"
-            items="center"
-            content="center"
-          >
+          <Box style={size} bg="background" items="center" content="center">
             <Icon name="movie" size={36} />
           </Box>
         )}
@@ -55,13 +58,7 @@ const styles = StyleSheet.create({
   root: {
     borderRadius: radius.default,
     overflow: "hidden",
-    height: card.height,
-    width: card.width,
     ...cardShadow,
-  },
-  image: {
-    height: card.height,
-    width: card.width,
   },
   progress: {
     position: "absolute",

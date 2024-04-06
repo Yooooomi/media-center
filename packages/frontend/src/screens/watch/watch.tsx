@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
 import {
   SyntheticEvent,
   useCallback,
@@ -22,13 +22,15 @@ import { useToggle } from "../../services/hooks/useToggle";
 import { useAppStateEvent } from "../../services/hooks/useOnBlur";
 import { Beta, useVideoUri } from "../../services/api/api";
 import { useQuery } from "../../services/api/useQuery";
-import { useParams, useNavigate } from "../navigation";
+import { useParams, useNavigate } from "../navigation.dependency";
 import { withDependencyWrapper } from "../../services/hocs/withDependencyWrapper";
 import { VideoPlayer } from "../../components/ui/display/videoPlayer/videoPlayer";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading";
-import { IconButton } from "../../components/ui/input/pressable/iconButton";
+import { Portal, PortalHost } from "../../components/ui/tools/portal";
+import { DEFAULT_HOSTNAME } from "../../components/ui/tools/portal/portal";
 import { useSaveCatalogEntryProgress } from "./useSaveCatalogEntryProgress";
-import { Controls } from "./controls";
+import { Controls, ControlsHandle } from "./controls";
+import { WATCH_PORTAL_NAME } from "./watch.portal";
 
 export const Watch = withDependencyWrapper(WatchWrapped, () => {
   const { hierarchyItemId } = useParams<"Watch">();
@@ -59,8 +61,8 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
   );
   const currentProgress = useRef<ProgressEvent | undefined>(undefined);
   const currentProgressMs = useSharedValue(0);
-  const [audioTrack, setAudioTrack] = useState<string | undefined>(undefined);
-  const [textTrack, setTextTrack] = useState("none");
+  const [audioTrack, setAudioTrack] = useState("default");
+  const [textTrack, setTextTrack] = useState("default");
   const { goBack } = useNavigate();
   const vlcRef = useRef<VideoPlayerHandle>(null);
 
@@ -84,7 +86,6 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
     if (!videoInfo || playlistItem.progress === 0) {
       return;
     }
-    console.log("ref", vlcRef.current);
     vlcRef.current?.seek(videoInfo.duration * playlistItem.progress);
   }, [playlistItem.progress, videoInfo]);
 
@@ -112,7 +113,6 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
   const onVideoInfo = useCallback(
     (event: SyntheticEvent<any, VideoInfoEvent>) => {
       setVideoInfo(event.nativeEvent);
-      setAudioTrack(event.nativeEvent.audioTracks[0]?.id);
     },
     [],
   );
@@ -158,12 +158,23 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
     }, [setPlaying]),
   );
 
+  const controlsRef = useRef<ControlsHandle>(null);
+
+  const rollShow = useCallback(() => {
+    controlsRef.current?.rollShow();
+  }, []);
+
   return (
-    <>
+    <Portal name={DEFAULT_HOSTNAME}>
       <View style={styles.background}>
         {!videoInfo && <FullScreenLoading />}
       </View>
-      <View style={styles.player}>
+      <Pressable
+        isTVSelectable={false}
+        hasTVPreferredFocus={false}
+        onPress={rollShow}
+        style={styles.player}
+      >
         <VideoPlayer
           ref={vlcRef}
           uri={videoUri}
@@ -178,9 +189,16 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
           onError={onError}
           additionalTextTracks={subtitles}
         />
-      </View>
+        <View
+          style={[
+            StyleSheet.absoluteFillObject,
+            { opacity: 0, backgroundColor: "red" },
+          ]}
+        />
+      </Pressable>
       {videoInfo && (
         <Controls
+          ref={controlsRef}
           name={watch.tmdb.original_title}
           onFullscreen={handleFullscreen}
           progress={currentProgressMs}
@@ -199,10 +217,8 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
           additionalTextTracks={additionalTextTracks}
         />
       )}
-      <View style={{ position: "absolute", top: 80, left: 8 }}>
-        <IconButton icon="cross" onPress={goBack} />
-      </View>
-    </>
+      <PortalHost absoluteFill name={WATCH_PORTAL_NAME} />
+    </Portal>
   );
 }
 
@@ -217,9 +233,11 @@ const styles = StyleSheet.create({
   player: {
     zIndex: 1,
     flexGrow: 1,
+    backgroundColor: rawColor.black,
   },
   background: {
     ...StyleSheet.absoluteFillObject,
+    pointerEvents: "none",
     backgroundColor: rawColor.black,
   },
 });

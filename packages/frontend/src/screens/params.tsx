@@ -4,8 +4,8 @@ import { BackHandler } from "react-native";
 export type NavigationParams = {
   Discover: undefined;
   Library: undefined;
-  Movie: { movieId: string };
-  Show: { showId: string };
+  Movie: { title: string; movieId: string };
+  Show: { title: string; showId: string };
   Watch: { hierarchyItemId: string };
   Search: undefined;
   SearchTmdb: undefined;

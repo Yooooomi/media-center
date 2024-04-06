@@ -121,7 +121,7 @@ export function bootApi(
     const { needing: stringifiedNeeding } = req.query;
 
     const needing = stringifiedNeeding
-      ? JSON.parse(stringifiedNeeding as string)
+      ? JSON.parse(decodeURIComponent(stringifiedNeeding as string))
       : undefined;
 
     logger.info(`< query ${req.path}`);

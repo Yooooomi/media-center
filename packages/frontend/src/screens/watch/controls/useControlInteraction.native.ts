@@ -6,6 +6,9 @@ export function useControlInteraction({
   rollPlay,
   rewind,
   fastForward,
+  pause,
+  play,
+  stop,
 }: UseControlInteractionProps) {
   useRemote({
     pan: () => console.log("PAN!"),
@@ -17,5 +20,8 @@ export function useControlInteraction({
     down: resetShow,
     rewind,
     fastForward,
+    pause,
+    play,
+    stop,
   });
 }

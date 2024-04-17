@@ -164,6 +164,14 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
     controlsRef.current?.rollShow();
   }, []);
 
+  const play = useCallback(() => {
+    setPlaying(true);
+  }, [setPlaying]);
+
+  const pause = useCallback(() => {
+    setPlaying(false);
+  }, [setPlaying]);
+
   return (
     <Portal name={DEFAULT_HOSTNAME}>
       <View style={styles.background}>
@@ -215,6 +223,9 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
           seekAdd={addSeek}
           seek={seek}
           additionalTextTracks={additionalTextTracks}
+          onPlay={play}
+          onPause={pause}
+          onStop={goBack}
         />
       )}
       <PortalHost absoluteFill name={WATCH_PORTAL_NAME} />

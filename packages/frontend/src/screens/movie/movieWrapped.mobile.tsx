@@ -2,7 +2,7 @@ import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTm
 import { rawColor } from "@media-center/ui/src/constants";
 import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { Box } from "../../components/ui/display/box";
+import { Box, ScrollViewPaddedBox } from "../../components/ui/display/box";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Beta } from "../../services/api/api";
 import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntryMoreOptions";
@@ -15,7 +15,6 @@ import { TmdbNote } from "../../components/ui/display/tmdbNote";
 import { BigPressable } from "../../components/ui/input/bigPressable";
 import { Text } from "../../components/ui/input/text";
 import { TorrentRequests } from "../../components/implementedUi/torrentRequests";
-import { ScrollViewPadded } from "../../components/ui/display/scrollViewPadded";
 import { MovieWrappedProps } from "./movieWrapped.props";
 
 export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
@@ -76,8 +75,8 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
           blurRadius={170}
         />
         <View style={styles.blackOverlay} />
-        <ScrollViewPadded style={styles.grow}>
-          <Box overflow="hidden" row h={180} items="flex-start" mt="S8">
+        <ScrollViewPaddedBox grow mt="S8">
+          <Box overflow="hidden" row h={180} items="flex-start">
             <ProgressOverlay
               style={styles.coverContainer}
               progress={moviePage.userInfo.progress}
@@ -153,7 +152,7 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
               />
             </Box>
           </Box>
-        </ScrollViewPadded>
+        </ScrollViewPaddedBox>
       </Box>
       {element}
       {MoreOptionsElement}

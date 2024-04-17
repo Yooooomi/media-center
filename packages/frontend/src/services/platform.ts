@@ -5,7 +5,7 @@ export function isNative() {
 }
 
 export function isMobile() {
-  return Platform.OS === "ios" || Platform.OS === "android";
+  return !Platform.isTV && (Platform.OS === "ios" || Platform.OS === "android");
 }
 
 export function isTV() {

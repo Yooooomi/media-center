@@ -19,7 +19,9 @@ type RemoteProps = Record<
   | "next"
   | "previous"
   | "rewind"
-  | "fastForward",
+  | "fastForward"
+  | "pause"
+  | "play",
   () => void
 >;
 

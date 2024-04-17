@@ -1,15 +1,13 @@
 import { FC, ReactNode } from "react";
 
-import { HistoryItem, NavigationParams } from "./params";
+import { NavigationParams } from "./params";
 
 export interface RouteProps {
   path: string;
   component: FC<{}>;
 }
 
-export interface RoutesProps {
-  location: HistoryItem;
-}
+export interface RoutesProps {}
 
 export interface RouterProps {
   children: ReactNode;

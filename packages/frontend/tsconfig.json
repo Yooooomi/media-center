@@ -6,6 +6,6 @@
     "jsx": "react-jsx",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "moduleSuffixes": [".web", ".native", ""]
+    "moduleSuffixes": [".web", ".native", ".mobile", ".tv", ""]
   }
 }

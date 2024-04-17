@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
-import { spacing } from "@media-center/ui/src/constants";
+import { StyleProp, ViewStyle } from "react-native";
 import { Section, SectionProps } from "../section/section";
 import { LineList } from "../lineList";
 
@@ -39,7 +38,6 @@ export function SectionLine<T>({
       style={style}
     >
       <LineList
-        style={styles.align}
         data={data}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
@@ -48,9 +46,3 @@ export function SectionLine<T>({
     </Section>
   );
 }
-
-const styles = StyleSheet.create({
-  align: {
-    marginLeft: -spacing.S8,
-  },
-});

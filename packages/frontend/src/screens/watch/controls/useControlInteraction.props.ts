@@ -3,4 +3,7 @@ export interface UseControlInteractionProps {
   resetShow: () => void;
   rewind: () => void;
   fastForward: () => void;
+  pause: () => void;
+  play: () => void;
+  stop: () => void;
 }

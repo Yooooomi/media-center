@@ -109,8 +109,8 @@ export function LocalUserContextProvider({
     async function callInit() {
       await init();
       if (__DEV__ && isTV()) {
-        reactive.call("setServerAddress", "http://192.168.1.153:8080");
-        reactive.call("setServerPassword", "somerandompassword");
+        // reactive.call("setServerAddress", "http://192.168.1.153:8080");
+        // reactive.call("setServerPassword", "somerandompassword");
         if (!reactive.instance) {
           return;
         }
@@ -198,7 +198,6 @@ export function LocalUserContextProvider({
       <ChooseUser
         declaredUsers={declaredUsers}
         chooseUser={(selected) => {
-          console.log("selected");
           if (
             !reactive.instance ||
             !reactive.instance.serverAddress ||

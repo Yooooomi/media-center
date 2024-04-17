@@ -10,6 +10,7 @@
     "android:release": "expo run:android --variant release",
     "android:turbo": "cd android && ./gradlew generateCodegenArtifactsFromSchema ; cd -",
     "android:install": "adb install android/app/build/outputs/apk/release/app-release.apk",
+    "android:build:release": "eas build --platform android --local",
     "ios": "expo run:ios",
     "start": "expo start -d --lan",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -42,8 +43,7 @@
     "react-native-screens": "^3.30.1",
     "react-native-sse": "^1.2.0",
     "react-native-svg": "14.1.0",
-    "react-native-vector-icons": "^10.0.3",
-    "react-router-native": "^6.22.3"
+    "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

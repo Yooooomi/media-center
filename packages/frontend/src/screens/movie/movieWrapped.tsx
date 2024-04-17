@@ -99,7 +99,7 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
               </Text>
             </Box>
             <Box mb="S24" style={{ zIndex: 1 }}>
-              <Box row content="space-between">
+              <Box content="space-between">
                 <Text>
                   <TmdbNote note={moviePage.tmdb.getRoundedNote()} />・{" "}
                   {moviePage.details.getStringRuntime()} ・{" "}

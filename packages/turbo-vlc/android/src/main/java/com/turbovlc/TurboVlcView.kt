@@ -112,6 +112,8 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
       if (first != null) {
         mediaPlayer.selectTrack(first.id)
       }
+    } else if (id == "none") {
+      mediaPlayer.unselectTrackType(Track.Type.Audio);
     } else {
       mediaPlayer.selectTrack(id)
     }
@@ -123,6 +125,8 @@ class TurboVlcView : FrameLayout, OnNewVideoLayoutListener, LifecycleEventListen
       if (first != null) {
         mediaPlayer.selectTrack(first.id)
       }
+    } else if (id == "none") {
+      mediaPlayer.unselectTrackType(Track.Type.Text);
     } else {
       mediaPlayer.selectTrack(id)
     }

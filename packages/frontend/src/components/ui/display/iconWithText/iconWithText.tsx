@@ -1,18 +1,24 @@
-import { Box } from "../box";
-import { IconName } from "../icon/icon.props";
+import { IconName, IconProps } from "../icon/icon.props";
 import { Icon } from "../icon/icon";
-import { Text } from "../../input/text";
+import { Text, TextProps } from "../../input/text";
 
 interface IconWithTextProps {
   name: IconName;
   text: string;
+  textProps?: Partial<TextProps>;
+  iconProps?: Partial<IconProps>;
 }
 
-export function IconWithText({ name, text }: IconWithTextProps) {
+export function IconWithText({
+  name,
+  text,
+  textProps,
+  iconProps,
+}: IconWithTextProps) {
   return (
-    <Box row gap="S8" items="center">
-      <Icon size={18} name={name} />
-      <Text>{text}</Text>
-    </Box>
+    <>
+      <Icon size={18} name={name} {...iconProps} />
+      <Text {...textProps}> {text}</Text>
+    </>
   );
 }

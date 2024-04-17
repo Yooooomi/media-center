@@ -70,7 +70,7 @@ export class SQLiteCatalogEntryStore
 
   async loadNewestMovies(limit: number) {
     return this._select(
-      "WHERE json_extract(data, '$.0') = ? ORDER BY json_extract(data, '$.1.updatedAt') LIMIT ?",
+      "WHERE json_extract(data, '$.1') = ? ORDER BY json_extract(data, '$.1.updatedAt') LIMIT ?",
       undefined,
       1,
       limit,
@@ -79,7 +79,7 @@ export class SQLiteCatalogEntryStore
 
   async loadNewestShows(limit: number) {
     return this._select(
-      "WHERE json_extract(data, '$.0') = ? ORDER BY json_extract(data, '$.1.updatedAt') LIMIT ?",
+      "WHERE json_extract(data, '$.1') = ? ORDER BY json_extract(data, '$.1.updatedAt') LIMIT ?",
       undefined,
       0,
       limit,

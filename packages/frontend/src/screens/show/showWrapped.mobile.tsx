@@ -3,7 +3,7 @@ import { useState } from "react";
 import { rawColor } from "@media-center/ui/src/constants";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
-import { Box } from "../../components/ui/display/box/box";
+import { Box, ScrollViewPaddedBox } from "../../components/ui/display/box/box";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
 import { useQueryTorrents } from "../../services/hooks/useQueryTorrents";
 import { BigPressable } from "../../components/ui/input/bigPressable";
@@ -12,7 +12,6 @@ import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntry
 import { RateLimitedImage } from "../../components/ui/display/rateLimitedImage";
 import { TmdbNote } from "../../components/ui/display/tmdbNote";
 import { ShowEpisodeCardsLine } from "../../components/implementedUi/showEpisodeCardsLine";
-import { ScrollViewPadded } from "../../components/ui/display/scrollViewPadded";
 import { ShowWrappedProps } from "./showWrapped.props";
 import { SeasonSelector } from "./seasonSelector";
 
@@ -65,7 +64,7 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
           blurRadius={170}
         />
         <View style={styles.blackOverlay} />
-        <ScrollViewPadded style={styles.grow}>
+        <ScrollViewPaddedBox grow mt="S8">
           <Box overflow="hidden" row h={180} items="flex-start">
             <View style={styles.coverContainer}>
               <RateLimitedImage
@@ -125,7 +124,7 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
               />
             </Box>
           </Box>
-        </ScrollViewPadded>
+        </ScrollViewPaddedBox>
       </Box>
       {element}
       {MoreOptionsElement}

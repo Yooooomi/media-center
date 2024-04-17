@@ -18,6 +18,11 @@ config.resolver.nodeModulesPaths = [
 ];
 const oldResolver = config.resolver.resolveRequest;
 
+config.resolver.sourceExts = [
+  ...config.resolver.sourceExts.map((e) => `tv.${e}`),
+  ...config.resolver.sourceExts,
+];
+
 /** @type {NonNullable<import('expo/metro-config').MetroConfig['resolver']['resolveRequest']>} */
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (moduleName === "path" || moduleName === "fs") {

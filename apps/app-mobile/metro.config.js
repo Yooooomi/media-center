@@ -17,6 +17,12 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, "node_modules"),
 ];
 const oldResolver = config.resolver.resolveRequest;
+
+config.resolver.sourceExts = [
+  ...config.resolver.sourceExts.map((e) => `mobile.${e}`),
+  ...config.resolver.sourceExts,
+];
+
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (moduleName === "path" || moduleName === "fs") {
     return { type: "empty" };

@@ -31,7 +31,7 @@ import { formatVideoDuration } from "../../../services/string";
 import { RealtimeText } from "../../../components/ui/display/realtimeText/realtimeText";
 import { ProgressBar } from "../../../components/ui/display/progressBar/progressBar";
 import { IconButton } from "../../../components/ui/input/pressable/iconButton";
-import { isMobile, isNative } from "../../../services/platform";
+import { isMobile, isNative, isTV } from "../../../services/platform";
 import { Timeout } from "../../../services/types";
 import { useNavigate } from "../../navigation.dependency";
 import { Portal } from "../../../components/ui/tools/portal";
@@ -44,6 +44,9 @@ export interface ControlsProps {
   progress: SharedValue<number>;
   isPlaying: boolean;
   rollPlay: () => void;
+  onPlay: () => void;
+  onPause: () => void;
+  onStop: () => void;
   previousAllowed: boolean;
   onPrevious: () => void;
   nextAllowed: boolean;
@@ -85,6 +88,9 @@ export const Controls = forwardRef<ControlsHandle, ControlsProps>(
       progress,
       style,
       additionalTextTracks,
+      onPause,
+      onPlay,
+      onStop,
     },
     ref,
   ) => {
@@ -158,6 +164,9 @@ export const Controls = forwardRef<ControlsHandle, ControlsProps>(
       fastForward,
       rewind,
       rollPlay,
+      pause: onPause,
+      play: onPlay,
+      stop: onStop,
     });
 
     const progressString = useDerivedValue(() =>
@@ -281,7 +290,7 @@ export const Controls = forwardRef<ControlsHandle, ControlsProps>(
             </Box>
           </Animated.View>
         )}
-        {/* {!shouldShow && (
+        {isTV() && !shouldShow && (
           <Pressable
             hasTVPreferredFocus
             style={styles.unusedTouchable}
@@ -289,7 +298,7 @@ export const Controls = forwardRef<ControlsHandle, ControlsProps>(
           >
             <Text>a</Text>
           </Pressable>
-        )} */}
+        )}
         <ControlsActionSheet
           open={actionSheet}
           onClose={() => setActionSheet(undefined)}

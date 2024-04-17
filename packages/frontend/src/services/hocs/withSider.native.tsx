@@ -18,7 +18,7 @@ export function withSider<C extends (args: any) => ReactNode>(
           <Component {...a} />
         </Box>
       </TVFocusGuideView>
-      <TVFocusGuideView trapFocusDown trapFocusUp>
+      <TVFocusGuideView trapFocusDown trapFocusUp autoFocus={false}>
         <Sider />
       </TVFocusGuideView>
     </Box>

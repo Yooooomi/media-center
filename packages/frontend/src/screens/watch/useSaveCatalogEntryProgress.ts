@@ -1,7 +1,7 @@
 import { TmdbId } from "@media-center/domains/src/tmdb/domain/tmdbId";
 import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTmdbInfo/applicative/setUserTmdbInfoProgress.command";
 import { RefObject, useCallback, useEffect, useRef } from "react";
-import { ProgressEvent } from "@media-center/video-player";
+import { ProgressEvent } from "@media-center/web-video-player";
 import { useAppState } from "../../services/hooks/useAppState";
 import { Beta } from "../../services/api/api";
 import { Interval } from "../../services/types";

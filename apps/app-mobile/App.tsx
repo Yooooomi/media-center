@@ -1,12 +1,10 @@
 import "./src/services/injection/navigation.injected";
 import { Platform, StyleSheet, View } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
 import { Navigation } from "@media-center/frontend/src/screens";
 import { color } from "@media-center/ui/src/constants";
-import { SplashScreenProxy } from "./src/services/context/splashScreenProxy";
 import { useListenToUpdate } from "./src/services/listenToUpdate";
 
-SplashScreen.preventAutoHideAsync().catch(console.error);
+// SplashScreen.preventAutoHideAsync().catch(console.error);
 
 const fonts = Platform.select<Record<string, string>>({
   default: {
@@ -33,11 +31,11 @@ export function App() {
   useListenToUpdate();
 
   return (
-    <SplashScreenProxy>
-      <View style={styles.root}>
-        <Navigation />
-      </View>
-    </SplashScreenProxy>
+    // <SplashScreenProxy>
+    <View style={styles.root}>
+      <Navigation />
+    </View>
+    // </SplashScreenProxy>
   );
 }
 

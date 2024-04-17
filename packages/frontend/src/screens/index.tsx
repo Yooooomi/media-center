@@ -6,17 +6,10 @@ import { PortalHost } from "../components/ui/tools/portal";
 import { AlertProvider } from "../components/ui/tools/alert/alertProvider";
 import { LocalUserContextProvider } from "../services/localUserProfile";
 import { StatusContextProvider } from "../services/contexts/status.context";
-import { InjectableContext } from "../services/di/injectableContext";
-import { NavigationContext, useNavigationContext } from "./params";
 import { Router, Routes } from "./navigation.dependency";
 
 export function Navigation() {
-  const { value, currentRoute } = useNavigationContext();
-
-  const routes = useMemo(
-    () => <Routes location={currentRoute} />,
-    [currentRoute],
-  );
+  const routes = useMemo(() => <Routes />, []);
 
   return (
     <View style={styles.root}>
@@ -24,12 +17,7 @@ export function Navigation() {
         <LocalUserContextProvider>
           <Router>
             <AlertProvider>
-              <InjectableContext
-                provider={NavigationContext.Provider}
-                value={value}
-              >
-                <StatusContextProvider>{routes}</StatusContextProvider>
-              </InjectableContext>
+              <StatusContextProvider>{routes}</StatusContextProvider>
             </AlertProvider>
             <PortalHost absoluteFill name={DEFAULT_HOSTNAME} />
           </Router>

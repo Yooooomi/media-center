@@ -1,6 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import {
   color,
+  opacify,
+  opacifyRaw,
   radius,
   rawColor,
   spacing,
@@ -23,25 +25,21 @@ export function TabButton({ text, selected, onPress }: TabButtonProps) {
             style={[
               styles.base,
               focused ? styles.focused : undefined,
-              selected
-                ? focused
-                  ? styles.selectedFocused
-                  : styles.selected
-                : focused
-                  ? styles.unselectedFocused
-                  : styles.unselected,
+              selected ? styles.selected : undefined,
             ]}
           >
-            <Text color={focused ? "buttonTextFocused" : "buttonText"}>
+            <Text
+              color={focused || selected ? "buttonTextFocused" : "buttonText"}
+            >
               {text}
             </Text>
           </View>
-          <View
+          {/* <View
             style={[
               styles.bar,
               selected ? styles.barSelected : styles.barUnselected,
             ]}
-          />
+          /> */}
         </View>
       )}
     </Pressable>
@@ -50,31 +48,14 @@ export function TabButton({ text, selected, onPress }: TabButtonProps) {
 
 const styles = StyleSheet.create({
   base: {
-    padding: spacing.S2,
+    paddingHorizontal: spacing.S8,
+    paddingVertical: spacing.S4,
+    borderRadius: radius.default,
   },
   focused: {
-    borderRadius: radius.small,
-    backgroundColor: rawColor.white,
+    backgroundColor: opacifyRaw(color.whiteText, 0.8),
   },
   selected: {
-    borderBottomColor: color.whiteText,
-  },
-  selectedFocused: {
-    borderBottomColor: rawColor.white,
-  },
-  unselected: {
-    borderBottomColor: rawColor.transparent,
-  },
-  unselectedFocused: {},
-  bar: {
-    marginTop: spacing.S4,
-    width: "100%",
-    height: 2,
-  },
-  barSelected: {
     backgroundColor: rawColor.white,
-  },
-  barUnselected: {
-    backgroundColor: rawColor.transparent,
   },
 });

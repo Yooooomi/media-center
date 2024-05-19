@@ -45,6 +45,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.progress,
     position: "absolute",
     top: spacing.S8,
-    right: spacing.S8,
+    left: spacing.S8,
   },
 });

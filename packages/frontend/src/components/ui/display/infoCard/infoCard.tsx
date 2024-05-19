@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { noop } from "@media-center/algorithm";
-import { cardShadow, radius } from "@media-center/ui/src/constants";
+import { radius } from "@media-center/ui/src/constants";
 import { Box } from "../box";
 import { Pill } from "../pill";
 import { Text } from "../../input/text/text";
@@ -39,7 +39,7 @@ export function InfoCard({
   onFocus,
 }: InfoCardProps) {
   return (
-    <Box>
+    <Box overflow="visible">
       <ScaleButton
         onPress={disabled ? noop : onPress}
         focusOnMount={focusOnMount}
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     height: hcard.height,
     width: hcard.width,
     overflow: "hidden",
-    ...cardShadow,
   },
   image: {
     height: hcard.height,

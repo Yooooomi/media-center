@@ -1,5 +1,6 @@
-import { ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { color } from "@media-center/ui/src/constants";
+import { forwardRef } from "react";
 import { Text } from "../text/text";
 import { Box } from "../../display/box";
 import { Pressable } from "./pressable";
@@ -31,29 +32,35 @@ const variants: Record<
   ],
 };
 
-export function TextButton({
-  text,
-  onPress,
-  focusOnMount,
-  variant = "default",
-  style,
-}: TextButtonProps) {
-  return (
-    <Pressable onPress={onPress} focusOnMount={focusOnMount} style={style}>
-      {({ focused }) => (
-        <Box
-          bg={focused ? variants[variant][0][0] : variants[variant][0][1]}
-          p="S8"
-          r="default"
-        >
-          <Text
-            align="center"
-            color={focused ? variants[variant][1][0] : variants[variant][1][1]}
+export const TextButton = forwardRef<View, TextButtonProps>(
+  ({ text, onPress, focusOnMount, variant = "default", style }, ref) => {
+    return (
+      <Pressable
+        ref={ref}
+        onPress={onPress}
+        focusOnMount={focusOnMount}
+        style={style}
+      >
+        {({ focused }) => (
+          <Box
+            bg={focused ? variants[variant][0][0] : variants[variant][0][1]}
+            h={32}
+            items="center"
+            row
+            ph="S8"
+            r="default"
           >
-            {text}
-          </Text>
-        </Box>
-      )}
-    </Pressable>
-  );
-}
+            <Text
+              align="center"
+              color={
+                focused ? variants[variant][1][0] : variants[variant][1][1]
+              }
+            >
+              {text}
+            </Text>
+          </Box>
+        )}
+      </Pressable>
+    );
+  },
+);

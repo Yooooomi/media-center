@@ -13,6 +13,7 @@ export type Accepted = string | number | ReactNode | undefined;
 export interface TextProps extends RNTextProps {
   size?: keyof typeof fontSize;
   bold?: boolean;
+  bolder?: boolean;
   color?: keyof typeof color;
   lineHeight?: TextStyle["lineHeight"];
   children: Accepted | Accepted[];
@@ -27,6 +28,7 @@ export function Text({
   color: pcolor,
   align,
   lineHeight,
+  bolder,
   ...other
 }: TextProps) {
   const styles = useMemo<StyleProp<TextStyle>>(
@@ -36,9 +38,9 @@ export function Text({
           default: bold ? "Montserrat-Bold" : "Montserrat",
           web: "Montserrat",
         }),
-        fontWeight: Platform.select({
+        fontWeight: Platform.select<TextStyle["fontWeight"]>({
           default: undefined,
-          web: bold ? "bold" : "normal",
+          web: bold ? "bold" : bolder ? "500" : "normal",
         }),
         fontSize: fontSize[size],
         color: pcolor ? color[pcolor] : color.whiteText,
@@ -47,7 +49,7 @@ export function Text({
       },
       style,
     ],
-    [bold, size, pcolor, align, lineHeight, style],
+    [bold, bolder, size, pcolor, align, lineHeight, style],
   );
 
   return (

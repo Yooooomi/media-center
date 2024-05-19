@@ -5,8 +5,12 @@ export type NavigationParams = {
   Show: { title: string; showId: string };
   Watch: { hierarchyItemId: string };
   Search: undefined;
-  SearchTmdb: undefined;
-  SearchTorrent: undefined;
+  SearchTmdb: {
+    q: string;
+  };
+  SearchTorrent: {
+    q: string;
+  };
   Movies: undefined;
   Shows: undefined;
   Settings: undefined;

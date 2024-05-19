@@ -7,6 +7,7 @@ import { MovieCard } from "../../components/implementedUi/cards/movieCard";
 import { useCardsInLine } from "../../services/hooks/useCardsInLine";
 import { isMobile } from "../../services/platform";
 import { Section } from "../../components/ui/display/section";
+import { PAGE_PADDING } from "../../services/hooks/platform";
 import { useQuery } from "@media-center/frontend/src/services/api/useQuery";
 
 export function Movies() {
@@ -21,9 +22,9 @@ export function Movies() {
 
   if (!isMobile()) {
     return (
-      <Section title="Mes films" titleBox={{ ml: "S8" }} grow pv="S16">
+      <Section title="Mes films" p={PAGE_PADDING} grow>
         <LineList
-          style={{ padding: spacing.S8, paddingTop: headerHeight + spacing.S8 }}
+          style={{ paddingTop: headerHeight }}
           keyExtractor={(e) => e.id.toString()}
           data={movies}
           renderItem={(item) => <MovieCard width={width} movie={item} />}

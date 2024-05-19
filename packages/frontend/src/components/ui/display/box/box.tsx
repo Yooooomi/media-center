@@ -1,14 +1,18 @@
-import { ComponentType, ReactNode, useMemo } from "react";
+import { CSSProperties, ComponentType, ReactNode, useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
   StyleProp,
+  StyleSheet,
   View,
   ViewStyle,
 } from "react-native";
 import {
+  AutoSpacing,
+  Spacing,
   color,
   debugBorder,
+  getSpacing,
   opacify,
   radius,
   spacing,
@@ -17,27 +21,28 @@ import { Pressable } from "../../input/pressable/pressable";
 import { ScrollViewPadded } from "../scrollViewPadded";
 
 export interface BoxProps {
-  m?: keyof typeof spacing;
-  mh?: keyof typeof spacing;
-  mv?: keyof typeof spacing;
-  mt?: keyof typeof spacing;
-  mb?: keyof typeof spacing;
-  ml?: keyof typeof spacing;
-  mr?: keyof typeof spacing;
-  p?: keyof typeof spacing;
-  ph?: keyof typeof spacing;
-  pv?: keyof typeof spacing;
-  pt?: keyof typeof spacing;
-  pb?: keyof typeof spacing;
-  pl?: keyof typeof spacing;
-  pr?: keyof typeof spacing;
-  gap?: keyof typeof spacing;
+  m?: AutoSpacing;
+  mh?: AutoSpacing;
+  mv?: AutoSpacing;
+  mt?: AutoSpacing;
+  mb?: AutoSpacing;
+  ml?: AutoSpacing;
+  mr?: AutoSpacing;
+  p?: AutoSpacing;
+  ph?: AutoSpacing;
+  pv?: AutoSpacing;
+  pt?: AutoSpacing;
+  pb?: AutoSpacing;
+  pl?: AutoSpacing;
+  pr?: AutoSpacing;
+  gap?: Spacing;
   maxh?: ViewStyle["maxHeight"];
   maxw?: ViewStyle["maxWidth"];
+  minw?: ViewStyle["minWidth"];
   basis?: ViewStyle["flexBasis"];
   overflow?: ViewStyle["overflow"];
-  h?: ViewStyle["height"];
-  w?: ViewStyle["width"];
+  h?: ViewStyle["height"] | CSSProperties["height"];
+  w?: ViewStyle["width"] | CSSProperties["width"];
   r?: keyof typeof radius;
   shrink?: boolean;
   grow?: boolean;
@@ -95,33 +100,35 @@ function useBoxStyle({
   flex,
   opacity,
   ratio,
+  minw,
 }: BoxProps) {
   return useMemo<ViewStyle>(
     () => ({
-      margin: m && spacing[m],
-      marginVertical: mv && spacing[mv],
-      marginHorizontal: mh && spacing[mh],
-      marginTop: mt && spacing[mt],
-      marginBottom: mb && spacing[mb],
-      marginLeft: ml && spacing[ml],
-      marginRight: mr && spacing[mr],
-      padding: p && spacing[p],
-      paddingVertical: pv && spacing[pv],
-      paddingHorizontal: ph && spacing[ph],
-      paddingTop: pt && spacing[pt],
-      paddingBottom: pb && spacing[pb],
-      paddingLeft: pl && spacing[pl],
-      paddingRight: pr && spacing[pr],
+      margin: getSpacing(m),
+      marginVertical: getSpacing(mv),
+      marginHorizontal: getSpacing(mh),
+      marginTop: getSpacing(mt),
+      marginBottom: getSpacing(mb),
+      marginLeft: getSpacing(ml),
+      marginRight: getSpacing(mr),
+      padding: getSpacing(p),
+      paddingVertical: getSpacing(pv),
+      paddingHorizontal: getSpacing(ph),
+      paddingTop: getSpacing(pt),
+      paddingBottom: getSpacing(pb),
+      paddingLeft: getSpacing(pl),
+      paddingRight: getSpacing(pr),
       flexDirection: row ? "row" : undefined,
       gap: gap && spacing[gap],
       alignItems: items,
       justifyContent: content,
       flexShrink: shrink === undefined ? undefined : shrink ? 1 : 0,
       flexGrow: grow === undefined ? undefined : grow ? 1 : 0,
-      width: w !== undefined ? w : undefined,
-      height: h !== undefined ? h : undefined,
+      width: w !== undefined ? (w as any) : undefined,
+      height: h !== undefined ? (h as any) : undefined,
       backgroundColor: bg ? getComputedColor(bg) : undefined,
       maxWidth: maxw !== undefined ? maxw : undefined,
+      minWidth: minw !== undefined ? minw : undefined,
       maxHeight: maxh !== undefined ? maxh : undefined,
       borderRadius: r && radius[r],
       overflow,
@@ -156,6 +163,7 @@ function useBoxStyle({
       h,
       bg,
       maxw,
+      minw,
       maxh,
       r,
       overflow,
@@ -205,6 +213,7 @@ function withBox<T extends { style?: StyleProp<ViewStyle> }>(
     style,
     w,
     ratio,
+    minw,
     ...props
   }: T & BoxProps) => {
     const styles = useBoxStyle({
@@ -238,11 +247,20 @@ function withBox<T extends { style?: StyleProp<ViewStyle> }>(
       r,
       row,
       shrink,
-      style,
       w,
       ratio,
+      minw,
     });
-    return <Component {...(props as T)} style={[styles, style]} />;
+    return (
+      <Component
+        {...(props as T)}
+        style={StyleSheet.flatten([
+          { pointerEvents: "box-none" },
+          styles,
+          style,
+        ])}
+      />
+    );
   };
 }
 

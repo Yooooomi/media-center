@@ -4,9 +4,10 @@ import {
   Routes as NativeRoutes,
   useLocation,
   useNavigate as useNativeNavigate,
+  Navigate,
 } from "react-router-dom";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   NavigationParams,
   paths,
@@ -26,38 +27,63 @@ import {
   RouterProps,
   RoutesProps,
 } from "@media-center/frontend/src/screens/navigation.props";
-import { withSider } from "@media-center/frontend/src/services/hocs/withSider";
+import { withLayout } from "@media-center/frontend/src/services/hocs/withLayout";
+import { FloatingTree } from "@floating-ui/react";
 
 export function Routes(_props: RoutesProps) {
   return (
     <NativeRoutes>
-      <NativeRoute path={paths.Library} Component={withSider(AddedRecently)} />
-      <NativeRoute path={paths.Discover} Component={withSider(Discover)} />
-      <NativeRoute path={paths.Movie} Component={withSider(Movie)} />
-      <NativeRoute path={paths.Show} Component={withSider(Show)} />
+      <NativeRoute path={paths.Library} Component={withLayout(AddedRecently)} />
+      <NativeRoute path={paths.Discover} Component={withLayout(Discover)} />
+      <NativeRoute path={paths.Movie} Component={withLayout(Movie)} />
+      <NativeRoute path={paths.Show} Component={withLayout(Show)} />
       <NativeRoute path={paths.Watch} Component={Watch} />
-      <NativeRoute path={paths.Search} Component={withSider(Search)} />
-      <NativeRoute path={paths.SearchTmdb} Component={withSider(SearchTmdb)} />
+      <NativeRoute path={paths.Search} Component={withLayout(Search)} />
+      <NativeRoute path={paths.SearchTmdb} Component={withLayout(SearchTmdb)} />
       <NativeRoute
         path={paths.SearchTorrent}
-        Component={withSider(SearchTorrent)}
+        Component={withLayout(SearchTorrent)}
       />
-      <NativeRoute path={paths.Movies} Component={withSider(Movies)} />
-      <NativeRoute path={paths.Shows} Component={withSider(Shows)} />
-      <NativeRoute path={paths.Settings} Component={withSider(Settings)} />
+      <NativeRoute path={paths.Movies} Component={withLayout(Movies)} />
+      <NativeRoute path={paths.Shows} Component={withLayout(Shows)} />
+      <NativeRoute path={paths.Settings} Component={withLayout(Settings)} />
+      <NativeRoute path="*" element={<Navigate to={paths.Library} />} />
     </NativeRoutes>
   );
 }
 
 export function Router({ children }: RouterProps) {
-  return <NativeRouter>{children}</NativeRouter>;
+  return (
+    <FloatingTree>
+      <NativeRouter>{children}</NativeRouter>
+    </FloatingTree>
+  );
 }
 
 export function useParams<K extends keyof NavigationParams>() {
-  const state = useLocation().search;
+  const { search: state, pathname } = useLocation();
+  const { navigate } = useNavigate();
 
-  const params = new URLSearchParams(state);
-  return Object.fromEntries(params.entries()) as NavigationParams[K];
+  const paramsObject = new URLSearchParams(state);
+  const params = Object.fromEntries(
+    paramsObject.entries(),
+  ) as NavigationParams[K];
+
+  return useMemo(
+    () => ({
+      ...params,
+      setParam: (name: string, value: any) => {
+        navigate(
+          pathname as keyof NavigationParams,
+          {
+            ...params,
+            [name]: value,
+          } as any,
+        );
+      },
+    }),
+    [navigate, params, pathname],
+  );
 }
 
 export function useNavigate() {

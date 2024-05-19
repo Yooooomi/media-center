@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { color, spacing } from "@media-center/ui/src/constants";
-import { useNavigate } from "../../screens/navigation.dependency";
-import { StatusContext } from "../../services/contexts/status.context";
-import { useMeshContext } from "../../services/contexts/mesh.context";
-import { IconName } from "../ui/display/icon/icon.props";
+import { useNavigate } from "../../../screens/navigation.dependency";
+import { StatusContext } from "../../../services/contexts/status.context";
+import { useMeshContext } from "../../../services/contexts/mesh.context";
+import { IconName } from "../../ui/display/icon/icon.props";
 import { SiderButton } from "./siderButton";
 import { StatusLine } from "./statusLine";
 
@@ -17,11 +17,6 @@ export function Sider() {
         icon: "home",
         title: "Ajouté récement",
         do: () => navigate("Library", undefined),
-      },
-      {
-        icon: "magnify",
-        title: "Rechercher",
-        do: () => navigate("Search", undefined),
       },
       {
         icon: "eye",

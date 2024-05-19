@@ -7,7 +7,21 @@ export const spacing = {
   S16: 16,
   S24: 24,
   S32: 32,
+  S48: 48,
 } as const;
+
+export type Spacing = keyof typeof spacing;
+export type AutoSpacing = Spacing | "auto";
+
+export function getSpacing(sp: AutoSpacing | undefined) {
+  if (!sp) {
+    return undefined;
+  }
+  if (sp === "auto") {
+    return "auto";
+  }
+  return spacing[sp];
+}
 
 export const radius = {
   small: 2,
@@ -73,6 +87,15 @@ export const color = {
   progress: rawColor.blue,
 };
 
+export type Color = keyof typeof color;
+
+export function getColor(c: Color | undefined) {
+  if (!c) {
+    return undefined;
+  }
+  return color[c];
+}
+
 function shadeColor(c: string, percent: number) {
   let R = parseInt(c.substring(1, 3), 16);
   let G = parseInt(c.substring(3, 5), 16);
@@ -97,7 +120,7 @@ function shadeColor(c: string, percent: number) {
   return "#" + RR + GG + BB;
 }
 
-function opacifyRaw(c: string, t: number) {
+export function opacifyRaw(c: string, t: number) {
   return `${c}${Math.floor(t * 256)
     .toString(16)
     .padStart(2, "0")}`;
@@ -116,17 +139,6 @@ export const durations = {
   default: 175,
 };
 
-export const cardShadow = {
-  shadowColor: rawColor.black,
-  shadowOffset: {
-    height: 0,
-    width: 0,
-  },
-  shadowOpacity: 1,
-  shadowRadius: 10,
-  elevation: 10,
-};
-
 export const shadows = {
   default: {
     shadowColor: "#000",
@@ -135,8 +147,21 @@ export const shadows = {
       height: 9,
     },
     shadowOpacity: 0.48,
-    shadowRadius: 11.95,
+    shadowRadius: 12,
 
     elevation: 18,
   },
+  light: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 18,
+
+    elevation: 14,
+  }
 };
+
+export const cardShadow = shadows.light;

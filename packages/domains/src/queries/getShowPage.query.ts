@@ -143,15 +143,15 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       return acc;
     }, {});
 
-    const seasons = await this.tmdbApi.getSeasons(intent.tmdbId);
-    const neededSeasonNumbers = catalogEntryFulfilled.availableSeasons();
-    const neededSeasons = seasons.filter((season) =>
-      neededSeasonNumbers.includes(season.season_number),
-    );
-    const tmdbEpisodes = await Promise.all(
-      neededSeasonNumbers.map(async (seasonNumber) => ({
-        season: seasonNumber,
-        episodes: await this.tmdbApi.getEpisodes(intent.tmdbId, seasonNumber),
+    let seasons = await this.tmdbApi.getSeasons(intent.tmdbId);
+    seasons = seasons.filter((season) => season.season_number !== 0);
+    const episodes = await Promise.all(
+      seasons.map(async (season) => ({
+        season: season.season_number,
+        episodes: await this.tmdbApi.getEpisodes(
+          intent.tmdbId,
+          season.season_number,
+        ),
       })),
     );
 
@@ -170,16 +170,18 @@ export class GetShowPageQueryHandler extends QueryHandler(GetShowPageQuery, [
       tmdb,
       requests,
       catalogEntry: catalogEntryFulfilled,
-      seasons: neededSeasons,
-      episodes: tmdbEpisodes,
+      seasons,
+      episodes: episodes,
       userInfo,
       hierarchyEntryInformation: Object.entries(informationPerEpisode).flatMap(
-        ([season, episodes]) => {
-          return Object.entries(episodes).map(([episode, information]) => ({
-            season: +season,
-            episode: +episode,
-            information,
-          }));
+        ([season, seasonEpisodes]) => {
+          return Object.entries(seasonEpisodes).map(
+            ([episode, information]) => ({
+              season: +season,
+              episode: +episode,
+              information,
+            }),
+          );
         },
       ),
     });

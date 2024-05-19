@@ -1,12 +1,13 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useCallback, useState } from "react";
 import { ShowEpisode } from "@media-center/domains/src/tmdb/domain/showEpisode";
 import { SetUserTmdbInfoProgressCommand } from "@media-center/domains/src/userTmdbInfo/applicative/setUserTmdbInfoProgress.command";
+import { color, shadows } from "@media-center/ui/src/constants";
+import { noop } from "@media-center/algorithm";
 import { useImageUri } from "../../services/tmdb";
 import { Text } from "../../components/ui/input/text/text";
 import { Box } from "../../components/ui/display/box/box";
 import { FullScreenLoading } from "../../components/ui/display/fullScreenLoading/fullScreenLoading";
-import { PageBackground } from "../../components/pageBackground/pageBackground";
 import { useQueryTorrents } from "../../services/hooks/useQueryTorrents";
 import { BigPressable } from "../../components/ui/input/bigPressable";
 import { TorrentRequests } from "../../components/implementedUi/torrentRequests";
@@ -14,13 +15,15 @@ import { useCatalogEntryMoreOptions } from "../../services/hooks/useCatalogEntry
 import { ShowEpisodeCardsLine } from "../../components/implementedUi/showEpisodeCardsLine";
 import { handleBasicUserQuery } from "../../components/ui/tools/promptAlert";
 import { Beta } from "../../services/api/api";
-import { HierarchyEntryInformationLine } from "../../components/implementedUi/hierarchyEntryInformationLine";
+import { RateLimitedImage } from "../../components/ui/display/rateLimitedImage";
+import { cardRatio } from "../../services/cards";
+import { Stars } from "../../components/ui/display/stars";
 import { SeasonSelector } from "./seasonSelector";
 import { ShowWrappedProps } from "./showWrapped.props";
 
 export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
   const show = showPage.tmdb;
-  const imageUri = useImageUri(show.backdrop_path, true);
+  const imageUri = useImageUri(show.poster_path, true);
   const [focusedEpisode, setFocusedEpisode] = useState<ShowEpisode | undefined>(
     undefined,
   );
@@ -90,7 +93,7 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
         1;
   const highlightedEpisode = userLastSeen?.episode ?? 0;
   const season = showPage.seasons.find(
-    (s) => s.season_number === highlightedSeason,
+    (showPageSeason) => showPageSeason.season_number === highlightedSeason,
   );
   const seasonEpisodes = showPage.episodes.find(
     (e) => e.season === highlightedSeason,
@@ -119,88 +122,72 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
 
   return (
     <>
-      <ScrollView style={styles.grow}>
-        <PageBackground imageUri={imageUri} />
-        <Box p="S32">
-          <Box mb="S16">
-            <Text bold size="big">
-              {show.title.toUpperCase()}
-            </Text>
-            <Text color="textFaded">{show.getYear()}</Text>
+      <View style={styles.background} />
+      <Box p="S32">
+        <Box row gap="S32" style={styles.header} items="flex-start">
+          <Box r="default" style={shadows.light} overflow="hidden">
+            <RateLimitedImage style={styles.cover} uri={imageUri} />
           </Box>
-          <Box
-            row
-            gap="S8"
-            mb="S16"
-            items="flex-end"
-            content="space-between"
-            style={styles.tabContainer}
-          >
-            <SeasonSelector
-              seasons={showPage.seasons}
-              season={highlightedSeason}
-              onSeasonChange={setSeasonIndex}
-            />
-            <Box row w={focusedEpisode ? 330 : (330 * 2) / 3} mb="S4">
-              <BigPressable
-                text="Télécharger"
-                focusOnMount={!hasSeasons}
-                icon="download"
-                onPress={queryTorrents}
-                loading={queryTorrentsLoading}
-              />
-              {focusedEpisode ? (
+          <Box shrink pv="S8">
+            <Text size="big" bold>
+              {show.title}
+            </Text>
+            <Box gap="S24" mt="S16">
+              <Box gap="S4">
+                <Text size="smaller" color="textFaded" bolder>
+                  {show.getYear()}
+                </Text>
+                <Stars note={show.getNoteOutOf(5)} outOf={5} size={16} />
+              </Box>
+              <Box row gap="S8">
                 <BigPressable
-                  text={
-                    focusedEpisodeFinished
-                      ? "Marquer pas vu"
-                      : "Marquer comme vu"
-                  }
-                  icon={focusedEpisodeFinished ? "eye-off" : "eye"}
-                  onPress={focusedEpisodeFinished ? markNotViewed : markViewed}
+                  icon="play"
+                  onPress={noop}
+                  text=""
+                  bg="ctaGreen"
                 />
-              ) : null}
-              <BigPressable
-                text="Options"
-                icon="dots-horizontal"
-                onPress={openMoreOptions}
-              />
+                <BigPressable
+                  icon="download"
+                  loading={queryTorrentsLoading}
+                  loadingColor="whiteText"
+                  onPress={queryTorrents}
+                  text=""
+                />
+                <BigPressable
+                  icon="dots-horizontal"
+                  onPress={openMoreOptions}
+                  text=""
+                />
+              </Box>
+              <Box>
+                <Text size="smaller" color="whiteText" bolder>
+                  {show.overview}
+                </Text>
+              </Box>
             </Box>
           </Box>
+        </Box>
+        <Box mt="S32" gap="S8" overflow="visible">
+          <SeasonSelector
+            seasons={showPage.seasons}
+            season={highlightedSeason}
+            onSeasonChange={setSeasonIndex}
+          />
           {season && seasonEpisodes ? (
             <ShowEpisodeCardsLine
-              onFocusEpisode={setFocusedEpisode}
               focusIndex={highlightedEpisode}
               userInfo={showPage.userInfo}
               showEpisodes={seasonEpisodes}
               catalogEntry={showPage.catalogEntry}
               season={season.season_number}
+              onFocusEpisode={setFocusedEpisode}
             />
           ) : null}
-          <Box row mt="S16">
-            <Box w="60%">
-              <Box mb="S4">
-                <Text color="whiteText" bold size="default">
-                  Synopsis
-                </Text>
-              </Box>
-              <Box mb="S16">
-                <Text lineHeight={20} size="small" color="textFaded">
-                  {show.overview}
-                </Text>
-              </Box>
-              <TorrentRequests requests={showPage.requests} />
-            </Box>
-            <Box grow items="flex-end">
-              {focusedEpisodeHasHierarchyEntry ? (
-                <HierarchyEntryInformationLine
-                  hierarchyEntryInformation={focusedEpisodeHierarchyInformation}
-                />
-              ) : null}
-            </Box>
-          </Box>
         </Box>
-      </ScrollView>
+        <Box>
+          <TorrentRequests requests={showPage.requests} />
+        </Box>
+      </Box>
       {element}
       {MoreOptionsElement}
     </>
@@ -208,14 +195,15 @@ export function ShowWrapped({ showPage, reload }: ShowWrappedProps) {
 }
 
 const styles = StyleSheet.create({
-  grow: {
-    flexGrow: 1,
+  header: {
+    paddingRight: 300,
   },
-  scrollview: {
-    flexGrow: 1,
+  cover: {
+    width: 230,
+    aspectRatio: cardRatio,
   },
-  tabContainer: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: "white",
+  background: {
+    ...StyleSheet.absoluteFillObject,
+    color: color.background,
   },
 });

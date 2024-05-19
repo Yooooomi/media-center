@@ -9,7 +9,7 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { ComponentProps, useCallback } from "react";
+import React, { ComponentProps, useCallback, useMemo } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { color, spacing } from "@media-center/ui/src/constants";
 import {
@@ -268,7 +268,18 @@ export function Router({ children }: RouterProps) {
 }
 
 export function useParams<K extends keyof NavigationParams>() {
-  return useRoute().params as NavigationParams[K];
+  const params = useRoute().params as NavigationParams[K];
+  const { setParams } = useNavigation<NavigationProp<NavigationParams>>();
+
+  return useMemo(
+    () => ({
+      ...params,
+      setParam: (name: string, value: any) => {
+        setParams({ [name]: value });
+      },
+    }),
+    [params, setParams],
+  );
 }
 
 export function useNavigate() {

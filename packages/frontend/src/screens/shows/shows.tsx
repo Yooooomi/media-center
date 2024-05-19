@@ -20,9 +20,9 @@ export function Shows() {
 
   if (!isMobile()) {
     return (
-      <Section title="Mes séries" titleBox={{ ml: "S8" }} grow pv="S16">
+      <Section title="Mes séries" p="S16" grow>
         <LineList
-          style={{ padding: spacing.S8, paddingTop: headerHeight + spacing.S8 }}
+          style={{ paddingTop: headerHeight }}
           keyExtractor={(e) => e.id.toString()}
           data={shows}
           renderItem={(item) => <ShowCard width={width} show={item} />}

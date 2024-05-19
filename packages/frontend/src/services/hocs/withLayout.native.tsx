@@ -1,9 +1,9 @@
 import { FC, ReactNode } from "react";
 import { StyleSheet, TVFocusGuideView } from "react-native";
 import { Box } from "../../components/ui/display/box/box";
-import { Sider } from "../../components/sider/sider";
+import { Sider } from "../../components/layout/sider/sider";
 
-export function withSider<C extends (args: any) => ReactNode>(
+export function withLayout<C extends (args: any) => ReactNode>(
   Component: C,
 ): FC {
   return (a: Parameters<C>["0"]) => (

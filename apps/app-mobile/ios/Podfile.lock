@@ -18,6 +18,8 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (12.8.2):
     - ExpoModulesCore
+  - ExpoLinearGradient (12.7.2):
+    - ExpoModulesCore
   - ExpoModulesCore (1.11.12):
     - glog
     - hermes-engine
@@ -1413,6 +1415,7 @@ DEPENDENCIES:
   - ExpoBlur (from `../../../node_modules/expo-blur/ios`)
   - ExpoFileSystem (from `../../../node_modules/expo-file-system/ios`)
   - ExpoKeepAwake (from `../../../node_modules/expo-keep-awake/ios`)
+  - ExpoLinearGradient (from `../../../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
   - EXSplashScreen (from `../../../node_modules/expo-splash-screen/ios`)
   - EXStructuredHeaders (from `../../../node_modules/expo-structured-headers/ios`)
@@ -1511,6 +1514,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-file-system/ios"
   ExpoKeepAwake:
     :path: "../../../node_modules/expo-keep-awake/ios"
+  ExpoLinearGradient:
+    :path: "../../../node_modules/expo-linear-gradient/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/expo-modules-core"
   EXSplashScreen:
@@ -1649,6 +1654,7 @@ SPEC CHECKSUMS:
   ExpoBlur: e832d874bd94afc0645daddbd3162ec1ce172080
   ExpoFileSystem: a9273932e69a9a1e1a8d01b6ba895bb8294bbea2
   ExpoKeepAwake: 0f5cad99603a3268e50af9a6eb8b76d0d9ac956c
+  ExpoLinearGradient: 4ad1449a2408e0435ac959076562b3921f2e32a1
   ExpoModulesCore: 5ba70816562a205894391952a4997b18d5d777b0
   EXSplashScreen: b9973a1dffda33b646d58283125af5332d3fa84a
   EXStructuredHeaders: 5b0f47259db047dc1fdfa84752e292c2bfa68ecd

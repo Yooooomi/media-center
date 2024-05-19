@@ -1,6 +1,6 @@
-import { Box } from "../ui/display/box";
-import { Dot } from "../ui/display/dot";
-import { Text } from "../ui/input/text";
+import { Box } from "../../ui/display/box";
+import { Dot } from "../../ui/display/dot";
+import { Text } from "../../ui/input/text";
 
 interface StatusLineProps {
   title: string;

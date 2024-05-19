@@ -29,7 +29,7 @@ export function WatchCatalogEntry({
 
   return (
     <BigPressable
-      text="Lire"
+      text=""
       focusOnMount
       bg="ctaGreen"
       icon={userInfo.progress > 0 ? "step-forward" : "play"}

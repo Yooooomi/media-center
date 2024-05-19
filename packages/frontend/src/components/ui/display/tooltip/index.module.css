@@ -1,6 +1,7 @@
 .tooltip {
   position: relative;
   display: inline-block;
+  width: max-content;
 }
 
 .tooltip .tooltiptext {
@@ -15,6 +16,9 @@
   transform: translateX(-50%) translateY(calc(100% - 4px));
   width: max-content;
   transition: opacity 250ms, transform 250ms;
+  background-color: white;
+  padding: var(--spacing-S8);
+  border-radius: var(--radius-default);
 }
 
 .tooltip:hover .tooltiptext {

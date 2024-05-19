@@ -25,5 +25,12 @@ export interface UseNavigate {
   };
 }
 
+export interface StaticUseParams<K extends keyof NavigationParams> {
+  setParam<T extends keyof NavigationParams[K]>(
+    name: T,
+    value: NavigationParams[K][T],
+  ): void;
+}
+
 export type UseParams<K extends keyof NavigationParams> =
-  () => NavigationParams[K];
+  () => NavigationParams[K] & StaticUseParams<K>;

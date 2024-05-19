@@ -1,0 +1,8 @@
+.input {
+  background-color: unset;
+  outline: unset;
+  border: unset;
+  font-size: unset;
+  padding: var(--spacing-S8) var(--spacing-S16);
+  width: 300px;
+}

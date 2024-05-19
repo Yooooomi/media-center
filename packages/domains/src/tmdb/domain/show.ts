@@ -22,4 +22,8 @@ export class Show extends Shape({
   getRoundedNote() {
     return Math.floor(this.vote_average * 10);
   }
+
+  getNoteOutOf(outOf: number) {
+    return Math.floor(this.vote_average * 10) / 10 / (10 / outOf);
+  }
 }

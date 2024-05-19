@@ -2,11 +2,11 @@ import { useCallback, useMemo, useState } from "react";
 import { DevSettings, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { color, shadows, spacing } from "@media-center/ui/src/constants";
-import { useNavigate } from "../../screens/navigation.dependency";
-import { StatusContext } from "../../services/contexts/status.context";
-import { useAnimatedValue } from "../../services/hooks/useAnimatedValue";
-import { useMeshContext } from "../../services/contexts/mesh.context";
-import { IconName } from "../ui/display/icon/icon.props";
+import { useNavigate } from "../../../screens/navigation.dependency";
+import { StatusContext } from "../../../services/contexts/status.context";
+import { useAnimatedValue } from "../../../services/hooks/useAnimatedValue";
+import { useMeshContext } from "../../../services/contexts/mesh.context";
+import { IconName } from "../../ui/display/icon/icon.props";
 import { SiderButton } from "./siderButton";
 import { StatusLine } from "./statusLine";
 

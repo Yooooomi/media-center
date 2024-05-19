@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import {
   color,
   radius,
@@ -34,20 +34,17 @@ export function ScaleButton({
     >
       {({ focused }) => (
         <View
-          style={[
-            styles.root,
-            {
-              borderWidth: border ? spacing.S2 : undefined,
-              borderRadius:
-                border && typeof border === "string"
-                  ? radius[border]
-                  : focused
-                    ? radius.small + 4
-                    : radius.small,
-              borderColor:
-                border && focused ? color.whiteText : rawColor.transparent,
-            },
-          ]}
+          style={{
+            borderWidth: border ? spacing.S2 : undefined,
+            borderRadius:
+              border && typeof border === "string"
+                ? radius[border]
+                : focused
+                  ? radius.small + 4
+                  : radius.small,
+            borderColor:
+              border && focused ? color.whiteText : rawColor.transparent,
+          }}
         >
           {children}
         </View>
@@ -55,9 +52,3 @@ export function ScaleButton({
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    overflow: "hidden",
-  },
-});

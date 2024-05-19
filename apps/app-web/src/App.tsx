@@ -1,6 +1,6 @@
 import "./services/injection";
 import "./App.css";
-import { color, spacing } from "@media-center/ui/src/constants";
+import { color, radius, spacing } from "@media-center/ui/src/constants";
 import { Navigation } from "@media-center/frontend/src/screens";
 
 export function App() {
@@ -14,6 +14,9 @@ export function App() {
             ${Object.entries(spacing)
               .map(([key, value]) => `--spacing-${key}: ${value}px;`)
               .join("\n")}
+              ${Object.entries(radius)
+                .map(([key, value]) => `--radius-${key}: ${value}px;`)
+                .join("\n")}
         }`}
       </style>
       <div className="App">

@@ -1,10 +1,10 @@
 import { StyleSheet, View } from "react-native";
 import { radius, spacing } from "@media-center/ui/src/constants";
-import { Pressable } from "../ui/input/pressable/pressable";
-import { Icon } from "../ui/display/icon";
-import { Text } from "../ui/input/text/text";
-import { Box } from "../ui/display/box";
-import { IconName } from "../ui/display/icon/icon.props";
+import { Pressable } from "../../ui/input/pressable/pressable";
+import { Icon } from "../../ui/display/icon";
+import { Text } from "../../ui/input/text/text";
+import { Box } from "../../ui/display/box";
+import { IconName } from "../../ui/display/icon/icon.props";
 
 interface SiderButtonProps {
   text: string;

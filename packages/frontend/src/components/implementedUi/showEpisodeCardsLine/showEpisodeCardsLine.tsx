@@ -1,7 +1,6 @@
 import { ShowEpisode } from "@media-center/domains/src/tmdb/domain/showEpisode";
 import { ShowCatalogEntryFulfilled } from "@media-center/domains/src/catalog/applicative/catalogEntryFulfilled.front";
 import { UserTmdbShowInfo } from "@media-center/domains/src/userTmdbInfo/domain/userTmdbInfo";
-import { StyleSheet } from "react-native";
 import { useCallback } from "react";
 import { LineList } from "../../ui/display/lineList";
 import { ShowEpisodeCardWrapper } from "../cardWrappers/showEpisodeCardWrapper";
@@ -52,16 +51,9 @@ export function ShowEpisodeCardsLine({
 
   return (
     <LineList
-      style={styles.root}
       data={showEpisodes}
       keyExtractor={(showEpisode) => showEpisode.episode_number.toString()}
       renderItem={renderItem}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    marginLeft: -8,
-  },
-});

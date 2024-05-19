@@ -1,4 +1,6 @@
 import { ShowSeason } from "@media-center/domains/src/tmdb/domain/showSeason";
+import { View } from "react-native";
+import { color, radius, spacing } from "@media-center/ui/src/constants";
 import { Box } from "../../components/ui/display/box";
 import { TabButton } from "../../components/ui/input/pressable/tabButton";
 
@@ -14,7 +16,17 @@ export function SeasonSelector({
   onSeasonChange,
 }: SeasonSelectorProps) {
   return (
-    <Box row gap="S8">
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: color.darkBackground,
+        borderRadius: radius.default,
+        padding: 6,
+        flexShrink: 1,
+        width: "max-content",
+        gap: spacing.S4,
+      }}
+    >
       {seasons.map((s) => (
         <TabButton
           key={s.season_number}
@@ -23,6 +35,6 @@ export function SeasonSelector({
           onPress={() => onSeasonChange(s.season_number)}
         />
       ))}
-    </Box>
+    </View>
   );
 }

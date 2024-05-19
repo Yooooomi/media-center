@@ -21,7 +21,7 @@ export function ShowEpisodeCardWrapper({
 const styles = StyleSheet.create({
   button: {
     position: "absolute",
-    left: spacing.S8,
+    right: spacing.S8,
     top: spacing.S8,
   },
 });

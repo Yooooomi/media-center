@@ -7,7 +7,7 @@
       {"mode": "auto"}
     ],
     "[typescript]": {
-      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+      "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "[typescriptreact]": {
       "editor.defaultFormatter": "vscode.typescript-language-features"

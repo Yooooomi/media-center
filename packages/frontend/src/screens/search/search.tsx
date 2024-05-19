@@ -18,7 +18,7 @@ export function Search() {
           textSize="default"
           icon="search-web"
           iconSize={48}
-          onPress={() => navigate("SearchTmdb", undefined)}
+          onPress={() => navigate("SearchTmdb", { q: "" })}
         />
       </Box>
       <Box w={size} h={size} maxw={200} maxh={200}>
@@ -27,7 +27,7 @@ export function Search() {
           textSize="default"
           icon="database-search-outline"
           iconSize={48}
-          onPress={() => navigate("SearchTorrent", undefined)}
+          onPress={() => navigate("SearchTorrent", { q: "" })}
         />
       </Box>
     </Box>

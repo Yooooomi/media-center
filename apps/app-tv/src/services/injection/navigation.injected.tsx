@@ -32,7 +32,7 @@ import {
   RouterProps,
   RoutesProps,
 } from "@media-center/frontend/src/screens/navigation.props";
-import { withSider } from "@media-center/frontend/src/services/hocs/withSider";
+import { withLayout } from "@media-center/frontend/src/services/hocs/withLayout";
 import { BackHandler } from "react-native";
 
 export interface HistoryItem {
@@ -44,6 +44,7 @@ export interface HistoryItem {
 interface NavigationContext {
   history: HistoryItem[];
   add: (item: HistoryItem) => void;
+  setParam: (name: string, value: any) => void;
   pop: () => void;
 }
 
@@ -70,13 +71,28 @@ export function useNavigationContext() {
     });
   }, []);
 
+  const setParam = useCallback((name: string, value: any) => {
+    setHistory((h) => {
+      const lastItem = h.at(-1);
+      if (!lastItem) {
+        return h;
+      }
+      lastItem.params = {
+        ...lastItem.params,
+        [name]: value,
+      };
+      return [...h];
+    });
+  }, []);
+
   const value = useMemo<NavigationContext>(
     () => ({
       add,
       pop,
       history,
+      setParam,
     }),
-    [add, history, pop],
+    [add, history, pop, setParam],
   );
 
   return { value };
@@ -99,24 +115,24 @@ export function Routes(_props: RoutesProps) {
       <>
         <NativeRoute
           path={paths.Library}
-          Component={withSider(AddedRecently)}
+          Component={withLayout(AddedRecently)}
         />
-        <NativeRoute path={paths.Discover} Component={withSider(Discover)} />
-        <NativeRoute path={paths.Movie} Component={withSider(Movie)} />
-        <NativeRoute path={paths.Show} Component={withSider(Show)} />
+        <NativeRoute path={paths.Discover} Component={withLayout(Discover)} />
+        <NativeRoute path={paths.Movie} Component={withLayout(Movie)} />
+        <NativeRoute path={paths.Show} Component={withLayout(Show)} />
         <NativeRoute path={paths.Watch} Component={Watch} />
-        <NativeRoute path={paths.Search} Component={withSider(Search)} />
+        <NativeRoute path={paths.Search} Component={withLayout(Search)} />
         <NativeRoute
           path={paths.SearchTmdb}
-          Component={withSider(SearchTmdb)}
+          Component={withLayout(SearchTmdb)}
         />
         <NativeRoute
           path={paths.SearchTorrent}
-          Component={withSider(SearchTorrent)}
+          Component={withLayout(SearchTorrent)}
         />
-        <NativeRoute path={paths.Movies} Component={withSider(Movies)} />
-        <NativeRoute path={paths.Shows} Component={withSider(Shows)} />
-        <NativeRoute path={paths.Settings} Component={withSider(Settings)} />
+        <NativeRoute path={paths.Movies} Component={withLayout(Movies)} />
+        <NativeRoute path={paths.Shows} Component={withLayout(Shows)} />
+        <NativeRoute path={paths.Settings} Component={withLayout(Settings)} />
       </>
     ),
     [],
@@ -150,7 +166,18 @@ export function Router({ children }: RouterProps) {
 }
 
 export function useParams<K extends keyof NavigationParams>() {
-  return useLocation().state as NavigationParams[K];
+  const state = useLocation().state as NavigationParams[K];
+  const { setParam } = useContext(NavigationContext);
+
+  return useMemo(
+    () => ({
+      ...state,
+      setParam: (name: string, value: any) => {
+        setParam(name, value);
+      },
+    }),
+    [setParam, state],
+  );
 }
 
 let uniqueId = 0;

@@ -8,9 +8,9 @@ async function main() {
     "RECONCILE_DATABASE_ON_START",
   );
   if (shouldReconcileDatabaseAndDisk?.toLowerCase().trim() !== "no") {
-    // await commandBus.execute(new ScanExistingCommand());
+    await commandBus.execute(new ScanExistingCommand());
   }
-  // commandBus.execute(new ScanMissingSubtitlesCommand()).catch(console.error);
+  commandBus.execute(new ScanMissingSubtitlesCommand()).catch(console.error);
 }
 
 main().catch(console.error);

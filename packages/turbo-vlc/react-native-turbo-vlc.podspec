@@ -14,10 +14,10 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/Yooooomi/react-native-turbo-vlc.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
-
+  s.vendored_frameworks = "ios/**.xcframework"
   s.xcconfig = { 'SWIFT_OBJC_BRIDGING_HEADER' => '${PODS_TARGET_SRCROOT}/ios/react-native-turbo-vlc-Bridging-Header.h' }
 
-  s.dependency 'VLCKit', '4.0.0a4'
+  s.dependency 'VLCKit', '4.0.0a6'
 
   install_modules_dependencies(s)
 end

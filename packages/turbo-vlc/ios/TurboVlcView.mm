@@ -1,5 +1,4 @@
 #import "TurboVlcView.h"
-#import "react_native_turbo_vlc-Swift.h"
 
 #import <react/renderer/components/RNTurboVlcViewSpec/ComponentDescriptors.h>
 #import <react/renderer/components/RNTurboVlcViewSpec/EventEmitters.h>
@@ -7,6 +6,7 @@
 #import <react/renderer/components/RNTurboVlcViewSpec/RCTComponentViewHelpers.h>
 
 #import "RCTFabricComponentsPlugins.h"
+#import "Heyo.h"
 
 using namespace facebook::react;
 
@@ -127,19 +127,19 @@ using namespace facebook::react;
   [_view prepare];
   
   if (wasReleased || oldViewProps.volume != newViewProps.volume) {
-    [_view setVolumeWithVolume:newViewProps.volume];
+    [_view setVolume:newViewProps.volume];
   }
   if (wasReleased || oldViewProps.uri != newViewProps.uri) {
-    [_view setUriWithUri:[NSString stringWithUTF8String:newViewProps.uri.c_str()]];
+    [_view setUri:[NSString stringWithUTF8String:newViewProps.uri.c_str()]];
   }
   if (wasReleased || oldViewProps.play != newViewProps.play) {
-    [_view setPlayWithPlay:newViewProps.play || wasReleased];
+    [_view setPlay:newViewProps.play || wasReleased];
   }
   if (wasReleased || oldViewProps.audioTrack != newViewProps.audioTrack) {
-    [_view setAudioTrackWithId:[NSString stringWithUTF8String:newViewProps.audioTrack.c_str()]];
+    [_view setAudioTrack:[NSString stringWithUTF8String:newViewProps.audioTrack.c_str()]];
   }
   if (wasReleased || oldViewProps.textTrack != newViewProps.textTrack) {
-    [_view setTextTrackWithId:[NSString stringWithUTF8String:newViewProps.textTrack.c_str()]];
+    [_view setTextTrack:[NSString stringWithUTF8String:newViewProps.textTrack.c_str()]];
   }
   [super updateProps:props oldProps:oldProps];
 }
@@ -151,7 +151,7 @@ using namespace facebook::react;
 
 - (void)seek:(double)ms
 {
-  [_view setSeekWithSeek:ms];
+  [_view setSeek:ms];
 }
 
 

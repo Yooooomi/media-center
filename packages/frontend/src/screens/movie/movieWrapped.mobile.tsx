@@ -125,7 +125,7 @@ export function MovieWrapped({ moviePage, reload }: MovieWrappedProps) {
                 <TorrentRequests requests={moviePage.requests} />
               </Box>
             </Box>
-            <Box w="100%" row gap="S16">
+            <Box row gap="S16" content="space-between">
               {hasHierarchyItems && (
                 <WatchCatalogEntry
                   entry={moviePage.catalogEntry}

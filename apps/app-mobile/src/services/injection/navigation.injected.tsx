@@ -196,6 +196,8 @@ export function Routes(_props: RoutesProps) {
           header: () => null,
           headerTransparent: true,
           headerBlurEffect: undefined,
+          fullScreenGestureEnabled: true,
+          gestureDirection: "vertical",
         }}
       />
       <StackNavigator.Screen

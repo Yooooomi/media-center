@@ -12,9 +12,13 @@ PODS:
     - ExpoModulesCore
   - Expo (50.0.14):
     - ExpoModulesCore
+  - ExpoBlur (12.9.2):
+    - ExpoModulesCore
   - ExpoFileSystem (16.0.6):
     - ExpoModulesCore
   - ExpoKeepAwake (12.8.2):
+    - ExpoModulesCore
+  - ExpoLinearGradient (12.7.2):
     - ExpoModulesCore
   - ExpoModulesCore (1.11.12):
     - glog
@@ -975,6 +979,66 @@ PODS:
   - React-Mapbuffer (0.73.6-1):
     - glog
     - React-debug
+  - react-native-safe-area-context (4.9.0):
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2022.05.16.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-graphics
+    - React-ImageManager
+    - react-native-safe-area-context/common (= 4.9.0)
+    - react-native-safe-area-context/fabric (= 4.9.0)
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-safe-area-context/common (4.9.0):
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2022.05.16.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-safe-area-context/fabric (4.9.0):
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2022.05.16.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-graphics
+    - React-ImageManager
+    - react-native-safe-area-context/common
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-turbo-vlc (0.0.1):
     - glog
     - hermes-engine
@@ -993,7 +1057,7 @@ PODS:
     - React-utils
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - VLCKit (= 4.0.0a4)
+    - VLCKit (= 4.0.0a6)
     - Yoga
   - React-nativeconfig (0.73.6-1)
   - React-NativeModulesApple (0.73.6-1):
@@ -1254,6 +1318,45 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNScreens (3.30.1):
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2022.05.16.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNScreens/common (= 3.30.1)
+    - Yoga
+  - RNScreens/common (3.30.1):
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2022.05.16.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNSVG (14.1.0):
     - glog
     - hermes-engine
@@ -1297,7 +1400,7 @@ PODS:
   - sqlite3 (3.42.0):
     - sqlite3/common (= 3.42.0)
   - sqlite3/common (3.42.0)
-  - VLCKit (4.0.0a4)
+  - VLCKit (4.0.0a6)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1309,8 +1412,10 @@ DEPENDENCIES:
   - EXJSONUtils (from `../../../node_modules/expo-json-utils/ios`)
   - EXManifests (from `../../../node_modules/expo-manifests/ios`)
   - Expo (from `../../../node_modules/expo`)
+  - ExpoBlur (from `../../../node_modules/expo-blur/ios`)
   - ExpoFileSystem (from `../../../node_modules/expo-file-system/ios`)
   - ExpoKeepAwake (from `../../../node_modules/expo-keep-awake/ios`)
+  - ExpoLinearGradient (from `../../../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
   - EXSplashScreen (from `../../../node_modules/expo-splash-screen/ios`)
   - EXStructuredHeaders (from `../../../node_modules/expo-structured-headers/ios`)
@@ -1346,6 +1451,7 @@ DEPENDENCIES:
   - React-jsitracing (from `../../../node_modules/react-native/ReactCommon/hermes/executor/`)
   - React-logger (from `../../../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../../../node_modules/react-native/ReactCommon`)
+  - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - "react-native-turbo-vlc (from `../../../node_modules/@media-center/turbo-vlc`)"
   - React-nativeconfig (from `../../../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../../../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1372,6 +1478,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../../../node_modules/@react-native-async-storage/async-storage`)"
   - RNLinearGradient (from `../../../node_modules/react-native-linear-gradient`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
+  - RNScreens (from `../../../node_modules/react-native-screens`)
   - RNSVG (from `../../../node_modules/react-native-svg`)
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
@@ -1402,10 +1509,14 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-manifests/ios"
   Expo:
     :path: "../../../node_modules/expo"
+  ExpoBlur:
+    :path: "../../../node_modules/expo-blur/ios"
   ExpoFileSystem:
     :path: "../../../node_modules/expo-file-system/ios"
   ExpoKeepAwake:
     :path: "../../../node_modules/expo-keep-awake/ios"
+  ExpoLinearGradient:
+    :path: "../../../node_modules/expo-linear-gradient/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/expo-modules-core"
   EXSplashScreen:
@@ -1471,6 +1582,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../../../node_modules/react-native/ReactCommon"
+  react-native-safe-area-context:
+    :path: "../../../node_modules/react-native-safe-area-context"
   react-native-turbo-vlc:
     :path: "../../../node_modules/@media-center/turbo-vlc"
   React-nativeconfig:
@@ -1523,6 +1636,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-linear-gradient"
   RNReanimated:
     :path: "../../../node_modules/react-native-reanimated"
+  RNScreens:
+    :path: "../../../node_modules/react-native-screens"
   RNSVG:
     :path: "../../../node_modules/react-native-svg"
   Yoga:
@@ -1537,8 +1652,10 @@ SPEC CHECKSUMS:
   EXJSONUtils: 5c42959e87be238b045ef37cc5268b16a6c0ad4a
   EXManifests: 5e8c29f36c716af768a4ea47ec05e1b89ab93091
   Expo: e01a77c6fa4bc80a6d1bb949cda1d12d21044abd
+  ExpoBlur: e832d874bd94afc0645daddbd3162ec1ce172080
   ExpoFileSystem: a9273932e69a9a1e1a8d01b6ba895bb8294bbea2
   ExpoKeepAwake: 0f5cad99603a3268e50af9a6eb8b76d0d9ac956c
+  ExpoLinearGradient: 4ad1449a2408e0435ac959076562b3921f2e32a1
   ExpoModulesCore: 5ba70816562a205894391952a4997b18d5d777b0
   EXSplashScreen: b9973a1dffda33b646d58283125af5332d3fa84a
   EXStructuredHeaders: 5b0f47259db047dc1fdfa84752e292c2bfa68ecd
@@ -1574,7 +1691,8 @@ SPEC CHECKSUMS:
   React-jsitracing: 9083d492f57833bfd14532d0b56514d03cd765e4
   React-logger: 294fa3f76e67446ba1de86a56bdf06a50d232cc3
   React-Mapbuffer: 708d94a8c36f70e92e64d8372f32553628d6fca8
-  react-native-turbo-vlc: fa089f9c86ebd2d91fb16d1bc7ba68b003a618d2
+  react-native-safe-area-context: 1e374c51edf537be56313b893b6e96b0e254ddfe
+  react-native-turbo-vlc: fe947226fb56e27581913414132128724d1c4d3d
   React-nativeconfig: e36418be6cac07bee6a32c5b18c39c21c37da092
   React-NativeModulesApple: af82219c4cc8de8da7df43dd7d08eea604eca94c
   React-perflogger: f5930054a8be7346b91b96152d6316db0940fdb9
@@ -1600,11 +1718,12 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: a8ee831b4b0cb47f195a61dcec5ea0ea5cf1417d
   RNLinearGradient: 0f0edb4523bc7ba5c609b956d3fcf11283336a46
   RNReanimated: 573cd64bbda7c2fef9ca208cca876cfcd6e8f5ca
+  RNScreens: 9ec969a95987a6caae170ef09313138abf3331e1
   RNSVG: 18f1381e046be2f1c30b4724db8d0c966238089f
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   sqlite3: f163dbbb7aa3339ad8fc622782c2d9d7b72f7e9c
-  VLCKit: 6babf874d4db4a47c3bf56ebafa3d2801152be91
-  Yoga: 85251f4aebe854c856a6414df1e14ef3f5bf7503
+  VLCKit: 80332c6fbe83e9278aca1b7e27799f2b521a7f76
+  Yoga: 4859213e84ae996512dc9339ab2b669ce62c24ae
 
 PODFILE CHECKSUM: ac7915ff9d5553ff7b9e8bb7f5079afad185f983
 

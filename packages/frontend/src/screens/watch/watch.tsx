@@ -197,12 +197,6 @@ function WatchWrapped({ watch }: WatchWrappedProps) {
           onError={onError}
           additionalTextTracks={subtitles}
         />
-        <View
-          style={[
-            StyleSheet.absoluteFillObject,
-            { opacity: 0, backgroundColor: "red" },
-          ]}
-        />
       </Pressable>
       {videoInfo && (
         <Controls

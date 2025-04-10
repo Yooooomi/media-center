@@ -34,6 +34,6 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, UserlandProps>(
 const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
-    pointerEvents: "none"
+    pointerEvents: "none",
   },
 });

@@ -17,21 +17,21 @@
                    onProgress:(EventCallback)onProgress
                    onVideoInfo:(EventCallback)onVideoInfo
                      onBuffer:(EventCallback)onBuffer {
+    
     self = [super initWithFrame:frame];
-    if (self) {
-        self.vlc = [[VLCLibrary alloc] init];
-        self.mediaPlayer = [[VLCMediaPlayer alloc] initWithLibrary:self.vlc];
-        self.mediaPlayer.scaleFactor = 0;
-        
-        self.onError = onError;
-        self.onProgress = onProgress;
-        self.onVideoInfo = onVideoInfo;
-        self.onBuffer = onBuffer;
-        
-        self.released = NO;
-        self.mediaPlayer.delegate = self;
-        self.mediaPlayer.drawable = self;
-    }
+    self.vlc = [[VLCLibrary alloc] init];
+    self.mediaPlayer = [[VLCMediaPlayer alloc] initWithLibrary:self.vlc];
+    self.mediaPlayer.scaleFactor = 0;
+    
+    self.onError = onError;
+    self.onProgress = onProgress;
+    self.onVideoInfo = onVideoInfo;
+    self.onBuffer = onBuffer;
+    
+    self.released = NO;
+    self.mediaPlayer.delegate = self;
+    self.mediaPlayer.drawable = self;
+    
     return self;
 }
 
@@ -42,10 +42,15 @@
 - (void)releasePlayer {
     self.released = YES;
     [self.mediaPlayer stop];
+    self.mediaPlayer= nil;
 }
 
 - (void)prepare {
     self.released = NO;
+    self.mediaPlayer = [[VLCMediaPlayer alloc] initWithLibrary:self.vlc];
+    self.mediaPlayer.scaleFactor = 0;
+    self.mediaPlayer.delegate = self;
+    self.mediaPlayer.drawable = self;
 }
 
 - (BOOL)isReleased {
@@ -55,19 +60,19 @@
 #pragma mark - VLCMediaPlayerDelegate
 
 - (void)mediaPlayerStateChanged:(VLCMediaPlayerState)aNotification {
-    NSLog(@"mediaPlayerStateChanged");
+    // NSLog(@"mediaPlayerStateChanged");
 }
 
 - (void)mediaPlayerLengthChanged:(int64_t)aNotification {
-    NSLog(@"mediaPlayerLengthChanged");
+    // NSLog(@"mediaPlayerLengthChanged");
 }
 
 - (void)mediaPlayerTrackSelected:(NSString *)selectedId unselectedId:(NSString *)unselectedId {
-    NSLog(@"mediaPlayerTrackSelected");
+    // NSLog(@"mediaPlayerTrackSelected");
 }
 
 - (void)mediaPlayerTrackAdded:(NSString *)trackId {
-    NSLog(@"mediaPlayerTrackAdded");
+    // NSLog(@"mediaPlayerTrackAdded");
 }
 
 - (void)mediaPlayerTimeChanged:(NSNotification *)aNotification {
